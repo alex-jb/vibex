@@ -41,18 +41,6 @@ yarn-error.log*
 next-env.d.ts
 .gstack/
 
-# ═══ PROPRIETARY (not open-sourced) ═══
-# Core AI logic (prompts, scoring algorithms)
-lib/ai.ts
-# Database seed data and migration scripts
-supabase/seed.ts
-supabase/migrations/002_seed_data.sql
-supabase/migrations/003_auth_user_links.sql
-supabase/migrations/004_social_features.sql
-# Data models and mock data internals
-lib/mock-data/projects.ts
-lib/mock-data/creators.ts
-lib/mock-data/ideas.ts
-lib/mock-data/events.ts
-lib/mock-data/trends.ts
-lib/mock-data/winners.ts
+# ═══ PROPRIETARY (source-available, see LICENSE) ═══
+# These files are visible in the repo but restricted by LICENSE.
+# AI prompts, data models, and seed data are NOT licensed for commercial use.
