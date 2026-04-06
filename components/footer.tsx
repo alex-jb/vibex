@@ -19,8 +19,7 @@ export function Footer() {
                 <Sparkles className="h-3.5 w-3.5 text-white" />
               </div>
               <span className="text-sm font-bold tracking-wide">
-                Vibe<span className="text-gradient-subtle">Code</span>
-                <span className="font-light"> Hunt</span>
+                Vibe<span className="text-gradient-subtle">X</span>
               </span>
             </div>
             <p className="mt-4 text-xs leading-relaxed text-muted-foreground/70">

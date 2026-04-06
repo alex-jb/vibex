@@ -45,13 +45,13 @@ function generateSocialCopy(
   project: ShareModalProps["project"]
 ): string {
   const { id, title, tagline, category } = project;
-  const playUrl = `https://play.vibecode.hunt/p/${id}`;
+  const playUrl = `https://play.vibex.app/p/${id}`;
 
   switch (platform) {
     case "twitter":
-      return `Just discovered ${title} on @VibeCodeHunt \u2014 ${tagline} \uD83D\uDD25\n\nTry it yourself: ${playUrl}\n\n#VibeCoding #AI`;
+      return `Just discovered ${title} on @VibeX \u2014 ${tagline} \uD83D\uDD25\n\nTry it yourself: ${playUrl}\n\n#VibeCoding #AI`;
     case "xiaohongshu":
-      return `\u53D1\u73B0\u4E00\u4E2A\u8D85\u9177\u7684AI\u9879\u76EE\uFF01\u2728\n\n\u3010${title}\u3011\n${tagline}\n\n\u70B9\u51FB\u76F4\u63A5\u4F53\u9A8C\uD83D\uDC49 play.vibecode.hunt/p/${id}\n\n#AI\u521B\u4F5C #VibeCoding #${category}`;
+      return `\u53D1\u73B0\u4E00\u4E2A\u8D85\u9177\u7684AI\u9879\u76EE\uFF01\u2728\n\n\u3010${title}\u3011\n${tagline}\n\n\u70B9\u51FB\u76F4\u63A5\u4F53\u9A8C\uD83D\uDC49 play.vibex.app/p/${id}\n\n#AI\u521B\u4F5C #VibeCoding #${category}`;
     case "douyin":
       return `\u8FD9\u4E2AAI\u592A\u79BB\u8C31\u4E86\uD83D\uDE02 ${title} \u2014 ${tagline}\n\n\u94FE\u63A5\u5728\u4E3B\u9875 #AI #VibeCoding`;
   }
@@ -114,8 +114,8 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
   const [aiError, setAiError] = useState<Partial<Record<Platform, string>>>({});
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const playUrl = `https://play.vibecode.hunt/p/${project.id}`;
-  const embedCode = `<iframe src="https://play.vibecode.hunt/embed/${project.id}" width="100%" height="500" style="border:none;border-radius:12px" />`;
+  const playUrl = `https://play.vibex.app/p/${project.id}`;
+  const embedCode = `<iframe src="https://play.vibex.app/embed/${project.id}" width="100%" height="500" style="border:none;border-radius:12px" />`;
 
   const handleGenerateAI = useCallback(async (platform: Platform) => {
     setAiLoading((prev) => ({ ...prev, [platform]: true }));

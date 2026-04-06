@@ -11,11 +11,11 @@ export async function generateMetadata({
 
   if (!project) {
     return {
-      title: "Project Not Found | VibeCode Hunt",
+      title: "Project Not Found | VibeX",
     };
   }
 
-  const title = `${project.title} | VibeCode Hunt`;
+  const title = `${project.title} | VibeX`;
   const description = project.tagline;
 
   return {
@@ -24,8 +24,8 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://vibecode.hunt/project/${project.id}`,
-      siteName: "VibeCode Hunt",
+      url: `https://vibex.app/project/${project.id}`,
+      siteName: "VibeX",
       type: "website",
       images: [
         {

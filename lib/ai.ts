@@ -28,7 +28,7 @@ export async function generateProjectReview(project: {
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 2000,
-    system: `You are an expert AI project reviewer for VibeCode Hunt, a platform for AI-native creations.
+    system: `You are an expert AI project reviewer for VibeX, a platform for AI-native creations.
 Evaluate projects on these dimensions (0-100 scale):
 - originality: How novel and unique is this idea?
 - clarity: How well-defined and understandable is the project?
@@ -80,7 +80,7 @@ export async function evaluateIdea(idea: {
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 2000,
-    system: `You are an AI startup idea evaluator for VibeCode Hunt.
+    system: `You are an AI startup idea evaluator for VibeX.
 Evaluate ideas on:
 - viability (0-100): Can this be built and succeed?
 - marketFit (0-100): Does the market need this?
@@ -133,7 +133,7 @@ export async function generateBattleNarrative(battle: {
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 1500,
-    system: `You are a dramatic RPG battle announcer for VibeCode Hunt's AI project arena.
+    system: `You are a dramatic RPG battle announcer for VibeX's AI project arena.
 Generate exciting, pixel-game-style commentary for battles between AI projects.
 Use gaming terminology, dramatic flair, and RPG references.
 Keep each narrative 1-2 sentences. Be fun and energetic.
@@ -170,7 +170,7 @@ export async function* streamLaunchAssistant(project: {
   const stream = client.messages.stream({
     model: MODEL,
     max_tokens: 1000,
-    system: `You are an AI launch assistant for VibeCode Hunt. Help creators improve their project submission.
+    system: `You are an AI launch assistant for VibeX. Help creators improve their project submission.
 Analyze the title, tagline, description, and category. Give concise, actionable feedback.
 Focus on: title impact, tagline hook quality, description completeness, category fit, viral potential.
 Be encouraging but honest. Use short bullet points. Respond in the user's language.`,
@@ -204,7 +204,7 @@ export async function generateShareSummary(project: {
 }, platform: "twitter" | "xiaohongshu" | "douyin"): Promise<string> {
   const platformGuides: Record<string, string> = {
     twitter: "280 chars max, include relevant hashtags, techy/concise tone",
-    xiaohongshu: "Chinese, use emojis, enthusiastic tone, 200 chars, include hashtags like #AI #VibeCode",
+    xiaohongshu: "Chinese, use emojis, enthusiastic tone, 200 chars, include hashtags like #AI #VibeX",
     douyin: "Chinese, catchy short text for video caption, 100 chars, trendy tone",
   };
 

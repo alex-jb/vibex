@@ -50,11 +50,11 @@ export function getRemixChain(projectId: string): Project[] {
 }
 
 export function generateShareContent(project: Project): ShareContent {
-  const playableUrl = `https://play.vibecode.hunt/p/${project.id}`;
+  const playableUrl = `https://play.vibex.app/p/${project.id}`;
 
   return {
-    twitter: `Just discovered "${project.title}" on @VibeCodeHunt — ${project.tagline.toLowerCase()}. This is what AI-native building looks like. Try it yourself: ${playableUrl} #vibecoding #ai`,
-    xiaohongshu: `🔥 发现了一个超酷的AI项目「${project.title}」！${project.tagline} ✨ 已经有${project.upvotes}人点赞了，快来体验一下吧！链接在主页 #AI创作 #VibeCode #科技前沿 #独立开发`,
+    twitter: `Just discovered "${project.title}" on @VibeX — ${project.tagline.toLowerCase()}. This is what AI-native building looks like. Try it yourself: ${playableUrl} #vibecoding #ai`,
+    xiaohongshu: `🔥 发现了一个超酷的AI项目「${project.title}」！${project.tagline} ✨ 已经有${project.upvotes}人点赞了，快来体验一下吧！链接在主页 #AI创作 #VibeX #科技前沿 #独立开发`,
     douyin: `这个AI项目火了！「${project.title}」— ${project.tagline}，${project.plays}人已经在玩了 🚀 #AI #科技 #独立开发者`,
     embedCode: `<iframe src="${playableUrl}" width="100%" height="500" />`,
     playableUrl,

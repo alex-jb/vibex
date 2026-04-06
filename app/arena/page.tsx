@@ -408,7 +408,7 @@ export default function ArenaPage() {
           <span className="rpgui-icon sword small" style={{ width: 16, height: 16, marginLeft: 4 }} />
         </div>
         <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>
-          VIBECODE://ARENA v2.0
+          VIBEX://ARENA v2.0
         </span>
         <span className="font-pixel" style={{ fontSize: 7, color: "#333" }}>
           ━━━

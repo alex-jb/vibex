@@ -39,8 +39,7 @@ export function Navbar() {
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <span className="text-lg font-bold tracking-wide">
-              Vibe<span className="text-gradient-subtle">Code</span>
-              <span className="font-light">{" "}Hunt</span>
+              Vibe<span className="text-gradient-subtle">X</span>
             </span>
           </Link>
 

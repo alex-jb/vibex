@@ -72,7 +72,7 @@ export default function LoginPage() {
             <p className="text-sm text-muted-foreground mt-2">
               {mode === "login"
                 ? "登录以继续你的冒险"
-                : "注册开始你的 VibeCode 之旅"}
+                : "注册开始你的 VibeX 之旅"}
             </p>
           </div>
 

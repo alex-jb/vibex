@@ -1,4 +1,4 @@
--- VibeCode Hunt - Full Database Schema
+-- VibeX - Full Database Schema
 -- Run this in Supabase SQL Editor to create all tables
 
 -- ═══════════════════════════════════════════════════════════════

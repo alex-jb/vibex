@@ -5,11 +5,11 @@ import type { Event } from "../types";
 export const events: Event[] = [
   {
     id: "e1",
-    title: "VibeCode Global Hackathon 2026",
+    title: "VibeX Global Hackathon 2026",
     type: "hackathon",
     date: "2026-04-20",
     location: "San Francisco + Online",
-    organizer: "VibeCode Hunt",
+    organizer: "VibeX",
     description:
       "48-hour hackathon to build the most creative AI-native project. $50K in prizes. Open to all skill levels.",
     isOnline: true,
@@ -49,7 +49,7 @@ export const events: Event[] = [
     type: "demo-day",
     date: "2026-04-12",
     location: "Online (Zoom)",
-    organizer: "VibeCode Hunt",
+    organizer: "VibeX",
     description:
       "Watch the top 10 projects of Q1 2026 present live. Community voting determines the quarterly champion.",
     isOnline: true,

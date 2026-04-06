@@ -19,7 +19,7 @@ const translations = {
     "nav.launch": "Launch Project",
 
     // Boot sequence
-    "boot.0": "VIBECODE HUNT v2.0.26",
+    "boot.0": "VIBEX v2.0.26",
     "boot.1": "INITIALIZING QUEST ENGINE...",
     "boot.2": "LOADING HERO DATABASE... OK",
     "boot.3": "SCANNING AI PROJECTS... 12,847 FOUND",
@@ -94,7 +94,7 @@ const translations = {
     "footer.changelog": "Changelog",
     "footer.community": "Community",
     "footer.newsletter": "Newsletter",
-    "footer.copyright": "VibeCode Hunt. Built for the AI-native era.",
+    "footer.copyright": "VibeX. Built for the AI-native era.",
     "footer.crafted": "Crafted with vibe coding energy",
 
     // Explore page
@@ -358,7 +358,7 @@ const translations = {
     "nav.launch": "\u53d1\u5e03\u9879\u76ee",
 
     // Boot sequence
-    "boot.0": "VIBECODE HUNT v2.0.26",
+    "boot.0": "VIBEX v2.0.26",
     "boot.1": "\u521d\u59cb\u5316\u5192\u9669\u5f15\u64ce...",
     "boot.2": "\u52a0\u8f7d\u52c7\u8005\u6570\u636e\u5e93... OK",
     "boot.3": "\u626b\u63cf AI \u9879\u76ee... \u53d1\u73b0 12,847 \u4e2a",
@@ -433,7 +433,7 @@ const translations = {
     "footer.changelog": "更新日志",
     "footer.community": "社区",
     "footer.newsletter": "订阅通讯",
-    "footer.copyright": "VibeCode Hunt。为 AI 原生时代而生。",
+    "footer.copyright": "VibeX。为 AI 原生时代而生。",
     "footer.crafted": "以 vibe coding 能量打造",
 
     // Explore page
