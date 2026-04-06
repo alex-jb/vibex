@@ -1,0 +1,26 @@
+VibeX Source Available License
+
+Copyright (c) 2026 Orallexa (alex-jb)
+
+Permission is hereby granted to any person obtaining a copy of this software
+to use, copy, and modify the software for personal and educational purposes,
+subject to the following conditions:
+
+1. COMMERCIAL USE RESTRICTED: You may not use this software, or any
+   derivative work, for commercial purposes without explicit written
+   permission from the copyright holder.
+
+2. ATTRIBUTION REQUIRED: Any use of this software must include attribution
+   to the original project (VibeX by Orallexa).
+
+3. NO REDISTRIBUTION OF PROPRIETARY COMPONENTS: Files marked as proprietary
+   (AI logic, data models, seed data) are not included in the public release
+   and may not be reverse-engineered or reconstructed for commercial use.
+
+4. OPEN COMPONENTS: The frontend UI, component library, and demo logic
+   included in this repository may be freely used and modified for
+   non-commercial purposes with attribution.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+
+For commercial licensing inquiries, contact: alex-jb on GitHub
