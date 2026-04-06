@@ -44,3 +44,5 @@ next-env.d.ts
 # ═══ PROPRIETARY (source-available, see LICENSE) ═══
 # These files are visible in the repo but restricted by LICENSE.
 # AI prompts, data models, and seed data are NOT licensed for commercial use.
+
+.vercel
