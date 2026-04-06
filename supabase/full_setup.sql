@@ -1,3 +1,247 @@
+-- VibeX - Full Database Schema
+-- Run this in Supabase SQL Editor to create all tables
+
+-- ═══════════════════════════════════════════════════════════════
+-- CREATORS
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE creators (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  avatar TEXT,
+  bio TEXT NOT NULL DEFAULT '',
+  rank INTEGER NOT NULL DEFAULT 0,
+  weekly_growth NUMERIC(5,2) NOT NULL DEFAULT 0,
+  joined_at DATE NOT NULL DEFAULT CURRENT_DATE,
+  badges TEXT[] NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ═══════════════════════════════════════════════════════════════
+-- PROJECTS
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE projects (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  tagline TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  category TEXT NOT NULL CHECK (category IN ('AI Agent', 'AI Tool', 'AI Game', 'AI Workflow', 'AI Utility', 'Experimental', 'Demo')),
+  creator_id TEXT NOT NULL REFERENCES creators(id) ON DELETE CASCADE,
+  tags TEXT[] NOT NULL DEFAULT '{}',
+  thumbnail TEXT NOT NULL DEFAULT '',
+  views INTEGER NOT NULL DEFAULT 0,
+  upvotes INTEGER NOT NULL DEFAULT 0,
+  plays INTEGER NOT NULL DEFAULT 0,
+  shares INTEGER NOT NULL DEFAULT 0,
+  remix_count INTEGER NOT NULL DEFAULT 0,
+  score INTEGER NOT NULL DEFAULT 0,
+  featured BOOLEAN NOT NULL DEFAULT FALSE,
+  demo_type TEXT NOT NULL CHECK (demo_type IN ('chat', 'sandbox', 'preview', 'embedded')) DEFAULT 'preview',
+  demo_url TEXT,
+  demo_content TEXT,
+  parent_id TEXT REFERENCES projects(id) ON DELETE SET NULL,
+  viral_boosted BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_projects_category ON projects(category);
+CREATE INDEX idx_projects_creator ON projects(creator_id);
+CREATE INDEX idx_projects_score ON projects(score DESC);
+CREATE INDEX idx_projects_created ON projects(created_at DESC);
+CREATE INDEX idx_projects_featured ON projects(featured) WHERE featured = TRUE;
+
+-- ═══════════════════════════════════════════════════════════════
+-- BEHAVIOR SCORES (per project)
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE behavior_scores (
+  project_id TEXT PRIMARY KEY REFERENCES projects(id) ON DELETE CASCADE,
+  plays INTEGER NOT NULL DEFAULT 0,
+  avg_stay_seconds NUMERIC(8,2) NOT NULL DEFAULT 0,
+  share_rate NUMERIC(5,4) NOT NULL DEFAULT 0,
+  remix_count INTEGER NOT NULL DEFAULT 0,
+  ai_score INTEGER NOT NULL DEFAULT 0,
+  compound NUMERIC(8,2) NOT NULL DEFAULT 0
+);
+
+-- ═══════════════════════════════════════════════════════════════
+-- AI REVIEWS (per project)
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE ai_reviews (
+  project_id TEXT PRIMARY KEY REFERENCES projects(id) ON DELETE CASCADE,
+  originality INTEGER NOT NULL DEFAULT 0,
+  clarity INTEGER NOT NULL DEFAULT 0,
+  ux_potential INTEGER NOT NULL DEFAULT 0,
+  virality_potential INTEGER NOT NULL DEFAULT 0,
+  investor_curiosity INTEGER NOT NULL DEFAULT 0,
+  strengths TEXT[] NOT NULL DEFAULT '{}',
+  weaknesses TEXT[] NOT NULL DEFAULT '{}',
+  suggestions TEXT[] NOT NULL DEFAULT '{}'
+);
+
+-- ═══════════════════════════════════════════════════════════════
+-- IDEAS
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE ideas (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  creator_name TEXT NOT NULL,
+  category TEXT NOT NULL,
+  upvotes INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL CHECK (status IN ('idea', 'in-progress', 'launched')) DEFAULT 'idea',
+  launched_project_id TEXT REFERENCES projects(id) ON DELETE SET NULL,
+  -- AI evaluation fields (inline for simplicity)
+  eval_viability INTEGER NOT NULL DEFAULT 0,
+  eval_market_fit INTEGER NOT NULL DEFAULT 0,
+  eval_competition TEXT NOT NULL CHECK (eval_competition IN ('low', 'moderate', 'high', 'saturated')) DEFAULT 'low',
+  eval_uniqueness INTEGER NOT NULL DEFAULT 0,
+  eval_difficulty TEXT NOT NULL CHECK (eval_difficulty IN ('easy', 'medium', 'hard', 'expert')) DEFAULT 'medium',
+  eval_suggestions TEXT[] NOT NULL DEFAULT '{}',
+  eval_similar_projects TEXT[] NOT NULL DEFAULT '{}',
+  eval_estimated_category TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ═══════════════════════════════════════════════════════════════
+-- EVENTS
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE events (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  type TEXT NOT NULL CHECK (type IN ('hackathon', 'salon', 'meetup', 'demo-day')),
+  date TEXT NOT NULL,
+  location TEXT NOT NULL,
+  organizer TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  is_online BOOLEAN NOT NULL DEFAULT FALSE,
+  featured BOOLEAN NOT NULL DEFAULT FALSE,
+  image TEXT,
+  top_project_ids TEXT[] NOT NULL DEFAULT '{}',
+  ai_generated_topics TEXT[] NOT NULL DEFAULT '{}',
+  participant_count INTEGER DEFAULT 0,
+  status TEXT CHECK (status IN ('upcoming', 'live', 'completed')) DEFAULT 'upcoming',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ═══════════════════════════════════════════════════════════════
+-- TREND INSIGHTS
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE trend_insights (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  type TEXT NOT NULL CHECK (type IN ('rising', 'saturated', 'opportunity', 'emerging')),
+  signal TEXT NOT NULL CHECK (signal IN ('strong', 'moderate', 'early')),
+  summary TEXT NOT NULL DEFAULT '',
+  momentum INTEGER NOT NULL DEFAULT 0,
+  confidence INTEGER NOT NULL DEFAULT 0,
+  category TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ═══════════════════════════════════════════════════════════════
+-- WEEKLY WINNERS
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE weekly_winners (
+  id SERIAL PRIMARY KEY,
+  week TEXT NOT NULL,
+  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  project_title TEXT NOT NULL,
+  creator_name TEXT NOT NULL,
+  score INTEGER NOT NULL DEFAULT 0,
+  category TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE UNIQUE INDEX idx_weekly_winners_week ON weekly_winners(week);
+
+-- ═══════════════════════════════════════════════════════════════
+-- BATTLE HISTORY
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE battle_history (
+  id TEXT PRIMARY KEY,
+  challenger_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  defender_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  winner_id TEXT NOT NULL,
+  rounds JSONB NOT NULL DEFAULT '[]',
+  exp_gained_challenger INTEGER NOT NULL DEFAULT 0,
+  exp_gained_defender INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_battles_challenger ON battle_history(challenger_id);
+CREATE INDEX idx_battles_defender ON battle_history(defender_id);
+CREATE INDEX idx_battles_created ON battle_history(created_at DESC);
+
+-- ═══════════════════════════════════════════════════════════════
+-- FUNDING INFO (per project, optional)
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE TABLE funding (
+  project_id TEXT PRIMARY KEY REFERENCES projects(id) ON DELETE CASCADE,
+  goal INTEGER NOT NULL DEFAULT 0,
+  raised INTEGER NOT NULL DEFAULT 0,
+  donors INTEGER NOT NULL DEFAULT 0,
+  vc_interest INTEGER NOT NULL DEFAULT 0
+);
+
+-- ═══════════════════════════════════════════════════════════════
+-- AUTO-UPDATE TIMESTAMPS
+-- ═══════════════════════════════════════════════════════════════
+
+CREATE OR REPLACE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_creators_updated BEFORE UPDATE ON creators FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER trg_projects_updated BEFORE UPDATE ON projects FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ═══════════════════════════════════════════════════════════════
+-- ROW LEVEL SECURITY (basic - public read)
+-- ═══════════════════════════════════════════════════════════════
+
+ALTER TABLE creators ENABLE ROW LEVEL SECURITY;
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE behavior_scores ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ai_reviews ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ideas ENABLE ROW LEVEL SECURITY;
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE trend_insights ENABLE ROW LEVEL SECURITY;
+ALTER TABLE weekly_winners ENABLE ROW LEVEL SECURITY;
+ALTER TABLE battle_history ENABLE ROW LEVEL SECURITY;
+ALTER TABLE funding ENABLE ROW LEVEL SECURITY;
+
+-- Public read access for all tables
+CREATE POLICY "Public read" ON creators FOR SELECT USING (true);
+CREATE POLICY "Public read" ON projects FOR SELECT USING (true);
+CREATE POLICY "Public read" ON behavior_scores FOR SELECT USING (true);
+CREATE POLICY "Public read" ON ai_reviews FOR SELECT USING (true);
+CREATE POLICY "Public read" ON ideas FOR SELECT USING (true);
+CREATE POLICY "Public read" ON events FOR SELECT USING (true);
+CREATE POLICY "Public read" ON trend_insights FOR SELECT USING (true);
+CREATE POLICY "Public read" ON weekly_winners FOR SELECT USING (true);
+CREATE POLICY "Public read" ON battle_history FOR SELECT USING (true);
+CREATE POLICY "Public read" ON funding FOR SELECT USING (true);
+
+-- Public insert for battle history (anyone can battle)
+CREATE POLICY "Public insert battles" ON battle_history FOR INSERT WITH CHECK (true);
+
+-- Public insert for ideas (anyone can submit)
+CREATE POLICY "Public insert ideas" ON ideas FOR INSERT WITH CHECK (true);
+
 -- ═══════════════════════════════════════════════════════════════
 -- SEED DATA (auto-generated from mock-data.ts)
 -- ═══════════════════════════════════════════════════════════════
@@ -85,3 +329,154 @@ INSERT INTO weekly_winners (week, project_id, project_title, creator_name, score
 INSERT INTO weekly_winners (week, project_id, project_title, creator_name, score, category) VALUES ('2026-W13', '2', 'AgentForge', 'Marcus Liu', 97, 'AI Agent') ON CONFLICT (week) DO NOTHING;
 INSERT INTO weekly_winners (week, project_id, project_title, creator_name, score, category) VALUES ('2026-W12', '12', 'SynthLab', 'Yuki Tanaka', 92, 'Demo') ON CONFLICT (week) DO NOTHING;
 INSERT INTO weekly_winners (week, project_id, project_title, creator_name, score, category) VALUES ('2026-W11', '7', 'NarrativeAI', 'Priya Sharma', 86, 'AI Game') ON CONFLICT (week) DO NOTHING;
+
+-- Link creators to Supabase auth users
+-- Run this after 001_initial_schema.sql
+
+-- Add auth user reference to creators
+ALTER TABLE creators ADD COLUMN IF NOT EXISTS auth_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_creators_auth_user ON creators(auth_user_id) WHERE auth_user_id IS NOT NULL;
+
+-- User profiles view (joins auth.users with creators)
+CREATE OR REPLACE VIEW user_profiles AS
+SELECT
+  c.*,
+  u.email,
+  u.raw_user_meta_data->>'avatar_url' AS auth_avatar,
+  u.raw_user_meta_data->>'full_name' AS auth_name
+FROM creators c
+LEFT JOIN auth.users u ON c.auth_user_id = u.id;
+
+-- Track upvotes per user (prevent double voting)
+CREATE TABLE IF NOT EXISTS user_upvotes (
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (user_id, project_id)
+);
+
+ALTER TABLE user_upvotes ENABLE ROW LEVEL SECURITY;
+
+-- Users can read their own upvotes
+CREATE POLICY "Users read own upvotes" ON user_upvotes
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- Users can insert their own upvotes
+CREATE POLICY "Users insert own upvotes" ON user_upvotes
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- Users can delete their own upvotes (un-upvote)
+CREATE POLICY "Users delete own upvotes" ON user_upvotes
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Link battle history to auth users
+ALTER TABLE battle_history ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
+
+-- RLS: authenticated users can insert battles
+DROP POLICY IF EXISTS "Public insert battles" ON battle_history;
+CREATE POLICY "Auth insert battles" ON battle_history
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL OR true);
+
+-- Update projects RLS for authenticated writes
+CREATE POLICY "Auth update projects" ON projects
+  FOR UPDATE USING (
+    EXISTS (
+      SELECT 1 FROM creators
+      WHERE creators.id = projects.creator_id
+      AND creators.auth_user_id = auth.uid()
+    )
+  );
+
+-- Authenticated users can insert projects
+CREATE POLICY "Auth insert projects" ON projects
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+
+-- ═══════════════════════════════════════════════════════════════
+-- SOCIAL FEATURES: Comments, Follows, Notifications
+-- ═══════════════════════════════════════════════════════════════
+
+-- ─── COMMENTS ───
+CREATE TABLE comments (
+  id TEXT PRIMARY KEY DEFAULT 'cmt-' || gen_random_uuid()::text,
+  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  parent_id TEXT REFERENCES comments(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  likes INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_comments_project ON comments(project_id, created_at DESC);
+CREATE INDEX idx_comments_user ON comments(user_id);
+CREATE INDEX idx_comments_parent ON comments(parent_id) WHERE parent_id IS NOT NULL;
+
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read comments" ON comments FOR SELECT USING (true);
+CREATE POLICY "Auth insert comments" ON comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Own update comments" ON comments FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Own delete comments" ON comments FOR DELETE USING (auth.uid() = user_id);
+
+CREATE TRIGGER trg_comments_updated BEFORE UPDATE ON comments FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- Comment likes (prevent double-like)
+CREATE TABLE comment_likes (
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  comment_id TEXT NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (user_id, comment_id)
+);
+
+ALTER TABLE comment_likes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read comment_likes" ON comment_likes FOR SELECT USING (true);
+CREATE POLICY "Auth insert comment_likes" ON comment_likes FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Own delete comment_likes" ON comment_likes FOR DELETE USING (auth.uid() = user_id);
+
+-- ─── FOLLOWS ───
+CREATE TABLE follows (
+  follower_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  following_id TEXT NOT NULL REFERENCES creators(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (follower_id, following_id)
+);
+
+CREATE INDEX idx_follows_following ON follows(following_id);
+CREATE INDEX idx_follows_follower ON follows(follower_id);
+
+ALTER TABLE follows ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read follows" ON follows FOR SELECT USING (true);
+CREATE POLICY "Auth insert follows" ON follows FOR INSERT WITH CHECK (auth.uid() = follower_id);
+CREATE POLICY "Own delete follows" ON follows FOR DELETE USING (auth.uid() = follower_id);
+
+-- Add follower/following counts to creators
+ALTER TABLE creators ADD COLUMN IF NOT EXISTS follower_count INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE creators ADD COLUMN IF NOT EXISTS following_count INTEGER NOT NULL DEFAULT 0;
+
+-- ─── NOTIFICATIONS ───
+CREATE TABLE notifications (
+  id TEXT PRIMARY KEY DEFAULT 'ntf-' || gen_random_uuid()::text,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  type TEXT NOT NULL CHECK (type IN ('upvote', 'comment', 'reply', 'follow', 'battle', 'mention', 'system')),
+  title TEXT NOT NULL,
+  body TEXT,
+  link TEXT,
+  read BOOLEAN NOT NULL DEFAULT FALSE,
+  actor_name TEXT,
+  actor_avatar TEXT,
+  project_id TEXT REFERENCES projects(id) ON DELETE SET NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_notifications_user ON notifications(user_id, created_at DESC);
+CREATE INDEX idx_notifications_unread ON notifications(user_id, read) WHERE read = FALSE;
+
+ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Own read notifications" ON notifications FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Auth insert notifications" ON notifications FOR INSERT WITH CHECK (true);
+CREATE POLICY "Own update notifications" ON notifications FOR UPDATE USING (auth.uid() = user_id);
+
+-- ─── USER PROFILES (extend creators) ───
+ALTER TABLE creators ADD COLUMN IF NOT EXISTS total_followers INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE creators ADD COLUMN IF NOT EXISTS github_url TEXT;
+ALTER TABLE creators ADD COLUMN IF NOT EXISTS twitter_url TEXT;
+ALTER TABLE creators ADD COLUMN IF NOT EXISTS website_url TEXT;
