@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useLang } from "@/lib/i18n";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -54,16 +55,16 @@ function getDemoIcon(demoType: PlayableDemoProps["demoType"]) {
   }
 }
 
-function getDemoLabel(demoType: PlayableDemoProps["demoType"]) {
+function getDemoLabel(demoType: PlayableDemoProps["demoType"], t: (key: any) => string) {
   switch (demoType) {
     case "chat":
-      return "Live Chat";
+      return t("demo.liveChat");
     case "sandbox":
-      return "Code Sandbox";
+      return t("demo.codeSandbox");
     case "preview":
-      return "App Preview";
+      return t("demo.appPreview");
     case "embedded":
-      return "Embedded Player";
+      return t("demo.embeddedPlayer");
   }
 }
 
@@ -81,8 +82,9 @@ const CANNED_AI_RESPONSES = [
 /* ------------------------------------------------------------------ */
 
 function ChatDemo({ projectTitle }: { projectTitle: string }) {
+  const { t } = useLang();
   const initialMessages: ChatMessage[] = [
-    { role: "system", text: "Welcome! Try asking me anything..." },
+    { role: "system", text: t("demo.welcome") },
     {
       role: "user",
       text: "Can you translate this with the right emotional tone?",
@@ -154,11 +156,11 @@ function ChatDemo({ projectTitle }: { projectTitle: string }) {
           <span className="text-sm font-medium">{projectTitle}</span>
           <div className="flex items-center gap-1.5">
             <div className="size-1.5 rounded-full bg-emerald-400" />
-            <span className="text-[10px] text-emerald-400">Online</span>
+            <span className="text-[10px] text-emerald-400">{t("demo.online")}</span>
           </div>
         </div>
         <Badge className="ml-auto bg-violet-500/10 text-violet-400 border-violet-500/20 text-[10px]">
-          Powered by AI
+          {t("demo.poweredByAI")}
         </Badge>
       </div>
 
@@ -235,7 +237,7 @@ function ChatDemo({ projectTitle }: { projectTitle: string }) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type a message..."
+            placeholder={t("demo.typeMessage")}
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none"
           />
           <button
@@ -256,6 +258,7 @@ function ChatDemo({ projectTitle }: { projectTitle: string }) {
 /* ------------------------------------------------------------------ */
 
 function SandboxDemo() {
+  const { t } = useLang();
   const [isRunning, setIsRunning] = useState(false);
   const [output, setOutput] = useState<string | null>(null);
 
@@ -444,7 +447,7 @@ function SandboxDemo() {
       <div className="mx-4 mb-2 rounded-lg border border-white/10 bg-black/80 p-3">
         <div className="flex items-center gap-2 mb-2">
           <Terminal className="size-3.5 text-emerald-400" />
-          <span className="text-xs font-mono text-emerald-400">Terminal</span>
+          <span className="text-xs font-mono text-emerald-400">{t("demo.terminal")}</span>
         </div>
         <div className="text-xs font-mono text-muted-foreground min-h-[24px]">
           {isRunning ? (
@@ -453,16 +456,16 @@ function SandboxDemo() {
               animate={{ opacity: 1 }}
               className="text-amber-400"
             >
-              {"> Running..."}
+              {`> ${t("demo.running")}`}
             </motion.span>
           ) : output ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <span className="text-muted-foreground/60">{"> "}</span>
-              <span className="text-emerald-300">Output: {output}</span>
+              <span className="text-emerald-300">{t("demo.output")}: {output}</span>
             </motion.div>
           ) : (
             <span className="text-muted-foreground/40">
-              {">"} Ready to run...
+              {">"} {t("demo.readyToRun")}
             </span>
           )}
         </div>
@@ -477,7 +480,7 @@ function SandboxDemo() {
           size="sm"
         >
           <Play className="size-3.5" />
-          {isRunning ? "Running..." : "Run"}
+          {isRunning ? t("demo.running") : t("demo.run")}
         </Button>
         <Link href="/launch">
           <Button
@@ -486,7 +489,7 @@ function SandboxDemo() {
             className="gap-2 border-white/10 hover:bg-white/5"
           >
             <GitFork className="size-3.5" />
-            Fork
+            {t("demo.fork")}
           </Button>
         </Link>
       </div>
@@ -499,6 +502,7 @@ function SandboxDemo() {
 /* ------------------------------------------------------------------ */
 
 function PreviewDemo({ demoUrl }: { demoUrl?: string }) {
+  const { t } = useLang();
   if (demoUrl) {
     return (
       <div className="min-h-[400px] p-4">
@@ -535,7 +539,7 @@ function PreviewDemo({ demoUrl }: { demoUrl?: string }) {
             app-preview
           </span>
           <Badge className="ml-auto bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[10px]">
-            Live Preview
+            {t("demo.livePreview")}
           </Badge>
         </div>
 
@@ -630,6 +634,7 @@ function PreviewDemo({ demoUrl }: { demoUrl?: string }) {
 /* ------------------------------------------------------------------ */
 
 function EmbeddedDemo({ demoUrl }: { demoUrl?: string }) {
+  const { t } = useLang();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -725,7 +730,7 @@ function EmbeddedDemo({ demoUrl }: { demoUrl?: string }) {
               <Play className="size-10 text-violet-400 ml-1" />
             </div>
             <span className="text-sm text-muted-foreground animate-pulse">
-              Loading experience...
+              {t("demo.loadingExperience")}
             </span>
           </motion.div>
         ) : (
@@ -758,7 +763,7 @@ function EmbeddedDemo({ demoUrl }: { demoUrl?: string }) {
 
         {!isLoading && (
           <span className="text-sm text-muted-foreground">
-            {isPlaying ? "Playing..." : "Click to play"}
+            {isPlaying ? t("demo.playing") : t("demo.clickToPlay")}
           </span>
         )}
       </div>
@@ -785,6 +790,7 @@ export default function PlayableDemo({
   projectTitle,
   projectId,
 }: PlayableDemoProps) {
+  const { t } = useLang();
   const [playCount] = useState(() => Math.floor(Math.random() * 500) + 100);
 
   return (
@@ -792,15 +798,15 @@ export default function PlayableDemo({
       {/* Header bar */}
       <div className="flex items-center gap-3 border-b border-white/5 bg-white/[0.02] px-5 py-3.5">
         <span className="text-violet-400">{getDemoIcon(demoType)}</span>
-        <span className="text-sm font-medium">{getDemoLabel(demoType)}</span>
+        <span className="text-sm font-medium">{getDemoLabel(demoType, t)}</span>
         <div className="flex items-center gap-1.5 ml-2">
           <div className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-xs font-medium text-emerald-400">Live</span>
+          <span className="text-xs font-medium text-emerald-400">{t("demo.live")}</span>
         </div>
         <div className="ml-auto">
           <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
             <Maximize2 className="size-3.5" />
-            Full Screen
+            {t("demo.fullScreen")}
           </button>
         </div>
       </div>
@@ -815,11 +821,11 @@ export default function PlayableDemo({
       <div className="flex items-center justify-between border-t border-white/5 px-5 py-3">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground/60">
           <Eye className="size-3.5" />
-          <span>{playCount.toLocaleString()} plays</span>
+          <span>{playCount.toLocaleString()} {t("demo.plays")}</span>
         </div>
         <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <Share2 className="size-3.5" />
-          Share
+          {t("demo.share")}
         </button>
       </div>
     </div>

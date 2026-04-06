@@ -20,6 +20,7 @@ import {
   GitFork,
 } from "lucide-react";
 
+import { useLang } from "@/lib/i18n";
 import { projects } from "@/lib/mock-data";
 import type { Project, AIReview } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -78,15 +79,16 @@ function ScoreBar({ label, value, index }: { label: string; value: number; index
 
 /* ---------- AI Review Panel ---------- */
 function AIReviewPanel({ review }: { review: AIReview }) {
+  const { t } = useLang();
   const metrics: {
     key: keyof Pick<AIReview, "originality" | "clarity" | "uxPotential" | "viralityPotential" | "investorCuriosity">;
     label: string;
   }[] = [
-    { key: "originality", label: "Originality" },
-    { key: "clarity", label: "Clarity" },
-    { key: "uxPotential", label: "UX Potential" },
-    { key: "viralityPotential", label: "Virality Potential" },
-    { key: "investorCuriosity", label: "Investor Curiosity" },
+    { key: "originality", label: t("project.originality") },
+    { key: "clarity", label: t("project.clarity") },
+    { key: "uxPotential", label: t("project.uxPotential") },
+    { key: "viralityPotential", label: t("project.viralityPotential") },
+    { key: "investorCuriosity", label: t("project.investorCuriosity") },
   ];
 
   return (
@@ -97,9 +99,9 @@ function AIReviewPanel({ review }: { review: AIReview }) {
       {/* Header */}
       <div className="mb-6 flex items-center gap-2">
         <Sparkles className="size-5 text-violet-400" />
-        <h3 className="text-lg font-semibold">AI Analysis</h3>
+        <h3 className="text-lg font-semibold">{t("project.aiAnalysis")}</h3>
         <Badge className="ml-auto bg-violet-500/10 text-violet-400 border-violet-500/20 text-[10px]">
-          Beta
+          {t("project.beta")}
         </Badge>
       </div>
 
@@ -122,7 +124,7 @@ function AIReviewPanel({ review }: { review: AIReview }) {
         <div>
           <h4 className="mb-3 flex items-center gap-1.5 text-sm font-medium text-emerald-400">
             <CheckCircle2 className="size-4" />
-            Strengths
+            {t("project.strengths")}
           </h4>
           <ul className="space-y-2">
             {review.strengths.map((s, i) => (
@@ -140,7 +142,7 @@ function AIReviewPanel({ review }: { review: AIReview }) {
         <div>
           <h4 className="mb-3 flex items-center gap-1.5 text-sm font-medium text-yellow-400">
             <AlertTriangle className="size-4" />
-            Weaknesses
+            {t("project.weaknesses")}
           </h4>
           <ul className="space-y-2">
             {review.weaknesses.map((w, i) => (
@@ -158,7 +160,7 @@ function AIReviewPanel({ review }: { review: AIReview }) {
         <div>
           <h4 className="mb-3 flex items-center gap-1.5 text-sm font-medium text-blue-400">
             <Lightbulb className="size-4" />
-            Suggestions
+            {t("project.suggestions")}
           </h4>
           <ul className="space-y-2">
             {review.suggestions.map((s, i) => (
@@ -177,7 +179,7 @@ function AIReviewPanel({ review }: { review: AIReview }) {
       <Separator className="my-5 bg-white/5" />
 
       <p className="text-xs text-muted-foreground/40">
-        AI-assisted evaluation. Not a prediction.
+        {t("project.aiDisclaimer")}
       </p>
     </motion.div>
   );
@@ -232,18 +234,19 @@ export default function ProjectPage({
 }) {
   const { id } = use(params);
   const project = projects.find((p) => p.id === id);
+  const { t } = useLang();
 
   if (!project) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold">Project not found</h1>
+        <h1 className="text-2xl font-bold">{t("project.notFound")}</h1>
         <p className="text-muted-foreground">
-          The project you are looking for does not exist.
+          {t("project.notFoundDesc")}
         </p>
         <Link href="/explore">
           <Button variant="outline">
             <ArrowLeft className="size-4" />
-            Back to Explore
+            {t("project.backToExplore")}
           </Button>
         </Link>
       </div>
@@ -275,7 +278,7 @@ export default function ProjectPage({
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="size-4" />
-            Back to Explore
+            {t("project.backToExplore")}
           </Link>
 
           {/* Badges */}
@@ -286,7 +289,7 @@ export default function ProjectPage({
             {project.featured && (
               <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20">
                 <Star className="size-3" />
-                Featured
+                {t("project.featured")}
               </Badge>
             )}
           </div>
@@ -314,15 +317,15 @@ export default function ProjectPage({
             <div className="hidden sm:block h-4 w-px bg-white/10" />
             <span className="flex items-center gap-1.5">
               <Eye className="size-3.5" />
-              {project.views.toLocaleString()} views
+              {project.views.toLocaleString()} {t("project.views")}
             </span>
             <span className="flex items-center gap-1.5">
               <ChevronUp className="size-3.5 text-violet-400" />
-              {project.upvotes.toLocaleString()} upvotes
+              {project.upvotes.toLocaleString()} {t("project.upvotes")}
             </span>
             <span className="flex items-center gap-1.5">
               <Trophy className="size-3.5 text-amber-400" />
-              Score {project.score}
+              {t("project.score")} {project.score}
             </span>
           </div>
         </div>
@@ -345,7 +348,7 @@ export default function ProjectPage({
 
           {/* Description */}
           <motion.div variants={fadeIn} className="space-y-3">
-            <h2 className="text-xl font-semibold">About</h2>
+            <h2 className="text-xl font-semibold">{t("project.about")}</h2>
             <p className="leading-relaxed text-muted-foreground">
               {project.description}
             </p>
@@ -370,11 +373,11 @@ export default function ProjectPage({
           <motion.div variants={fadeIn} className="flex gap-3">
             <Button className="flex-1 gap-2 bg-violet-600 hover:bg-violet-500 text-white" variant="default">
               <ChevronUp className="size-4" />
-              Upvote
+              {t("project.upvote")}
             </Button>
             <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5">
               <Share2 className="size-4" />
-              Share
+              {t("project.share")}
             </Button>
           </motion.div>
 
@@ -387,7 +390,7 @@ export default function ProjectPage({
                 <div className="flex items-center gap-2">
                   <Swords className="size-4 text-violet-400" />
                   <h3 className="font-pixel text-[9px] uppercase tracking-wider text-foreground">
-                    Hero Stats
+                    {t("project.heroStats")}
                   </h3>
                 </div>
                 <EvolutionBadge stage={project.hero.evolutionStage} size="sm" />
@@ -420,7 +423,7 @@ export default function ProjectPage({
               {/* Skill Tree */}
               <div className="pt-2">
                 <h4 className="font-pixel text-[7px] text-muted-foreground uppercase tracking-widest mb-3">
-                  Skill Tree
+                  {t("project.skillTree")}
                 </h4>
                 <SkillTree skills={project.hero.skillTree} />
               </div>
@@ -430,7 +433,7 @@ export default function ProjectPage({
                 <Link href={`/arena`}>
                   <button className="nes-btn is-error" style={{ fontSize: 9, padding: "6px 14px" }}>
                     <span className="rpgui-icon sword small" style={{ width: 14, height: 14, display: "inline-block", verticalAlign: "middle", marginRight: 4 }} />
-                    Battle
+                    {t("project.battle")}
                   </button>
                 </Link>
                 <RareCandyButton
@@ -449,7 +452,7 @@ export default function ProjectPage({
 
       {/* ===== Related Projects ===== */}
       <motion.div variants={fadeIn} className="mt-20">
-        <h2 className="text-2xl font-bold tracking-tight mb-6">Related Projects</h2>
+        <h2 className="text-2xl font-bold tracking-tight mb-6">{t("project.relatedProjects")}</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {relatedProjects.map((p) => (
             <RelatedProjectCard key={p.id} project={p} />

@@ -32,9 +32,22 @@ const vt323 = VT323({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://vibecode.hunt"),
   title: "VibeCode Hunt — AI-Native Launch Platform",
   description:
     "Discover, publish, and evolve playable AI-native vibe coding projects. The launch platform for the LLM era.",
+  openGraph: {
+    title: "VibeCode Hunt — AI-Native Launch Platform",
+    description: "Discover, publish, and evolve playable AI-native vibe coding projects.",
+    siteName: "VibeCode Hunt",
+    type: "website",
+    images: [{ url: "/og-default.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "VibeCode Hunt — AI-Native Launch Platform",
+    description: "Discover, publish, and evolve playable AI-native vibe coding projects.",
+  },
 };
 
 export default function RootLayout({
