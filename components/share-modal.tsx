@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -15,6 +15,8 @@ import {
   QrCode,
   Sparkles,
   MessageSquare,
+  Wand2,
+  Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -107,9 +109,51 @@ function CopyButton({
 
 export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
   const [activePlatform, setActivePlatform] = useState<Platform>("twitter");
+  const [editedTexts, setEditedTexts] = useState<Partial<Record<Platform, string>>>({});
+  const [aiLoading, setAiLoading] = useState<Partial<Record<Platform, boolean>>>({});
+  const [aiError, setAiError] = useState<Partial<Record<Platform, string>>>({});
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const playUrl = `https://play.vibecode.hunt/p/${project.id}`;
   const embedCode = `<iframe src="https://play.vibecode.hunt/embed/${project.id}" width="100%" height="500" style="border:none;border-radius:12px" />`;
+
+  const handleGenerateAI = useCallback(async (platform: Platform) => {
+    setAiLoading((prev) => ({ ...prev, [platform]: true }));
+    setAiError((prev) => ({ ...prev, [platform]: undefined }));
+
+    try {
+      const res = await fetch("/api/ai/share-summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: project.title,
+          tagline: project.tagline,
+          category: project.category,
+          platform,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to generate AI text");
+      }
+
+      const data = await res.json();
+      const text = data.text ?? data.summary ?? "";
+      setEditedTexts((prev) => ({ ...prev, [platform]: text }));
+    } catch {
+      setAiError((prev) => ({ ...prev, [platform]: "AI 生成失败，请重试" }));
+    } finally {
+      setAiLoading((prev) => ({ ...prev, [platform]: false }));
+    }
+  }, [project.title, project.tagline, project.category]);
+
+  // Auto-resize textarea when content changes
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [editedTexts, activePlatform]);
 
   // Close on Escape
   useEffect(() => {
@@ -268,12 +312,53 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                       transition={{ duration: 0.15 }}
                       className="relative rounded-xl bg-white/[0.03] border border-white/[0.06] p-3.5"
                     >
-                      <pre className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90 font-sans">
-                        {socialCopy}
-                      </pre>
-                      <div className="mt-3 flex justify-end">
+                      {editedTexts[activePlatform] !== undefined ? (
+                        <textarea
+                          ref={textareaRef}
+                          value={editedTexts[activePlatform]}
+                          onChange={(e) =>
+                            setEditedTexts((prev) => ({
+                              ...prev,
+                              [activePlatform]: e.target.value,
+                            }))
+                          }
+                          className="w-full resize-none bg-transparent text-sm leading-relaxed text-foreground/90 font-sans outline-none border-none focus:ring-0 p-0"
+                          rows={4}
+                        />
+                      ) : (
+                        <pre className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90 font-sans">
+                          {socialCopy}
+                        </pre>
+                      )}
+
+                      {aiError[activePlatform] && (
+                        <p className="mt-2 text-xs text-red-400">
+                          {aiError[activePlatform]}
+                        </p>
+                      )}
+
+                      <div className="mt-3 flex items-center justify-between">
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          className="text-fuchsia-400 hover:text-fuchsia-300 hover:bg-fuchsia-500/10 gap-1.5"
+                          disabled={!!aiLoading[activePlatform]}
+                          onClick={() => handleGenerateAI(activePlatform)}
+                        >
+                          {aiLoading[activePlatform] ? (
+                            <>
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                              <span>生成中...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Wand2 className="h-3 w-3" />
+                              <span>AI 生成文案</span>
+                            </>
+                          )}
+                        </Button>
                         <CopyButton
-                          text={socialCopy}
+                          text={editedTexts[activePlatform] ?? socialCopy}
                           label="Copy"
                           variant="ghost"
                           size="xs"
