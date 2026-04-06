@@ -7,7 +7,7 @@ import { useLang } from "@/lib/i18n";
 export function Footer() {
   const { t } = useLang();
   return (
-    <footer className="relative border-t border-white/[0.04] bg-background" data-slot="footer">
+    <footer aria-label="Footer navigation" className="relative border-t border-white/[0.04] bg-background" data-slot="footer">
       {/* Top gradient accent line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
 

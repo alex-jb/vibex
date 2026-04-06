@@ -28,7 +28,7 @@ export function Navbar() {
   const { t } = useLang();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50" data-slot="navbar">
+    <header className="fixed top-0 left-0 right-0 z-50" data-slot="navbar" role="navigation">
       {/* Main bar */}
       <div className="bg-background/60 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/[0.04]">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -44,7 +44,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden items-center gap-0.5 md:flex">
+          <nav aria-label="Main navigation" className="hidden items-center gap-0.5 md:flex">
             {navItemKeys.map((item) => {
               const isActive =
                 item.href === "/"
@@ -95,6 +95,8 @@ export function Navbar() {
 
           {/* Mobile Toggle */}
           <button
+            aria-label="Toggle mobile menu"
+            aria-expanded={mobileOpen}
             className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground md:hidden transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
           >

@@ -167,6 +167,8 @@ function ChatDemo({ projectTitle }: { projectTitle: string }) {
       {/* Messages */}
       <div
         ref={scrollRef}
+        role="log"
+        aria-live="polite"
         className="flex-1 overflow-y-auto p-5 space-y-3 max-h-[320px]"
       >
         {messages.map((msg, i) => (
@@ -238,9 +240,11 @@ function ChatDemo({ projectTitle }: { projectTitle: string }) {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t("demo.typeMessage")}
+            aria-label="Chat input"
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none"
           />
           <button
+            aria-label="Send message"
             onClick={handleSend}
             disabled={!input.trim() || isTyping}
             className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white transition-opacity hover:opacity-90 disabled:opacity-40"

@@ -57,6 +57,8 @@ export function UserMenu() {
   return (
     <div className="relative">
       <button
+        aria-label="User menu"
+        aria-expanded={open}
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 rounded-full p-0.5 transition-all hover:ring-2 hover:ring-violet-500/30"
       >
@@ -88,6 +90,7 @@ export function UserMenu() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.95 }}
               transition={{ duration: 0.15 }}
+              role="menu"
               className="absolute right-0 top-full mt-2 z-50 w-56 glass-card-strong rounded-xl border border-white/[0.08] py-2 shadow-xl"
             >
               {/* User info */}
@@ -101,6 +104,7 @@ export function UserMenu() {
               {/* Menu items */}
               <div className="py-1">
                 <Link
+                  role="menuitem"
                   href="/profile"
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
@@ -109,6 +113,7 @@ export function UserMenu() {
                   个人资料
                 </Link>
                 <Link
+                  role="menuitem"
                   href="/arena"
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
@@ -121,6 +126,7 @@ export function UserMenu() {
               {/* Sign out */}
               <div className="border-t border-white/[0.06] pt-1">
                 <button
+                  role="menuitem"
                   onClick={() => {
                     signOut();
                     setOpen(false);

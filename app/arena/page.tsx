@@ -420,6 +420,7 @@ export default function ArenaPage() {
               {/* Quick actions */}
               <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
                 <button
+                  aria-label="Random match"
                   className="nes-btn is-error"
                   style={{ fontSize: 10, padding: "6px 16px" }}
                   onClick={() => {
@@ -433,6 +434,7 @@ export default function ArenaPage() {
                 </button>
                 {challenger && defender && (
                   <button
+                    aria-label="Fight"
                     className="nes-btn is-success"
                     style={{ fontSize: 10, padding: "6px 16px" }}
                     onClick={startBattle}
@@ -603,6 +605,7 @@ export default function ArenaPage() {
               {/* Battle Log (RPGUI golden frame) */}
               <div
                 ref={logRef}
+                role="log"
                 className="rpgui-container framed-golden"
                 style={{
                   maxHeight: 320,
