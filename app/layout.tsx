@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Press_Start_2P, VT323 } from "next/font/google";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { LangProvider } from "@/lib/i18n";
+import { AuthProvider } from "@/lib/auth";
 import "nes.css/css/nes.min.css";
 import "./globals.css";
 import "./retro-game.css";
@@ -61,12 +62,14 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${pressStart.variable} ${vt323.variable} dark h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
-        <LangProvider>
-          <div className="scanline-overlay" aria-hidden="true" />
-          <Navbar />
-          <main className="flex-1 pt-16">{children}</main>
-          <Footer />
-        </LangProvider>
+        <AuthProvider>
+          <LangProvider>
+            <div className="scanline-overlay" aria-hidden="true" />
+            <Navbar />
+            <main className="flex-1 pt-16">{children}</main>
+            <Footer />
+          </LangProvider>
+        </AuthProvider>
       </body>
     </html>
   );

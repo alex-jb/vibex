@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
 import { LangToggle } from "@/components/lang-toggle";
+import { UserMenu } from "@/components/user-menu";
 
 const navItemKeys = [
   { href: "/", key: "nav.home" as const },
@@ -77,7 +78,7 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Desktop CTA + Lang Toggle */}
+          {/* Desktop CTA + Lang Toggle + User */}
           <div className="hidden items-center gap-3 md:flex">
             <LangToggle />
             <Link href="/launch">
@@ -89,6 +90,7 @@ export function Navbar() {
                 {t("nav.launch")}
               </Button>
             </Link>
+            <UserMenu />
           </div>
 
           {/* Mobile Toggle */}
