@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
 import { LangToggle } from "@/components/lang-toggle";
 import { UserMenu } from "@/components/user-menu";
+import { NotificationBell } from "@/components/notification-bell";
 
 const navItemKeys = [
   { href: "/", key: "nav.home" as const },
@@ -90,6 +91,7 @@ export function Navbar() {
                 {t("nav.launch")}
               </Button>
             </Link>
+            <NotificationBell />
             <UserMenu />
           </div>
 
