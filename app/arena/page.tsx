@@ -221,6 +221,7 @@ export default function ArenaPage() {
   const [battleLog, setBattleLog] = useState<string[]>([]);
   const [showCrit, setShowCrit] = useState(false);
   const [attackingSide, setAttackingSide] = useState<"left" | "right" | null>(null);
+  const [aiNarrative, setAiNarrative] = useState<{intro: string; roundNarratives: string[]; conclusion: string; mvpComment: string} | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const { t } = useLang();
 
@@ -235,6 +236,7 @@ export default function ArenaPage() {
     if (!challenger || !defender) return;
     const res = simulateBattle(challenger, defender);
     setResult(res);
+    setAiNarrative(null);
     setCurrentRound(-1);
     setBattleLog([
       `[SYSTEM] Battle initiated: ${challenger.title} vs ${defender.title}`,
@@ -261,6 +263,38 @@ export default function ArenaPage() {
           ]);
           setPhase("result");
           setAttackingSide(null);
+
+          // Fetch AI-generated battle narrative
+          fetch("/api/ai/battle-narrative", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              challengerTitle: challenger.title,
+              defenderTitle: defender.title,
+              rounds: res.rounds,
+              winner: res.winner === challenger.id ? "challenger" : "defender",
+            }),
+          })
+            .then((resp) => {
+              if (!resp.ok) throw new Error("AI narrative request failed");
+              return resp.json();
+            })
+            .then((data) => {
+              setAiNarrative(data);
+              const narrativeLines: string[] = [
+                ``,
+                `═══ AI 戦闘解説 ═══`,
+                data.intro,
+                ...data.roundNarratives,
+                data.conclusion,
+                data.mvpComment,
+              ];
+              setBattleLog((l) => [...l, ...narrativeLines]);
+            })
+            .catch(() => {
+              // Silently skip — existing battle log is sufficient
+            });
+
           return;
         }
 
@@ -623,6 +657,7 @@ export default function ArenaPage() {
                   else if (line.includes("WIN") || line.includes("defeats")) color = "#39FF14";
                   else if (line.includes("LOSE")) color = "#FF4500";
                   else if (line.includes("Round")) color = "#9D00FF";
+                  else if (line.includes("AI 戦闘解説")) color = "#06B6D4";
                   else if (line.includes("═")) color = "#333";
                   else if (line.includes("EXP")) color = "#9D00FF";
                   else if (line.includes("vs")) color = "#E8E8EC";

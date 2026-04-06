@@ -19,6 +19,9 @@ import {
   BarChart3,
   Star,
   Filter,
+  Plus,
+  Loader2,
+  Send,
 } from "lucide-react";
 import { ideas, categories } from "@/lib/mock-data";
 import type { Idea, IdeaEvaluation, ProjectCategory } from "@/lib/types";
@@ -108,6 +111,52 @@ export default function IdeasPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  /* ─── AI Evaluate form state ─── */
+  const [showSubmitForm, setShowSubmitForm] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDescription, setNewDescription] = useState("");
+  const [newCategory, setNewCategory] = useState<ProjectCategory>("AI Tool");
+  const [evaluating, setEvaluating] = useState(false);
+  const [evalResult, setEvalResult] = useState<IdeaEvaluation | null>(null);
+  const [evalError, setEvalError] = useState<string | null>(null);
+
+  const handleEvaluate = async () => {
+    if (!newTitle.trim() || !newDescription.trim()) return;
+    setEvaluating(true);
+    setEvalResult(null);
+    setEvalError(null);
+    try {
+      const res = await fetch("/api/ai/evaluate-idea", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newTitle,
+          description: newDescription,
+          category: newCategory,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error(`API error: ${res.status}`);
+      }
+      const data = await res.json();
+      setEvalResult(data as IdeaEvaluation);
+    } catch (err) {
+      setEvalError(err instanceof Error ? err.message : "评估失败，请重试");
+    } finally {
+      setEvaluating(false);
+    }
+  };
+
+  const categoryOptions: ProjectCategory[] = [
+    "AI Agent",
+    "AI Tool",
+    "AI Game",
+    "AI Workflow",
+    "AI Utility",
+    "Experimental",
+    "Demo",
+  ];
 
   const statuses = ["all", "idea", "in-progress", "launched"] as const;
 
@@ -459,6 +508,242 @@ export default function IdeasPage() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* ─── AI Evaluate: Submit New Idea ─── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="mt-16"
+      >
+        <div className="glass-card-strong rounded-2xl border border-white/[0.06] p-8 sm:p-10 max-w-2xl mx-auto">
+          {/* Header / Toggle */}
+          <button
+            onClick={() => setShowSubmitForm((prev) => !prev)}
+            className="w-full flex items-center justify-center gap-3 group"
+          >
+            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 group-hover:bg-violet-500/20 transition-colors">
+              <Plus className="size-5 text-violet-400" />
+            </div>
+            <div className="text-left">
+              <h2 className="text-xl font-bold">提交新创意</h2>
+              <p className="text-xs text-muted-foreground">
+                填写你的创意，让 AI 为你评估可行性
+              </p>
+            </div>
+            <motion.div
+              animate={{ rotate: showSubmitForm ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="ml-auto"
+            >
+              <ChevronUp className="size-5 text-muted-foreground/40" />
+            </motion.div>
+          </button>
+
+          <AnimatePresence>
+            {showSubmitForm && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="overflow-hidden"
+              >
+                <div className="pt-6 space-y-4">
+                  {/* Title */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      创意标题
+                    </label>
+                    <Input
+                      placeholder="例如：AI 驱动的代码审查助手"
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                      className="h-10 bg-white/[0.03] border-white/[0.08] text-sm focus-visible:ring-violet-500/30"
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      创意描述
+                    </label>
+                    <textarea
+                      placeholder="描述你的创意：它解决什么问题？目标用户是谁？核心功能是什么？"
+                      value={newDescription}
+                      onChange={(e) => setNewDescription(e.target.value)}
+                      rows={4}
+                      className="w-full rounded-md bg-white/[0.03] border border-white/[0.08] px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 resize-none"
+                    />
+                  </div>
+
+                  {/* Category */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      分类
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {categoryOptions.map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => setNewCategory(cat)}
+                          className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 border ${
+                            newCategory === cat
+                              ? "bg-violet-500/15 text-violet-300 border-violet-500/30"
+                              : "bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:bg-white/[0.06] hover:text-foreground"
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Evaluate Button */}
+                  <Button
+                    onClick={handleEvaluate}
+                    disabled={evaluating || !newTitle.trim() || !newDescription.trim()}
+                    className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-500 hover:to-fuchsia-500 shadow-lg shadow-violet-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {evaluating ? (
+                      <>
+                        <Loader2 className="mr-2 size-4 animate-spin" />
+                        AI 评估中...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="mr-2 size-4" />
+                        AI 评估
+                      </>
+                    )}
+                  </Button>
+
+                  {/* Error */}
+                  {evalError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400"
+                    >
+                      {evalError}
+                    </motion.div>
+                  )}
+
+                  {/* Evaluation Result */}
+                  {evalResult && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                      className="border-t border-white/[0.06] pt-6"
+                    >
+                      <div className="flex items-center gap-2 mb-5">
+                        <Sparkles className="size-4 text-violet-400" />
+                        <h4 className="text-sm font-semibold">
+                          {t("ideas.aiEvaluation")}
+                        </h4>
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] ml-auto"
+                        >
+                          {evalResult.estimatedCategory}
+                        </Badge>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Scores */}
+                        <div className="space-y-3">
+                          <ScoreBar
+                            label={t("ideas.viability")}
+                            value={evalResult.viability}
+                          />
+                          <ScoreBar
+                            label={t("ideas.marketFit")}
+                            value={evalResult.marketFit}
+                          />
+                          <ScoreBar
+                            label={t("ideas.uniqueness")}
+                            value={evalResult.uniqueness}
+                          />
+
+                          <div className="flex items-center gap-4 pt-2">
+                            <div className="flex items-center gap-1.5">
+                              <Target className="size-3.5 text-muted-foreground" />
+                              <span className="text-xs text-muted-foreground">
+                                {t("ideas.competition")}
+                              </span>
+                              <span
+                                className={`text-xs font-medium capitalize ${competitionColor(evalResult.competition)}`}
+                              >
+                                {evalResult.competition}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <Zap className="size-3.5 text-muted-foreground" />
+                              <span className="text-xs text-muted-foreground">
+                                {t("ideas.difficulty")}
+                              </span>
+                              <span
+                                className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium border capitalize ${difficultyColor(evalResult.difficulty)}`}
+                              >
+                                {evalResult.difficulty}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Suggestions & Similar */}
+                        <div className="space-y-4">
+                          {evalResult.suggestions.length > 0 && (
+                            <div>
+                              <h5 className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
+                                <Star className="size-3" />
+                                {t("ideas.aiSuggestions")}
+                              </h5>
+                              <ul className="space-y-1.5">
+                                {evalResult.suggestions.map((s, idx) => (
+                                  <li
+                                    key={idx}
+                                    className="flex items-start gap-2 text-xs text-muted-foreground leading-relaxed"
+                                  >
+                                    <CheckCircle2 className="size-3 text-violet-400 mt-0.5 shrink-0" />
+                                    {s}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {evalResult.similarProjects.length > 0 && (
+                            <div>
+                              <h5 className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
+                                <AlertTriangle className="size-3" />
+                                {t("ideas.similarProjects")}
+                              </h5>
+                              <div className="flex flex-wrap gap-1.5">
+                                {evalResult.similarProjects.map((p) => (
+                                  <Badge
+                                    key={p}
+                                    variant="outline"
+                                    className="text-[10px]"
+                                  >
+                                    {p}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
 
       {/* Submit CTA */}
       <motion.div

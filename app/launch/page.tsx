@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import {
   Rocket,
@@ -13,6 +13,7 @@ import {
   Zap,
   TrendingUp,
   AlertCircle,
+  Loader2,
 } from "lucide-react";
 
 import { useLang } from "@/lib/i18n";
@@ -50,8 +51,65 @@ export default function LaunchPage() {
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [creatorName, setCreatorName] = useState("");
   const [tags, setTags] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
 
   const { t } = useLang();
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const fetchAIFeedback = useCallback(async () => {
+    if (aiLoading) return;
+
+    // Abort any in-flight request
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    setAiLoading(true);
+    setAiResponse("");
+
+    try {
+      const response = await fetch("/api/ai/launch-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, tagline, description, category }),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        setAiResponse(`Error: ${response.status} - ${errorText || "请求失败，请稍后重试"}`);
+        setAiLoading(false);
+        return;
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        setAiResponse("Error: 无法读取响应流");
+        setAiLoading(false);
+        return;
+      }
+
+      const decoder = new TextDecoder();
+      let accumulated = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        accumulated += chunk;
+        setAiResponse(accumulated);
+      }
+    } catch (error: unknown) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+      setAiResponse("Error: 网络错误，请检查连接后重试");
+    } finally {
+      setAiLoading(false);
+    }
+  }, [aiLoading, title, tagline, description, category]);
 
   const proTips = [t("launch.tip1"), t("launch.tip2"), t("launch.tip3")];
 
@@ -343,6 +401,46 @@ export default function LaunchPage() {
                   </div>
                 )}
               </div>
+
+              {/* AI Deep Analysis Button */}
+              <div className="mt-4">
+                <Button
+                  type="button"
+                  onClick={fetchAIFeedback}
+                  disabled={aiLoading}
+                  className="w-full h-10 bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 hover:from-violet-500 hover:to-fuchsia-500 text-white text-sm font-medium shadow-md shadow-violet-500/15 transition-all duration-200 hover:shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {aiLoading ? (
+                    <Loader2 className="size-4 mr-2 animate-spin" />
+                  ) : (
+                    <Sparkles className="size-4 mr-2" />
+                  )}
+                  {aiLoading ? "分析中..." : "AI 深度分析"}
+                </Button>
+              </div>
+
+              {/* AI Response */}
+              {(aiResponse || aiLoading) && (
+                <div className="mt-4 rounded-lg border border-violet-500/20 bg-violet-500/5 p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="size-3.5 text-violet-400" />
+                    <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">
+                      AI 分析结果
+                    </span>
+                  </div>
+                  {aiLoading && !aiResponse && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground/60">
+                      <Loader2 className="size-3.5 animate-spin text-violet-400" />
+                      <span>正在分析你的项目...</span>
+                    </div>
+                  )}
+                  {aiResponse && (
+                    <p className="text-sm text-muted-foreground/80 leading-relaxed whitespace-pre-wrap">
+                      {aiResponse}
+                    </p>
+                  )}
+                </div>
+              )}
 
               <Separator className="my-5 bg-white/[0.06]" />
 
