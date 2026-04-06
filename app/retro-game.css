@@ -1,0 +1,448 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Hardcore Cyber-Industrial RPG Engine — VibeCode Hunt
+   Deep carbon-fiber + fluorescent neon + heavy GBA pixel borders
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Pixel Font (loaded via next/font in layout.tsx) ─── */
+
+:root {
+  --font-pixel: var(--font-press-start), monospace;
+  --font-retro: var(--font-vt323), monospace;
+  --bg-deep: #0D0D0D;
+  --bg-panel: #111114;
+  --bg-card: #161619;
+  --bg-dialog: #1A1A1E;
+  --border-metal: #2A2A30;
+  --border-bolt: #3A3A42;
+  --neon-green: #39FF14;
+  --neon-green-dim: #39FF1440;
+  --neon-orange: #FF4500;
+  --neon-orange-dim: #FF450040;
+  --neon-purple: #9D00FF;
+  --neon-purple-dim: #9D00FF40;
+  --neon-yellow: #FACC15;
+  --neon-cyan: #06B6D4;
+  --neon-pink: #EC4899;
+  --hp-green: #39FF14;
+  --hp-green-bg: #39FF1433;
+  --mp-blue: #06B6D4;
+  --mp-blue-bg: #06B6D433;
+  --exp-purple: #9D00FF;
+  --exp-purple-bg: #9D00FF33;
+  --crit-yellow: #FACC15;
+  --crit-red: #FF4500;
+  --corner-size: 14px;
+}
+
+/* ─── Scanline Overlay ─── */
+.scanline-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.06) 2px,
+    rgba(0, 0, 0, 0.06) 4px
+  );
+}
+
+/* ─── Carbon Fiber Texture ─── */
+.pixel-texture {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255,255,255,0.015) 1px,
+    transparent 0
+  );
+  background-size: 4px 4px;
+}
+
+/* ─── Industrial Panel ─── */
+.retro-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-metal);
+  position: relative;
+}
+
+/* ─── L-Corner Accents (Neon Orange) ─── */
+.l-corner::before,
+.l-corner::after {
+  content: '';
+  position: absolute;
+  width: var(--corner-size);
+  height: var(--corner-size);
+  border-style: solid;
+  z-index: 1;
+}
+.l-corner::before {
+  top: -1px;
+  left: -1px;
+  border-width: 3px 0 0 3px;
+  border-color: var(--neon-orange);
+}
+.l-corner::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 3px 3px 0;
+  border-color: var(--neon-orange);
+}
+
+.l-corner-inner::before,
+.l-corner-inner::after {
+  content: '';
+  position: absolute;
+  width: var(--corner-size);
+  height: var(--corner-size);
+  border-style: solid;
+  z-index: 1;
+}
+.l-corner-inner::before {
+  top: -1px;
+  right: -1px;
+  border-width: 3px 3px 0 0;
+  border-color: var(--neon-orange);
+}
+.l-corner-inner::after {
+  bottom: -1px;
+  left: -1px;
+  border-width: 0 0 3px 3px;
+  border-color: var(--neon-orange);
+}
+
+/* ─── Exposed Bolt Accents ─── */
+.retro-card::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-bolt);
+  border: 1px solid var(--border-metal);
+  z-index: 2;
+}
+
+/* ─── Retro Border (Heavy Pixel) ─── */
+.retro-border {
+  border: 2px solid var(--border-bolt);
+  image-rendering: pixelated;
+}
+
+/* ─── Industrial Button (CLANK press) ─── */
+.retro-button {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  border: 2px solid var(--border-bolt);
+  background: var(--bg-card);
+  color: var(--text-primary, #E8E8EC);
+  box-shadow: 0 4px 0 #000, 0 5px 8px rgba(0,0,0,0.5);
+  transform: translateY(0);
+  transition: transform 0.05s, box-shadow 0.05s;
+  cursor: pointer;
+  image-rendering: pixelated;
+  position: relative;
+  text-transform: uppercase;
+}
+.retro-button:hover {
+  background: var(--bg-dialog);
+}
+.retro-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 #000, 0 1px 2px rgba(0,0,0,0.5);
+}
+.retro-button--primary {
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
+  text-shadow: 0 0 10px var(--neon-purple-dim);
+}
+.retro-button--primary:hover {
+  background: rgba(157,0,255,0.08);
+  box-shadow: 0 4px 0 #000, 0 0 20px var(--neon-purple-dim);
+}
+.retro-button--primary:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 #000, 0 1px 2px rgba(0,0,0,0.5);
+}
+.retro-button--danger {
+  border-color: var(--neon-orange);
+  color: var(--neon-orange);
+  text-shadow: 0 0 10px var(--neon-orange-dim);
+}
+.retro-button--danger:hover {
+  background: rgba(255,69,0,0.08);
+  box-shadow: 0 4px 0 #000, 0 0 20px var(--neon-orange-dim);
+}
+
+/* ─── HP / MP / EXP Bars ─── */
+.rpg-bar {
+  position: relative;
+  height: 18px;
+  background: #0A0A0C;
+  border: 2px solid var(--border-metal);
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+.rpg-bar__fill {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+.rpg-bar__fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 7px,
+    rgba(0, 0, 0, 0.2) 7px,
+    rgba(0, 0, 0, 0.2) 9px
+  );
+}
+.rpg-bar--hp .rpg-bar__fill {
+  background: linear-gradient(180deg, #4AFF2A, #1E9C00);
+}
+.rpg-bar--mp .rpg-bar__fill {
+  background: linear-gradient(180deg, #22D3EE, #0891B2);
+}
+.rpg-bar--exp .rpg-bar__fill {
+  background: linear-gradient(180deg, #C77DFF, #7B2FBE);
+}
+.rpg-bar__label {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: white;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.8);
+  z-index: 2;
+  line-height: 1;
+}
+.rpg-bar__value {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: white;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.8);
+  z-index: 2;
+  line-height: 1;
+}
+
+/* ─── Battle Dialog Box ─── */
+.retro-dialog {
+  background: var(--bg-dialog);
+  border: 3px solid #333340;
+  outline: 2px solid var(--bg-deep);
+  outline-offset: 2px;
+  padding: 16px 20px;
+  position: relative;
+  min-height: 60px;
+}
+.retro-dialog::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px solid rgba(255,255,255,0.04);
+  pointer-events: none;
+}
+
+/* ─── Critical Hit! ─── */
+.critical-hit {
+  animation: crit-pop 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes crit-pop {
+  0% { opacity: 0; transform: scale(0.3) translateY(20px); }
+  40% { opacity: 1; transform: scale(1.4) translateY(-10px); }
+  60% { transform: scale(0.95) translateY(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Screen shake */
+.screen-shake {
+  animation: shake 0.3s ease-in-out;
+}
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-4px, -2px); }
+  20% { transform: translate(4px, 2px); }
+  30% { transform: translate(-3px, 3px); }
+  40% { transform: translate(3px, -3px); }
+  50% { transform: translate(-2px, 1px); }
+  60% { transform: translate(2px, -1px); }
+  70% { transform: translate(-1px, 2px); }
+  80% { transform: translate(1px, -2px); }
+  90% { transform: translate(-1px, 0px); }
+}
+
+/* ─── Battle Flash Transition ─── */
+.battle-flash {
+  animation: battle-transition 1.2s ease-out forwards;
+}
+@keyframes battle-transition {
+  0% { opacity: 0; }
+  12% { opacity: 1; background: white; }
+  20% { opacity: 0; }
+  32% { opacity: 1; background: white; }
+  40% { opacity: 0; }
+  52% { opacity: 0.8; background: white; }
+  60% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* ─── Fire Effect (Gym Leaders / Top 3) ─── */
+.fire-border {
+  position: relative;
+}
+.fire-border::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  background: linear-gradient(
+    45deg,
+    #FF4500, #FF6B00, #FACC15, #FF6B00, #FF4500,
+    #FF6B00, #FACC15, #FF6B00, #FF4500
+  );
+  background-size: 400% 400%;
+  animation: fire-dance 2s ease-in-out infinite;
+  z-index: -1;
+  filter: blur(4px);
+  opacity: 0.6;
+}
+@keyframes fire-dance {
+  0%, 100% { background-position: 0% 50%; }
+  25% { background-position: 100% 0%; }
+  50% { background-position: 100% 100%; }
+  75% { background-position: 0% 100%; }
+}
+
+/* ─── Evolution Glow ─── */
+.evolution-glow {
+  animation: evo-pulse 2s ease-in-out infinite;
+}
+@keyframes evo-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px var(--neon-purple-dim),
+                0 0 30px rgba(157,0,255,0.1);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--neon-purple-dim),
+                0 0 60px rgba(157,0,255,0.2),
+                0 0 100px rgba(157,0,255,0.08);
+  }
+}
+
+/* ─── Evolution Stage Colors ─── */
+.evo-spark { --evo-color: var(--neon-cyan); color: var(--neon-cyan); }
+.evo-flame { --evo-color: var(--neon-orange); color: var(--neon-orange); }
+.evo-inferno { --evo-color: #FF2200; color: #FF2200; }
+.evo-phoenix { --evo-color: var(--neon-purple); color: var(--neon-purple); }
+
+/* ─── Pixel Font Utilities ─── */
+.font-pixel {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.5px;
+}
+.font-retro {
+  font-family: var(--font-retro);
+  letter-spacing: 0.5px;
+}
+
+/* ─── Neon Glow Utilities ─── */
+.glow-orange { text-shadow: 0 0 10px var(--neon-orange-dim), 0 0 30px var(--neon-orange-dim); }
+.glow-green { text-shadow: 0 0 10px var(--neon-green-dim), 0 0 30px var(--neon-green-dim); }
+.glow-purple { text-shadow: 0 0 10px var(--neon-purple-dim), 0 0 30px var(--neon-purple-dim); }
+
+/* ─── Level Badge ─── */
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 32px;
+  height: 22px;
+  padding: 0 6px;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  background: var(--bg-deep);
+  border: 2px solid var(--border-bolt);
+  color: oklch(0.9 0 0);
+  line-height: 1;
+}
+
+/* ─── Attribute Colors ─── */
+.attr-power { color: var(--neon-purple); }
+.attr-resilience { color: var(--neon-green); }
+.attr-charisma { color: var(--neon-pink); }
+.attr-wisdom { color: var(--neon-yellow); }
+.attr-agility { color: var(--neon-cyan); }
+.attr-stability { color: #6366f1; }
+
+/* ─── Sprite Float ─── */
+.sprite-float {
+  animation: sprite-bob 2s ease-in-out infinite;
+}
+@keyframes sprite-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ─── EXP Gain Flash ─── */
+.exp-gain {
+  animation: exp-flash 1s ease-out forwards;
+}
+@keyframes exp-flash {
+  0% { opacity: 1; transform: translateY(0) scale(1); color: var(--exp-purple); }
+  100% { opacity: 0; transform: translateY(-30px) scale(1.2); }
+}
+
+/* ─── Typewriter Effect ─── */
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--neon-orange);
+  animation: typewriter-reveal 2s steps(40, end) forwards,
+             typewriter-blink 0.6s step-end infinite;
+}
+@keyframes typewriter-reveal {
+  from { width: 0; }
+  to { width: 100%; }
+}
+@keyframes typewriter-blink {
+  50% { border-color: transparent; }
+}
+
+/* ─── Holographic Card Border ─── */
+.holo-border {
+  position: relative;
+}
+.holo-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: conic-gradient(
+    from var(--holo-angle, 0deg),
+    var(--neon-purple), var(--neon-pink), var(--neon-yellow), var(--neon-green), var(--neon-cyan), var(--neon-purple)
+  );
+  z-index: -1;
+  opacity: 0.4;
+  filter: blur(3px);
+  animation: holo-rotate 4s linear infinite;
+}
+@keyframes holo-rotate {
+  to { --holo-angle: 360deg; }
+}
+@property --holo-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}

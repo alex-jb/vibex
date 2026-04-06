@@ -1,0 +1,304 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   NES.css Dark Cyber-Industrial Overrides
+   Forces the 16-bit pixel game aesthetic across the entire app.
+   All rounded corners → pixel. All smooth → chunky. All modern → retro.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Global: Kill all roundness ─── */
+* {
+  border-radius: 0 !important;
+  image-rendering: pixelated;
+}
+
+/* ─── Navbar: keep pixel font but force horizontal layout ─── */
+[data-slot="navbar"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 50 !important;
+}
+[data-slot="navbar"] nav {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0 !important;
+}
+[data-slot="navbar"] nav a {
+  font-size: 8px !important;
+  padding: 8px 10px !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+[data-slot="navbar"] .text-lg {
+  font-size: 12px !important;
+}
+[data-slot="navbar"] button[class*="bg-gradient"] {
+  font-size: 8px !important;
+  padding: 6px 12px !important;
+}
+
+/* ─── NES.css Dark Theme Override ─── */
+.nes-container {
+  background: var(--bg-panel, #111114) !important;
+  color: var(--text-primary, #E8E8EC) !important;
+  border-color: #3A3A42 !important;
+}
+.nes-container.is-dark {
+  background: var(--bg-deep, #0D0D0D) !important;
+  color: #E8E8EC !important;
+  border-color: #3A3A42 !important;
+}
+.nes-container.is-dark::after {
+  color: #E8E8EC !important;
+}
+.nes-container.with-title > .title {
+  background: var(--bg-deep, #0D0D0D) !important;
+  color: var(--neon-orange, #FF4500) !important;
+  font-family: var(--font-pixel) !important;
+  font-size: 10px !important;
+}
+
+/* ─── NES Buttons: Dark + Neon ─── */
+.nes-btn {
+  font-family: var(--font-pixel) !important;
+  font-size: 10px !important;
+  color: #E8E8EC !important;
+  background: var(--bg-card, #161619) !important;
+  border-color: #3A3A42 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+}
+.nes-btn:hover {
+  background: var(--bg-dialog, #1A1A1E) !important;
+}
+.nes-btn:active,
+.nes-btn:focus {
+  outline: none !important;
+}
+.nes-btn.is-primary {
+  background: rgba(157,0,255,0.2) !important;
+  color: var(--neon-purple, #9D00FF) !important;
+  border-color: var(--neon-purple, #9D00FF) !important;
+}
+.nes-btn.is-success {
+  background: rgba(57,255,20,0.12) !important;
+  color: var(--neon-green, #39FF14) !important;
+  border-color: var(--neon-green, #39FF14) !important;
+}
+.nes-btn.is-warning {
+  background: rgba(250,204,21,0.12) !important;
+  color: var(--neon-yellow, #FACC15) !important;
+  border-color: var(--neon-yellow, #FACC15) !important;
+}
+.nes-btn.is-error {
+  background: rgba(255,69,0,0.15) !important;
+  color: var(--neon-orange, #FF4500) !important;
+  border-color: var(--neon-orange, #FF4500) !important;
+}
+
+/* ─── NES Progress Bars: Neon HP/MP/EXP ─── */
+.nes-progress {
+  background: #0A0A0C !important;
+  border-color: var(--border-metal, #2A2A30) !important;
+  height: 20px !important;
+}
+
+/* ─── NES Dialog (Balloon): Dark Theme ─── */
+.nes-balloon {
+  background: var(--bg-dialog, #1A1A1E) !important;
+  color: #E8E8EC !important;
+  border-color: #3A3A42 !important;
+}
+.nes-balloon::after,
+.nes-balloon::before {
+  color: var(--bg-dialog, #1A1A1E) !important;
+}
+
+/* ─── NES Text Input: Dark ─── */
+.nes-input,
+.nes-textarea,
+.nes-select select {
+  background: var(--bg-deep, #0D0D0D) !important;
+  color: #E8E8EC !important;
+  border-color: #3A3A42 !important;
+  font-family: var(--font-retro) !important;
+  font-size: 18px !important;
+}
+
+/* ─── NES Badge: Neon ─── */
+.nes-badge {
+  font-family: var(--font-pixel) !important;
+}
+
+/* ─── Force pixel borders on all glass-card elements ─── */
+.glass-card,
+.glass-card-strong {
+  background: var(--bg-panel, #111114) !important;
+  backdrop-filter: none !important;
+  border: 3px solid var(--border-metal, #2A2A30) !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 #000 !important;
+}
+
+/* ─── Kill all modern shadows, replace with pixel shadow ─── */
+.shadow-lg,
+.shadow-md,
+.shadow-sm,
+.shadow-xl,
+[class*="shadow-violet"],
+[class*="shadow-amber"],
+[class*="shadow-fuchsia"] {
+  box-shadow: 4px 4px 0 #000 !important;
+}
+
+/* ─── All badges: pixel style ─── */
+[class*="rounded-full"] {
+  border-radius: 0 !important;
+}
+
+/* ─── Scrollbar: Pixel style ─── */
+::-webkit-scrollbar {
+  width: 12px;
+  background: var(--bg-deep, #0D0D0D);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-bolt, #3A3A42);
+  border: 2px solid var(--bg-deep, #0D0D0D);
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-deep, #0D0D0D);
+}
+
+/* ─── Override tailwind rounded classes ─── */
+.rounded, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl,
+.rounded-full, .rounded-sm, .rounded-xs {
+  border-radius: 0 !important;
+}
+
+/* ─── Enforce pixel borders on common components ─── */
+button, input, textarea, select, a {
+  border-radius: 0 !important;
+}
+
+/* ─── Game Dialog with pixel arrow (reusable) ─── */
+.game-dialog {
+  background: var(--bg-dialog, #1A1A1E);
+  border: 4px solid #3A3A42;
+  box-shadow: 4px 4px 0 #000, inset 0 0 0 2px rgba(255,255,255,0.03);
+  padding: 16px 20px;
+  position: relative;
+  font-family: var(--font-retro);
+  font-size: 20px;
+  color: #E8E8EC;
+  line-height: 1.5;
+}
+.game-dialog::after {
+  content: '▼';
+  position: absolute;
+  bottom: 6px;
+  right: 10px;
+  font-size: 10px;
+  color: var(--neon-orange, #FF4500);
+  animation: dialog-arrow 0.8s ease-in-out infinite;
+}
+@keyframes dialog-arrow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+/* ─── Pixel HP/MP/EXP bars ─── */
+.pixel-bar {
+  height: 20px;
+  background: #0A0A0C;
+  border: 3px solid #3A3A42;
+  box-shadow: inset 0 0 0 1px #000;
+  position: relative;
+  overflow: hidden;
+}
+.pixel-bar-fill {
+  height: 100%;
+  position: relative;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pixel-bar-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0, transparent 6px,
+    rgba(0,0,0,0.25) 6px, rgba(0,0,0,0.25) 8px
+  );
+}
+.pixel-bar--hp .pixel-bar-fill {
+  background: linear-gradient(180deg, #4AFF2A 0%, #1E9C00 100%);
+}
+.pixel-bar--mp .pixel-bar-fill {
+  background: linear-gradient(180deg, #22D3EE 0%, #0891B2 100%);
+}
+.pixel-bar--exp .pixel-bar-fill {
+  background: linear-gradient(180deg, #C77DFF 0%, #7B2FBE 100%);
+}
+.pixel-bar-label {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: white;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000;
+  z-index: 2;
+}
+.pixel-bar-value {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: white;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000;
+  z-index: 2;
+}
+
+/* ─── Pixel flash on value change ─── */
+.pixel-flash {
+  animation: px-flash 0.3s ease-out;
+}
+@keyframes px-flash {
+  0% { filter: brightness(3); }
+  100% { filter: brightness(1); }
+}
+
+/* ─── Shiny Pokemon Star Effect (VC Interest) ─── */
+.shiny-effect {
+  position: relative;
+  overflow: visible;
+}
+.shiny-effect::after {
+  content: '✦';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 16px;
+  color: var(--neon-yellow, #FACC15);
+  text-shadow: 0 0 8px rgba(250,204,21,0.6);
+  animation: shiny-sparkle 1.5s ease-in-out infinite;
+  z-index: 10;
+}
+@keyframes shiny-sparkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.5; transform: scale(1.3) rotate(180deg); }
+}
+
+/* ─── NES-style Section Divider ─── */
+.nes-divider {
+  border: none;
+  border-top: 4px solid var(--border-metal, #2A2A30);
+  box-shadow: 0 2px 0 #000;
+  margin: 24px 0;
+}

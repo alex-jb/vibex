@@ -1,0 +1,241 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   RPGUI Dark Cyber Adaptation
+   Maps RPGUI border-image assets to /rpgui/ and forces dark palette
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Global RPGUI Content Wrapper ─── */
+.rpgui-content {
+  font-family: var(--font-pixel, 'Press Start 2P', monospace) !important;
+  font-size: 10px !important;
+  color: #E8E8EC !important;
+  image-rendering: pixelated;
+}
+
+/* ─── RPG Container Frames ─── */
+.rpgui-container.framed {
+  border-style: solid;
+  border-image: url('/rpgui/border-image.png') 7 7 7 7 repeat !important;
+  border-width: 15px !important;
+  background: url('/rpgui/background-image.png') #111114 !important;
+  padding: 16px !important;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.rpgui-container.framed-golden {
+  border-style: solid;
+  border-image: url('/rpgui/border-image-golden.png') 7 7 7 7 repeat !important;
+  border-width: 15px !important;
+  background: url('/rpgui/background-image-golden.png') #161619 !important;
+  padding: 16px !important;
+  box-shadow: 4px 4px 0 #000, 0 0 20px rgba(250,204,21,0.1);
+}
+
+.rpgui-container.framed-golden-2 {
+  border-style: solid;
+  border-image: url('/rpgui/border-image-golden2.png') 4 4 4 4 repeat !important;
+  border-width: 18px !important;
+  background: url('/rpgui/background-image-golden2.png') #1A1A1E !important;
+  padding: 16px !important;
+  box-shadow: 4px 4px 0 #000, 0 0 30px rgba(250,204,21,0.15);
+}
+
+.rpgui-container.framed-grey {
+  border-style: solid;
+  border-image: url('/rpgui/border-image-grey.png') 3 3 3 3 repeat !important;
+  border-width: 8px !important;
+  background: url('/rpgui/background-image-grey.png') #0D0D0D !important;
+  padding: 12px !important;
+}
+
+/* ─── RPG Buttons ─── */
+.rpgui-button {
+  display: inline-block;
+  padding: 8px 20px;
+  font-family: var(--font-pixel) !important;
+  font-size: 10px !important;
+  color: #E8E8EC !important;
+  text-shadow: -2px 0 #000, 0 2px #000, 2px 0 #000, 0 -2px #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: url('/rpgui/button.png') no-repeat center;
+  background-size: 100% 100%;
+  border: none;
+  cursor: pointer;
+  image-rendering: pixelated;
+  position: relative;
+  min-height: 36px;
+  line-height: 1;
+}
+.rpgui-button:hover {
+  background-image: url('/rpgui/button-hover.png') !important;
+  color: #FACC15 !important;
+}
+.rpgui-button:active {
+  background-image: url('/rpgui/button-down.png') !important;
+  padding-top: 10px !important;
+}
+
+.rpgui-button.golden {
+  background-image: url('/rpgui/button-golden.png') !important;
+  color: #FACC15 !important;
+}
+.rpgui-button.golden:hover {
+  background-image: url('/rpgui/button-golden-hover.png') !important;
+}
+
+/* ─── RPG Progress Bars ─── */
+.rpgui-progress {
+  height: 22px;
+  position: relative;
+  background: url('/rpgui/progress-bar-track.png') repeat-x !important;
+  background-size: auto 100% !important;
+  image-rendering: pixelated;
+  border: none !important;
+  overflow: visible;
+}
+.rpgui-progress::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  background: url('/rpgui/progress-bar-left.png') no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  z-index: 2;
+}
+.rpgui-progress::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  background: url('/rpgui/progress-bar-right.png') no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  z-index: 2;
+}
+.rpgui-progress .rpgui-progress-fill {
+  height: 100%;
+  background: url('/rpgui/progress.png') repeat-x;
+  background-size: auto 100%;
+  image-rendering: pixelated;
+  transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+}
+.rpgui-progress .rpgui-progress-fill.red {
+  background-image: url('/rpgui/progress-red.png') !important;
+}
+.rpgui-progress .rpgui-progress-fill.green {
+  background-image: url('/rpgui/progress-green.png') !important;
+}
+.rpgui-progress .rpgui-progress-fill.blue {
+  background-image: url('/rpgui/progress-blue.png') !important;
+}
+
+/* ─── RPG Icons ─── */
+.rpgui-icon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.rpgui-icon.sword { background-image: url('/rpgui/icons/sword.png'); }
+.rpgui-icon.shield { background-image: url('/rpgui/icons/shield.png'); }
+.rpgui-icon.potion-red { background-image: url('/rpgui/icons/potion-red.png'); }
+.rpgui-icon.potion-green { background-image: url('/rpgui/icons/potion-green.png'); }
+.rpgui-icon.potion-blue { background-image: url('/rpgui/icons/potion-blue.png'); }
+.rpgui-icon.exclamation { background-image: url('/rpgui/icons/exclamation.png'); }
+.rpgui-icon.armor { background-image: url('/rpgui/icons/armor-slot.png'); }
+.rpgui-icon.helmet { background-image: url('/rpgui/icons/helmet-slot.png'); }
+.rpgui-icon.ring { background-image: url('/rpgui/icons/ring-slot.png'); }
+.rpgui-icon.magic { background-image: url('/rpgui/icons/magic-slot.png'); }
+.rpgui-icon.weapon { background-image: url('/rpgui/icons/weapon-slot.png'); }
+.rpgui-icon.shoes { background-image: url('/rpgui/icons/shoes-slot.png'); }
+.rpgui-icon.empty { background-image: url('/rpgui/icons/empty-slot.png'); }
+
+/* Size variants */
+.rpgui-icon.small { width: 20px; height: 20px; }
+.rpgui-icon.large { width: 48px; height: 48px; }
+
+/* ─── RPG Separators (HR) ─── */
+.rpgui-hr {
+  border: none;
+  height: 8px;
+  background: url('/rpgui/hr.png') repeat-x center;
+  background-size: auto 100%;
+  image-rendering: pixelated;
+  margin: 12px 0;
+}
+.rpgui-hr.golden {
+  background-image: url('/rpgui/hr-golden.png') !important;
+}
+
+/* ─── RPG Cursors ─── */
+.rpgui-cursor-default { cursor: url('/rpgui/cursor/default.png'), auto !important; }
+.rpgui-cursor-point { cursor: url('/rpgui/cursor/point.png'), pointer !important; }
+.rpgui-cursor-grab { cursor: url('/rpgui/cursor/grab.png'), grab !important; }
+
+/* ─── RPG Input Fields (Dark) ─── */
+.rpgui-content input[type="text"],
+.rpgui-content textarea {
+  background: #1A1A1E !important;
+  color: #E8E8EC !important;
+  border: 3px solid #3A3A42 !important;
+  font-family: var(--font-retro) !important;
+  font-size: 18px !important;
+  padding: 6px 10px !important;
+  outline: none !important;
+}
+.rpgui-content input[type="text"]:focus,
+.rpgui-content textarea:focus {
+  border-color: #FF4500 !important;
+  box-shadow: 0 0 10px rgba(255,69,0,0.2) !important;
+}
+
+/* ─── RPG Checkbox & Radio (Dark) ─── */
+.rpgui-checkbox,
+.rpgui-radio {
+  image-rendering: pixelated;
+}
+
+/* ─── Combine RPGUI + Neon Glow ─── */
+.rpgui-container.framed.neon-orange {
+  box-shadow: 4px 4px 0 #000, 0 0 15px rgba(255,69,0,0.15) !important;
+}
+.rpgui-container.framed.neon-green {
+  box-shadow: 4px 4px 0 #000, 0 0 15px rgba(57,255,20,0.15) !important;
+}
+.rpgui-container.framed.neon-purple {
+  box-shadow: 4px 4px 0 #000, 0 0 15px rgba(157,0,255,0.15) !important;
+}
+
+/* ─── RPG Tooltip ─── */
+.rpgui-tooltip {
+  position: absolute;
+  background: url('/rpgui/background-image.png') #111114;
+  border-style: solid;
+  border-image: url('/rpgui/border-image.png') 7 7 7 7 repeat;
+  border-width: 10px;
+  padding: 8px 12px;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: #E8E8EC;
+  text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
+  z-index: 1000;
+  pointer-events: none;
+  max-width: 200px;
+  image-rendering: pixelated;
+}
+
+/* ─── RPG Draggable ─── */
+.rpgui-draggable {
+  cursor: url('/rpgui/cursor/grab.png'), grab !important;
+}
+.rpgui-draggable:active {
+  cursor: url('/rpgui/cursor/grab.png'), grabbing !important;
+}

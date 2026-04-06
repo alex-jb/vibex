@@ -1,0 +1,628 @@
+"use client";
+
+import { createContext, useContext, useState, useCallback, useEffect } from "react";
+import React from "react";
+
+export type Lang = "en" | "zh";
+
+const translations = {
+  en: {
+    // Nav items
+    "nav.home": "Home",
+    "nav.explore": "Explore",
+    "nav.hunt": "Hunt",
+    "nav.arena": "Arena",
+    "nav.ideas": "Ideas",
+    "nav.creators": "Creators",
+    "nav.events": "Events",
+    "nav.insights": "Insights",
+    "nav.launch": "Launch Project",
+
+    // Boot sequence
+    "boot.0": "VIBECODE HUNT v2.0.26",
+    "boot.1": "INITIALIZING QUEST ENGINE...",
+    "boot.2": "LOADING HERO DATABASE... OK",
+    "boot.3": "SCANNING AI PROJECTS... 12,847 FOUND",
+    "boot.4": "DAILY ARENA STATUS: LIVE",
+    "boot.5": "",
+    "boot.6": "> WELCOME, TRAINER. YOUR ADVENTURE AWAITS.",
+
+    // Hero section buttons
+    "hero.startQuest": "START QUEST",
+    "hero.exploreArena": "EXPLORE ARENA",
+
+    // Community stats
+    "stats.questsLaunched": "QUESTS LAUNCHED",
+    "stats.activeHeroes": "ACTIVE HEROES",
+    "stats.guildActions": "GUILD ACTIONS",
+
+    // Section 2: Boss Encounter
+    "boss.label": "Boss Encounter",
+    "boss.heading": "TODAY'S FEATURED QUEST",
+
+    // Section 3: Quest Board
+    "quest.label": "Quest Board",
+    "quest.heading": "EXPLORE PROJECTS",
+    "quest.viewAll": "VIEW ALL",
+    "quest.noSprite": "NO SPRITE DATA",
+    "quest.viral": "VIRAL",
+
+    // Section 4: Daily Arena
+    "arena.label": "Daily Arena",
+    "arena.heading": "TODAY'S RANKINGS",
+    "arena.fullRankings": "FULL RANKINGS",
+
+    // Section 5: Intel Radar
+    "intel.label": "Intel Radar",
+    "intel.heading": "TREND SIGNALS",
+    "intel.allSignals": "ALL SIGNALS",
+    "intel.momentum": "MOMENTUM",
+
+    // Section 6: Guild Events
+    "events.label": "Guild Events",
+    "events.heading": "UPCOMING QUESTS",
+    "events.allEvents": "ALL EVENTS",
+    "events.online": "ONLINE",
+    "events.live": "LIVE",
+
+    // Section 7: Guild Hall
+    "guild.label": "Guild Hall",
+    "guild.heading": "TOP TRAINERS",
+    "guild.projects": "PROJECTS",
+    "guild.upvotes": "UPVOTES",
+    "guild.growth": "GROWTH",
+
+    // Section 8: Final CTA
+    "cta.transmission": "- - - TRANSMISSION INCOMING - - -",
+    "cta.heading1": "YOUR AI CREATION",
+    "cta.heading2": "DESERVES A STAGE.",
+    "cta.description": "Join thousands of trainers shipping AI-native projects. Get instant AI feedback, climb the daily arena, and reach the guild building the future.",
+    "cta.beginQuest": "BEGIN YOUR QUEST",
+    "cta.spectate": "SPECTATE ARENA",
+    "cta.lastWeekChampion": "LAST WEEK'S CHAMPION: ",
+    "cta.by": " by ",
+    "cta.score": " (SCORE: ",
+
+    // Footer
+    "footer.description": "The launch platform for AI-native creations. Discover, publish, and evolve vibe coding projects built for the LLM era.",
+    "footer.platform": "Platform",
+    "footer.ideaLab": "Idea Lab",
+    "footer.resources": "Resources",
+    "footer.trendsInsights": "Trends & Insights",
+    "footer.apiComingSoon": "API (Coming Soon)",
+    "footer.documentation": "Documentation",
+    "footer.changelog": "Changelog",
+    "footer.community": "Community",
+    "footer.newsletter": "Newsletter",
+    "footer.copyright": "VibeCode Hunt. Built for the AI-native era.",
+    "footer.crafted": "Crafted with vibe coding energy",
+
+    // Explore page
+    "explore.badge": "Discover what's next",
+    "explore.title": "Explore",
+    "explore.titleHighlight": "Projects",
+    "explore.description": "Browse the frontier of AI-native creations. Find inspiration, learn new techniques, and upvote the projects shaping tomorrow.",
+    "explore.searchPlaceholder": "Search the frontier of AI-native projects...",
+    "explore.showing": "Showing",
+    "explore.project": "project",
+    "explore.projects": "projects",
+    "explore.sortedByRelevance": "Sorted by relevance",
+    "explore.editorsPick": "Editor's Pick",
+    "explore.aiScore": "AI Score",
+    "explore.noResults": "No projects found",
+    "explore.noResultsDesc": "We couldn't find anything matching your criteria. Try broadening your search or exploring a different category.",
+    "explore.clearFilters": "Clear filters",
+
+    // Hunt page
+    "hunt.badge": "The Arena",
+    "hunt.title": "The",
+    "hunt.titleHighlight": "Hunt",
+    "hunt.description": "Daily arena for AI-native launches. Upvote the projects that inspire you.",
+    "hunt.projectsToday": "projects today",
+    "hunt.totalUpvotes": "total upvotes",
+    "hunt.creators": "creators",
+    "hunt.daily": "Daily",
+    "hunt.weekly": "Weekly",
+    "hunt.trending": "Trending",
+    "hunt.new": "New",
+    "hunt.gymMaster": "Gym Master",
+    "hunt.eliteFour": "Elite Four",
+    "hunt.challenger": "Challenger",
+    "hunt.by": "by",
+
+    // Arena page
+    "arena.battleArena": "BATTLE ARENA",
+    "arena.aiCombat": "AI Project Combat System",
+    "arena.randomMatch": "RANDOM MATCH",
+    "arena.fight": "FIGHT!",
+    "arena.challenger": "CHALLENGER",
+    "arena.selectBelow": "SELECT BELOW",
+    "arena.defender": "DEFENDER",
+    "arena.roster": "ROSTER",
+    "arena.rematch": "REMATCH",
+    "arena.newMatch": "NEW MATCH",
+    "arena.criticalHit": "CRITICAL HIT!",
+    "arena.round": "Round",
+
+    // Ideas page
+    "ideas.badge": "AI-evaluated ideas",
+    "ideas.title": "Idea",
+    "ideas.titleHighlight": "Incubator",
+    "ideas.description": "Submit your next big idea and get instant AI evaluation on viability, market fit, and competition. Turn sparks into launches.",
+    "ideas.searchPlaceholder": "Search ideas...",
+    "ideas.statusAll": "All",
+    "ideas.statusIdea": "Idea",
+    "ideas.statusInProgress": "In Progress",
+    "ideas.statusLaunched": "Launched",
+    "ideas.noResults": "No ideas match your filters. Try a different search or category.",
+    "ideas.viewProject": "View Project",
+    "ideas.by": "by",
+    "ideas.viability": "Viability",
+    "ideas.marketFit": "Market Fit",
+    "ideas.uniqueness": "Uniqueness",
+    "ideas.aiEvaluation": "AI Evaluation",
+    "ideas.competition": "Competition:",
+    "ideas.difficulty": "Difficulty:",
+    "ideas.aiSuggestions": "AI Suggestions",
+    "ideas.similarProjects": "Similar Projects",
+    "ideas.haveAnIdea": "Have an idea?",
+    "ideas.ctaDesc": "Submit your concept and get instant AI-powered evaluation on viability, market fit, and competitive landscape.",
+    "ideas.submitIdea": "Submit Your Idea",
+    "ideas.statusLabel": "Status:",
+
+    // Creators page
+    "creators.badge": "Pokédex",
+    "creators.title": "Creator",
+    "creators.titleHighlight": "Pokédex",
+    "creators.description": "Meet the builders shaping the future of AI. Click any creator to view their full Pokédex entry — class, attributes, and battle history.",
+    "creators.weeklyChampion": "This Week's Champion",
+    "creators.score": "Score",
+    "creators.leaderboard": "Leaderboard",
+    "creators.topCreators": "Top Creators",
+    "creators.topDesc": "The three most impactful builders this season.",
+    "creators.rankings": "Rankings",
+    "creators.allCreators": "All Creators",
+    "creators.allDesc": "Full leaderboard ordered by community impact.",
+    "creators.projects": "Projects",
+    "creators.upvotes": "Upvotes",
+    "creators.plays": "Plays",
+    "creators.remixes": "Remixes",
+    "creators.weeklyGrowth": "weekly growth",
+    "creators.thisWeek": "this week",
+    "creators.selectCreator": "Select a creator to view their Pokédex entry",
+    "creators.joined": "Joined",
+    "creators.overview": "Overview",
+    "creators.communityStats": "Community Stats",
+    "creators.communityDesc": "The vibrant ecosystem at a glance.",
+    "creators.totalCreators": "Total Creators",
+    "creators.totalProjects": "Total Projects",
+    "creators.totalPlays": "Total Plays",
+    "creators.totalRemixes": "Total Remixes",
+    "creators.badgeTopCreator": "Top Creator",
+    "creators.badgeTrending": "Trending",
+    "creators.badgeRemixKing": "Remix King",
+    "creators.badgeWeeklyWinner": "Weekly Winner",
+    "creators.badgePioneer": "Pioneer",
+    "creators.badgeViral": "Viral",
+
+    // Events page
+    "events.community": "Community",
+    "events.title": "Events &",
+    "events.titleHighlight": "Community",
+    "events.description": "Discover hackathons, salons, meetups, and demo days happening across the vibe coding community.",
+    "events.featured": "Featured Events",
+    "events.all": "All Events",
+    "events.register": "Register",
+    "events.hostTitle": "Host Your Own Event",
+    "events.hostDesc": "Create and publish salons, hackathons, and community events. Reach thousands of vibe coders and grow your community.",
+    "events.pro": "Pro",
+    "events.upgradeToPro": "Upgrade to Pro",
+
+    // Insights page
+    "insights.badge": "Beta",
+    "insights.title": "Trend",
+    "insights.titleHighlight": "Intelligence",
+    "insights.description": "AI-analyzed trends across the vibe coding ecosystem. Spot rising categories, saturated markets, and emerging opportunities.",
+    "insights.rising": "Rising",
+    "insights.saturated": "Saturated",
+    "insights.opportunity": "Opportunity",
+    "insights.emerging": "Emerging",
+    "insights.risingCategories": "Rising Categories",
+    "insights.opportunityZones": "Opportunity Zones",
+    "insights.saturatedAreas": "Saturated Areas",
+    "insights.emergingSignals": "Emerging Signals",
+    "insights.strong": "Strong",
+    "insights.moderate": "Moderate",
+    "insights.early": "Early",
+    "insights.momentum": "Momentum",
+    "insights.confidence": "Confidence:",
+    "insights.allSignals": "All Signals",
+    "insights.deepAnalytics": "Deep Analytics",
+    "insights.analytic1": "Real-time competitive intelligence across categories",
+    "insights.analytic2": "AI-powered market gap detection and opportunity scoring",
+    "insights.analytic3": "Historical trend analysis with predictive forecasting",
+    "insights.joinWaitlist": "Join Waitlist",
+
+    // Launch page
+    "launch.badge": "Ship something great",
+    "launch.title": "Launch Your",
+    "launch.titleHighlight": "Project",
+    "launch.description": "Give your AI creation the stage it deserves.",
+    "launch.identity": "Project Identity",
+    "launch.projectTitle": "Project Title",
+    "launch.titlePlaceholder": "e.g. VibeTranslate",
+    "launch.tagline": "One-line Tagline",
+    "launch.taglinePlaceholder": "A concise description that hooks people",
+    "launch.details": "Details",
+    "launch.descriptionLabel": "Description",
+    "launch.descriptionPlaceholder": "Describe what your project does, the tech behind it, and why it matters...",
+    "launch.category": "Category",
+    "launch.categoryPlaceholder": "Select a category",
+    "launch.demoType": "Demo Type",
+    "launch.demoTypePlaceholder": "Select demo type",
+    "launch.assets": "Assets",
+    "launch.demoLink": "Demo Link",
+    "launch.thumbnailUrl": "Thumbnail URL (optional)",
+    "launch.creator": "Creator",
+    "launch.creatorName": "Creator Name",
+    "launch.creatorPlaceholder": "Your name or team name",
+    "launch.tags": "Tags",
+    "launch.tagsPlaceholder": "comma-separated tags",
+    "launch.submit": "Launch Project",
+    "launch.aiAssistant": "AI Launch Assistant",
+    "launch.aiLive": "Live",
+    "launch.aiHint": "Real-time suggestions as you build your launch.",
+    "launch.titleAnalysis": "Title Analysis",
+    "launch.taglineHook": "Tagline Hook",
+    "launch.categoryTrend": "Category Trend",
+    "launch.descriptionDepth": "Description Depth",
+    "launch.formHint": "Start filling in the form to see real-time suggestions.",
+    "launch.proTips": "Pro Tips",
+    "launch.tip1": "Projects with a live demo get 3x more upvotes on average.",
+    "launch.tip2": "Add a short video walkthrough to boost engagement by 40%.",
+    "launch.tip3": "Use specific, outcome-driven taglines instead of generic descriptions.",
+    "launch.strongTitle": "Strong title -- clear and memorable",
+    "launch.couldBeStronger": "Could be stronger -- try more specificity",
+    "launch.keepGoing": "Keep going -- aim for 10+ characters",
+    "launch.compellingHook": "Compelling hook -- conveys clear value",
+    "launch.expandHook": "Expand your hook -- capture the core benefit",
+    "launch.richDetail": "Rich detail -- reviewers will appreciate this",
+    "launch.goodStart": "Good start -- add more context for depth",
+    "launch.addMoreContext": "Add more context to stand out",
+    "launch.chat": "Chat",
+    "launch.sandbox": "Sandbox",
+    "launch.preview": "Preview",
+    "launch.embedded": "Embedded",
+  },
+  zh: {
+    // Nav items
+    "nav.home": "\u9996\u9875",
+    "nav.explore": "\u63a2\u7d22",
+    "nav.hunt": "\u72e9\u730e",
+    "nav.arena": "\u7ade\u6280\u573a",
+    "nav.ideas": "\u521b\u610f",
+    "nav.creators": "\u521b\u4f5c\u8005",
+    "nav.events": "\u6d3b\u52a8",
+    "nav.insights": "\u6d1e\u5bdf",
+    "nav.launch": "\u53d1\u5e03\u9879\u76ee",
+
+    // Boot sequence
+    "boot.0": "VIBECODE HUNT v2.0.26",
+    "boot.1": "\u521d\u59cb\u5316\u5192\u9669\u5f15\u64ce...",
+    "boot.2": "\u52a0\u8f7d\u52c7\u8005\u6570\u636e\u5e93... OK",
+    "boot.3": "\u626b\u63cf AI \u9879\u76ee... \u53d1\u73b0 12,847 \u4e2a",
+    "boot.4": "\u6bcf\u65e5\u7ade\u6280\u573a\u72b6\u6001: \u5728\u7ebf",
+    "boot.5": "",
+    "boot.6": "> \u6b22\u8fce\u56de\u6765\uff0c\u8bad\u7ec3\u5e08\u3002\u4f60\u7684\u5192\u9669\u5373\u5c06\u5f00\u59cb\u3002",
+
+    // Hero section buttons
+    "hero.startQuest": "\u5f00\u59cb\u5192\u9669",
+    "hero.exploreArena": "\u63a2\u7d22\u7ade\u6280\u573a",
+
+    // Community stats
+    "stats.questsLaunched": "\u5df2\u53d1\u5e03\u4efb\u52a1",
+    "stats.activeHeroes": "\u6d3b\u8dc3\u52c7\u8005",
+    "stats.guildActions": "\u516c\u4f1a\u884c\u52a8",
+
+    // Section 2: Boss Encounter
+    "boss.label": "BOSS\u9047\u9047",
+    "boss.heading": "\u4eca\u65e5\u7cbe\u9009\u4efb\u52a1",
+
+    // Section 3: Quest Board
+    "quest.label": "\u4efb\u52a1\u9762\u677f",
+    "quest.heading": "\u63a2\u7d22\u9879\u76ee",
+    "quest.viewAll": "\u67e5\u770b\u5168\u90e8",
+    "quest.noSprite": "\u65e0\u7cbe\u7075\u6570\u636e",
+    "quest.viral": "\u7206\u706b",
+
+    // Section 4: Daily Arena
+    "arena.label": "\u6bcf\u65e5\u7ade\u6280\u573a",
+    "arena.heading": "\u4eca\u65e5\u6392\u540d",
+    "arena.fullRankings": "\u5b8c\u6574\u6392\u540d",
+
+    // Section 5: Intel Radar
+    "intel.label": "\u60c5\u62a5\u96f7\u8fbe",
+    "intel.heading": "\u8d8b\u52bf\u4fe1\u53f7",
+    "intel.allSignals": "\u5168\u90e8\u4fe1\u53f7",
+    "intel.momentum": "\u52bf\u5934",
+
+    // Section 6: Guild Events
+    "events.label": "\u516c\u4f1a\u6d3b\u52a8",
+    "events.heading": "\u5373\u5c06\u5f00\u59cb\u7684\u4efb\u52a1",
+    "events.allEvents": "\u5168\u90e8\u6d3b\u52a8",
+    "events.online": "\u7ebf\u4e0a",
+    "events.live": "\u76f4\u64ad\u4e2d",
+
+    // Section 7: Guild Hall
+    "guild.label": "\u516c\u4f1a\u5927\u5385",
+    "guild.heading": "\u9876\u7ea7\u8bad\u7ec3\u5e08",
+    "guild.projects": "\u9879\u76ee",
+    "guild.upvotes": "\u70b9\u8d5e",
+    "guild.growth": "\u589e\u957f",
+
+    // Section 8: Final CTA
+    "cta.transmission": "- - - \u4f20\u8f93\u4fe1\u53f7\u63a5\u6536\u4e2d - - -",
+    "cta.heading1": "\u4f60\u7684 AI \u521b\u4f5c",
+    "cta.heading2": "\u503c\u5f97\u4e00\u4e2a\u821e\u53f0\u3002",
+    "cta.description": "\u52a0\u5165\u6570\u5343\u540d\u8bad\u7ec3\u5e08\uff0c\u53d1\u5e03 AI \u539f\u751f\u9879\u76ee\u3002\u83b7\u53d6\u5373\u65f6 AI \u53cd\u9988\uff0c\u5f81\u6218\u6bcf\u65e5\u7ade\u6280\u573a\uff0c\u52a0\u5165\u6784\u5efa\u672a\u6765\u7684\u516c\u4f1a\u3002",
+    "cta.beginQuest": "\u5f00\u542f\u4f60\u7684\u5192\u9669",
+    "cta.spectate": "\u89c2\u6218\u7ade\u6280\u573a",
+    "cta.lastWeekChampion": "\u4e0a\u5468\u51a0\u519b: ",
+    "cta.by": " \u4f5c\u8005 ",
+    "cta.score": " (\u5206\u6570: ",
+
+    // Footer
+    "footer.description": "AI 原生创作发布平台。发现、发布并进化你的 vibe coding 项目，为 LLM 时代而生。",
+    "footer.platform": "平台",
+    "footer.ideaLab": "创意实验室",
+    "footer.resources": "资源",
+    "footer.trendsInsights": "趋势与洞察",
+    "footer.apiComingSoon": "API（即将上线）",
+    "footer.documentation": "文档",
+    "footer.changelog": "更新日志",
+    "footer.community": "社区",
+    "footer.newsletter": "订阅通讯",
+    "footer.copyright": "VibeCode Hunt。为 AI 原生时代而生。",
+    "footer.crafted": "以 vibe coding 能量打造",
+
+    // Explore page
+    "explore.badge": "发现下一个热门",
+    "explore.title": "探索",
+    "explore.titleHighlight": "项目",
+    "explore.description": "浏览 AI 原生创作前沿。寻找灵感，学习新技术，为塑造未来的项目投票。",
+    "explore.searchPlaceholder": "搜索 AI 原生项目...",
+    "explore.showing": "显示",
+    "explore.project": "个项目",
+    "explore.projects": "个项目",
+    "explore.sortedByRelevance": "按相关度排序",
+    "explore.editorsPick": "编辑精选",
+    "explore.aiScore": "AI 评分",
+    "explore.noResults": "未找到项目",
+    "explore.noResultsDesc": "未找到符合条件的项目。试试扩大搜索范围或换个分类。",
+    "explore.clearFilters": "清除筛选",
+
+    // Hunt page
+    "hunt.badge": "竞技场",
+    "hunt.title": "",
+    "hunt.titleHighlight": "狩猎",
+    "hunt.description": "AI 原生项目每日竞技场。为你心动的项目投票。",
+    "hunt.projectsToday": "今日项目",
+    "hunt.totalUpvotes": "总点赞",
+    "hunt.creators": "创作者",
+    "hunt.daily": "每日",
+    "hunt.weekly": "每周",
+    "hunt.trending": "趋势",
+    "hunt.new": "最新",
+    "hunt.gymMaster": "道馆馆主",
+    "hunt.eliteFour": "四天王",
+    "hunt.challenger": "挑战者",
+    "hunt.by": "作者",
+
+    // Arena page
+    "arena.battleArena": "战斗竞技场",
+    "arena.aiCombat": "AI 项目对战系统",
+    "arena.randomMatch": "随机匹配",
+    "arena.fight": "开战！",
+    "arena.challenger": "挑战者",
+    "arena.selectBelow": "在下方选择",
+    "arena.defender": "防守方",
+    "arena.roster": "阵容",
+    "arena.rematch": "再战一场",
+    "arena.newMatch": "新比赛",
+    "arena.criticalHit": "暴击！",
+    "arena.round": "回合",
+
+    // Ideas page
+    "ideas.badge": "AI 评估创意",
+    "ideas.title": "创意",
+    "ideas.titleHighlight": "孵化器",
+    "ideas.description": "提交你的创意，获取即时 AI 评估——可行性、市场契合度和竞争分析。将灵感变为产品。",
+    "ideas.searchPlaceholder": "搜索创意...",
+    "ideas.statusAll": "全部",
+    "ideas.statusIdea": "创意",
+    "ideas.statusInProgress": "进行中",
+    "ideas.statusLaunched": "已发布",
+    "ideas.noResults": "没有匹配的创意。试试其他搜索词或分类。",
+    "ideas.viewProject": "查看项目",
+    "ideas.by": "作者",
+    "ideas.viability": "可行性",
+    "ideas.marketFit": "市场契合",
+    "ideas.uniqueness": "独特性",
+    "ideas.aiEvaluation": "AI 评估",
+    "ideas.competition": "竞争度：",
+    "ideas.difficulty": "难度：",
+    "ideas.aiSuggestions": "AI 建议",
+    "ideas.similarProjects": "相似项目",
+    "ideas.haveAnIdea": "有个好点子？",
+    "ideas.ctaDesc": "提交你的创意构想，获取即时 AI 驱动的可行性、市场契合度和竞争格局评估。",
+    "ideas.submitIdea": "提交你的创意",
+    "ideas.statusLabel": "状态：",
+
+    // Creators page
+    "creators.badge": "图鉴",
+    "creators.title": "创作者",
+    "creators.titleHighlight": "图鉴",
+    "creators.description": "认识塑造 AI 未来的构建者。点击任意创作者查看完整图鉴——职业、属性和战斗记录。",
+    "creators.weeklyChampion": "本周冠军",
+    "creators.score": "得分",
+    "creators.leaderboard": "排行榜",
+    "creators.topCreators": "顶级创作者",
+    "creators.topDesc": "本赛季最具影响力的三位构建者。",
+    "creators.rankings": "排名",
+    "creators.allCreators": "全部创作者",
+    "creators.allDesc": "按社区影响力排序的完整排行榜。",
+    "creators.projects": "项目",
+    "creators.upvotes": "点赞",
+    "creators.plays": "播放",
+    "creators.remixes": "混音",
+    "creators.weeklyGrowth": "周增长",
+    "creators.thisWeek": "本周",
+    "creators.selectCreator": "选择一位创作者查看图鉴",
+    "creators.joined": "加入于",
+    "creators.overview": "概览",
+    "creators.communityStats": "社区统计",
+    "creators.communityDesc": "活力生态一览。",
+    "creators.totalCreators": "创作者总数",
+    "creators.totalProjects": "项目总数",
+    "creators.totalPlays": "播放总量",
+    "creators.totalRemixes": "混音总量",
+    "creators.badgeTopCreator": "顶级创作者",
+    "creators.badgeTrending": "趋势热门",
+    "creators.badgeRemixKing": "混音之王",
+    "creators.badgeWeeklyWinner": "周冠军",
+    "creators.badgePioneer": "先驱者",
+    "creators.badgeViral": "爆款",
+
+    // Events page
+    "events.community": "社区",
+    "events.title": "活动与",
+    "events.titleHighlight": "社区",
+    "events.description": "发现 vibe coding 社区中的黑客松、沙龙、聚会和演示日。",
+    "events.featured": "精选活动",
+    "events.all": "全部活动",
+    "events.register": "报名",
+    "events.hostTitle": "举办你自己的活动",
+    "events.hostDesc": "创建并发布沙龙、黑客松和社区活动。触达数千名 vibe coder，壮大你的社区。",
+    "events.pro": "专业版",
+    "events.upgradeToPro": "升级到专业版",
+
+    // Insights page
+    "insights.badge": "测试版",
+    "insights.title": "趋势",
+    "insights.titleHighlight": "情报",
+    "insights.description": "AI 分析 vibe coding 生态系统中的趋势。发现上升赛道、饱和市场和新兴机会。",
+    "insights.rising": "上升中",
+    "insights.saturated": "已饱和",
+    "insights.opportunity": "机会",
+    "insights.emerging": "新兴",
+    "insights.risingCategories": "上升赛道",
+    "insights.opportunityZones": "机会地带",
+    "insights.saturatedAreas": "饱和领域",
+    "insights.emergingSignals": "新兴信号",
+    "insights.strong": "强劲",
+    "insights.moderate": "中等",
+    "insights.early": "早期",
+    "insights.momentum": "势头",
+    "insights.confidence": "置信度：",
+    "insights.allSignals": "全部信号",
+    "insights.deepAnalytics": "深度分析",
+    "insights.analytic1": "跨类别实时竞争情报",
+    "insights.analytic2": "AI 驱动的市场空白检测与机会评分",
+    "insights.analytic3": "历史趋势分析与预测预报",
+    "insights.joinWaitlist": "加入候补名单",
+
+    // Launch page
+    "launch.badge": "发布你的杰作",
+    "launch.title": "发布你的",
+    "launch.titleHighlight": "项目",
+    "launch.description": "给你的 AI 创作一个应有的舞台。",
+    "launch.identity": "项目身份",
+    "launch.projectTitle": "项目名称",
+    "launch.titlePlaceholder": "例如 VibeTranslate",
+    "launch.tagline": "一句话简介",
+    "launch.taglinePlaceholder": "一句吸引人的简要描述",
+    "launch.details": "详情",
+    "launch.descriptionLabel": "描述",
+    "launch.descriptionPlaceholder": "描述你的项目做了什么、背后的技术，以及为什么重要...",
+    "launch.category": "分类",
+    "launch.categoryPlaceholder": "选择分类",
+    "launch.demoType": "演示类型",
+    "launch.demoTypePlaceholder": "选择演示类型",
+    "launch.assets": "素材",
+    "launch.demoLink": "演示链接",
+    "launch.thumbnailUrl": "缩略图 URL（可选）",
+    "launch.creator": "创作者",
+    "launch.creatorName": "创作者名称",
+    "launch.creatorPlaceholder": "你的名字或团队名",
+    "launch.tags": "标签",
+    "launch.tagsPlaceholder": "逗号分隔的标签",
+    "launch.submit": "发布项目",
+    "launch.aiAssistant": "AI 发布助手",
+    "launch.aiLive": "在线",
+    "launch.aiHint": "填写表单时获取实时建议。",
+    "launch.titleAnalysis": "标题分析",
+    "launch.taglineHook": "简介钩子",
+    "launch.categoryTrend": "分类趋势",
+    "launch.descriptionDepth": "描述深度",
+    "launch.formHint": "开始填写表单，即可看到实时建议。",
+    "launch.proTips": "专业建议",
+    "launch.tip1": "有在线演示的项目平均获得 3 倍点赞。",
+    "launch.tip2": "添加短视频演练可提升 40% 互动率。",
+    "launch.tip3": "使用具体的、成果驱动的简介，而非泛泛的描述。",
+    "launch.strongTitle": "好标题——清晰且令人印象深刻",
+    "launch.couldBeStronger": "可以更好——试试更具体",
+    "launch.keepGoing": "继续——目标 10+ 字符",
+    "launch.compellingHook": "有力的钩子——传达了清晰价值",
+    "launch.expandHook": "扩展你的钩子——抓住核心优势",
+    "launch.richDetail": "丰富的细节——评审会喜欢的",
+    "launch.goodStart": "好的开始——添加更多背景信息",
+    "launch.addMoreContext": "添加更多背景以脱颖而出",
+    "launch.chat": "聊天",
+    "launch.sandbox": "沙盒",
+    "launch.preview": "预览",
+    "launch.embedded": "嵌入式",
+  },
+} as const;
+
+type TranslationKey = keyof typeof translations.en;
+
+interface LangContextType {
+  lang: Lang;
+  setLang: (lang: Lang) => void;
+  t: (key: TranslationKey) => string;
+}
+
+const LangContext = createContext<LangContextType>({
+  lang: "en",
+  setLang: () => {},
+  t: (key: TranslationKey) => key,
+});
+
+export function LangProvider({ children }: { children: React.ReactNode }) {
+  const [lang, setLangState] = useState<Lang>("en");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("vibecode-hunt-lang");
+    if (stored === "zh" || stored === "en") {
+      setLangState(stored);
+    }
+  }, []);
+
+  const setLang = useCallback((newLang: Lang) => {
+    setLangState(newLang);
+    localStorage.setItem("vibecode-hunt-lang", newLang);
+  }, []);
+
+  const t = useCallback(
+    (key: TranslationKey): string => {
+      return translations[lang][key] ?? key;
+    },
+    [lang]
+  );
+
+  return React.createElement(LangContext.Provider, { value: { lang, setLang, t } }, children);
+}
+
+export function useLang() {
+  return useContext(LangContext);
+}
