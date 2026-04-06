@@ -132,7 +132,7 @@ function CommentItem({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm font-medium text-foreground">
+            <span className="text-sm font-medium text-foreground truncate">
               {comment.user_name}
             </span>
             <span className="text-xs text-muted-foreground">
@@ -176,12 +176,12 @@ function CommentItem({
                       if (e.key === "Enter" && replyText.trim()) onSubmitReply();
                     }}
                     placeholder={`回复 ${comment.user_name}...`}
-                    className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-violet-500/50"
+                    className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-violet-500/50"
                   />
                   <button
                     onClick={onSubmitReply}
                     disabled={!replyText.trim()}
-                    className="rounded-lg bg-violet-600/80 px-3 py-1.5 text-sm text-white hover:bg-violet-500/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    className="rounded-lg bg-violet-600/80 px-3 py-2 text-sm text-white hover:bg-violet-500/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
                     <Send className="size-3.5" />
                   </button>
@@ -201,7 +201,7 @@ function CommentItem({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-xs font-medium text-foreground">
+                      <span className="text-xs font-medium text-foreground truncate">
                         {reply.user_name}
                       </span>
                       <span className="text-[10px] text-muted-foreground">

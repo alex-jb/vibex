@@ -150,6 +150,8 @@ export function Navbar() {
               })}
               <div className="mt-2 flex items-center gap-3">
                 <LangToggle />
+                <NotificationBell />
+                <UserMenu />
                 <Link href="/launch" onClick={() => setMobileOpen(false)} className="flex-1">
                   <Button className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-sm">
                     <Rocket className="mr-1.5 h-3.5 w-3.5" />

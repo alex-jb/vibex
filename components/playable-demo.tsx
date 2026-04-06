@@ -146,7 +146,7 @@ function ChatDemo({ projectTitle }: { projectTitle: string }) {
   };
 
   return (
-    <div className="flex flex-col h-full min-h-[400px] bg-black/20">
+    <div className="flex flex-col h-full min-h-64 sm:min-h-80 md:min-h-[400px] bg-black/20">
       {/* Chat header */}
       <div className="flex items-center gap-3 border-b border-white/5 px-5 py-3">
         <div className="flex size-8 items-center justify-center rounded-full bg-violet-600/20">
@@ -414,7 +414,7 @@ function SandboxDemo() {
   };
 
   return (
-    <div className="flex flex-col h-full min-h-[400px]">
+    <div className="flex flex-col h-full min-h-64 sm:min-h-80 md:min-h-[400px]">
       <div className="flex-1 overflow-hidden rounded-lg border border-white/10 bg-black/60 m-4 mb-2">
         {/* Title bar */}
         <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
@@ -509,8 +509,8 @@ function PreviewDemo({ demoUrl }: { demoUrl?: string }) {
   const { t } = useLang();
   if (demoUrl) {
     return (
-      <div className="min-h-[400px] p-4">
-        <div className="overflow-hidden rounded-lg border border-white/10 bg-black/40 h-[420px]">
+      <div className="min-h-64 sm:min-h-80 md:min-h-[400px] p-4">
+        <div className="overflow-hidden rounded-lg border border-white/10 bg-black/40 h-64 sm:h-80 md:h-[420px]">
           {/* macOS chrome */}
           <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
             <div className="size-3 rounded-full bg-red-500/70" />
@@ -522,7 +522,7 @@ function PreviewDemo({ demoUrl }: { demoUrl?: string }) {
           </div>
           <iframe
             src={demoUrl}
-            className="w-full h-[380px] border-0"
+            className="w-full h-[calc(100%-36px)] border-0"
             sandbox="allow-scripts allow-same-origin"
             title="App preview"
           />
@@ -532,8 +532,8 @@ function PreviewDemo({ demoUrl }: { demoUrl?: string }) {
   }
 
   return (
-    <div className="min-h-[400px] p-4">
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-black/40 h-[420px]">
+    <div className="min-h-64 sm:min-h-80 md:min-h-[400px] p-4">
+      <div className="overflow-hidden rounded-lg border border-white/10 bg-black/40 h-64 sm:h-80 md:h-[420px]">
         {/* macOS chrome */}
         <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
           <div className="size-3 rounded-full bg-red-500/70" />
@@ -548,7 +548,7 @@ function PreviewDemo({ demoUrl }: { demoUrl?: string }) {
         </div>
 
         {/* Mock dashboard */}
-        <div className="flex h-[380px]">
+        <div className="flex h-[calc(100%-36px)]">
           {/* Sidebar */}
           <div className="w-48 border-r border-white/5 bg-white/[0.02] p-3 space-y-3 shrink-0">
             <div className="h-6 w-24 rounded bg-white/5 animate-pulse" />
@@ -583,7 +583,7 @@ function PreviewDemo({ demoUrl }: { demoUrl?: string }) {
             </div>
 
             {/* Stats cards */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
                 { color: "violet", value: "2,847" },
                 { color: "emerald", value: "94.2%" },
@@ -672,7 +672,7 @@ function EmbeddedDemo({ demoUrl }: { demoUrl?: string }) {
 
   if (demoUrl) {
     return (
-      <div className="min-h-[400px]">
+      <div className="min-h-64 sm:min-h-80 md:min-h-[400px]">
         <iframe
           src={demoUrl}
           className="w-full h-[450px] border-0"
@@ -684,7 +684,7 @@ function EmbeddedDemo({ demoUrl }: { demoUrl?: string }) {
   }
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-[400px] bg-black/20">
+    <div className="relative flex flex-col items-center justify-center min-h-64 sm:min-h-80 md:min-h-[400px] bg-black/20">
       {/* Background visual when playing */}
       <AnimatePresence>
         {isPlaying && (
@@ -729,7 +729,7 @@ function EmbeddedDemo({ demoUrl }: { demoUrl?: string }) {
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center gap-4"
           >
-            <div className="relative flex size-28 items-center justify-center">
+            <div className="relative flex size-20 sm:size-24 md:size-28 items-center justify-center">
               <div className="absolute inset-0 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />
               <Play className="size-10 text-violet-400 ml-1" />
             </div>
@@ -755,7 +755,7 @@ function EmbeddedDemo({ demoUrl }: { demoUrl?: string }) {
                 />
               </>
             )}
-            <div className="relative flex size-28 items-center justify-center rounded-full bg-gradient-to-br from-pink-500/20 to-orange-500/20 ring-1 ring-white/10 transition-transform group-hover:scale-105">
+            <div className="relative flex size-20 sm:size-24 md:size-28 items-center justify-center rounded-full bg-gradient-to-br from-pink-500/20 to-orange-500/20 ring-1 ring-white/10 transition-transform group-hover:scale-105">
               {isPlaying ? (
                 <Pause className="size-12 text-pink-400" />
               ) : (

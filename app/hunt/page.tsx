@@ -98,7 +98,7 @@ export default function HuntPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-6 flex items-center justify-center gap-6 text-sm"
+            className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-sm"
           >
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <Zap className="size-3.5 text-amber-400" />

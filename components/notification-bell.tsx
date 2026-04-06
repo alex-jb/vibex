@@ -117,7 +117,7 @@ export function NotificationBell() {
           setOpen((v) => !v);
           if (!open) fetchNotifications();
         }}
-        className="relative flex items-center justify-center size-8 rounded-full transition-all hover:ring-2 hover:ring-violet-500/30 text-muted-foreground hover:text-foreground"
+        className="relative flex items-center justify-center size-9 rounded-full transition-all hover:ring-2 hover:ring-violet-500/30 text-muted-foreground hover:text-foreground"
       >
         <Bell className="size-4" />
         {unreadCount > 0 && (
@@ -140,7 +140,7 @@ export function NotificationBell() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 top-full mt-2 z-50 w-80 glass-card-strong rounded-xl border border-white/[0.08] shadow-xl overflow-hidden"
+              className="absolute right-0 top-full mt-2 z-50 w-[calc(100vw-2rem)] sm:w-80 max-w-80 glass-card-strong rounded-xl border border-white/[0.08] shadow-xl overflow-hidden"
             >
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
@@ -156,7 +156,7 @@ export function NotificationBell() {
               </div>
 
               {/* List */}
-              <div className="max-h-80 overflow-y-auto">
+              <div className="max-h-64 sm:max-h-80 overflow-y-auto">
                 {loading && notifications.length === 0 ? (
                   <div className="px-4 py-8 text-center text-sm text-muted-foreground">
                     加载中...

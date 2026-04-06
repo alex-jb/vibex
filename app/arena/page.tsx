@@ -336,7 +336,7 @@ export default function ArenaPage() {
   }, [battleLog]);
 
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
       {/* ═══ Critical Hit Overlay ═══ */}
       <AnimatePresence>
         {showCrit && (
@@ -456,7 +456,7 @@ export default function ArenaPage() {
                 <button
                   aria-label="Random match"
                   className="nes-btn is-error"
-                  style={{ fontSize: 10, padding: "6px 16px" }}
+                  style={{ fontSize: 10, padding: "10px 16px" }}
                   onClick={() => {
                     const c = pickRandom();
                     const d = pickRandom(c.id);
@@ -470,7 +470,7 @@ export default function ArenaPage() {
                   <button
                     aria-label="Fight"
                     className="nes-btn is-success"
-                    style={{ fontSize: 10, padding: "6px 16px" }}
+                    style={{ fontSize: 10, padding: "10px 16px" }}
                     onClick={startBattle}
                   >
                     {`▶ ${t("arena.fight")}`}
@@ -479,7 +479,7 @@ export default function ArenaPage() {
               </div>
 
               {/* Fighter slots */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 60px 1fr", gap: 16, alignItems: "start" }}>
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_60px_1fr] gap-4" style={{ alignItems: "start" }}>
                 {/* Challenger */}
                 <div>
                   <TermLine color="#39FF14" prefix="P1">
@@ -628,7 +628,7 @@ export default function ArenaPage() {
           {(phase === "battle" || phase === "result") && challenger && defender && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               {/* Fighter HUDs */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 40px 1fr", gap: 12, marginBottom: 20 }}>
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_40px_1fr] gap-3" style={{ marginBottom: 20 }}>
                 <FighterPanel project={challenger} side="left" isAttacking={attackingSide === "left"} />
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <span className="font-pixel" style={{ fontSize: 10, color: "#FF4500" }}>VS</span>
@@ -640,9 +640,8 @@ export default function ArenaPage() {
               <div
                 ref={logRef}
                 role="log"
-                className="rpgui-container framed-golden"
+                className="rpgui-container framed-golden max-h-52 sm:max-h-64 md:max-h-80"
                 style={{
-                  maxHeight: 320,
                   overflowY: "auto",
                   fontFamily: "var(--font-retro)",
                   fontSize: 18,
@@ -697,7 +696,7 @@ export default function ArenaPage() {
                 >
                   <button
                     className="nes-btn is-error"
-                    style={{ fontSize: 10, padding: "6px 16px" }}
+                    style={{ fontSize: 10, padding: "10px 16px" }}
                     onClick={() => {
                       setPhase("select");
                       setResult(null);
@@ -709,7 +708,7 @@ export default function ArenaPage() {
                   </button>
                   <button
                     className="nes-btn"
-                    style={{ fontSize: 10, padding: "6px 16px" }}
+                    style={{ fontSize: 10, padding: "10px 16px" }}
                     onClick={() => {
                       setPhase("select");
                       setResult(null);
