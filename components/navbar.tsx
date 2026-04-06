@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Rocket, Menu, X } from "lucide-react";
+import { Sparkles, Rocket, Menu, X, Search } from "lucide-react";
+import { SearchDialog } from "@/components/search-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
@@ -26,7 +27,19 @@ const navItemKeys = [
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { t } = useLang();
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50" data-slot="navbar" role="navigation">
@@ -80,6 +93,10 @@ export function Navbar() {
 
           {/* Desktop CTA + Lang Toggle + User */}
           <div className="hidden items-center gap-3 md:flex">
+            <button onClick={() => setSearchOpen(true)} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Search className="size-4" />
+              <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 text-[10px] text-muted-foreground">⌘K</kbd>
+            </button>
             <LangToggle />
             <Link href="/launch">
               <Button
@@ -162,6 +179,7 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 }

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, Suspense } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Swords,
@@ -28,13 +29,29 @@ import {
   weeklyWinners,
 } from "@/lib/mock-data";
 import { TypewriterText } from "@/components/rpg/typewriter-text";
-import { HeroCard } from "@/components/rpg/hero-card";
-import { HudBars } from "@/components/rpg/hud-bars";
-import { ClassIcon } from "@/components/rpg/class-icon";
-import { EvolutionBadge } from "@/components/rpg/evolution-badge";
-import { ExpBar } from "@/components/rpg/exp-bar";
-import { RareCandyButton } from "@/components/rpg/rare-candy-button";
 import { useLang } from "@/lib/i18n";
+
+/* ─── lazy-loaded below-fold RPG components ─── */
+const HudBars = dynamic(() => import("@/components/rpg/hud-bars").then(m => ({ default: m.HudBars })), { ssr: false });
+const ClassIcon = dynamic(() => import("@/components/rpg/class-icon").then(m => ({ default: m.ClassIcon })), { ssr: false });
+const EvolutionBadge = dynamic(() => import("@/components/rpg/evolution-badge").then(m => ({ default: m.EvolutionBadge })), { ssr: false });
+
+/* ─── skeleton fallback for lazy sections ─── */
+function SectionSkeleton() {
+  return (
+    <div className="py-16 lg:py-20">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 animate-pulse">
+        <div className="h-4 w-40 mb-4" style={{ background: "var(--border-metal)" }} />
+        <div className="h-3 w-64 mb-8" style={{ background: "var(--border-metal)", opacity: 0.5 }} />
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((k) => (
+            <div key={k} className="h-48" style={{ background: "var(--bg-panel)", border: "2px solid var(--border-metal)" }} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /* ─── animation presets ─── */
 
@@ -141,27 +158,54 @@ export default function Home() {
             </div>
 
             {/* Boot sequence */}
-            <div className="min-h-[200px] sm:min-h-[260px]">
-              {bootLines.slice(0, bootLine + 1).map((line, i) => (
-                <div key={i} className="mb-2">
-                  {i < bootLine ? (
+            <div className="min-h-[200px] sm:min-h-[260px] relative">
+              {!bootComplete && (
+                <button
+                  onClick={() => setBootComplete(true)}
+                  className="absolute top-0 right-0 font-pixel text-[7px] uppercase px-2 py-1 z-10 transition-opacity hover:opacity-100 opacity-60"
+                  style={{
+                    border: "1px solid var(--border-bolt)",
+                    color: "var(--border-bolt)",
+                    background: "var(--bg-deep)",
+                  }}
+                >
+                  SKIP &gt;&gt;
+                </button>
+              )}
+              {bootComplete ? (
+                /* Show all lines instantly when boot is skipped or complete */
+                bootLines.map((line, i) => (
+                  <div key={i} className="mb-2">
                     <span
                       className="font-retro text-lg"
                       style={{ color: i === bootLines.length - 1 ? "var(--neon-yellow)" : "var(--neon-green)" }}
                     >
                       {line}
                     </span>
-                  ) : (
-                    <TypewriterText
-                      text={line}
-                      speed={line === "" ? 10 : 25}
-                      className={i === bootLines.length - 1 ? "!text-[var(--neon-yellow)]" : "!text-[var(--neon-green)]"}
-                      onComplete={handleBootLineComplete}
-                      showCursor={i === bootLine}
-                    />
-                  )}
-                </div>
-              ))}
+                  </div>
+                ))
+              ) : (
+                bootLines.slice(0, bootLine + 1).map((line, i) => (
+                  <div key={i} className="mb-2">
+                    {i < bootLine ? (
+                      <span
+                        className="font-retro text-lg"
+                        style={{ color: i === bootLines.length - 1 ? "var(--neon-yellow)" : "var(--neon-green)" }}
+                      >
+                        {line}
+                      </span>
+                    ) : (
+                      <TypewriterText
+                        text={line}
+                        speed={line === "" ? 10 : 25}
+                        className={i === bootLines.length - 1 ? "!text-[var(--neon-yellow)]" : "!text-[var(--neon-green)]"}
+                        onComplete={handleBootLineComplete}
+                        showCursor={i === bootLine}
+                      />
+                    )}
+                  </div>
+                ))
+              )}
             </div>
 
             {/* Action buttons - appear after boot */}
@@ -357,6 +401,8 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Below-fold sections wrapped in Suspense for progressive loading */}
+      <Suspense fallback={<SectionSkeleton />}>
       {/* ================================================================
           SECTION 3 -- PROJECT MASONRY GRID (Xiaohongshu-style waterfall)
           ================================================================ */}
@@ -953,6 +999,7 @@ export default function Home() {
                 boxShadow: "0 0 40px rgba(157,0,255,0.1), 4px 4px 0 #000",
               }}
             >
+
               {/* Pixel art decoration */}
               <div
                 className="font-pixel text-[8px] mb-6 tracking-widest"
@@ -1013,6 +1060,7 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+      </Suspense>
     </div>
   );
 }

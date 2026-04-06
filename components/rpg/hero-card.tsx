@@ -1,11 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { Project } from "@/lib/types";
+import type { Project, HeroClass } from "@/lib/types";
 import { CLASS_CONFIG } from "@/lib/rpg-utils";
 import { ClassIcon } from "./class-icon";
 import { EvolutionBadge } from "./evolution-badge";
 import { HudBars } from "./hud-bars";
+
+const CLASS_EMOJI: Record<HeroClass, string> = {
+  Architect: "\u{1F3D7}\uFE0F",
+  Artisan: "\u{1F3A8}",
+  Enchanter: "\u2728",
+  Alchemist: "\u{1F9EA}",
+  Sentinel: "\u{1F6E1}\uFE0F",
+};
 
 interface HeroCardProps {
   project: Project;
@@ -67,14 +75,16 @@ export function HeroCard({
         {/* Pixel sprite placeholder */}
         <div className="sprite-float relative">
           <div
-            className="w-16 h-16 rounded flex items-center justify-center text-2xl"
+            className="w-16 h-16 rounded flex items-center justify-center"
             style={{
               background: `${classConfig.color}20`,
               border: `2px solid ${classConfig.color}40`,
               imageRendering: "pixelated",
             }}
           >
-            <ClassIcon heroClass={hero.heroClass} size={28} />
+            <span className="text-4xl leading-none" role="img" aria-label={hero.heroClass}>
+              {CLASS_EMOJI[hero.heroClass]}
+            </span>
           </div>
         </div>
       </div>
