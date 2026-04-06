@@ -1,0 +1,30 @@
+import { NextResponse } from "next/server";
+import { generateProjectReview } from "@/lib/ai";
+
+export async function POST(request: Request) {
+  const body = await request.json();
+
+  if (!body.title || !body.description) {
+    return NextResponse.json(
+      { error: "Missing required fields: title, description" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const review = await generateProjectReview({
+      title: body.title,
+      tagline: body.tagline || "",
+      description: body.description,
+      category: body.category || "",
+      tags: body.tags || [],
+    });
+    return NextResponse.json(review);
+  } catch (error) {
+    console.error("AI review error:", error);
+    return NextResponse.json(
+      { error: "AI review generation failed" },
+      { status: 500 }
+    );
+  }
+}
