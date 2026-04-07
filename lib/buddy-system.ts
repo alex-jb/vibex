@@ -197,6 +197,81 @@ export const BUDDY_TYPES: BuddyType[] = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
+// EVOLUTION SYSTEM
+// ═══════════════════════════════════════════════════════════════
+
+export interface BuddyEvolution {
+  stage: number;       // 0 = base, 1 = evolved, 2 = final
+  name: string;
+  nameZh: string;
+  emoji: string;
+  requiredLevel: number;
+  newPassive: string;
+  newPassiveZh: string;
+}
+
+/** Evolution chains for each buddy type */
+const BUDDY_EVOLUTIONS: Record<string, BuddyEvolution[]> = {
+  "pixel-fox": [
+    { stage: 0, name: "PixelFox", nameZh: "像素狐", emoji: "🦊", requiredLevel: 0, newPassive: "+10% project views", newPassiveZh: "项目浏览量 +10%" },
+    { stage: 1, name: "InfernoFox", nameZh: "炎狐", emoji: "🔥", requiredLevel: 8, newPassive: "+20% project views", newPassiveZh: "项目浏览量 +20%" },
+    { stage: 2, name: "ThunderFox", nameZh: "雷狐", emoji: "⚡", requiredLevel: 15, newPassive: "+35% project views", newPassiveZh: "项目浏览量 +35%" },
+  ],
+  "neon-slime": [
+    { stage: 0, name: "NeonSlime", nameZh: "霓虹史莱姆", emoji: "🟢", requiredLevel: 0, newPassive: "+5% upvote rate", newPassiveZh: "点赞率 +5%" },
+    { stage: 1, name: "MegaSlime", nameZh: "超级史莱姆", emoji: "💚", requiredLevel: 8, newPassive: "+12% upvote rate", newPassiveZh: "点赞率 +12%" },
+    { stage: 2, name: "CrystalSlime", nameZh: "水晶史莱姆", emoji: "💎", requiredLevel: 15, newPassive: "+25% upvote rate", newPassiveZh: "点赞率 +25%" },
+  ],
+  "byte-owl": [
+    { stage: 0, name: "ByteOwl", nameZh: "字节猫头鹰", emoji: "🦉", requiredLevel: 0, newPassive: "+5 AI review score", newPassiveZh: "AI 评审分数 +5" },
+    { stage: 1, name: "MoonOwl", nameZh: "月夜猫头鹰", emoji: "🌙", requiredLevel: 12, newPassive: "+10 AI review score", newPassiveZh: "AI 评审分数 +10" },
+    { stage: 2, name: "StarOwl", nameZh: "星辰猫头鹰", emoji: "🌟", requiredLevel: 20, newPassive: "+20 AI review score", newPassiveZh: "AI 评审分数 +20" },
+  ],
+  "code-dragon": [
+    { stage: 0, name: "CodeDragon", nameZh: "代码龙", emoji: "🐉", requiredLevel: 0, newPassive: "+15% battle power", newPassiveZh: "战斗力 +15%" },
+    { stage: 1, name: "FlameDragon", nameZh: "烈焰龙", emoji: "🔥", requiredLevel: 15, newPassive: "+30% battle power", newPassiveZh: "战斗力 +30%" },
+    { stage: 2, name: "SwordDragon", nameZh: "剑龙", emoji: "⚔️", requiredLevel: 25, newPassive: "+50% battle power", newPassiveZh: "战斗力 +50%" },
+  ],
+  "crystal-phoenix": [
+    { stage: 0, name: "CrystalPhoenix", nameZh: "水晶凤凰", emoji: "🔥", requiredLevel: 0, newPassive: "+25% EXP gain", newPassiveZh: "经验获取 +25%" },
+    { stage: 1, name: "PrismPhoenix", nameZh: "棱镜凤凰", emoji: "🌈", requiredLevel: 20, newPassive: "+40% EXP gain", newPassiveZh: "经验获取 +40%" },
+    { stage: 2, name: "EternalPhoenix", nameZh: "永恒凤凰", emoji: "👑", requiredLevel: 30, newPassive: "+60% EXP gain", newPassiveZh: "经验获取 +60%" },
+  ],
+};
+
+/** Get the current evolution stage for a buddy at a given level */
+export function getEvolutionStage(buddyTypeId: string, level: number): BuddyEvolution {
+  const evolutions = BUDDY_EVOLUTIONS[buddyTypeId];
+  if (!evolutions) {
+    return { stage: 0, name: "Unknown", nameZh: "未知", emoji: "❓", requiredLevel: 0, newPassive: "", newPassiveZh: "" };
+  }
+  // Find the highest evolution the buddy qualifies for
+  let current = evolutions[0];
+  for (const evo of evolutions) {
+    if (level >= evo.requiredLevel) {
+      current = evo;
+    }
+  }
+  return current;
+}
+
+/** Check if a buddy can evolve at its current level (i.e. there's a higher stage it hasn't reached yet) */
+export function canEvolve(buddyTypeId: string, currentLevel: number): boolean {
+  const evolutions = BUDDY_EVOLUTIONS[buddyTypeId];
+  if (!evolutions) return false;
+
+  const currentStage = getEvolutionStage(buddyTypeId, currentLevel);
+  // Check if there's a next stage that exactly matches currentLevel
+  const nextStage = evolutions.find((evo) => evo.stage === currentStage.stage + 1);
+  return nextStage !== undefined && currentLevel >= nextStage.requiredLevel;
+}
+
+/** Get all evolutions for a buddy type */
+export function getEvolutions(buddyTypeId: string): BuddyEvolution[] {
+  return BUDDY_EVOLUTIONS[buddyTypeId] ?? [];
+}
+
+// ═══════════════════════════════════════════════════════════════
 // BUDDY INSTANCE (user's actual buddy)
 // ═══════════════════════════════════════════════════════════════
 

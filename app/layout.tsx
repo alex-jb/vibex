@@ -38,6 +38,8 @@ export const metadata: Metadata = {
   title: "VibeX — AI-Native Launch Platform",
   description:
     "Discover, publish, and evolve playable AI-native vibe coding projects. The launch platform for the LLM era.",
+  manifest: "/manifest.json",
+  themeColor: "#8b5cf6",
   openGraph: {
     title: "VibeX — AI-Native Launch Platform",
     description: "Discover, publish, and evolve playable AI-native vibe coding projects.",

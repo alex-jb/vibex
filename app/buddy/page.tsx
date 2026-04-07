@@ -9,8 +9,12 @@ import {
   EXP_REWARDS,
   BUDDY_TYPES,
   RARITY_CONFIG,
+  getEvolutionStage,
+  canEvolve,
+  getEvolutions,
   type BuddyType,
   type SummonResult,
+  type BuddyEvolution,
 } from "@/lib/buddy-system";
 import { BuddyCard } from "@/components/buddy-card";
 
@@ -136,6 +140,10 @@ export default function BuddyPage() {
   const [summonPhase, setSummonPhase] = useState<"idle" | "flash" | "reveal">("idle");
   const [summonResult, setSummonResult] = useState<SummonResult | null>(null);
 
+  // Evolution state — tracks per-buddy evolution stage (0 = base)
+  const [buddyStages, setBuddyStages] = useState<Record<string, number>>({});
+  const [evolvingId, setEvolvingId] = useState<string | null>(null);
+
   const userLevel = computeUserLevel(totalExp);
 
   // Find next summon level
@@ -157,6 +165,27 @@ export default function BuddyPage() {
       setSummonPhase("reveal");
     }, 1000);
   }, [userLevel, totalUpvotes, ownedBuddyIds]);
+
+  // Mock buddy levels (in real app, from DB)
+  const buddyLevels: Record<string, number> = {
+    "pixel-fox": 10,
+    "neon-slime": 8,
+    "byte-owl": 5,
+    "code-dragon": 3,
+    "crystal-phoenix": 1,
+  };
+
+  const handleEvolve = useCallback((buddyId: string) => {
+    setEvolvingId(buddyId);
+    // Flash + morph animation
+    setTimeout(() => {
+      setBuddyStages((prev) => ({
+        ...prev,
+        [buddyId]: (prev[buddyId] ?? getEvolutionStage(buddyId, buddyLevels[buddyId] ?? 1).stage) + 1,
+      }));
+      setEvolvingId(null);
+    }, 1200);
+  }, [buddyLevels]);
 
   const ownedBuddies = BUDDY_TYPES.filter((b) => ownedBuddyIds.includes(b.id));
 
@@ -333,16 +362,85 @@ export default function BuddyPage() {
                     gap: 12,
                   }}
                 >
-                  {ownedBuddies.map((buddy) => (
-                    <div key={buddy.id} onClick={() => setActiveBuddyId(buddy.id)}>
-                      <BuddyCard
-                        buddy={buddy}
-                        owned
-                        active={buddy.id === activeBuddyId}
-                        size="md"
-                      />
-                    </div>
-                  ))}
+                  {ownedBuddies.map((buddy) => {
+                    const level = buddyLevels[buddy.id] ?? 1;
+                    const evo = getEvolutionStage(buddy.id, level);
+                    const evolveReady = canEvolve(buddy.id, level) && (buddyStages[buddy.id] ?? evo.stage) < evo.stage + 1;
+                    const isEvolving = evolvingId === buddy.id;
+
+                    return (
+                      <div key={buddy.id} style={{ position: "relative" }}>
+                        {/* Evolution flash overlay */}
+                        <AnimatePresence>
+                          {isEvolving && (
+                            <motion.div
+                              style={{
+                                position: "absolute",
+                                inset: -4,
+                                zIndex: 10,
+                                background: "#FFD700",
+                                borderRadius: 4,
+                              }}
+                              animate={{ opacity: [0, 1, 0, 1, 0.6, 0] }}
+                              transition={{ duration: 1.2, times: [0, 0.15, 0.3, 0.45, 0.7, 1] }}
+                            />
+                          )}
+                        </AnimatePresence>
+
+                        <div onClick={() => setActiveBuddyId(buddy.id)}>
+                          <BuddyCard
+                            buddy={{
+                              ...buddy,
+                              emoji: isEvolving ? "✨" : evo.emoji,
+                              name: evo.name,
+                              nameZh: evo.nameZh,
+                            }}
+                            owned
+                            active={buddy.id === activeBuddyId}
+                            size="md"
+                          />
+                        </div>
+
+                        {/* Evolution badge + button */}
+                        {evolveReady && !isEvolving && (
+                          <div style={{ textAlign: "center", marginTop: 4 }}>
+                            <span
+                              className="nes-badge"
+                              style={{
+                                animation: "pulse-evo 1.5s ease-in-out infinite",
+                              }}
+                            >
+                              <span className="is-warning font-pixel" style={{ fontSize: 6 }}>
+                                可进化!
+                              </span>
+                            </span>
+                            <div style={{ marginTop: 4 }}>
+                              <button
+                                className="nes-btn is-warning"
+                                style={{ fontSize: 7, padding: "2px 10px" }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEvolve(buddy.id);
+                                }}
+                              >
+                                进化
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Show current evo info */}
+                        {evo.stage > 0 && !isEvolving && (
+                          <div
+                            className="font-pixel"
+                            style={{ fontSize: 6, color: "#FACC15", textAlign: "center", marginTop: 2 }}
+                          >
+                            {evo.nameZh} (Stage {evo.stage})
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -657,6 +755,10 @@ export default function BuddyPage() {
       <style>{`
         @keyframes blink-cursor {
           50% { opacity: 0; }
+        }
+        @keyframes pulse-evo {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.15); opacity: 0.8; }
         }
       `}</style>
     </div>
