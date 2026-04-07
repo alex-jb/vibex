@@ -133,7 +133,7 @@ export default function AnalyticsPage() {
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
             <TrendingUp className="size-5 text-violet-400" /> {">"} {t("analytics.runTrend")}
           </h2>
-          <div className="flex items-end gap-3 h-48" style={{ imageRendering: "pixelated" as const }}>
+          <div aria-label={t("analytics.runTrend")} className="flex items-end gap-3 h-48" style={{ imageRendering: "pixelated" as const }}>
             {dailyRuns.map((v, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-2">
                 <span className="font-pixel text-[8px] text-muted-foreground">{v}</span>
@@ -165,9 +165,9 @@ export default function AnalyticsPage() {
           <div className="rpgui-container framed-golden" style={{ padding: 16 }}>
             <h2 className="font-pixel text-[12px] mb-4">{">"} {t("analytics.agentRanking")}</h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table role="table" className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-muted-foreground border-b border-white/5">
+                  <tr role="row" className="text-left text-muted-foreground border-b border-white/5">
                     <th className="font-pixel text-[8px] pb-2 pr-4">#</th>
                     <th className="font-pixel text-[8px] pb-2 pr-4">Agent</th>
                     <th className="font-pixel text-[8px] pb-2 pr-4">{t("analytics.category")}</th>
@@ -186,6 +186,7 @@ export default function AnalyticsPage() {
                     return (
                       <tr
                         key={a.id}
+                        role="row"
                         className={`border-b border-white/[0.03] ${highlight ? "bg-violet-500/5" : ""}`}
                       >
                         <td className="py-2.5 pr-4 font-mono text-muted-foreground">
@@ -228,7 +229,7 @@ export default function AnalyticsPage() {
         </motion.section>
 
         {/* ── Token 消耗分布 ──────────────────────────── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4" aria-label={t("analytics.tokenDistribution")}>
           <h2 className="font-pixel text-[12px]">{">"} {t("analytics.tokenDistribution")}</h2>
           <div className="space-y-3">
             {tokensByAgent.map((t) => (
@@ -276,7 +277,7 @@ export default function AnalyticsPage() {
         </motion.section>
 
         {/* ── 成本追踪 ───────────────────────────────── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-6">
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-6" aria-label={t("analytics.costTracking")}>
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
             <DollarSign className="size-5 text-emerald-400" /> {">"} {t("analytics.costTracking")}
           </h2>

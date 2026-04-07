@@ -13,16 +13,14 @@ import type {
 } from "./types";
 import type { AgentDefinition } from "./agent-types";
 import { agents as mockAgents } from "./mock-data/agents";
+import { validateEnv } from "./env";
 
 /**
  * Data access layer.
  * Uses Supabase when NEXT_PUBLIC_SUPABASE_URL is set, otherwise falls back to mock data.
  */
 
-const USE_SUPABASE = !!(
-  process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+const { hasSupabase: USE_SUPABASE } = validateEnv();
 
 // ═══════════════════════════════════════════════════════════════
 // PROJECTS
@@ -443,4 +441,29 @@ export async function getAgentById(id: string): Promise<AgentDefinition | undefi
 
 export function getCategories(): readonly string[] {
   return mock.categories;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════════
+
+export async function createNotification(notification: {
+  userId: string;
+  type: "upvote" | "comment" | "reply" | "follow" | "battle" | "mention" | "system";
+  title: string;
+  body?: string;
+  link?: string;
+  actorName?: string;
+  projectId?: string;
+}): Promise<void> {
+  if (!USE_SUPABASE) return;
+  await supabase.from("notifications").insert({
+    user_id: notification.userId,
+    type: notification.type,
+    title: notification.title,
+    body: notification.body,
+    link: notification.link,
+    actor_name: notification.actorName,
+    project_id: notification.projectId,
+  });
 }

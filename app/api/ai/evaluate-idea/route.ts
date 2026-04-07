@@ -29,9 +29,10 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(evaluation);
   } catch (error) {
-    console.error("AI evaluation error:", error);
+    const errorId = `err-${Date.now()}`;
+    console.error(`[${errorId}] AI evaluation error:`, error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: "AI evaluation failed" },
+      { error: "AI evaluation failed", errorId },
       { status: 500 }
     );
   }

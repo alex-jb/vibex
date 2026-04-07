@@ -33,6 +33,7 @@ interface SearchDialogProps {
 
 export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
   const [query, setQuery] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -44,16 +45,6 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
       return () => clearTimeout(id);
     }
   }, [open]);
-
-  // Close on Escape
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onOpenChange(false);
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [open, onOpenChange]);
 
   const results = useMemo<SearchResult[]>(() => {
     const q = query.toLowerCase().trim();
@@ -110,6 +101,33 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
     return map;
   }, [results]);
 
+  // Reset selectedIndex when query changes
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [query]);
+
+  // Keyboard navigation: Escape, ArrowDown, ArrowUp, Enter
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onOpenChange(false);
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setSelectedIndex((i) => Math.min(i + 1, results.length - 1));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setSelectedIndex((i) => Math.max(i - 1, 0));
+      } else if (e.key === "Enter" && results[selectedIndex]) {
+        e.preventDefault();
+        router.push(results[selectedIndex].href);
+        onOpenChange(false);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [open, onOpenChange, results, selectedIndex, router]);
+
   function handleSelect(href: string) {
     onOpenChange(false);
     router.push(href);
@@ -159,29 +177,39 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                 <p className="px-3 py-8 text-center text-sm text-muted-foreground">无结果</p>
               )}
 
-              {Array.from(grouped.entries()).map(([type, items]) => {
-                const Icon = TYPE_ICONS[type];
-                return (
-                  <div key={type} className="mb-2">
-                    <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      {TYPE_LABELS[type]}
-                    </p>
-                    {items.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => handleSelect(item.href)}
-                        className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
-                      >
-                        <Icon className="size-4 shrink-0 text-violet-400" />
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium text-foreground">{item.title}</p>
-                          <p className="truncate text-xs text-muted-foreground">{item.subtitle}</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                );
-              })}
+              {(() => {
+                let flatIndex = 0;
+                return Array.from(grouped.entries()).map(([type, items]) => {
+                  const Icon = TYPE_ICONS[type];
+                  return (
+                    <div key={type} className="mb-2">
+                      <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {TYPE_LABELS[type]}
+                      </p>
+                      {items.map((item) => {
+                        const idx = flatIndex++;
+                        const isSelected = idx === selectedIndex;
+                        return (
+                          <button
+                            key={item.id}
+                            onClick={() => handleSelect(item.href)}
+                            onMouseEnter={() => setSelectedIndex(idx)}
+                            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors ${
+                              isSelected ? "bg-white/[0.1]" : "hover:bg-white/[0.06]"
+                            }`}
+                          >
+                            <Icon className="size-4 shrink-0 text-violet-400" />
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-medium text-foreground">{item.title}</p>
+                              <p className="truncate text-xs text-muted-foreground">{item.subtitle}</p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                });
+              })()}
 
               {!query.trim() && (
                 <p className="px-3 py-8 text-center text-xs text-muted-foreground">输入关键词开始搜索</p>

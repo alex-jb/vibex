@@ -244,6 +244,7 @@ export default function WorkflowsPage() {
                           {steps.length > 1 && (
                             <button
                               onClick={() => removeStep(step.id)}
+                              aria-label={`Remove step ${idx + 1}`}
                               className="text-red-400/70 hover:text-red-400 transition-colors"
                             >
                               <Trash2 className="size-4" />
@@ -278,6 +279,7 @@ export default function WorkflowsPage() {
                           <div className="w-px h-4 bg-violet-500/30" />
                           <button
                             onClick={() => addStep(idx)}
+                            aria-label={`Insert step after step ${idx + 1}`}
                             className="size-6 rounded-full border border-violet-500/30 bg-violet-500/10 flex items-center justify-center text-violet-400 hover:bg-violet-500/20 transition-colors"
                           >
                             <Plus className="size-3" />
@@ -296,6 +298,7 @@ export default function WorkflowsPage() {
             <div className="flex justify-center">
               <button
                 onClick={() => addStep()}
+                aria-label="Add new step"
                 className="flex items-center gap-2 px-4 py-2 rounded-lg border border-dashed border-violet-500/30 text-violet-400 text-sm hover:bg-violet-500/10 transition-colors"
               >
                 <Plus className="size-4" />

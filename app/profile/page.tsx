@@ -120,16 +120,18 @@ export default function ProfilePage() {
   const email = user.email ?? "";
   const joinDate = user.created_at ? formatDate(user.created_at) : "---";
 
-  /* Mock stats */
-  const stats = [
-    { icon: Folder, label: "我的项目", value: 3 },
-    { icon: ThumbsUp, label: "总点赞", value: 847 },
-    { icon: Swords, label: "战斗次数", value: 12 },
-    { icon: Users, label: "粉丝数", value: 156 },
-  ];
-
-  /* Mock projects (first 3) */
+  /* Projects & computed stats */
   const myProjects = projects.slice(0, 3);
+  const totalUpvotes = myProjects.reduce((sum, p) => sum + p.upvotes, 0);
+  const battleCount = 12; // Keep mock for now
+  const followerCount = 156; // Keep mock for now
+
+  const stats = [
+    { icon: Folder, label: "我的项目", value: myProjects.length },
+    { icon: ThumbsUp, label: "总点赞", value: totalUpvotes },
+    { icon: Swords, label: "战斗次数", value: battleCount },
+    { icon: Users, label: "粉丝数", value: followerCount },
+  ];
 
   /* Mock battle history */
   const battles = [

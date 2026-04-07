@@ -29,7 +29,8 @@ export async function POST(request: Request) {
           }
           controller.close();
         } catch (error) {
-          console.error("AI launch assist error:", error);
+          const errorId = `err-${Date.now()}`;
+          console.error(`[${errorId}] AI launch assist stream error:`, error instanceof Error ? error.message : error);
           controller.error(error);
         }
       },
@@ -42,7 +43,11 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    console.error("AI launch assist error:", error);
-    return new Response("AI assistant unavailable", { status: 500 });
+    const errorId = `err-${Date.now()}`;
+    console.error(`[${errorId}] AI launch assist error:`, error instanceof Error ? error.message : error);
+    return NextResponse.json(
+      { error: "AI launch assist failed", errorId },
+      { status: 500 }
+    );
   }
 }

@@ -248,6 +248,7 @@ export default function AgentBuilderPage() {
                 </div>
                 <input type="range" min={0} max={1} step={0.1} value={temperature}
                   onChange={(e) => setTemperature(Number(e.target.value))}
+                  aria-label="Temperature"
                   className="w-full accent-violet-500" />
               </div>
               <div>
@@ -256,6 +257,7 @@ export default function AgentBuilderPage() {
                 </div>
                 <input type="range" min={1000} max={16000} step={1000} value={maxTokens}
                   onChange={(e) => setMaxTokens(Number(e.target.value))}
+                  aria-label="Max Tokens"
                   className="w-full accent-violet-500" />
               </div>
             </div>
@@ -298,6 +300,8 @@ export default function AgentBuilderPage() {
                 const selected = selectedTools.includes(tool.id);
                 return (
                   <button key={tool.id} onClick={() => toggleTool(tool.id)}
+                    aria-label={`${selected ? "Deselect" : "Select"} ${tool.name}`}
+                    aria-pressed={selected}
                     className={`relative rounded-xl border p-3 text-left transition-all ${
                       selected
                         ? "retro-border border-emerald-500/50 bg-emerald-500/10"

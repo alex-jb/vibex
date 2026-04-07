@@ -30,9 +30,10 @@ export async function POST(request: Request) {
     );
     return NextResponse.json({ text: summary });
   } catch (error) {
-    console.error("AI share summary error:", error);
+    const errorId = `err-${Date.now()}`;
+    console.error(`[${errorId}] AI share summary error:`, error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: "Share summary generation failed" },
+      { error: "Share summary generation failed", errorId },
       { status: 500 }
     );
   }

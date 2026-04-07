@@ -18,9 +18,10 @@ export async function POST(request: Request) {
     );
     return NextResponse.json(trend);
   } catch (error) {
-    console.error("AI trend analysis error:", error);
+    const errorId = `err-${Date.now()}`;
+    console.error(`[${errorId}] AI trend analysis error:`, error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: "Trend analysis failed" },
+      { error: "Trend analysis failed", errorId },
       { status: 500 }
     );
   }

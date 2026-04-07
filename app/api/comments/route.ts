@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { validateString, sanitize } from "@/lib/validate";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { createNotification } from "@/lib/db";
 
 const USE_SUPABASE = !!(
   process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -165,6 +166,17 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
+
+  // TODO: Notify project owner about the new comment once we have project owner lookup
+  // await createNotification({
+  //   userId: projectOwnerId,
+  //   type: parentId ? "reply" : "comment",
+  //   title: `${userName} commented on your project`,
+  //   body: sanitize(content!.trim()).slice(0, 100),
+  //   link: `/project/${projectId}`,
+  //   actorName: userName as string,
+  //   projectId: projectId as string,
+  // });
 
   return NextResponse.json(data, { status: 201 });
 }

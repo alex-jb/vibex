@@ -31,9 +31,10 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(review);
   } catch (error) {
-    console.error("AI review error:", error);
+    const errorId = `err-${Date.now()}`;
+    console.error(`[${errorId}] AI review error:`, error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: "AI review generation failed" },
+      { error: "AI review generation failed", errorId },
       { status: 500 }
     );
   }

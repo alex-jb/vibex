@@ -218,6 +218,7 @@ function EndpointRow({ ep }: { ep: Endpoint }) {
     <div style={{ borderBottom: "1px solid #2A2A30" }}>
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         style={{
           width: "100%",
           display: "flex",
@@ -275,9 +276,11 @@ function EndpointRow({ ep }: { ep: Endpoint }) {
                       pointerEvents: "none",
                     }}
                   />
-                  <pre className="font-mono" style={{ fontSize: 11, color: "#39FF14", margin: 0, whiteSpace: "pre-wrap", position: "relative", zIndex: 1 }}>
-                    {ep.reqBody}
-                  </pre>
+                  <div className="overflow-x-auto">
+                    <pre className="font-mono" style={{ fontSize: 11, color: "#39FF14", margin: 0, whiteSpace: "pre-wrap", position: "relative", zIndex: 1 }}>
+                      {ep.reqBody}
+                    </pre>
+                  </div>
                 </div>
               </div>
             )}
@@ -303,9 +306,11 @@ function EndpointRow({ ep }: { ep: Endpoint }) {
                       pointerEvents: "none",
                     }}
                   />
-                  <pre className="font-mono" style={{ fontSize: 11, color: "#FACC15", margin: 0, whiteSpace: "pre-wrap", position: "relative", zIndex: 1 }}>
-                    {ep.resBody}
-                  </pre>
+                  <div className="overflow-x-auto">
+                    <pre className="font-mono" style={{ fontSize: 11, color: "#FACC15", margin: 0, whiteSpace: "pre-wrap", position: "relative", zIndex: 1 }}>
+                      {ep.resBody}
+                    </pre>
+                  </div>
                 </div>
               </div>
             )}
@@ -523,6 +528,7 @@ export default function DevelopersPage() {
                 <button
                   className="nes-btn is-primary"
                   style={{ fontSize: 9, padding: "6px 12px" }}
+                  aria-label={t("dev.copy") + " API Key"}
                   onClick={() => copyToClipboard("vx-pk-a3f8xxxxxxxxxxxx7b2e")}
                 >
                   {copiedKey ? "✓" : t("dev.copy")}
@@ -593,7 +599,7 @@ export default function DevelopersPage() {
             <span className="font-pixel" style={{ fontSize: 9, color: "#9D00FF" }}>
               {">"} SDK {t("dev.download")}
             </span>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4" style={{ marginTop: 12 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" style={{ marginTop: 12 }}>
               {[
                 { id: "ts", label: "TypeScript SDK", cmd: "npm install @vibex/sdk", color: "#06B6D4" },
                 { id: "py", label: "Python SDK", cmd: "pip install vibex-sdk", color: "#FACC15" },
@@ -640,6 +646,7 @@ export default function DevelopersPage() {
                     <button
                       className="nes-btn is-primary"
                       style={{ fontSize: 8, padding: "4px 8px", position: "relative", zIndex: 1, flexShrink: 0 }}
+                      aria-label={`${t("dev.copy")} ${sdk.label}`}
                       onClick={() => copyToClipboard(sdk.cmd, sdk.id)}
                     >
                       {copiedSdk === sdk.id ? "✓" : t("dev.copy")}
@@ -659,7 +666,7 @@ export default function DevelopersPage() {
             </span>
             <div style={{ marginTop: 12 }}>
               {/* Tabs */}
-              <div style={{ display: "flex", gap: 4, marginBottom: 0 }}>
+              <div role="tablist" style={{ display: "flex", gap: 4, marginBottom: 0 }}>
                 {(["typescript", "python", "curl"] as const).map((tab) => (
                   <button
                     key={tab}
@@ -688,20 +695,22 @@ export default function DevelopersPage() {
                     pointerEvents: "none",
                   }}
                 />
-                <pre
-                  className="font-mono"
-                  style={{
-                    fontSize: 12,
-                    color: "#39FF14",
-                    margin: 0,
-                    whiteSpace: "pre-wrap",
-                    lineHeight: 1.6,
-                    position: "relative",
-                    zIndex: 1,
-                  }}
-                >
-                  {CODE_EXAMPLES[codeTab]}
-                </pre>
+                <div className="overflow-x-auto">
+                  <pre
+                    className="font-mono"
+                    style={{
+                      fontSize: 12,
+                      color: "#39FF14",
+                      margin: 0,
+                      whiteSpace: "pre-wrap",
+                      lineHeight: 1.6,
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    {CODE_EXAMPLES[codeTab]}
+                  </pre>
+                </div>
               </div>
             </div>
           </section>

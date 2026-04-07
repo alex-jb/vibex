@@ -30,9 +30,10 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(narrative);
   } catch (error) {
-    console.error("AI battle narrative error:", error);
+    const errorId = `err-${Date.now()}`;
+    console.error(`[${errorId}] AI battle narrative error:`, error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: "Battle narrative generation failed" },
+      { error: "Battle narrative generation failed", errorId },
       { status: 500 }
     );
   }
