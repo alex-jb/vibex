@@ -24,6 +24,7 @@ const navItemKeys = [
   { href: "/insights", key: "nav.insights" as const },
   { href: "/agents", key: "nav.agents" as const },
   { href: "/workflows", key: "nav.workflows" as const },
+  { href: "/analytics", key: "nav.analytics" as const },
 ];
 
 export function Navbar() {
