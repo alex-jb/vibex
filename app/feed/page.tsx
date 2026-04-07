@@ -8,6 +8,7 @@ import { PostCard } from "@/components/feed/post-card";
 import { PostComposer } from "@/components/feed/post-composer";
 import { FeedTabs } from "@/components/feed/feed-tabs";
 import { NewPostsToast } from "@/components/feed/new-posts-toast";
+import { TrendingSidebar } from "@/components/feed/trending-sidebar";
 import Link from "next/link";
 
 /* ─── Skeleton card for loading states ─── */
@@ -99,6 +100,7 @@ export default function FeedPage() {
   const { user } = useAuth();
   const [visibleCount, setVisibleCount] = useState(10);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [activeTag, setActiveTag] = useState<string | null>(null);
   const [tabSwitching, setTabSwitching] = useState(false);
   const [localPosts, setLocalPosts] = useState<FeedPost[]>([]);
 
@@ -138,7 +140,8 @@ export default function FeedPage() {
     setLoadingMore(true);
     try {
       const offset = localPosts.length;
-      const res = await fetch(`/api/feed?tab=${tab}&offset=${offset}`);
+      const tagParam = activeTag ? `&tag=${encodeURIComponent(activeTag)}` : "";
+      const res = await fetch(`/api/feed?tab=${tab}&offset=${offset}${tagParam}`);
       if (res.ok) {
         const morePosts: FeedPost[] = (await res.json()).map((row: Record<string, unknown>) => ({
           id: row.id as string,
@@ -166,7 +169,7 @@ export default function FeedPage() {
     } finally {
       setLoadingMore(false);
     }
-  }, [localPosts.length, tab]);
+  }, [localPosts.length, tab, activeTag]);
 
   const showSkeleton = loading || tabSwitching;
 
@@ -216,7 +219,9 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6" style={{ display: "flex", gap: 16 }}>
+    {/* Main feed column */}
+    <div style={{ flex: 1, minWidth: 0 }}>
       {/* Terminal Header */}
       <div
         style={{
@@ -414,6 +419,32 @@ export default function FeedPage() {
           50% { opacity: 0.8; }
         }
       `}</style>
+    </div>
+
+    {/* Sidebar: trending hashtags (desktop only) */}
+    <div className="hidden lg:block" style={{ width: 200, flexShrink: 0 }}>
+      <div style={{ position: "sticky", top: 80 }}>
+        <TrendingSidebar activeTag={activeTag ?? undefined} onTagClick={setActiveTag} />
+
+        {/* Active tag filter indicator */}
+        {activeTag && (
+          <div
+            className="font-pixel"
+            style={{
+              fontSize: 7,
+              color: "#FACC15",
+              marginTop: 8,
+              padding: "4px 8px",
+              background: "#FACC1510",
+              border: "1px solid #FACC1530",
+              textAlign: "center",
+            }}
+          >
+            {"\u7B5B\u9009: #"}{activeTag}
+          </div>
+        )}
+      </div>
+    </div>
     </div>
   );
 }

@@ -17,6 +17,7 @@ export interface MockPostRow {
   created_at: string;
   media_url: string | null;
   media_type: string | null;
+  hashtags: string[];
 }
 
 export const MOCK_POSTS: MockPostRow[] = [
@@ -35,6 +36,7 @@ export const MOCK_POSTS: MockPostRow[] = [
     created_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
     media_url: null,
     media_type: null,
+    hashtags: [],
   },
   {
     id: "post-2",
@@ -50,6 +52,7 @@ export const MOCK_POSTS: MockPostRow[] = [
     created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
     media_url: null,
     media_type: null,
+    hashtags: [],
   },
   {
     id: "post-3",
@@ -66,6 +69,7 @@ export const MOCK_POSTS: MockPostRow[] = [
     created_at: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
     media_url: null,
     media_type: null,
+    hashtags: [],
   },
   {
     id: "post-4",
@@ -82,6 +86,7 @@ export const MOCK_POSTS: MockPostRow[] = [
     created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
     media_url: null,
     media_type: null,
+    hashtags: [],
   },
   {
     id: "post-5",
@@ -98,6 +103,7 @@ export const MOCK_POSTS: MockPostRow[] = [
     created_at: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
     media_url: null,
     media_type: null,
+    hashtags: [],
   },
   {
     id: "post-6",
@@ -114,5 +120,6 @@ export const MOCK_POSTS: MockPostRow[] = [
     created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
     media_url: null,
     media_type: null,
+    hashtags: [],
   },
 ];

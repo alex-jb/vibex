@@ -6,10 +6,18 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { USE_SUPABASE } from "@/lib/mock-adapter";
 import { MOCK_POSTS, type MockPostRow } from "@/lib/mock-data/feed";
 
+/** Extract #hashtags from content (lowercase, unique) */
+function extractHashtags(text: string): string[] {
+  const matches = text.match(/#(\w{2,30})/g);
+  if (!matches) return [];
+  return [...new Set(matches.map((m) => m.slice(1).toLowerCase()))];
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const tab = searchParams.get("tab") || "latest";
   const offset = parseInt(searchParams.get("offset") || "0", 10);
+  const tag = searchParams.get("tag");
 
   if (!USE_SUPABASE) {
     let sorted: MockPostRow[];
@@ -29,6 +37,11 @@ export async function GET(request: Request) {
     .select("*")
     .is("parent_id", null)
     .range(offset, offset + 19);
+
+  // Filter by hashtag if specified
+  if (tag) {
+    query = query.contains("hashtags", [tag]);
+  }
 
   if (tab === "trending") {
     query = query
@@ -119,6 +132,7 @@ export async function POST(request: Request) {
       created_at: new Date().toISOString(),
       media_url: mediaUrl ?? null,
       media_type: mediaType ?? null,
+      hashtags: extractHashtags(content!),
     };
     return NextResponse.json(mockPost, { status: 201 });
   }
@@ -149,6 +163,7 @@ export async function POST(request: Request) {
       project_id: projectId ?? null,
       media_url: mediaUrl ?? null,
       media_type: mediaType ?? null,
+      hashtags: extractHashtags(content!),
     })
     .select()
     .single();
