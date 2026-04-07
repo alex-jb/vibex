@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { runAgent } from "@/lib/agent-engine";
+import { validateString } from "@/lib/validate";
 import type { AgentDefinition } from "@/lib/agent-types";
 
 const SAMPLE_AGENTS: Record<string, AgentDefinition> = {
@@ -69,23 +70,32 @@ export async function POST(request: Request) {
 
   const { agentId, input } = body;
 
-  if (!agentId || !input) {
+  const errors: string[] = [];
+  const agentIdErr = validateString(agentId, "agentId");
+  if (agentIdErr) errors.push(agentIdErr);
+  const inputErr = validateString(input, "input", { max: 10000 });
+  if (inputErr) errors.push(inputErr);
+
+  if (errors.length > 0) {
     return NextResponse.json(
-      { error: "Missing required fields: agentId, input" },
+      { error: errors.join("; ") },
       { status: 400 },
     );
   }
 
-  const agent = SAMPLE_AGENTS[agentId];
+  const validAgentId = agentId as string;
+  const validInput = input as string;
+
+  const agent = SAMPLE_AGENTS[validAgentId];
   if (!agent) {
     return NextResponse.json(
-      { error: `Agent not found: ${agentId}` },
+      { error: `Agent not found: ${validAgentId}` },
       { status: 404 },
     );
   }
 
   try {
-    const result = await runAgent(agent, input);
+    const result = await runAgent(agent, validInput);
     return NextResponse.json(result);
   } catch (error) {
     console.error("Agent run error:", error);

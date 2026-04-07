@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { validateString, sanitize } from "@/lib/validate";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const USE_SUPABASE = !!(
   process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -93,6 +95,15 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const ip = request.headers.get("x-forwarded-for") || "unknown";
+  const { allowed } = checkRateLimit(`${ip}:comments-post`, 10, 60_000);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Try again later." },
+      { status: 429, headers: { "X-RateLimit-Remaining": "0" } }
+    );
+  }
+
   if (!USE_SUPABASE) {
     return NextResponse.json(
       { error: "Comments are not available: Supabase is not configured" },
@@ -118,23 +129,19 @@ export async function POST(request: Request) {
     parentId?: string;
   };
 
-  if (!userId || !userName || !content || !projectId) {
-    return NextResponse.json(
-      { error: "Missing required fields: userId, userName, content, projectId" },
-      { status: 400 },
-    );
-  }
+  const errors: string[] = [];
+  const userIdErr = validateString(userId, "userId");
+  if (userIdErr) errors.push(userIdErr);
+  const userNameErr = validateString(userName, "userName");
+  if (userNameErr) errors.push(userNameErr);
+  const contentErr = validateString(content, "content", { min: 1, max: 2000 });
+  if (contentErr) errors.push(contentErr);
+  const projectIdErr = validateString(projectId, "projectId");
+  if (projectIdErr) errors.push(projectIdErr);
 
-  if (typeof content !== "string" || content.trim().length === 0) {
+  if (errors.length > 0) {
     return NextResponse.json(
-      { error: "Comment content cannot be empty" },
-      { status: 400 },
-    );
-  }
-
-  if (content.length > 2000) {
-    return NextResponse.json(
-      { error: "Comment content exceeds 2000 character limit" },
+      { error: errors.join("; ") },
       { status: 400 },
     );
   }
@@ -145,7 +152,7 @@ export async function POST(request: Request) {
       project_id: projectId,
       user_id: userId,
       user_name: userName,
-      content: content.trim(),
+      content: sanitize(content!.trim()),
       parent_id: parentId ?? null,
       likes: 0,
     })

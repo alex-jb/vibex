@@ -1,23 +1,23 @@
 import { NextResponse } from "next/server";
 import { generateShareSummary } from "@/lib/ai";
+import { validateString, validateEnum } from "@/lib/validate";
+
+const VALID_PLATFORMS = ["twitter", "xiaohongshu", "douyin"];
 
 export async function POST(request: Request) {
   const body = await request.json();
 
-  if (!body.title || !body.platform) {
-    return NextResponse.json(
-      { error: "Missing required fields: title, platform" },
-      { status: 400 }
-    );
+  const errors: string[] = [];
+  const titleErr = validateString(body.title, "title", { max: 200 });
+  if (titleErr) errors.push(titleErr);
+  const platformErr = validateEnum(body.platform, "platform", VALID_PLATFORMS);
+  if (platformErr) errors.push(platformErr);
+
+  if (errors.length > 0) {
+    return NextResponse.json({ error: errors.join("; ") }, { status: 400 });
   }
 
   const platform = body.platform as "twitter" | "xiaohongshu" | "douyin";
-  if (!["twitter", "xiaohongshu", "douyin"].includes(platform)) {
-    return NextResponse.json(
-      { error: "Invalid platform. Use: twitter, xiaohongshu, douyin" },
-      { status: 400 }
-    );
-  }
 
   try {
     const summary = await generateShareSummary(
