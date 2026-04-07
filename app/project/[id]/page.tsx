@@ -34,7 +34,7 @@ import { SkillTree } from "@/components/rpg/skill-tree";
 import { ClassIcon } from "@/components/rpg/class-icon";
 import { EvolutionBadge } from "@/components/rpg/evolution-badge";
 import { RareCandyButton } from "@/components/rpg/rare-candy-button";
-import { CommentSection } from "@/components/comment-section";
+import { RealtimeChat } from "@/components/realtime-chat";
 import { Swords } from "lucide-react";
 
 const fadeIn = {
@@ -453,7 +453,7 @@ export default function ProjectPage({
 
       {/* ===== Comments ===== */}
       <motion.div variants={fadeIn} className="mt-16">
-        <CommentSection projectId={project.id} />
+        <RealtimeChat projectId={project.id} />
       </motion.div>
 
       {/* ===== Related Projects ===== */}
