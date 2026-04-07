@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
-  BarChart3,
   Zap,
   DollarSign,
   CheckCircle,
@@ -80,113 +79,158 @@ export default function AnalyticsPage() {
   void t; // available for future i18n keys
 
   return (
-    <main className="min-h-screen bg-background pt-24 pb-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 space-y-12">
+    <main className="min-h-screen bg-background pt-24 pb-20" style={{ position: "relative", overflow: "hidden" }}>
+      {/* Scanline overlay */}
+      <div
+        className="scanline-overlay"
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)",
+          pointerEvents: "none",
+          zIndex: 1,
+        }}
+      />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 space-y-12" style={{ position: "relative", zIndex: 2 }}>
         {/* ── Hero ─────────────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" animate="visible" className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 text-xs font-medium text-violet-300">
-            <BarChart3 className="size-3.5" /> Beta
+          <div className="font-pixel" style={{ fontSize: 10, color: "#555", letterSpacing: 2 }}>
+            {">"} VIBEX://ANALYTICS v2.0
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
             分析<span className="text-gradient-subtle">面板</span>
           </h1>
-          <p className="text-muted-foreground max-w-lg mx-auto">
+          <p className="font-pixel text-muted-foreground max-w-lg mx-auto" style={{ fontSize: 10 }}>
             Agent 运行数据、成本追踪和性能趋势
           </p>
         </motion.section>
 
         {/* ── Overview Stats ──────────────────────────── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { label: "总运行次数", value: totalRuns.toLocaleString(), icon: Zap, accent: "text-violet-400" },
-            { label: "总 Token 消耗", value: "2.4M", icon: Cpu, accent: "text-cyan-400" },
-            { label: "总成本", value: "$127.50", icon: DollarSign, accent: "text-emerald-400" },
-            { label: "平均成功率", value: `${avgSuccess}%`, icon: CheckCircle, accent: "text-fuchsia-400" },
-          ].map((s) => (
-            <div key={s.label} className="glass-card-strong rounded-2xl p-5 space-y-2">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <s.icon className={`size-4 ${s.accent}`} />
-                {s.label}
-              </div>
-              <p className="text-2xl font-bold">{s.value}</p>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <div className="rpgui-container framed" style={{ padding: 16 }}>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { label: "総運行次数", value: totalRuns.toLocaleString(), icon: Zap, accent: "text-violet-400" },
+                { label: "総 Token 消耗", value: "2.4M", icon: Cpu, accent: "text-cyan-400" },
+                { label: "総成本", value: "$127.50", icon: DollarSign, accent: "text-emerald-400" },
+                { label: "平均成功率", value: `${avgSuccess}%`, icon: CheckCircle, accent: "text-fuchsia-400" },
+              ].map((s) => (
+                <div key={s.label} className="glass-card-strong rounded-2xl p-5 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <s.icon className={`size-4 ${s.accent}`} />
+                    <span className="font-pixel text-[7px] text-muted-foreground">{s.label}</span>
+                  </div>
+                  <p className="font-pixel text-[14px]">{s.value}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </motion.section>
 
         {/* ── 运行趋势图 ─────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <TrendingUp className="size-5 text-violet-400" /> 运行趋势图
+          <h2 className="font-pixel text-[12px] flex items-center gap-2">
+            <TrendingUp className="size-5 text-violet-400" /> {">"} 运行趋势
           </h2>
-          <div className="flex items-end gap-3 h-48">
+          <div className="flex items-end gap-3 h-48" style={{ imageRendering: "pixelated" as const }}>
             {dailyRuns.map((v, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                <span className="text-xs text-muted-foreground">{v}</span>
+                <span className="font-pixel text-[8px] text-muted-foreground">{v}</span>
                 <div
-                  className="w-full rounded-t-md bg-gradient-to-t from-violet-600 to-fuchsia-500 transition-all duration-500"
-                  style={{ height: `${(v / maxDaily) * 100}%` }}
-                />
-                <span className="text-[11px] text-muted-foreground">{dayLabels[i]}</span>
+                  className="w-full bg-gradient-to-t from-violet-600 to-fuchsia-500 transition-all duration-500"
+                  style={{
+                    height: `${(v / maxDaily) * 100}%`,
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background:
+                        "repeating-linear-gradient(90deg, transparent 0, transparent 4px, rgba(0,0,0,0.3) 4px, rgba(0,0,0,0.3) 6px)",
+                    }}
+                  />
+                </div>
+                <span className="font-pixel text-[8px] text-muted-foreground">{dayLabels[i]}</span>
               </div>
             ))}
           </div>
         </motion.section>
 
         {/* ── Agent 排行 ──────────────────────────────── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Agent 排行</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-muted-foreground text-xs border-b border-white/5">
-                  <th className="pb-2 pr-4">#</th>
-                  <th className="pb-2 pr-4">Agent</th>
-                  <th className="pb-2 pr-4">类别</th>
-                  <th className="pb-2 pr-4 text-right">运行次数</th>
-                  <th className="pb-2 pr-4 text-right">成功率</th>
-                  <th className="pb-2 pr-4 text-right">平均延迟</th>
-                  <th className="pb-2 text-right">预估成本</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedAgents.map((a, i) => {
-                  const highlight = i < 3;
-                  const estCost = ((a.runs * a.avgLatencyMs) / 1_000_000 * 2.5).toFixed(2);
-                  return (
-                    <tr
-                      key={a.id}
-                      className={`border-b border-white/[0.03] ${highlight ? "bg-violet-500/5" : ""}`}
-                    >
-                      <td className="py-2.5 pr-4 font-mono text-muted-foreground">
-                        {highlight ? (
-                          <span className="text-violet-400 font-bold">{i + 1}</span>
-                        ) : (
-                          i + 1
-                        )}
-                      </td>
-                      <td className="py-2.5 pr-4 font-medium">{a.name}</td>
-                      <td className="py-2.5 pr-4">
-                        <Badge variant="secondary" className="text-[10px]">{a.category}</Badge>
-                      </td>
-                      <td className="py-2.5 pr-4 text-right font-mono">{a.runs.toLocaleString()}</td>
-                      <td className="py-2.5 pr-4 text-right">
-                        <span className={a.successRate >= 97 ? "text-emerald-400" : a.successRate >= 95 ? "text-amber-400" : "text-red-400"}>
-                          {a.successRate}%
-                        </span>
-                      </td>
-                      <td className="py-2.5 pr-4 text-right font-mono text-muted-foreground">{(a.avgLatencyMs / 1000).toFixed(1)}s</td>
-                      <td className="py-2.5 text-right font-mono">${estCost}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <div className="rpgui-container framed-golden" style={{ padding: 16 }}>
+            <h2 className="font-pixel text-[12px] mb-4">{">"} Agent 排行</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-muted-foreground border-b border-white/5">
+                    <th className="font-pixel text-[8px] pb-2 pr-4">#</th>
+                    <th className="font-pixel text-[8px] pb-2 pr-4">Agent</th>
+                    <th className="font-pixel text-[8px] pb-2 pr-4">类别</th>
+                    <th className="font-pixel text-[8px] pb-2 pr-4 text-right">运行次数</th>
+                    <th className="font-pixel text-[8px] pb-2 pr-4 text-right">成功率</th>
+                    <th className="font-pixel text-[8px] pb-2 pr-4 text-right">平均延迟</th>
+                    <th className="font-pixel text-[8px] pb-2 text-right">预估成本</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedAgents.map((a, i) => {
+                    const highlight = i < 3;
+                    const estCost = ((a.runs * a.avgLatencyMs) / 1_000_000 * 2.5).toFixed(2);
+                    const rankBg = i === 0 ? "#B8860B" : i === 1 ? "#8888A0" : i === 2 ? "#CD7F32" : "transparent";
+                    const rankColor = i < 3 ? "#0D0D0D" : undefined;
+                    return (
+                      <tr
+                        key={a.id}
+                        className={`border-b border-white/[0.03] ${highlight ? "bg-violet-500/5" : ""}`}
+                      >
+                        <td className="py-2.5 pr-4 font-mono text-muted-foreground">
+                          {highlight ? (
+                            <span
+                              className="font-pixel"
+                              style={{
+                                fontSize: 8,
+                                background: rankBg,
+                                color: rankColor,
+                                padding: "2px 6px",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {i + 1}
+                            </span>
+                          ) : (
+                            i + 1
+                          )}
+                        </td>
+                        <td className="py-2.5 pr-4 font-medium">{a.name}</td>
+                        <td className="py-2.5 pr-4">
+                          <Badge variant="secondary" className="text-[10px]">{a.category}</Badge>
+                        </td>
+                        <td className="py-2.5 pr-4 text-right font-mono">{a.runs.toLocaleString()}</td>
+                        <td className="py-2.5 pr-4 text-right">
+                          <span className={a.successRate >= 97 ? "text-emerald-400" : a.successRate >= 95 ? "text-amber-400" : "text-red-400"}>
+                            {a.successRate}%
+                          </span>
+                        </td>
+                        <td className="py-2.5 pr-4 text-right font-mono text-muted-foreground">{(a.avgLatencyMs / 1000).toFixed(1)}s</td>
+                        <td className="py-2.5 text-right font-mono">${estCost}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </motion.section>
 
         {/* ── Token 消耗分布 ──────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Token 消耗分布</h2>
+          <h2 className="font-pixel text-[12px]">{">"} Token 消耗分布</h2>
           <div className="space-y-3">
             {tokensByAgent.map((t) => (
               <div key={t.name} className="flex items-center gap-3">
@@ -207,8 +251,8 @@ export default function AnalyticsPage() {
 
         {/* ── 最近运行 ───────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <Clock className="size-5 text-violet-400" /> 最近运行
+          <h2 className="font-pixel text-[12px] flex items-center gap-2">
+            <Clock className="size-5 text-violet-400" /> {">"} 最近运行
           </h2>
           <div className="space-y-2">
             {recentRuns.map((r, i) => (
@@ -218,9 +262,11 @@ export default function AnalyticsPage() {
                 className="flex items-center gap-4 rounded-xl px-4 py-3 hover:bg-white/[0.03] transition-colors"
               >
                 <span className="text-sm font-medium w-36 truncate">{r.agent}</span>
-                <Badge variant={r.status === "completed" ? "default" : "destructive"} className="text-[10px] w-12 justify-center">
-                  {r.status === "completed" ? "成功" : "失败"}
-                </Badge>
+                {r.status === "completed" ? (
+                  <span className="nes-btn is-success" style={{ fontSize: 8, padding: "2px 8px" }}>成功</span>
+                ) : (
+                  <span className="nes-btn is-error" style={{ fontSize: 8, padding: "2px 8px" }}>失败</span>
+                )}
                 <span className="flex-1 text-xs text-muted-foreground truncate">{r.input}</span>
                 <span className="text-xs font-mono text-muted-foreground w-16 text-right">{r.tokens.toLocaleString()} tk</span>
                 <span className="text-xs font-mono text-muted-foreground w-14 text-right">{(r.latency / 1000).toFixed(1)}s</span>
@@ -232,13 +278,13 @@ export default function AnalyticsPage() {
 
         {/* ── 成本追踪 ───────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-6">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <DollarSign className="size-5 text-emerald-400" /> 成本追踪
+          <h2 className="font-pixel text-[12px] flex items-center gap-2">
+            <DollarSign className="size-5 text-emerald-400" /> {">"} 成本追踪
           </h2>
 
           {/* Model breakdown */}
           <div className="space-y-3">
-            <h3 className="text-sm text-muted-foreground">模型用量分布</h3>
+            <h3 className="font-pixel text-[9px] text-muted-foreground">{">"} 模型用量分布</h3>
             {modelCosts.map((m) => (
               <div key={m.model} className="flex items-center gap-3">
                 <span className="w-24 text-sm">{m.model}</span>
@@ -256,16 +302,29 @@ export default function AnalyticsPage() {
 
           {/* Daily cost trend */}
           <div className="space-y-3">
-            <h3 className="text-sm text-muted-foreground">每日成本趋势</h3>
-            <div className="flex items-end gap-3 h-32">
+            <h3 className="font-pixel text-[9px] text-muted-foreground">{">"} 每日成本趋势</h3>
+            <div className="flex items-end gap-3 h-32" style={{ imageRendering: "pixelated" as const }}>
               {dailyCosts.map((v, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                  <span className="text-[10px] text-muted-foreground">${v}</span>
+                  <span className="font-pixel text-[8px] text-muted-foreground">${v}</span>
                   <div
-                    className="w-full rounded-t-md bg-gradient-to-t from-emerald-600 to-cyan-500 transition-all duration-500"
-                    style={{ height: `${(v / maxCost) * 100}%` }}
-                  />
-                  <span className="text-[11px] text-muted-foreground">{dayLabels[i]}</span>
+                    className="w-full bg-gradient-to-t from-emerald-600 to-cyan-500 transition-all duration-500"
+                    style={{
+                      height: `${(v / maxCost) * 100}%`,
+                      position: "relative",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background:
+                          "repeating-linear-gradient(90deg, transparent 0, transparent 4px, rgba(0,0,0,0.3) 4px, rgba(0,0,0,0.3) 6px)",
+                      }}
+                    />
+                  </div>
+                  <span className="font-pixel text-[8px] text-muted-foreground">{dayLabels[i]}</span>
                 </div>
               ))}
             </div>

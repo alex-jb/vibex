@@ -8,11 +8,7 @@ import {
   Plus,
   Trash2,
   GripVertical,
-  ArrowDown,
   Bot,
-  Save,
-  Zap,
-  Workflow,
 } from "lucide-react";
 import { workflows } from "@/lib/mock-data/workflows";
 import { agents } from "@/lib/mock-data/agents";
@@ -96,28 +92,45 @@ export default function WorkflowsPage() {
   return (
     <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6">
       <div className="mx-auto max-w-5xl">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 text-sm text-violet-300 mb-4">
-            <Workflow className="size-4" />
-            多智能体工作流
+        {/* Terminal Header */}
+        <div
+          style={{
+            background: "#0A0A0C",
+            padding: "8px 12px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottom: "2px solid #2A2A30",
+            marginBottom: 8,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ width: 10, height: 10, background: "#FF4500", display: "inline-block" }} />
+            <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
+            <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
           </div>
-          <h1 className="text-3xl font-bold">
-            工作流<span className="text-gradient-subtle">引擎</span>
+          <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>
+            VIBEX://WORKFLOWS v1.0
+          </span>
+          <span className="font-pixel" style={{ fontSize: 7, color: "#333" }}>
+            ━━━
+          </span>
+        </div>
+        <div className="mb-8 text-center">
+          <h1 className="font-pixel text-xl" style={{ color: "#39FF14", letterSpacing: 2 }}>
+            {">"} VIBEX://WORKFLOWS
           </h1>
+          <p className="text-sm text-muted-foreground mt-2">多智能体工作流引擎</p>
         </div>
 
-        {/* Tabs */}
+        {/* Tabs - NES Buttons */}
         <div className="flex gap-2 mb-8 justify-center">
           {(["browse", "builder"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
-                tab === t
-                  ? "bg-violet-600 text-white"
-                  : "bg-white/5 text-muted-foreground hover:text-foreground hover:bg-white/10"
-              }`}
+              className={tab === t ? "nes-btn is-primary" : "nes-btn"}
+              style={{ fontSize: 10, padding: "6px 14px" }}
             >
               {t === "browse" ? "工作流市场" : "创建工作流"}
             </button>
@@ -136,7 +149,7 @@ export default function WorkflowsPage() {
                   key={wf.id}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="glass-card-strong rounded-xl p-5 flex flex-col gap-3"
+                  className="glass-card-strong rounded-xl p-5 flex flex-col gap-3 retro-border"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -184,73 +197,75 @@ export default function WorkflowsPage() {
               />
             </div>
 
-            {/* Pipeline */}
-            <div className="flex flex-col items-center gap-0">
-              {steps.map((step, idx) => {
-                const agent = getAgent(step.agentId);
-                return (
-                  <div key={step.id} className="flex flex-col items-center w-full max-w-lg">
-                    {/* Step Card */}
-                    <motion.div
-                      layout
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="glass-card-strong rounded-xl p-4 w-full"
-                    >
-                      <div className="flex items-center gap-3 mb-3">
-                        <GripVertical className="size-4 text-muted-foreground cursor-grab" />
-                        <span className="text-xs font-mono text-violet-400">
-                          Step {idx + 1}
-                        </span>
-                        <div className="flex-1" />
-                        {steps.length > 1 && (
-                          <button
-                            onClick={() => removeStep(step.id)}
-                            className="text-red-400/70 hover:text-red-400 transition-colors"
-                          >
-                            <Trash2 className="size-4" />
-                          </button>
-                        )}
-                      </div>
-                      <select
-                        value={step.agentId}
-                        onChange={(e) => updateAgent(step.id, e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-violet-500/40 mb-3"
+            {/* Pipeline - RPGUI framed */}
+            <div className="rpgui-container framed" style={{ padding: 20 }}>
+              <div className="flex flex-col items-center gap-0">
+                {steps.map((step, idx) => {
+                  const agent = getAgent(step.agentId);
+                  return (
+                    <div key={step.id} className="flex flex-col items-center w-full max-w-lg">
+                      {/* Step Card */}
+                      <motion.div
+                        layout
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="glass-card-strong rounded-xl p-4 w-full retro-border"
                       >
-                        {agents.map((a) => (
-                          <option key={a.id} value={a.id} className="bg-zinc-900">
-                            {a.name}
-                          </option>
-                        ))}
-                      </select>
-                      {agent && (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Bot className="size-3.5 text-violet-400" />
-                          <span className="truncate">{agent.description.slice(0, 80)}...</span>
-                          <Badge variant="outline" className="shrink-0 text-[10px] border-violet-500/30 text-violet-300">
-                            {modelLabels[agent.model] ?? agent.model}
-                          </Badge>
+                        <div className="flex items-center gap-3 mb-3">
+                          <GripVertical className="size-4 text-muted-foreground cursor-grab" />
+                          <span className="font-pixel text-violet-400" style={{ fontSize: 9 }}>
+                            STEP {String(idx + 1).padStart(2, "0")}
+                          </span>
+                          <div className="flex-1" />
+                          {steps.length > 1 && (
+                            <button
+                              onClick={() => removeStep(step.id)}
+                              className="text-red-400/70 hover:text-red-400 transition-colors"
+                            >
+                              <Trash2 className="size-4" />
+                            </button>
+                          )}
+                        </div>
+                        <select
+                          value={step.agentId}
+                          onChange={(e) => updateAgent(step.id, e.target.value)}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-violet-500/40 mb-3"
+                        >
+                          {agents.map((a) => (
+                            <option key={a.id} value={a.id} className="bg-zinc-900">
+                              {a.name}
+                            </option>
+                          ))}
+                        </select>
+                        {agent && (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Bot className="size-3.5 text-violet-400" />
+                            <span className="truncate">{agent.description.slice(0, 80)}...</span>
+                            <Badge variant="outline" className="shrink-0 text-[10px] border-violet-500/30 text-violet-300">
+                              {modelLabels[agent.model] ?? agent.model}
+                            </Badge>
+                          </div>
+                        )}
+                      </motion.div>
+
+                      {/* Pixel Arrow Connector + Insert Button */}
+                      {idx < steps.length - 1 && (
+                        <div className="flex flex-col items-center py-1">
+                          <div className="w-px h-4 bg-violet-500/30" />
+                          <button
+                            onClick={() => addStep(idx)}
+                            className="size-6 rounded-full border border-violet-500/30 bg-violet-500/10 flex items-center justify-center text-violet-400 hover:bg-violet-500/20 transition-colors"
+                          >
+                            <Plus className="size-3" />
+                          </button>
+                          <div className="w-px h-4 bg-violet-500/30" />
+                          <span className="font-pixel text-violet-500/70" style={{ fontSize: 12 }}>&#9660;</span>
                         </div>
                       )}
-                    </motion.div>
-
-                    {/* Connector + Insert Button */}
-                    {idx < steps.length - 1 && (
-                      <div className="flex flex-col items-center py-1">
-                        <div className="w-px h-4 bg-violet-500/30" />
-                        <button
-                          onClick={() => addStep(idx)}
-                          className="size-6 rounded-full border border-violet-500/30 bg-violet-500/10 flex items-center justify-center text-violet-400 hover:bg-violet-500/20 transition-colors"
-                        >
-                          <Plus className="size-3" />
-                        </button>
-                        <div className="w-px h-4 bg-violet-500/30" />
-                        <ArrowDown className="size-3.5 text-violet-500/50" />
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Add Step */}
@@ -264,16 +279,14 @@ export default function WorkflowsPage() {
               </button>
             </div>
 
-            {/* Actions */}
+            {/* Actions - NES Buttons */}
             <div className="flex gap-3 justify-center">
-              <Button onClick={handleSave} className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white">
-                <Save className="size-4 mr-1.5" />
+              <button onClick={handleSave} className="nes-btn is-primary" style={{ fontSize: 10, padding: "6px 14px" }}>
                 保存工作流
-              </Button>
-              <Button variant="outline" onClick={() => setShowTestModal(true)} className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10">
-                <Zap className="size-4 mr-1.5" />
+              </button>
+              <button onClick={() => setShowTestModal(true)} className="nes-btn is-warning" style={{ fontSize: 10, padding: "6px 14px" }}>
                 测试运行
-              </Button>
+              </button>
             </div>
           </div>
         )}

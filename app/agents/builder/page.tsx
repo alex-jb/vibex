@@ -160,7 +160,9 @@ export default function AgentBuilderPage() {
           <div className="size-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center">
             <Bot className="size-5 text-white" />
           </div>
-          <h1 className="text-3xl font-bold">{zh ? "创建 Agent" : "Agent Builder"}</h1>
+          <h1 className="font-pixel text-[12px] tracking-widest text-emerald-400" style={{ textShadow: "0 0 10px rgba(57,255,20,0.3)" }}>
+            {"> AGENT-BUILDER v1.0"}
+          </h1>
         </div>
         <p className="text-sm text-muted-foreground">
           {zh ? "配置你的 AI Agent，设置工具和行为，然后发布到市场。" : "Configure your AI Agent, set up tools and behavior, then publish."}
@@ -227,7 +229,7 @@ export default function AgentBuilderPage() {
                 <button key={m.id} onClick={() => setModel(m.id)}
                   className={`rounded-xl border p-3 text-left transition-all ${
                     model === m.id
-                      ? "border-violet-500/50 bg-violet-500/10 shadow-md shadow-violet-500/10"
+                      ? "retro-border border-violet-500/50 bg-violet-500/10 shadow-md shadow-violet-500/10"
                       : "border-white/[0.06] bg-white/[0.02] hover:border-white/10"
                   }`}>
                   <div className="flex items-center gap-1.5 mb-1">
@@ -298,12 +300,12 @@ export default function AgentBuilderPage() {
                   <button key={tool.id} onClick={() => toggleTool(tool.id)}
                     className={`relative rounded-xl border p-3 text-left transition-all ${
                       selected
-                        ? "border-violet-500/50 bg-violet-500/10"
+                        ? "retro-border border-emerald-500/50 bg-emerald-500/10"
                         : "border-white/[0.06] bg-white/[0.02] hover:border-white/10"
                     }`}>
                     {selected && (
-                      <div className="absolute top-2 right-2 size-4 rounded-full bg-violet-500 flex items-center justify-center">
-                        <Check className="size-2.5 text-white" />
+                      <div className="absolute top-2 right-2 font-pixel text-[7px] bg-emerald-500 text-white px-1.5 py-0.5" style={{ imageRendering: "pixelated" }}>
+                        <Check className="size-2.5 inline text-white mr-0.5" />ON
                       </div>
                     )}
                     <div className="flex items-center gap-2 mb-1">
@@ -319,17 +321,17 @@ export default function AgentBuilderPage() {
 
           {/* e) Actions */}
           <div className="flex flex-wrap gap-3">
-            <Button onClick={() => setShowTest(!showTest)}
-              className="gap-2 bg-violet-600 text-white hover:bg-violet-500">
-              <Play className="size-4" />{zh ? "测试 Agent" : "Test Agent"}
-            </Button>
-            <Button variant="outline" className="gap-2 border-white/10">
-              <Save className="size-4" />{zh ? "保存草稿" : "Save Draft"}
-            </Button>
-            <Button disabled={!canPublish}
-              className="gap-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-500 hover:to-fuchsia-500 disabled:opacity-40">
-              <Rocket className="size-4" />{zh ? "发布到市场" : "Publish"}
-            </Button>
+            <button onClick={() => setShowTest(!showTest)}
+              className="nes-btn is-warning" style={{ fontSize: 10, padding: "8px 16px" }}>
+              <Play className="size-4 inline mr-1" />{zh ? "测试 Agent" : "Test Agent"}
+            </button>
+            <button className="nes-btn" style={{ fontSize: 10, padding: "8px 16px" }}>
+              <Save className="size-4 inline mr-1" />{zh ? "保存草稿" : "Save Draft"}
+            </button>
+            <button disabled={!canPublish}
+              className={`nes-btn ${canPublish ? "is-success" : "is-disabled"}`} style={{ fontSize: 10, padding: "8px 16px" }}>
+              <Rocket className="size-4 inline mr-1" />{zh ? "发布到市场" : "Publish"}
+            </button>
           </div>
         </div>
 
@@ -338,7 +340,7 @@ export default function AgentBuilderPage() {
 
           {/* Agent Preview Card */}
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="glass-card-strong rounded-xl p-6 border border-white/[0.06]">
+            className="rpgui-container framed-golden" style={{ padding: 20 }}>
             <h3 className="font-pixel text-[9px] uppercase tracking-widest text-muted-foreground mb-4">
               {zh ? "Agent 预览卡片" : "Preview Card"}
             </h3>

@@ -54,14 +54,16 @@ function Toggle({
       role="switch"
       aria-checked={enabled}
       onClick={() => onChange(!enabled)}
-      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border border-white/10 transition-colors ${
-        enabled ? "bg-violet-600" : "bg-white/10"
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center border-2 transition-colors ${
+        enabled ? "bg-violet-600 border-violet-400" : "bg-white/10 border-white/20"
       }`}
+      style={{ imageRendering: "pixelated" }}
     >
       <span
-        className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${
-          enabled ? "translate-x-6" : "translate-x-1"
+        className={`inline-block h-4 w-4 bg-white shadow transition-transform ${
+          enabled ? "translate-x-5" : "translate-x-0.5"
         }`}
+        style={{ border: "2px solid #0A0A0C" }}
       />
     </button>
   );
@@ -79,10 +81,10 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="glass-card-strong rounded-xl border border-white/[0.06] bg-white/[0.03] p-6">
+    <div className="glass-card-strong rounded-xl retro-border bg-white/[0.03] p-6">
       <div className="mb-4 flex items-center gap-2.5">
         <Icon className="size-5 text-violet-400" />
-        <h2 className="text-base font-semibold text-foreground">{title}</h2>
+        <h2 className="font-pixel text-[8px] uppercase tracking-widest text-foreground">{title}</h2>
       </div>
       <div className="space-y-4">{children}</div>
     </div>
@@ -111,7 +113,9 @@ export default function SettingsPage() {
       <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[400px] w-[400px] rounded-full bg-violet-600/8 blur-[120px]" />
 
       <FadeIn>
-        <h1 className="mb-8 text-2xl font-bold text-foreground">设置</h1>
+        <h1 className="font-pixel text-[12px] tracking-widest text-emerald-400 mb-8" style={{ textShadow: "0 0 10px rgba(57,255,20,0.3)" }}>
+          {"> VIBEX://SETTINGS"}
+        </h1>
       </FadeIn>
 
       <div className="space-y-6">
@@ -193,7 +197,8 @@ export default function SettingsPage() {
               </div>
               <button
                 disabled
-                className="rounded-lg bg-white/[0.06] px-4 py-1.5 text-sm text-muted-foreground/50 cursor-not-allowed"
+                className="nes-btn is-disabled"
+                style={{ fontSize: 9, padding: "4px 12px" }}
               >
                 修改
               </button>
@@ -207,7 +212,8 @@ export default function SettingsPage() {
                 </div>
                 <button
                   disabled
-                  className="rounded-lg bg-red-500/10 px-4 py-1.5 text-sm text-red-400/50 cursor-not-allowed"
+                  className="nes-btn is-disabled"
+                  style={{ fontSize: 9, padding: "4px 12px" }}
                 >
                   删除
                 </button>

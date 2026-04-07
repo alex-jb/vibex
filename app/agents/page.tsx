@@ -58,7 +58,7 @@ function AgentCard({
       <motion.div
         whileHover={{ y: -2, scale: 1.01 }}
         transition={{ duration: 0.2 }}
-        className={`glass-card-strong group relative overflow-hidden rounded-xl border border-white/[0.06] p-5 transition-all hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/5 ${
+        className={`glass-card-strong group relative overflow-hidden rounded-xl retro-border p-5 transition-all hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/5 ${
           isFeatured ? "md:col-span-1" : ""
         }`}
       >
@@ -104,16 +104,16 @@ function AgentCard({
         </div>
 
         {/* Stats row */}
-        <div className="mt-4 flex items-center gap-4 text-[11px] text-muted-foreground">
-          <span className="flex items-center gap-1">
+        <div className="mt-4 flex items-center gap-4 text-muted-foreground">
+          <span className="flex items-center gap-1 font-pixel text-[7px]">
             <Play className="size-3 text-emerald-400" />
             {formatNumber(agent.runs)}
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1 font-pixel text-[7px]">
             <CheckCircle className="size-3 text-sky-400" />
             {agent.successRate}%
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1 font-pixel text-[7px]">
             <ThumbsUp className="size-3 text-amber-400" />
             {formatNumber(agent.upvotes)}
           </span>
@@ -125,23 +125,22 @@ function AgentCard({
             {agent.creatorName}
           </span>
           <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-7 px-2.5 text-[11px] text-muted-foreground hover:text-fuchsia-400"
+            <button
+              className="nes-btn"
+              style={{ fontSize: 9, padding: "4px 12px" }}
               onClick={(e) => e.preventDefault()}
             >
-              <GitFork className="mr-1 size-3" />
+              <GitFork className="mr-1 inline size-3" />
               复刻
-            </Button>
-            <Button
-              size="sm"
-              className="h-7 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3 text-[11px] text-white hover:from-violet-500 hover:to-fuchsia-500"
+            </button>
+            <button
+              className="nes-btn is-success"
+              style={{ fontSize: 9, padding: "4px 12px" }}
               onClick={(e) => e.preventDefault()}
             >
-              <Play className="mr-1 size-3" />
+              <Play className="mr-1 inline size-3" />
               运行
-            </Button>
+            </button>
           </div>
         </div>
       </motion.div>
@@ -178,10 +177,13 @@ export default function AgentsPage() {
             Agent Marketplace
           </span>
         </div>
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+        <h1 className="font-pixel text-[12px] tracking-widest text-emerald-400 mb-3" style={{ textShadow: "0 0 10px rgba(57,255,20,0.3)" }}>
+          {"> VIBEX://AGENT-MARKET"}
+        </h1>
+        <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
           Agent{" "}
           <span className="text-gradient">Marketplace</span>
-        </h1>
+        </h2>
         <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
           发现、运行和部署 AI Agent。每个 Agent 都是一个可执行的 AI 工作流。
         </p>
@@ -200,7 +202,7 @@ export default function AgentsPage() {
             <button
               key={cat.key}
               onClick={() => setSelectedCategory(cat.key)}
-              className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all ${
+              className={`font-pixel text-[8px] px-3.5 py-1.5 transition-all retro-border ${
                 isActive
                   ? "border-violet-500/40 bg-violet-500/20 text-violet-300"
                   : "border-white/[0.06] bg-white/[0.03] text-muted-foreground hover:border-white/10 hover:text-foreground"
@@ -226,10 +228,12 @@ export default function AgentsPage() {
               {lang === "zh" ? "精选 Agent" : "Featured Agents"}
             </h2>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {featuredAgents.map((agent) => (
-              <AgentCard key={agent.id} agent={agent} size="featured" />
-            ))}
+          <div className="rpgui-container framed" style={{ padding: 16 }}>
+            <div className="grid gap-4 md:grid-cols-3">
+              {featuredAgents.map((agent) => (
+                <AgentCard key={agent.id} agent={agent} size="featured" />
+              ))}
+            </div>
           </div>
         </motion.section>
       )}

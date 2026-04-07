@@ -7,14 +7,10 @@ import {
   ArrowLeft,
   Play,
   Bot,
-  CheckCircle2,
-  Circle,
   Loader2,
-  XCircle,
   Clock,
   Zap,
   DollarSign,
-  ArrowDown,
 } from "lucide-react";
 import { workflows } from "@/lib/mock-data/workflows";
 import { agents } from "@/lib/mock-data/agents";
@@ -41,13 +37,21 @@ const modelLabels: Record<string, string> = {
 function StatusIcon({ status }: { status: StepStatus }) {
   switch (status) {
     case "pending":
-      return <Circle className="size-5 text-zinc-500" />;
+      return (
+        <span className="font-pixel" style={{ fontSize: 10, color: "#555", display: "inline-block", width: 14, height: 14, background: "#333", border: "2px solid #555" }} />
+      );
     case "running":
-      return <Loader2 className="size-5 text-amber-400 animate-spin" />;
+      return (
+        <span className="font-pixel" style={{ fontSize: 10, display: "inline-block", width: 14, height: 14, background: "#FACC15", border: "2px solid #B8860B", animation: "blink-cursor 0.6s step-end infinite" }} />
+      );
     case "completed":
-      return <CheckCircle2 className="size-5 text-emerald-400" />;
+      return (
+        <span className="nes-btn is-success" style={{ fontSize: 7, padding: "2px 6px", minHeight: 0, lineHeight: 1 }}>OK</span>
+      );
     case "failed":
-      return <XCircle className="size-5 text-red-400" />;
+      return (
+        <span className="nes-btn is-error" style={{ fontSize: 7, padding: "2px 6px", minHeight: 0, lineHeight: 1 }}>ERR</span>
+      );
   }
 }
 
@@ -159,7 +163,10 @@ export default function WorkflowDetailPage({
 
         {/* Header */}
         <div className="glass-card-strong rounded-xl p-6 mb-6">
-          <h1 className="text-2xl font-bold mb-2">{workflow.name}</h1>
+          <h1 className="text-2xl font-bold mb-2">
+            <span className="font-pixel" style={{ fontSize: 10, color: "#39FF14", marginRight: 8 }}>{">"} WORKFLOW::</span>
+            {workflow.name}
+          </h1>
           <p className="text-muted-foreground text-sm mb-4">{workflow.description}</p>
           <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
             {workflow.steps.map((s, i) => {
@@ -194,69 +201,73 @@ export default function WorkflowDetailPage({
           </Button>
         </div>
 
-        {/* Pipeline Progress */}
+        {/* Pipeline Progress - RPGUI framed */}
         {stepStates.length > 0 && (
-          <div className="flex flex-col items-center gap-0 mb-6">
-            {workflow.steps.map((step, idx) => {
-              const agent = agents.find((a) => a.id === step.agentId);
-              const state = stepStates.find((ss) => ss.stepId === step.id);
-              const status = state?.status ?? "pending";
+          <div className="rpgui-container framed mb-6" style={{ padding: 20 }}>
+            <div className="flex flex-col items-center gap-0">
+              {workflow.steps.map((step, idx) => {
+                const agent = agents.find((a) => a.id === step.agentId);
+                const state = stepStates.find((ss) => ss.stepId === step.id);
+                const status = state?.status ?? "pending";
 
-              return (
-                <div key={step.id} className="flex flex-col items-center w-full max-w-lg">
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.1 }}
-                    className={`w-full glass-card-strong rounded-xl p-4 border ${statusColor(status)}`}
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <StatusIcon status={status} />
-                      <span className="text-xs font-mono text-violet-400">Step {idx + 1}</span>
-                      <div className="flex-1" />
-                      {agent && (
-                        <Badge variant="outline" className="text-[10px] border-violet-500/30 text-violet-300">
-                          {modelLabels[agent.model] ?? agent.model}
-                        </Badge>
+                return (
+                  <div key={step.id} className="flex flex-col items-center w-full max-w-lg">
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className={`w-full glass-card-strong rounded-xl p-4 border ${statusColor(status)}`}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <StatusIcon status={status} />
+                        <span className="font-pixel text-violet-400" style={{ fontSize: 9 }}>
+                          STEP {String(idx + 1).padStart(2, "0")}
+                        </span>
+                        <div className="flex-1" />
+                        {agent && (
+                          <Badge variant="outline" className="text-[10px] border-violet-500/30 text-violet-300">
+                            {modelLabels[agent.model] ?? agent.model}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Bot className="size-4 text-violet-400 shrink-0" />
+                        <span className="font-medium">{agent?.name ?? "Unknown"}</span>
+                      </div>
+                      {state?.input && (
+                        <div className="mt-2 text-xs text-muted-foreground">
+                          <span className="text-zinc-500">输入:</span>{" "}
+                          <span className="line-clamp-2">{state.input.slice(0, 150)}</span>
+                        </div>
                       )}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Bot className="size-4 text-violet-400 shrink-0" />
-                      <span className="font-medium">{agent?.name ?? "Unknown"}</span>
-                    </div>
-                    {state?.input && (
-                      <div className="mt-2 text-xs text-muted-foreground">
-                        <span className="text-zinc-500">输入:</span>{" "}
-                        <span className="line-clamp-2">{state.input.slice(0, 150)}</span>
-                      </div>
-                    )}
-                    {state?.output && status !== "running" && (
-                      <div className="mt-1.5 text-xs text-foreground/80">
-                        <span className="text-zinc-500">输出:</span>{" "}
-                        <span className="line-clamp-3">{state.output.slice(0, 200)}</span>
-                      </div>
-                    )}
-                    {state?.durationMs && (
-                      <div className="mt-2 flex gap-3 text-[10px] text-muted-foreground">
-                        <span>{state.tokens} tokens</span>
-                        <span>{(state.durationMs / 1000).toFixed(1)}s</span>
-                      </div>
-                    )}
-                  </motion.div>
+                      {state?.output && status !== "running" && (
+                        <div className="mt-1.5 text-xs text-foreground/80">
+                          <span className="text-zinc-500">输出:</span>{" "}
+                          <span className="line-clamp-3">{state.output.slice(0, 200)}</span>
+                        </div>
+                      )}
+                      {state?.durationMs && (
+                        <div className="mt-2 flex gap-3 text-[10px] text-muted-foreground">
+                          <span className="font-pixel">{state.tokens} tokens</span>
+                          <span className="font-pixel">{(state.durationMs / 1000).toFixed(1)}s</span>
+                        </div>
+                      )}
+                    </motion.div>
 
-                  {idx < workflow.steps.length - 1 && (
-                    <div className="flex flex-col items-center py-1">
-                      <div className="w-px h-5 bg-violet-500/30" />
-                      <ArrowDown className="size-3.5 text-violet-500/50" />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                    {idx < workflow.steps.length - 1 && (
+                      <div className="flex flex-col items-center py-1">
+                        <div className="w-px h-5 bg-violet-500/30" />
+                        <span className="font-pixel text-violet-500/70" style={{ fontSize: 12 }}>&#9660;</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
-        {/* Stats */}
+        {/* Stats - pixel font numbers */}
         {stats && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -265,21 +276,28 @@ export default function WorkflowDetailPage({
           >
             <div>
               <Zap className="size-4 text-amber-400 mx-auto mb-1" />
-              <p className="text-lg font-bold">{stats.tokens.toLocaleString()}</p>
+              <p className="font-pixel text-lg" style={{ fontSize: 12, color: "#FACC15" }}>{stats.tokens.toLocaleString()}</p>
               <p className="text-xs text-muted-foreground">Tokens</p>
             </div>
             <div>
               <Clock className="size-4 text-violet-400 mx-auto mb-1" />
-              <p className="text-lg font-bold">{(stats.timeMs / 1000).toFixed(1)}s</p>
+              <p className="font-pixel text-lg" style={{ fontSize: 12, color: "#9D00FF" }}>{(stats.timeMs / 1000).toFixed(1)}s</p>
               <p className="text-xs text-muted-foreground">耗时</p>
             </div>
             <div>
               <DollarSign className="size-4 text-emerald-400 mx-auto mb-1" />
-              <p className="text-lg font-bold">${stats.cost.toFixed(4)}</p>
+              <p className="font-pixel text-lg" style={{ fontSize: 12, color: "#39FF14" }}>${stats.cost.toFixed(4)}</p>
               <p className="text-xs text-muted-foreground">预估费用</p>
             </div>
           </motion.div>
         )}
+
+        {/* Blink keyframe for pixel status */}
+        <style>{`
+          @keyframes blink-cursor {
+            50% { opacity: 0; }
+          }
+        `}</style>
       </div>
     </div>
   );
