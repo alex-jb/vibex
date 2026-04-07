@@ -77,11 +77,22 @@ export function useRealtimeFeed(tab: FeedTab) {
   const [error, setError] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
   const [fetchKey, setFetchKey] = useState(0);
+  const [bufferedPosts, setBufferedPosts] = useState<FeedPost[]>([]);
 
   const refetch = () => {
     setError(null);
     setLoading(true);
     setFetchKey((k) => k + 1);
+  };
+
+  /** Flush buffered posts into the main list */
+  const flushBuffered = () => {
+    setPosts((prev) => {
+      const existingIds = new Set(prev.map((p) => p.id));
+      const newOnes = bufferedPosts.filter((p) => !existingIds.has(p.id));
+      return [...newOnes, ...prev];
+    });
+    setBufferedPosts([]);
   };
 
   useEffect(() => {
@@ -128,9 +139,10 @@ export function useRealtimeFeed(tab: FeedTab) {
         { event: "INSERT", schema: "public", table: "posts" },
         (payload) => {
           const newPost = mapRow(payload.new);
-          // Only add top-level posts to the feed, deduplicate by ID
+          // Buffer new top-level posts instead of prepending directly.
+          // The toast will show the count and flush on click.
           if (!newPost.parentId) {
-            setPosts((prev) => {
+            setBufferedPosts((prev) => {
               if (prev.some((p) => p.id === newPost.id)) return prev;
               return [newPost, ...prev];
             });
@@ -165,5 +177,5 @@ export function useRealtimeFeed(tab: FeedTab) {
     };
   }, [tab, fetchKey]);
 
-  return { posts, loading, error, connected, refetch };
+  return { posts, loading, error, connected, refetch, bufferedPosts, flushBuffered };
 }

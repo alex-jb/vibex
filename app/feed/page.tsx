@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { PostCard } from "@/components/feed/post-card";
 import { PostComposer } from "@/components/feed/post-composer";
 import { FeedTabs } from "@/components/feed/feed-tabs";
+import { NewPostsToast } from "@/components/feed/new-posts-toast";
 import Link from "next/link";
 
 /* ─── Skeleton card for loading states ─── */
@@ -94,7 +95,7 @@ function SkeletonPostCard() {
 
 export default function FeedPage() {
   const [tab, setTab] = useState<FeedTab>("trending");
-  const { posts, loading, error, connected, refetch } = useRealtimeFeed(tab);
+  const { posts, loading, error, connected, refetch, bufferedPosts, flushBuffered } = useRealtimeFeed(tab);
   const { user } = useAuth();
   const [visibleCount, setVisibleCount] = useState(10);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -296,6 +297,15 @@ export default function FeedPage() {
           </motion.div>
 
           {/* Composer */}
+          {/* New posts toast */}
+          <NewPostsToast
+            count={bufferedPosts.length}
+            onClick={() => {
+              flushBuffered();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
+
           <PostComposer onNewPost={handleNewPost} />
 
           {/* Tabs */}
