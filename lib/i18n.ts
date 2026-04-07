@@ -17,6 +17,7 @@ const translations = {
     "nav.events": "Events",
     "nav.insights": "Insights",
     "nav.agents": "Agents",
+    "nav.workflows": "Workflows",
     "nav.launch": "Launch Project",
 
     // Boot sequence
@@ -357,6 +358,7 @@ const translations = {
     "nav.events": "\u6d3b\u52a8",
     "nav.insights": "\u6d1e\u5bdf",
     "nav.agents": "\u667a\u80fd\u4f53",
+    "nav.workflows": "\u5de5\u4f5c\u6d41",
     "nav.launch": "\u53d1\u5e03\u9879\u76ee",
 
     // Boot sequence
