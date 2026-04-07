@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import type { FeedPost } from "@/lib/feed";
 import { ReactionBar, type ReactionCounts, type ReactionType } from "./reaction-bar";
 import { MediaAttachment } from "./media-attachment";
+import { LevelBadge, type CreatorLevel } from "./level-badge";
 
 /* ─── Helpers ─── */
 
@@ -52,6 +53,7 @@ interface PostCardProps {
   onDelete?: (id: string) => void;
   reactionCounts?: ReactionCounts;
   userReactions?: ReactionType[];
+  creatorLevel?: CreatorLevel;
   isOwn?: boolean;
 }
 
@@ -61,6 +63,7 @@ export function PostCard({
   onDelete,
   reactionCounts = { fire: 0, game: 0, art: 0, mindblown: 0 },
   userReactions = [],
+  creatorLevel,
   isOwn = false,
 }: PostCardProps) {
   const [expanded, setExpanded] = useState(false);
@@ -122,6 +125,7 @@ export function PostCard({
         <div style={{ flex: 1, minWidth: 0 }}>
           <span className="font-pixel" style={{ fontSize: 8, color }}>
             {post.userName}
+            {creatorLevel && <LevelBadge level={creatorLevel} />}
           </span>
           <span className="font-pixel" style={{ fontSize: 7, color: "#555", marginLeft: 8 }}>
             {relativeTime(post.createdAt)}

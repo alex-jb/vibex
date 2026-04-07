@@ -59,5 +59,31 @@ export async function POST(
     );
   }
 
+  // Award XP to post author if this was a new reaction (not an unreact)
+  if (data?.reacted) {
+    // Get post author
+    const { data: post } = await supabase
+      .from("posts")
+      .select("user_id")
+      .eq("id", postId)
+      .single();
+
+    if (post?.user_id) {
+      try {
+        const { data: xpResult } = await supabase.rpc("award_reaction_xp", {
+          p_recipient_id: post.user_id,
+          p_actor_id: user.id,
+          p_post_id: postId,
+          p_reaction_type: type,
+        });
+        if (xpResult) {
+          data.xp = xpResult;
+        }
+      } catch {
+        // XP award is best-effort
+      }
+    }
+  }
+
   return NextResponse.json(data);
 }
