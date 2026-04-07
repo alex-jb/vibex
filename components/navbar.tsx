@@ -23,6 +23,7 @@ const navItemKeys = [
   { href: "/events", key: "nav.events" as const },
   { href: "/insights", key: "nav.insights" as const },
   { href: "/agents", key: "nav.agents" as const },
+  { href: "/buddy", key: "nav.buddy" as const },
   { href: "/workflows", key: "nav.workflows" as const },
   { href: "/analytics", key: "nav.analytics" as const },
   { href: "/developers", key: "nav.developers" as const },

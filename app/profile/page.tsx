@@ -17,12 +17,15 @@ import {
   Star,
   ChevronUp,
   ArrowUpRight,
+  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useLang } from "@/lib/i18n";
 import { projects } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { computeUserLevel, EXP_REWARDS, BUDDY_TYPES, RARITY_CONFIG } from "@/lib/buddy-system";
+import type { UserBuddy } from "@/lib/buddy-system";
 
 /* ─── Helpers ─────────────────────────────────────────────────────────────── */
 
@@ -70,17 +73,22 @@ function StatCard({
   label,
   value,
   delay,
+  suffix,
 }: {
   icon: React.ElementType;
   label: string;
   value: number;
   delay: number;
+  suffix?: string;
 }) {
   return (
     <FadeIn delay={delay}>
       <div className="glass-card-strong rounded-xl border border-white/[0.08] p-5 text-center transition-all duration-300 hover:border-white/15 hover:shadow-[0_4px_24px_-6px_rgba(139,92,246,0.25)]">
         <Icon className="mx-auto mb-2 h-6 w-6 text-violet-400" />
-        <p className="font-pixel text-2xl text-gradient">{value.toLocaleString()}</p>
+        <p className="font-pixel text-2xl text-gradient">
+          {suffix ? `Lv.${value}` : value.toLocaleString()}
+        </p>
+        {suffix && <p className="mt-0.5 font-pixel text-[10px] text-amber-400">{suffix}</p>}
         <p className="mt-1 text-xs text-white/50">{label}</p>
       </div>
     </FadeIn>
@@ -126,11 +134,24 @@ export default function ProfilePage() {
   const battleCount = 12; // Keep mock for now
   const followerCount = 156; // Keep mock for now
 
-  const stats = [
+  /* EXP & Buddy mock data */
+  const mockTotalExp = 2850;
+  const userLevel = computeUserLevel(mockTotalExp);
+
+  const mockBuddies: UserBuddy[] = [
+    { id: "b1", buddyTypeId: "pixel-fox", level: 5, exp: 230, happiness: 85, obtainedAt: "2026-03-20", isActive: true },
+    { id: "b2", buddyTypeId: "neon-slime", level: 3, exp: 120, happiness: 70, obtainedAt: "2026-04-01", isActive: false },
+  ];
+  const activeBuddy = mockBuddies.find(b => b.isActive);
+  const activeBuddyType = activeBuddy ? BUDDY_TYPES.find(t => t.id === activeBuddy.buddyTypeId) : null;
+  const expPercent = Math.min(100, (userLevel.currentExp / userLevel.expToNextLevel) * 100);
+
+  const stats: { icon: React.ElementType; label: string; value: number; suffix?: string }[] = [
     { icon: Folder, label: "我的项目", value: myProjects.length },
     { icon: ThumbsUp, label: "总点赞", value: totalUpvotes },
     { icon: Swords, label: "战斗次数", value: battleCount },
     { icon: Users, label: "粉丝数", value: followerCount },
+    { icon: Sparkles, label: "等级", value: userLevel.level, suffix: userLevel.title },
   ];
 
   /* Mock battle history */
@@ -170,7 +191,24 @@ export default function ProfilePage() {
 
             {/* Info */}
             <div className="flex-1 text-center sm:text-left">
-              <h1 className="font-pixel text-2xl text-gradient">{displayName}</h1>
+              <div className="flex items-center justify-center gap-2 sm:justify-start">
+                <h1 className="font-pixel text-2xl text-gradient">{displayName}</h1>
+                {activeBuddyType && (
+                  <motion.span
+                    className="text-xl"
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    title={activeBuddyType.nameZh}
+                  >
+                    {activeBuddyType.emoji}
+                  </motion.span>
+                )}
+                <span className="level-badge shrink-0 text-xs">
+                  <span className="text-violet-400">Lv</span>
+                  <span className="ml-0.5">{userLevel.level}</span>
+                </span>
+                <span className="font-pixel text-[10px] text-amber-400">{userLevel.title}</span>
+              </div>
               <p className="mt-1 flex items-center justify-center gap-1.5 text-sm text-white/50 sm:justify-start">
                 <Mail className="h-3.5 w-3.5" />
                 {email}
@@ -195,11 +233,84 @@ export default function ProfilePage() {
       </FadeIn>
 
       {/* ── Stats Grid ── */}
-      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-5">
         {stats.map((s, i) => (
-          <StatCard key={s.label} icon={s.icon} label={s.label} value={s.value} delay={0.1 + i * 0.08} />
+          <StatCard key={s.label} icon={s.icon} label={s.label} value={s.value} delay={0.1 + i * 0.08} suffix={s.suffix} />
         ))}
       </div>
+
+      {/* ── EXP Progress ── */}
+      <FadeIn delay={0.45} className="mt-8">
+        <div className="rpgui-container framed rounded-xl p-5">
+          <h2 className="font-pixel text-lg text-gradient mb-4">经验进度</h2>
+          <div className="flex items-center gap-3">
+            <div className="level-badge shrink-0">
+              <span className="text-violet-400">Lv</span>
+              <span className="ml-0.5">{userLevel.level}</span>
+            </div>
+            <div className="flex-1">
+              <div className="rpg-bar h-4">
+                <motion.div
+                  className="rpg-bar__fill rpg-bar--exp"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${expPercent}%` }}
+                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                />
+                <span className="rpg-bar__label">EXP</span>
+                <span className="rpg-bar__value">
+                  {userLevel.currentExp}/{userLevel.expToNextLevel}
+                </span>
+              </div>
+            </div>
+          </div>
+          <p className="mt-2 font-pixel text-[10px] text-white/40 text-right">
+            累计 {userLevel.totalExp} EXP · 距下一级还需 {userLevel.expToNextLevel - userLevel.currentExp} EXP
+          </p>
+        </div>
+      </FadeIn>
+
+      {/* ── My Buddies ── */}
+      <FadeIn delay={0.48} className="mt-8">
+        <div className="rpgui-container framed rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-pixel text-lg text-gradient">我的伙伴</h2>
+            <Link href="/buddy" className="font-pixel text-xs text-violet-400 hover:text-violet-300 transition-colors">
+              查看全部 →
+            </Link>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-1">
+            {mockBuddies.map((buddy) => {
+              const buddyType = BUDDY_TYPES.find(t => t.id === buddy.buddyTypeId);
+              if (!buddyType) return null;
+              const rarity = RARITY_CONFIG[buddyType.rarity];
+              return (
+                <div
+                  key={buddy.id}
+                  className={`shrink-0 w-32 rounded-xl border-2 p-3 text-center transition-all duration-300 ${
+                    buddy.isActive
+                      ? "border-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.3)] bg-amber-500/5"
+                      : `${rarity.borderColor} ${rarity.bgColor}`
+                  }`}
+                >
+                  <motion.span
+                    className="block text-3xl mb-1"
+                    animate={buddy.isActive ? { y: [0, -3, 0] } : {}}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    {buddyType.emoji}
+                  </motion.span>
+                  <p className="font-pixel text-xs text-white/90">{buddyType.nameZh}</p>
+                  <p className="font-pixel text-[10px] text-white/50 mt-0.5">Lv.{buddy.level}</p>
+                  <p className="text-[9px] mt-0.5" style={{ color: rarity.color }}>{rarity.labelZh}</p>
+                  {buddy.isActive && (
+                    <span className="inline-block mt-1 font-pixel text-[9px] text-amber-400">★ 出战中</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </FadeIn>
 
       {/* ── My Projects ── */}
       <FadeIn delay={0.5} className="mt-10">
