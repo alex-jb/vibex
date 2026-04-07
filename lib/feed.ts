@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
+import { MOCK_POSTS as RAW_MOCK_POSTS } from "./mock-data/feed";
 
 export type FeedTab = "following" | "trending" | "latest";
 
@@ -25,71 +26,20 @@ const USE_SUPABASE = !!(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
-const MOCK_POSTS: FeedPost[] = [
-  {
-    id: "post-1",
-    userId: "u1",
-    userName: "PixelMaster",
-    content: "Just shipped my first vibe-coded RPG battle system! The AI generated balanced stats on the first try.",
-    projectId: "1",
-    likes: 24,
-    repliesCount: 5,
-    reposts: 3,
-    createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "post-2",
-    userId: "u2",
-    userName: "CodeWizard",
-    content: "Hot take: vibe coding is the future of game dev. Fight me.",
-    likes: 42,
-    repliesCount: 12,
-    reposts: 8,
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "post-3",
-    userId: "u3",
-    userName: "NeonHacker",
-    content: "My AI agent just evolved to level 5! The evolution mechanic in VibeCode Hunt is addictive.",
-    projectId: "2",
-    likes: 18,
-    repliesCount: 3,
-    reposts: 1,
-    createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "post-4",
-    userId: "u4",
-    userName: "RetroQueen",
-    content: "Anyone else notice the 16-bit aesthetic pairs perfectly with procedural generation? Sharing my tileset generator soon.",
-    likes: 31,
-    repliesCount: 7,
-    reposts: 5,
-    createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "post-5",
-    userId: "u5",
-    userName: "AITrainer",
-    content: "Tip: use chain-of-thought prompting when generating NPC dialogue. The results are way more natural.",
-    projectId: "3",
-    likes: 15,
-    repliesCount: 2,
-    reposts: 4,
-    createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "post-6",
-    userId: "u6",
-    userName: "SpriteKing",
-    content: "Just launched a marketplace listing for my pixel art pack. 200+ sprites, all AI-assisted. Link in my profile!",
-    likes: 9,
-    repliesCount: 1,
-    reposts: 2,
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-  },
-];
+// Map shared mock data to client FeedPost shape
+const MOCK_POSTS: FeedPost[] = RAW_MOCK_POSTS.map((r) => ({
+  id: r.id,
+  userId: r.user_id,
+  userName: r.user_name,
+  userAvatar: r.user_avatar ?? undefined,
+  content: r.content,
+  projectId: r.project_id ?? undefined,
+  parentId: r.parent_id ?? undefined,
+  likes: r.likes,
+  repliesCount: r.replies_count,
+  reposts: r.reposts,
+  createdAt: r.created_at,
+}));
 
 function mapRow(row: Record<string, unknown>): FeedPost {
   return {
@@ -178,9 +128,12 @@ export function useRealtimeFeed(tab: FeedTab) {
         { event: "INSERT", schema: "public", table: "posts" },
         (payload) => {
           const newPost = mapRow(payload.new);
-          // Only add top-level posts to the feed
+          // Only add top-level posts to the feed, deduplicate by ID
           if (!newPost.parentId) {
-            setPosts((prev) => [newPost, ...prev]);
+            setPosts((prev) => {
+              if (prev.some((p) => p.id === newPost.id)) return prev;
+              return [newPost, ...prev];
+            });
           }
         },
       )

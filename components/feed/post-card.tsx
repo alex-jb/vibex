@@ -265,16 +265,7 @@ export function PostCard({ post, onLike, onReply, onDelete, liked = false, isOwn
           <span className="hidden sm:inline font-pixel" style={{ fontSize: 7 }}>{"\u56DE\u590D"}</span>
         </button>
 
-        {/* Repost */}
-        <button
-          className="nes-btn"
-          aria-label={`\u8F6C\u53D1 (${post.reposts})`}
-          style={{ fontSize: 9, padding: "4px 10px", display: "flex", alignItems: "center", gap: 4 }}
-        >
-          <span>{"\uD83D\uDD01"}</span>
-          <span className="font-pixel" style={{ fontSize: 7 }}>{post.reposts}</span>
-          <span className="hidden sm:inline font-pixel" style={{ fontSize: 7 }}>{"\u8F6C\u53D1"}</span>
-        </button>
+        {/* Repost — removed: button was decorative with no handler. Will add back with repost feature. */}
       </div>
     </motion.div>
   );

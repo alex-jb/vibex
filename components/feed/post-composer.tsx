@@ -7,11 +7,9 @@ import type { FeedPost } from "@/lib/feed";
 
 interface PostComposerProps {
   onNewPost?: (post: FeedPost) => void;
-  /** @deprecated Use onNewPost instead */
-  onSubmit?: (content: string, userName: string, projectId?: string, projectTitle?: string) => void;
 }
 
-export function PostComposer({ onNewPost, onSubmit }: PostComposerProps) {
+export function PostComposer({ onNewPost }: PostComposerProps) {
   const { user } = useAuth();
   const [content, setContent] = useState("");
   const [linkProject, setLinkProject] = useState(false);
@@ -40,6 +38,7 @@ export function PostComposer({ onNewPost, onSubmit }: PostComposerProps) {
           userName: displayName,
           userAvatar: user.user_metadata?.avatar_url ?? null,
           content: content.trim(),
+          ...(linkProject ? { projectId: "1" } : {}),
         }),
       });
 
@@ -74,7 +73,6 @@ export function PostComposer({ onNewPost, onSubmit }: PostComposerProps) {
 
       // Notify parent
       onNewPost?.(newPost);
-      onSubmit?.(content.trim(), displayName);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "\u53D1\u5E03\u5931\u8D25";
       setErrorMsg(msg);
@@ -82,7 +80,7 @@ export function PostComposer({ onNewPost, onSubmit }: PostComposerProps) {
     } finally {
       setPosting(false);
     }
-  }, [content, user, posting, displayName, onNewPost, onSubmit]);
+  }, [content, user, posting, displayName, linkProject, onNewPost]);
 
   if (!user) {
     return (

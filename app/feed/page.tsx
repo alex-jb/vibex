@@ -115,8 +115,9 @@ export default function FeedPage() {
     setTimeout(() => setTabSwitching(false), 300);
   }, []);
 
-  const visiblePosts = localPosts.slice(0, visibleCount);
-  const hasMore = visibleCount < localPosts.length;
+  const visiblePosts = localPosts;
+  // hasMore: true if we have a multiple of 20 posts (could be more on server)
+  const hasMore = localPosts.length > 0 && localPosts.length % 20 === 0;
   const exhausted = !hasMore && localPosts.length > 0;
 
   const handleLike = useCallback((postId: string) => {
@@ -139,17 +140,43 @@ export default function FeedPage() {
     setLocalPosts((prev) => prev.filter((p) => p.id !== postId));
   }, []);
 
-  const handleNewPost = useCallback((post: FeedPost) => {
-    setLocalPosts((prev) => [post, ...prev]);
+  const handleNewPost = useCallback((_post: FeedPost) => {
+    // Don't optimistically prepend — realtime subscription will deliver the post.
+    // This avoids the duplicate post bug where both optimistic add + realtime INSERT
+    // prepend the same post to the list.
   }, []);
 
-  const handleLoadMore = useCallback(() => {
+  const handleLoadMore = useCallback(async () => {
     setLoadingMore(true);
-    setTimeout(() => {
-      setVisibleCount((c) => c + 10);
+    try {
+      const offset = localPosts.length;
+      const res = await fetch(`/api/feed?tab=${tab}&offset=${offset}`);
+      if (res.ok) {
+        const morePosts: FeedPost[] = (await res.json()).map((row: Record<string, unknown>) => ({
+          id: row.id as string,
+          userId: row.user_id as string,
+          userName: row.user_name as string,
+          userAvatar: row.user_avatar as string | undefined,
+          content: row.content as string,
+          projectId: (row.project_id as string) || undefined,
+          parentId: (row.parent_id as string) || undefined,
+          likes: row.likes as number,
+          repliesCount: row.replies_count as number,
+          reposts: row.reposts as number,
+          createdAt: row.created_at as string,
+        }));
+        if (morePosts.length > 0) {
+          setLocalPosts((prev) => [...prev, ...morePosts]);
+        } else {
+          setVisibleCount(localPosts.length); // signal exhausted
+        }
+      }
+    } catch {
+      // silently fail load more
+    } finally {
       setLoadingMore(false);
-    }, 300);
-  }, []);
+    }
+  }, [localPosts.length, tab]);
 
   const showSkeleton = loading || tabSwitching;
 
