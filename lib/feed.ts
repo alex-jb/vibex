@@ -124,9 +124,19 @@ function sortMockPosts(tab: FeedTab, posts: FeedPost[]): FeedPost[] {
 export function useRealtimeFeed(tab: FeedTab) {
   const [posts, setPosts] = useState<FeedPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
+  const [fetchKey, setFetchKey] = useState(0);
+
+  const refetch = () => {
+    setError(null);
+    setLoading(true);
+    setFetchKey((k) => k + 1);
+  };
 
   useEffect(() => {
+    setError(null);
+
     // --- Mock fallback ---
     if (!USE_SUPABASE) {
       setPosts(sortMockPosts(tab, MOCK_POSTS));
@@ -148,7 +158,12 @@ export function useRealtimeFeed(tab: FeedTab) {
       query = query.order("created_at", { ascending: false });
     }
 
-    query.then(({ data }) => {
+    query.then(({ data, error: fetchError }) => {
+      if (fetchError) {
+        setError(fetchError.message);
+        setLoading(false);
+        return;
+      }
       if (data) {
         setPosts(data.map(mapRow));
       }
@@ -195,7 +210,7 @@ export function useRealtimeFeed(tab: FeedTab) {
       supabase.removeChannel(channel);
       setConnected(false);
     };
-  }, [tab]);
+  }, [tab, fetchKey]);
 
-  return { posts, loading, connected };
+  return { posts, loading, error, connected, refetch };
 }

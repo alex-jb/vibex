@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { FeedPost } from "@/lib/feed";
@@ -40,27 +40,74 @@ function relativeTime(dateStr: string): string {
   return `${days}\u5929\u524d`;
 }
 
+const TRUNCATE_LENGTH = 280;
+
 /* ─── PostCard ─── */
 
 interface PostCardProps {
   post: FeedPost;
   onLike: (id: string) => void;
   onReply: (id: string) => void;
+  onDelete?: (id: string) => void;
   liked?: boolean;
+  isOwn?: boolean;
 }
 
-export function PostCard({ post, onLike, onReply, liked = false }: PostCardProps) {
+export function PostCard({ post, onLike, onReply, onDelete, liked = false, isOwn = false }: PostCardProps) {
   const [bouncing, setBouncing] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [optimisticLikeOffset, setOptimisticLikeOffset] = useState(0);
+  const [confirming, setConfirming] = useState(false);
   const color = avatarColor(post.userName);
 
-  const handleLike = () => {
+  const needsTruncation = post.content.length > TRUNCATE_LENGTH;
+  const displayContent = needsTruncation && !expanded
+    ? post.content.slice(0, TRUNCATE_LENGTH)
+    : post.content;
+
+  const displayLikes = post.likes + optimisticLikeOffset;
+
+  const handleLike = useCallback(async () => {
     setBouncing(true);
+    const wasLiked = liked;
+    const delta = wasLiked ? -1 : 1;
+    setOptimisticLikeOffset((prev) => prev + delta);
     onLike(post.id);
     setTimeout(() => setBouncing(false), 400);
-  };
+
+    try {
+      const res = await fetch(`/api/feed/${post.id}/like`, { method: "POST" });
+      if (!res.ok) {
+        // Revert optimistic update
+        setOptimisticLikeOffset((prev) => prev - delta);
+        onLike(post.id); // toggle back
+      }
+    } catch {
+      // Revert on network error
+      setOptimisticLikeOffset((prev) => prev - delta);
+      onLike(post.id);
+    }
+  }, [liked, onLike, post.id]);
+
+  const handleDelete = useCallback(async () => {
+    if (!confirming) {
+      setConfirming(true);
+      return;
+    }
+    // Confirmed
+    try {
+      await fetch(`/api/feed/${post.id}`, { method: "DELETE" });
+    } catch {
+      // best effort
+    }
+    onDelete?.(post.id);
+    setConfirming(false);
+  }, [confirming, onDelete, post.id]);
 
   return (
     <motion.div
+      role="article"
+      aria-label={`Post by ${post.userName}`}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
@@ -69,7 +116,7 @@ export function PostCard({ post, onLike, onReply, liked = false }: PostCardProps
     >
       <div className="l-corner-inner absolute inset-0 pointer-events-none" />
 
-      {/* Header: Avatar + Name + Time */}
+      {/* Header: Avatar + Name + Time + Delete */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, position: "relative", zIndex: 2 }}>
         <div
           style={{
@@ -97,9 +144,20 @@ export function PostCard({ post, onLike, onReply, liked = false }: PostCardProps
             {relativeTime(post.createdAt)}
           </span>
         </div>
+        {/* Delete button for own posts */}
+        {isOwn && (
+          <button
+            className="nes-btn is-error"
+            onClick={handleDelete}
+            aria-label="Delete post"
+            style={{ fontSize: 7, padding: "2px 8px", minWidth: "auto" }}
+          >
+            {confirming ? "\u786E\u8BA4?" : "\u5220\u9664"}
+          </button>
+        )}
       </div>
 
-      {/* Content */}
+      {/* Content with truncation */}
       <div
         className="font-retro"
         style={{
@@ -111,7 +169,41 @@ export function PostCard({ post, onLike, onReply, liked = false }: PostCardProps
           zIndex: 2,
         }}
       >
-        {post.content}
+        {displayContent}
+        {needsTruncation && !expanded && (
+          <button
+            onClick={() => setExpanded(true)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#9D00FF",
+              cursor: "pointer",
+              fontSize: 14,
+              fontFamily: "var(--font-retro)",
+              padding: 0,
+              marginLeft: 2,
+            }}
+          >
+            {"...\u5C55\u5F00\u5168\u6587"}
+          </button>
+        )}
+        {needsTruncation && expanded && (
+          <button
+            onClick={() => setExpanded(false)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#555",
+              cursor: "pointer",
+              fontSize: 12,
+              fontFamily: "var(--font-retro)",
+              padding: 0,
+              marginLeft: 4,
+            }}
+          >
+            {"\u6536\u8D77"}
+          </button>
+        )}
       </div>
 
       {/* Project badge */}
@@ -145,6 +237,7 @@ export function PostCard({ post, onLike, onReply, liked = false }: PostCardProps
           animate={bouncing ? { scale: [1, 1.3, 1] } : {}}
           transition={{ duration: 0.3 }}
           onClick={handleLike}
+          aria-label={`\u70B9\u8D5E (${displayLikes})`}
           style={{
             fontSize: 9,
             padding: "4px 10px",
@@ -156,26 +249,31 @@ export function PostCard({ post, onLike, onReply, liked = false }: PostCardProps
           }}
         >
           <span>{liked ? "\u2665" : "\u2661"}</span>
-          <span className="font-pixel" style={{ fontSize: 7 }}>{post.likes}</span>
+          <span className="font-pixel" style={{ fontSize: 7 }}>{displayLikes}</span>
+          <span className="hidden sm:inline font-pixel" style={{ fontSize: 7 }}>{"\u70B9\u8D5E"}</span>
         </motion.button>
 
         {/* Reply */}
         <button
           className="nes-btn"
           onClick={() => onReply(post.id)}
+          aria-label={`\u56DE\u590D (${post.repliesCount})`}
           style={{ fontSize: 9, padding: "4px 10px", display: "flex", alignItems: "center", gap: 4 }}
         >
           <span>{"\uD83D\uDCAC"}</span>
           <span className="font-pixel" style={{ fontSize: 7 }}>{post.repliesCount}</span>
+          <span className="hidden sm:inline font-pixel" style={{ fontSize: 7 }}>{"\u56DE\u590D"}</span>
         </button>
 
         {/* Repost */}
         <button
           className="nes-btn"
+          aria-label={`\u8F6C\u53D1 (${post.reposts})`}
           style={{ fontSize: 9, padding: "4px 10px", display: "flex", alignItems: "center", gap: 4 }}
         >
           <span>{"\uD83D\uDD01"}</span>
           <span className="font-pixel" style={{ fontSize: 7 }}>{post.reposts}</span>
+          <span className="hidden sm:inline font-pixel" style={{ fontSize: 7 }}>{"\u8F6C\u53D1"}</span>
         </button>
       </div>
     </motion.div>
