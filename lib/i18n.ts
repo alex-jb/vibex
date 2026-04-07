@@ -19,6 +19,7 @@ const translations = {
     "nav.agents": "Agents",
     "nav.workflows": "Workflows",
     "nav.analytics": "Analytics",
+    "nav.developers": "Developers",
     "nav.launch": "Launch Project",
 
     // Boot sequence
@@ -347,6 +348,29 @@ const translations = {
     "demo.loadingExperience": "Loading experience...",
     "demo.playing": "Playing...",
     "demo.clickToPlay": "Click to play",
+
+    // Developer Platform
+    "dev.title": "开发者平台",
+    "dev.overview": "概览",
+    "dev.restDesc": "16 个端点，支持 Agent 执行、工作流、项目管理",
+    "dev.streamDesc": "SSE 实时流，Agent 执行步骤实时推送",
+    "dev.webhookDesc": "事件推送（即将推出）",
+    "dev.endpoints": "端点文档",
+    "dev.management": "管理",
+    "dev.yourKey": "你的 Key",
+    "dev.copy": "复制",
+    "dev.regenerate": "重新生成",
+    "dev.createKey": "创建新 Key",
+    "dev.requests": "请求次数",
+    "dev.limit": "限额",
+    "dev.download": "下载",
+    "dev.codeExamples": "代码示例",
+    "dev.rateLimits": "速率限制",
+    "dev.plan": "方案",
+    "dev.reqPerDay": "请求/天",
+    "dev.tokensPerDay": "Tokens/天",
+    "dev.unlimited": "无限制",
+    "dev.upgrade": "升级",
   },
   zh: {
     // Nav items
@@ -361,6 +385,7 @@ const translations = {
     "nav.agents": "\u667a\u80fd\u4f53",
     "nav.workflows": "\u5de5\u4f5c\u6d41",
     "nav.analytics": "\u5206\u6790",
+    "nav.developers": "\u5f00\u53d1\u8005",
     "nav.launch": "\u53d1\u5e03\u9879\u76ee",
 
     // Boot sequence
@@ -689,6 +714,29 @@ const translations = {
     "demo.loadingExperience": "加载体验中...",
     "demo.playing": "播放中...",
     "demo.clickToPlay": "点击播放",
+
+    // Developer Platform
+    "dev.title": "开发者平台",
+    "dev.overview": "概览",
+    "dev.restDesc": "16 个端点，支持 Agent 执行、工作流、项目管理",
+    "dev.streamDesc": "SSE 实时流，Agent 执行步骤实时推送",
+    "dev.webhookDesc": "事件推送（即将推出）",
+    "dev.endpoints": "端点文档",
+    "dev.management": "管理",
+    "dev.yourKey": "你的 Key",
+    "dev.copy": "复制",
+    "dev.regenerate": "重新生成",
+    "dev.createKey": "创建新 Key",
+    "dev.requests": "请求次数",
+    "dev.limit": "限额",
+    "dev.download": "下载",
+    "dev.codeExamples": "代码示例",
+    "dev.rateLimits": "速率限制",
+    "dev.plan": "方案",
+    "dev.reqPerDay": "请求/天",
+    "dev.tokensPerDay": "Tokens/天",
+    "dev.unlimited": "无限制",
+    "dev.upgrade": "升级",
   },
 } as const;
 
