@@ -97,7 +97,6 @@ export default function FeedPage() {
   const { posts, loading, error, connected, refetch } = useRealtimeFeed(tab);
   const { user } = useAuth();
   const [visibleCount, setVisibleCount] = useState(10);
-  const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
   const [loadingMore, setLoadingMore] = useState(false);
   const [tabSwitching, setTabSwitching] = useState(false);
   const [localPosts, setLocalPosts] = useState<FeedPost[]>([]);
@@ -119,18 +118,6 @@ export default function FeedPage() {
   // hasMore: true if we have a multiple of 20 posts (could be more on server)
   const hasMore = localPosts.length > 0 && localPosts.length % 20 === 0;
   const exhausted = !hasMore && localPosts.length > 0;
-
-  const handleLike = useCallback((postId: string) => {
-    setLikedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(postId)) {
-        next.delete(postId);
-      } else {
-        next.add(postId);
-      }
-      return next;
-    });
-  }, []);
 
   const handleReply = useCallback((_postId: string) => {
     // placeholder for reply interaction
@@ -347,10 +334,8 @@ export default function FeedPage() {
                   <PostCard
                     key={post.id}
                     post={post}
-                    onLike={handleLike}
                     onReply={handleReply}
                     onDelete={handleDelete}
-                    liked={likedIds.has(post.id)}
                     isOwn={!!user && user.id === post.userId}
                   />
                 ))}

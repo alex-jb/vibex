@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { FeedPost } from "@/lib/feed";
+import { ReactionBar, type ReactionCounts, type ReactionType } from "./reaction-bar";
 
 /* ─── Helpers ─── */
 
@@ -46,17 +47,22 @@ const TRUNCATE_LENGTH = 280;
 
 interface PostCardProps {
   post: FeedPost;
-  onLike: (id: string) => void;
   onReply: (id: string) => void;
   onDelete?: (id: string) => void;
-  liked?: boolean;
+  reactionCounts?: ReactionCounts;
+  userReactions?: ReactionType[];
   isOwn?: boolean;
 }
 
-export function PostCard({ post, onLike, onReply, onDelete, liked = false, isOwn = false }: PostCardProps) {
-  const [bouncing, setBouncing] = useState(false);
+export function PostCard({
+  post,
+  onReply,
+  onDelete,
+  reactionCounts = { fire: 0, game: 0, art: 0, mindblown: 0 },
+  userReactions = [],
+  isOwn = false,
+}: PostCardProps) {
   const [expanded, setExpanded] = useState(false);
-  const [optimisticLikeOffset, setOptimisticLikeOffset] = useState(0);
   const [confirming, setConfirming] = useState(false);
   const color = avatarColor(post.userName);
 
@@ -64,30 +70,6 @@ export function PostCard({ post, onLike, onReply, onDelete, liked = false, isOwn
   const displayContent = needsTruncation && !expanded
     ? post.content.slice(0, TRUNCATE_LENGTH)
     : post.content;
-
-  const displayLikes = post.likes + optimisticLikeOffset;
-
-  const handleLike = useCallback(async () => {
-    setBouncing(true);
-    const wasLiked = liked;
-    const delta = wasLiked ? -1 : 1;
-    setOptimisticLikeOffset((prev) => prev + delta);
-    onLike(post.id);
-    setTimeout(() => setBouncing(false), 400);
-
-    try {
-      const res = await fetch(`/api/feed/${post.id}/like`, { method: "POST" });
-      if (!res.ok) {
-        // Revert optimistic update
-        setOptimisticLikeOffset((prev) => prev - delta);
-        onLike(post.id); // toggle back
-      }
-    } catch {
-      // Revert on network error
-      setOptimisticLikeOffset((prev) => prev - delta);
-      onLike(post.id);
-    }
-  }, [liked, onLike, post.id]);
 
   const handleDelete = useCallback(async () => {
     if (!confirming) {
@@ -229,43 +211,28 @@ export function PostCard({ post, onLike, onReply, onDelete, liked = false, isOwn
         </Link>
       )}
 
-      {/* Action bar */}
-      <div style={{ display: "flex", gap: 8, position: "relative", zIndex: 2 }}>
-        {/* Like */}
-        <motion.button
-          className="nes-btn"
-          animate={bouncing ? { scale: [1, 1.3, 1] } : {}}
-          transition={{ duration: 0.3 }}
-          onClick={handleLike}
-          aria-label={`\u70B9\u8D5E (${displayLikes})`}
-          style={{
-            fontSize: 9,
-            padding: "4px 10px",
-            display: "flex",
-            alignItems: "center",
-            gap: 4,
-            color: liked ? "#FF69B4" : undefined,
-            boxShadow: liked ? "0 0 8px #FF69B460" : undefined,
-          }}
-        >
-          <span>{liked ? "\u2665" : "\u2661"}</span>
-          <span className="font-pixel" style={{ fontSize: 7 }}>{displayLikes}</span>
-          <span className="hidden sm:inline font-pixel" style={{ fontSize: 7 }}>{"\u70B9\u8D5E"}</span>
-        </motion.button>
+      {/* Action bar: Reactions + Reply */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, position: "relative", zIndex: 2 }}>
+        {/* Reactions */}
+        <ReactionBar
+          postId={post.id}
+          counts={reactionCounts}
+          userReactions={userReactions}
+        />
 
         {/* Reply */}
-        <button
-          className="nes-btn"
-          onClick={() => onReply(post.id)}
-          aria-label={`\u56DE\u590D (${post.repliesCount})`}
-          style={{ fontSize: 9, padding: "4px 10px", display: "flex", alignItems: "center", gap: 4 }}
-        >
-          <span>{"\uD83D\uDCAC"}</span>
-          <span className="font-pixel" style={{ fontSize: 7 }}>{post.repliesCount}</span>
-          <span className="hidden sm:inline font-pixel" style={{ fontSize: 7 }}>{"\u56DE\u590D"}</span>
-        </button>
-
-        {/* Repost — removed: button was decorative with no handler. Will add back with repost feature. */}
+        <div>
+          <button
+            className="nes-btn"
+            onClick={() => onReply(post.id)}
+            aria-label={`\u56DE\u590D (${post.repliesCount})`}
+            style={{ fontSize: 9, padding: "4px 10px", display: "flex", alignItems: "center", gap: 4 }}
+          >
+            <span>{"\uD83D\uDCAC"}</span>
+            <span className="font-pixel" style={{ fontSize: 7 }}>{post.repliesCount}</span>
+            <span className="hidden sm:inline font-pixel" style={{ fontSize: 7 }}>{"\u56DE\u590D"}</span>
+          </button>
+        </div>
       </div>
     </motion.div>
   );
