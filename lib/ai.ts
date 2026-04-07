@@ -158,6 +158,49 @@ Respond with JSON: {"intro":"...","roundNarratives":["one per round"],"conclusio
 }
 
 // ═══════════════════════════════════════════════════════════════
+// AI BATTLE COMMENTARY (streaming)
+// ═══════════════════════════════════════════════════════════════
+
+export async function* streamBattleNarrative(battle: {
+  challengerTitle: string;
+  defenderTitle: string;
+  rounds: { attribute: string; challengerValue: number; defenderValue: number; winner: string; isCritical: boolean }[];
+  winner: string;
+}): AsyncGenerator<string> {
+  const roundSummary = battle.rounds
+    .map((r, i) => `Round ${i + 1}: ${r.attribute} - Challenger ${r.challengerValue} vs Defender ${r.defenderValue} (${r.winner} wins${r.isCritical ? ", CRITICAL HIT" : ""})`)
+    .join("\n");
+
+  const stream = client.messages.stream({
+    model: MODEL,
+    max_tokens: 1500,
+    system: `You are a dramatic RPG battle announcer for VibeX's AI project arena.
+Generate exciting, pixel-game-style commentary for battles between AI projects.
+Use gaming terminology, dramatic flair, and RPG references.
+Keep each narrative 1-2 sentences. Be fun and energetic.
+Respond ONLY with valid JSON.`,
+    messages: [
+      {
+        role: "user",
+        content: `Generate battle narrative:
+Challenger: ${battle.challengerTitle}
+Defender: ${battle.defenderTitle}
+${roundSummary}
+Overall Winner: ${battle.winner}
+
+Respond with JSON: {"intro":"...","roundNarratives":["one per round"],"conclusion":"...","mvpComment":"..."}`,
+      },
+    ],
+  });
+
+  for await (const event of stream) {
+    if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
+      yield event.delta.text;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 // AI LAUNCH ASSISTANT (streaming)
 // ═══════════════════════════════════════════════════════════════
 

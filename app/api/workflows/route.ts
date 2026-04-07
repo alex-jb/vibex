@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { workflows as mockWorkflows } from "@/lib/mock-data/workflows";
 import { validateString, sanitize } from "@/lib/validate";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 const USE_SUPABASE = !!(
   process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -10,7 +10,7 @@ const USE_SUPABASE = !!(
 
 export async function GET() {
   if (!USE_SUPABASE) {
-    return NextResponse.json(mockWorkflows);
+    return apiSuccess(mockWorkflows);
   }
 
   const { data, error } = await supabase
@@ -19,10 +19,10 @@ export async function GET() {
     .order("created_at", { ascending: false });
 
   if (error || !data) {
-    return NextResponse.json(mockWorkflows);
+    return apiSuccess(mockWorkflows);
   }
 
-  return NextResponse.json(data);
+  return apiSuccess(data);
 }
 
 export async function POST(request: Request) {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     }
 
     if (errors.length > 0) {
-      return NextResponse.json({ error: errors.join("; ") }, { status: 400 });
+      return apiError(errors.join("; "), 400);
     }
 
     const workflow = {
@@ -56,9 +56,9 @@ export async function POST(request: Request) {
     };
 
     if (!USE_SUPABASE) {
-      return NextResponse.json(
+      return apiSuccess(
         { id: `wf-${Date.now()}`, ...workflow, created_at: new Date().toISOString() },
-        { status: 201 },
+        201,
       );
     }
 
@@ -69,17 +69,11 @@ export async function POST(request: Request) {
       .single();
 
     if (error || !data) {
-      return NextResponse.json(
-        { error: error?.message || "Failed to save workflow" },
-        { status: 500 },
-      );
+      return apiError(error?.message || "Failed to save workflow", 500);
     }
 
-    return NextResponse.json(data, { status: 201 });
+    return apiSuccess(data, 201);
   } catch {
-    return NextResponse.json(
-      { error: "Invalid request body" },
-      { status: 400 },
-    );
+    return apiError("Invalid request body", 400);
   }
 }

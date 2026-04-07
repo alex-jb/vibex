@@ -1,14 +1,14 @@
-import { NextResponse } from "next/server";
 import { runAgent } from "@/lib/agent-engine";
 import { validateString } from "@/lib/validate";
 import { getAgentById } from "@/lib/db";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function POST(request: Request) {
   let body: { agentId?: string; input?: string };
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return apiError("Invalid JSON body", 400);
   }
 
   const { agentId, input } = body;
@@ -20,10 +20,7 @@ export async function POST(request: Request) {
   if (inputErr) errors.push(inputErr);
 
   if (errors.length > 0) {
-    return NextResponse.json(
-      { error: errors.join("; ") },
-      { status: 400 },
-    );
+    return apiError(errors.join("; "), 400);
   }
 
   const validAgentId = agentId as string;
@@ -31,20 +28,15 @@ export async function POST(request: Request) {
 
   const agent = await getAgentById(validAgentId);
   if (!agent) {
-    return NextResponse.json(
-      { error: `Agent not found: ${validAgentId}` },
-      { status: 404 },
-    );
+    return apiError(`Agent not found: ${validAgentId}`, 404);
   }
 
   try {
     const result = await runAgent(agent, validInput);
-    return NextResponse.json(result);
+    return apiSuccess(result);
   } catch (error) {
-    console.error("Agent run error:", error);
-    return NextResponse.json(
-      { error: "Agent execution failed" },
-      { status: 500 },
-    );
+    const errorId = `err-${Date.now()}`;
+    console.error(`[${errorId}] Agent run error:`, error);
+    return apiError("Agent execution failed", 500, errorId);
   }
 }

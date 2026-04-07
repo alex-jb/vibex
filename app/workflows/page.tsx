@@ -30,12 +30,13 @@ type Tab = "browse" | "builder";
 interface BuilderStep {
   id: string;
   agentId: string;
+  condition: string;
 }
 
 export default function WorkflowsPage() {
   const [tab, setTab] = useState<Tab>("browse");
   const [steps, setSteps] = useState<BuilderStep[]>([
-    { id: crypto.randomUUID(), agentId: agents[0].id },
+    { id: crypto.randomUUID(), agentId: agents[0].id, condition: "" },
   ]);
   const [wfName, setWfName] = useState("");
   const [wfDesc, setWfDesc] = useState("");
@@ -44,7 +45,7 @@ export default function WorkflowsPage() {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const addStep = (afterIndex?: number) => {
-    const newStep: BuilderStep = { id: crypto.randomUUID(), agentId: agents[0].id };
+    const newStep: BuilderStep = { id: crypto.randomUUID(), agentId: agents[0].id, condition: "" };
     setSteps((prev) => {
       const next = [...prev];
       const idx = afterIndex !== undefined ? afterIndex + 1 : next.length;
@@ -63,6 +64,12 @@ export default function WorkflowsPage() {
     );
   };
 
+  const updateCondition = (stepId: string, condition: string) => {
+    setSteps((prev) =>
+      prev.map((s) => (s.id === stepId ? { ...s, condition } : s))
+    );
+  };
+
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
@@ -78,7 +85,7 @@ export default function WorkflowsPage() {
         body: JSON.stringify({
           name: wfName,
           description: wfDesc,
-          steps: steps.map((s) => ({ agentId: s.agentId })),
+          steps: steps.map((s) => ({ agentId: s.agentId, condition: s.condition || undefined })),
         }),
       });
       if (!res.ok) {
@@ -262,8 +269,18 @@ export default function WorkflowsPage() {
                             </option>
                           ))}
                         </select>
+                        {/* Condition input */}
+                        <div className="mt-2">
+                          <label className="font-pixel text-[7px] text-muted-foreground block mb-1">条件</label>
+                          <input
+                            value={step.condition}
+                            onChange={(e) => updateCondition(step.id, e.target.value)}
+                            placeholder="留空 = 始终执行"
+                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-violet-500/40"
+                          />
+                        </div>
                         {agent && (
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
                             <Bot className="size-3.5 text-violet-400" />
                             <span className="truncate">{agent.description.slice(0, 80)}...</span>
                             <Badge variant="outline" className="shrink-0 text-[10px] border-violet-500/30 text-violet-300">

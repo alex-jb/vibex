@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -9,6 +10,7 @@ import {
   Clock,
   TrendingUp,
   Cpu,
+  Download,
 } from "lucide-react";
 import { agents } from "@/lib/mock-data/agents";
 import { Badge } from "@/components/ui/badge";
@@ -74,8 +76,57 @@ const fadeUp = {
 
 // ── Page ─────────────────────────────────────────────────────────────
 
+type DateRange = 7 | 30 | 90;
+
+const rangeLabelMap: Record<DateRange, string> = { 7: "7天", 30: "30天", 90: "90天" };
+
+function dayLabelsForRange(range: DateRange, t: (k: typeof dayLabelKeys[number]) => string): string[] {
+  if (range === 7) return dayLabelKeys.map((k) => t(k));
+  const base = dayLabelKeys.map((k) => t(k));
+  const out: string[] = [];
+  for (let i = 0; i < range; i++) out.push(base[i % 7]);
+  return out;
+}
+
+function runsForRange(range: DateRange): number[] {
+  if (range === 7) return dailyRuns;
+  const out: number[] = [];
+  for (let i = 0; i < range; i++) out.push(dailyRuns[i % 7] + Math.round((i * 7) % 50 - 25));
+  return out;
+}
+
+function costsForRange(range: DateRange): number[] {
+  if (range === 7) return dailyCosts;
+  const out: number[] = [];
+  for (let i = 0; i < range; i++) out.push(+(dailyCosts[i % 7] + ((i * 3) % 8 - 4)).toFixed(1));
+  return out;
+}
+
 export default function AnalyticsPage() {
   const { t } = useLang();
+  const [range, setRange] = useState<DateRange>(7);
+
+  const currentRuns = runsForRange(range);
+  const currentCosts = costsForRange(range);
+  const currentLabels = dayLabelsForRange(range, t);
+  const currentMaxDaily = Math.max(...currentRuns);
+  const currentMaxCost = Math.max(...currentCosts);
+
+  const handleExportCsv = useCallback(() => {
+    const header = "Agent,Runs,Success Rate,Avg Latency (s),Est. Cost ($)";
+    const rows = sortedAgents.map((a) => {
+      const estCost = ((a.runs * a.avgLatencyMs) / 1_000_000 * 2.5).toFixed(2);
+      return `"${a.name}",${a.runs},${a.successRate}%,${(a.avgLatencyMs / 1000).toFixed(1)},${estCost}`;
+    });
+    const csv = [header, ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `vibex-analytics-${range}d.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [range]);
 
   return (
     <main className="min-h-screen bg-background pt-24 pb-20" style={{ position: "relative", overflow: "hidden" }}>
@@ -104,6 +155,28 @@ export default function AnalyticsPage() {
           <p className="font-pixel text-muted-foreground max-w-lg mx-auto" style={{ fontSize: 10 }}>
             {t("analytics.subtitle")}
           </p>
+          {/* Date range picker + CSV export */}
+          <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
+            {([7, 30, 90] as DateRange[]).map((r) => (
+              <button
+                key={r}
+                onClick={() => setRange(r)}
+                className={range === r ? "nes-btn is-primary" : "nes-btn"}
+                style={{ fontSize: 10, padding: "4px 12px" }}
+              >
+                <span className="font-pixel">{rangeLabelMap[r]}</span>
+              </button>
+            ))}
+            <button
+              onClick={handleExportCsv}
+              className="nes-btn"
+              style={{ fontSize: 10, padding: "4px 12px" }}
+            >
+              <span className="font-pixel flex items-center gap-1">
+                <Download className="size-3 inline-block" /> 导出 CSV
+              </span>
+            </button>
+          </div>
         </motion.section>
 
         {/* ── Overview Stats ──────────────────────────── */}
@@ -133,14 +206,14 @@ export default function AnalyticsPage() {
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
             <TrendingUp className="size-5 text-violet-400" /> {">"} {t("analytics.runTrend")}
           </h2>
-          <div aria-label={t("analytics.runTrend")} className="flex items-end gap-3 h-48" style={{ imageRendering: "pixelated" as const }}>
-            {dailyRuns.map((v, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                <span className="font-pixel text-[8px] text-muted-foreground">{v}</span>
+          <div aria-label={t("analytics.runTrend")} className="flex items-end gap-[2px] h-48 overflow-x-auto" style={{ imageRendering: "pixelated" as const }}>
+            {currentRuns.map((v, i) => (
+              <div key={i} className="flex-1 min-w-[12px] flex flex-col items-center gap-1">
+                {range === 7 && <span className="font-pixel text-[8px] text-muted-foreground">{v}</span>}
                 <div
                   className="w-full bg-gradient-to-t from-violet-600 to-fuchsia-500 transition-all duration-500"
                   style={{
-                    height: `${(v / maxDaily) * 100}%`,
+                    height: `${(v / currentMaxDaily) * 100}%`,
                     position: "relative",
                     overflow: "hidden",
                   }}
@@ -154,7 +227,7 @@ export default function AnalyticsPage() {
                     }}
                   />
                 </div>
-                <span className="font-pixel text-[8px] text-muted-foreground">{t(dayLabelKeys[i])}</span>
+                {range === 7 && <span className="font-pixel text-[8px] text-muted-foreground">{currentLabels[i]}</span>}
               </div>
             ))}
           </div>
@@ -303,14 +376,14 @@ export default function AnalyticsPage() {
           {/* Daily cost trend */}
           <div className="space-y-3">
             <h3 className="font-pixel text-[9px] text-muted-foreground">{">"} {t("analytics.dailyCostTrend")}</h3>
-            <div className="flex items-end gap-3 h-32" style={{ imageRendering: "pixelated" as const }}>
-              {dailyCosts.map((v, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                  <span className="font-pixel text-[8px] text-muted-foreground">${v}</span>
+            <div className="flex items-end gap-[2px] h-32 overflow-x-auto" style={{ imageRendering: "pixelated" as const }}>
+              {currentCosts.map((v, i) => (
+                <div key={i} className="flex-1 min-w-[12px] flex flex-col items-center gap-1">
+                  {range === 7 && <span className="font-pixel text-[8px] text-muted-foreground">${v}</span>}
                   <div
                     className="w-full bg-gradient-to-t from-emerald-600 to-cyan-500 transition-all duration-500"
                     style={{
-                      height: `${(v / maxCost) * 100}%`,
+                      height: `${(v / currentMaxCost) * 100}%`,
                       position: "relative",
                       overflow: "hidden",
                     }}
@@ -324,7 +397,7 @@ export default function AnalyticsPage() {
                       }}
                     />
                   </div>
-                  <span className="font-pixel text-[8px] text-muted-foreground">{t(dayLabelKeys[i])}</span>
+                  {range === 7 && <span className="font-pixel text-[8px] text-muted-foreground">{currentLabels[i]}</span>}
                 </div>
               ))}
             </div>

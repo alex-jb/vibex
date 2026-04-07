@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import React from "react";
 
-export type Lang = "en" | "zh";
+export type Lang = "en" | "zh" | "ja";
 
 const translations = {
   en: {
@@ -834,9 +834,35 @@ const translations = {
     // Common
     "common.comingSoon": "即将推出",
   },
+  ja: {
+    // Nav items
+    "nav.home": "\u30db\u30fc\u30e0",
+    "nav.explore": "\u63a2\u7d22",
+    "nav.hunt": "\u30cf\u30f3\u30c8",
+    "nav.arena": "\u30a2\u30ea\u30fc\u30ca",
+    "nav.ideas": "\u30a2\u30a4\u30c7\u30a2",
+    "nav.creators": "\u30af\u30ea\u30a8\u30a4\u30bf\u30fc",
+    "nav.events": "\u30a4\u30d9\u30f3\u30c8",
+    "nav.insights": "\u30a4\u30f3\u30b5\u30a4\u30c8",
+    "nav.agents": "\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8",
+    "nav.workflows": "\u30ef\u30fc\u30af\u30d5\u30ed\u30fc",
+    "nav.analytics": "\u5206\u6790",
+    "nav.developers": "\u958b\u767a\u8005",
+    "nav.launch": "\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u3092\u516c\u958b",
+
+    // Boot sequence
+    "boot.0": "VIBEX v2.0.26",
+    "boot.1": "\u30af\u30a8\u30b9\u30c8\u30a8\u30f3\u30b8\u30f3\u3092\u521d\u671f\u5316\u4e2d...",
+    "boot.2": "\u52c7\u8005\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9\u3092\u8aad\u307f\u8fbc\u307f\u4e2d... OK",
+    "boot.3": "AI \u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u3092\u30b9\u30ad\u30e3\u30f3\u4e2d... 12,847 \u4ef6\u691c\u51fa",
+    "boot.4": "\u30c7\u30a4\u30ea\u30fc\u30a2\u30ea\u30fc\u30ca\u72b6\u614b: \u30e9\u30a4\u30d6",
+    "boot.5": "",
+    "boot.6": "> \u304a\u304b\u3048\u308a\u3001\u30c8\u30ec\u30fc\u30ca\u30fc\u3002\u5192\u967a\u304c\u59cb\u307e\u308b\u3002",
+  },
 } as const;
 
 type TranslationKey = keyof typeof translations.en;
+type JaKeys = keyof typeof translations.ja;
 
 interface LangContextType {
   lang: Lang;
@@ -855,7 +881,7 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem("vibecode-hunt-lang");
-    if (stored === "zh" || stored === "en") {
+    if (stored === "zh" || stored === "en" || stored === "ja") {
       setLangState(stored);
     }
   }, []);
@@ -867,6 +893,11 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
 
   const t = useCallback(
     (key: TranslationKey): string => {
+      if (lang === "ja") {
+        const jaVal = translations.ja[key as JaKeys];
+        if (jaVal !== undefined) return jaVal;
+        return translations.en[key] ?? key;
+      }
       return translations[lang][key] ?? key;
     },
     [lang]

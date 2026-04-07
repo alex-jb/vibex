@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
 import { createIdea } from "@/lib/db";
 import { validateString, validateEnum, sanitize } from "@/lib/validate";
+import { apiSuccess, apiError } from "@/lib/api-response";
 import type { ProjectCategory } from "@/lib/types";
 
 const VALID_CATEGORIES: ProjectCategory[] = [
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   if (catErr) errors.push(catErr);
 
   if (errors.length > 0) {
-    return NextResponse.json({ error: errors.join("; ") }, { status: 400 });
+    return apiError(errors.join("; "), 400);
   }
 
   const idea = await createIdea({
@@ -35,11 +35,8 @@ export async function POST(request: Request) {
   });
 
   if (!idea) {
-    return NextResponse.json(
-      { error: "Failed to create idea" },
-      { status: 500 }
-    );
+    return apiError("Failed to create idea", 500);
   }
 
-  return NextResponse.json(idea, { status: 201 });
+  return apiSuccess(idea, 201);
 }

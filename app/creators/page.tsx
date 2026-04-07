@@ -123,9 +123,14 @@ const stagger = { animate: { transition: { staggerChildren: 0.06 } } };
 export default function CreatorsPage() {
   const { t } = useLang();
   const [selectedCreator, setSelectedCreator] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const sortedCreators = [...creators].sort((a, b) => a.rank - b.rank);
   const top3 = sortedCreators.filter((c) => c.rank <= 3);
   const rest = sortedCreators.filter((c) => c.rank > 3);
+
+  const PAGE_SIZE = 5;
+  const totalPages = Math.max(1, Math.ceil(rest.length / PAGE_SIZE));
+  const pagedRest = rest.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const totalCreators = creators.length;
   const totalProjects = creators.reduce((sum, c) => sum + c.projectCount, 0);
@@ -225,7 +230,7 @@ export default function CreatorsPage() {
           <div>
             <SectionHeader badge={t("creators.rankings")} title={t("creators.allCreators")} description={t("creators.allDesc")} />
             <motion.div variants={stagger} initial="initial" animate="animate" className="mt-8 glass-card rounded-2xl overflow-hidden divide-y divide-white/[0.06]">
-              {rest.map((creator) => {
+              {pagedRest.map((creator) => {
                 const heroClass = getCreatorClass(creator.id);
                 return (
                   <motion.div
@@ -276,6 +281,31 @@ export default function CreatorsPage() {
                 );
               })}
             </motion.div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, marginTop: 16 }}>
+                <button
+                  className="nes-btn is-primary"
+                  style={{ fontSize: 10, padding: "8px 14px" }}
+                  disabled={currentPage <= 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                >
+                  上一页
+                </button>
+                <span className="font-pixel" style={{ fontSize: 8, color: "#8888A0" }}>
+                  第 {currentPage} / {totalPages} 页
+                </span>
+                <button
+                  className="nes-btn is-primary"
+                  style={{ fontSize: 10, padding: "8px 14px" }}
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                >
+                  下一页
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
