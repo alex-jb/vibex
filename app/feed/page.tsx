@@ -152,6 +152,8 @@ export default function FeedPage() {
           repliesCount: row.replies_count as number,
           reposts: row.reposts as number,
           createdAt: row.created_at as string,
+          mediaUrl: (row.media_url as string) || undefined,
+          mediaType: (row.media_type as "image" | "gif") || undefined,
         }));
         if (morePosts.length > 0) {
           setLocalPosts((prev) => [...prev, ...morePosts]);

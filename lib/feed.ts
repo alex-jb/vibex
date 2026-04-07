@@ -18,6 +18,8 @@ export interface FeedPost {
   repliesCount: number;
   reposts: number;
   createdAt: string;
+  mediaUrl?: string;
+  mediaType?: "image" | "gif";
 }
 
 const USE_SUPABASE = !!(
@@ -39,6 +41,8 @@ const MOCK_POSTS: FeedPost[] = RAW_MOCK_POSTS.map((r) => ({
   repliesCount: r.replies_count,
   reposts: r.reposts,
   createdAt: r.created_at,
+  mediaUrl: r.media_url ?? undefined,
+  mediaType: (r.media_type as "image" | "gif") ?? undefined,
 }));
 
 function mapRow(row: Record<string, unknown>): FeedPost {
@@ -54,6 +58,8 @@ function mapRow(row: Record<string, unknown>): FeedPost {
     repliesCount: row.replies_count as number,
     reposts: row.reposts as number,
     createdAt: row.created_at as string,
+    mediaUrl: (row.media_url as string) || undefined,
+    mediaType: (row.media_type as "image" | "gif") || undefined,
   };
 }
 

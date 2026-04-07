@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import type { FeedPost } from "@/lib/feed";
 import { ReactionBar, type ReactionCounts, type ReactionType } from "./reaction-bar";
+import { MediaAttachment } from "./media-attachment";
 
 /* ─── Helpers ─── */
 
@@ -187,6 +188,13 @@ export function PostCard({
           </button>
         )}
       </div>
+
+      {/* Media attachment */}
+      {post.mediaUrl && post.mediaType && (
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <MediaAttachment url={post.mediaUrl} type={post.mediaType} />
+        </div>
+      )}
 
       {/* Project badge */}
       {post.projectId && (

@@ -85,9 +85,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { content, projectId } = body as {
+  const { content, projectId, mediaUrl, mediaType } = body as {
     content?: string;
     projectId?: string;
+    mediaUrl?: string;
+    mediaType?: "image" | "gif";
   };
 
   // Validate content
@@ -115,6 +117,8 @@ export async function POST(request: Request) {
       replies_count: 0,
       reposts: 0,
       created_at: new Date().toISOString(),
+      media_url: mediaUrl ?? null,
+      media_type: mediaType ?? null,
     };
     return NextResponse.json(mockPost, { status: 201 });
   }
@@ -143,6 +147,8 @@ export async function POST(request: Request) {
       user_avatar: user.user_metadata?.avatar_url ?? null,
       content: sanitize(content!.trim()),
       project_id: projectId ?? null,
+      media_url: mediaUrl ?? null,
+      media_type: mediaType ?? null,
     })
     .select()
     .single();

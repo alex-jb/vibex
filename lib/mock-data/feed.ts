@@ -15,6 +15,8 @@ export interface MockPostRow {
   replies_count: number;
   reposts: number;
   created_at: string;
+  media_url: string | null;
+  media_type: string | null;
 }
 
 export const MOCK_POSTS: MockPostRow[] = [
@@ -31,6 +33,8 @@ export const MOCK_POSTS: MockPostRow[] = [
     replies_count: 5,
     reposts: 3,
     created_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+    media_url: null,
+    media_type: null,
   },
   {
     id: "post-2",
@@ -44,6 +48,8 @@ export const MOCK_POSTS: MockPostRow[] = [
     replies_count: 12,
     reposts: 8,
     created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    media_url: null,
+    media_type: null,
   },
   {
     id: "post-3",
@@ -58,6 +64,8 @@ export const MOCK_POSTS: MockPostRow[] = [
     replies_count: 3,
     reposts: 1,
     created_at: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+    media_url: null,
+    media_type: null,
   },
   {
     id: "post-4",
@@ -72,6 +80,8 @@ export const MOCK_POSTS: MockPostRow[] = [
     replies_count: 7,
     reposts: 5,
     created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+    media_url: null,
+    media_type: null,
   },
   {
     id: "post-5",
@@ -86,6 +96,8 @@ export const MOCK_POSTS: MockPostRow[] = [
     replies_count: 2,
     reposts: 4,
     created_at: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+    media_url: null,
+    media_type: null,
   },
   {
     id: "post-6",
@@ -100,5 +112,7 @@ export const MOCK_POSTS: MockPostRow[] = [
     replies_count: 1,
     reposts: 2,
     created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    media_url: null,
+    media_type: null,
   },
 ];

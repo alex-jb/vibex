@@ -13,6 +13,8 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
   const { user } = useAuth();
   const [content, setContent] = useState("");
   const [linkProject, setLinkProject] = useState(false);
+  const [mediaUrl, setMediaUrl] = useState("");
+  const [showMediaInput, setShowMediaInput] = useState(false);
   const [posting, setPosting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successFlash, setSuccessFlash] = useState(false);
@@ -39,6 +41,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
           userAvatar: user.user_metadata?.avatar_url ?? null,
           content: content.trim(),
           ...(linkProject ? { projectId: "1" } : {}),
+          ...(mediaUrl.trim() ? { mediaUrl: mediaUrl.trim(), mediaType: mediaUrl.match(/\.gif($|\?)/i) ? "gif" : "image" } : {}),
         }),
       });
 
@@ -70,6 +73,8 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
 
       setContent("");
       setLinkProject(false);
+      setMediaUrl("");
+      setShowMediaInput(false);
 
       // Notify parent
       onNewPost?.(newPost);
@@ -188,6 +193,23 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
           >
             {"\uD83D\uDD17 \u94FE\u63A5\u9879\u76EE"}
           </button>
+
+          {/* Media toggle */}
+          <button
+            onClick={() => setShowMediaInput(!showMediaInput)}
+            className="font-pixel"
+            disabled={posting}
+            style={{
+              fontSize: 7,
+              color: showMediaInput ? "#FACC15" : "#555",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              textDecoration: showMediaInput ? "underline" : "none",
+            }}
+          >
+            {"\uD83D\uDDBC\uFE0F \u56FE\u7247"}
+          </button>
         </div>
 
         <button
@@ -220,6 +242,38 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
           {posting ? "\u53D1\u5E03\u4E2D..." : "\u53D1\u5E03"}
         </button>
       </div>
+
+      {/* Media URL input */}
+      {showMediaInput && (
+        <div style={{ marginTop: 8 }}>
+          <input
+            type="url"
+            value={mediaUrl}
+            onChange={(e) => setMediaUrl(e.target.value)}
+            placeholder={"图片/GIF URL..."}
+            disabled={posting}
+            className="font-retro"
+            style={{
+              width: "100%",
+              background: "#0A0A0C",
+              border: "2px solid #2A2A30",
+              padding: "6px 10px",
+              fontSize: 12,
+              color: "#E8E8EC",
+              outline: "none",
+              fontFamily: "var(--font-retro)",
+            }}
+          />
+          {mediaUrl.trim() && (
+            <div
+              className="font-pixel"
+              style={{ fontSize: 7, color: "#FACC15", marginTop: 4 }}
+            >
+              {mediaUrl.match(/\.gif($|\?)/i) ? "GIF" : "IMAGE"} {"\u2714"}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Spinner animation */}
       <style>{`
