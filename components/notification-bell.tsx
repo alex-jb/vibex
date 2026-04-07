@@ -24,6 +24,36 @@ const TYPE_ICONS: Record<Notification["type"], string> = {
   system: "\uD83D\uDCE2",
 };
 
+const MOCK_NOTIFICATIONS: Notification[] = [
+  {
+    id: "mock-1",
+    type: "upvote",
+    actor_name: "PixelCoder",
+    action_text: "upvoted your project \"AI Dungeon Master\"",
+    target_url: "/projects/1",
+    read: false,
+    created_at: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+  },
+  {
+    id: "mock-2",
+    type: "battle",
+    actor_name: "System",
+    action_text: "Your project won a battle and gained 120 EXP!",
+    target_url: "/arena",
+    read: false,
+    created_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+  },
+  {
+    id: "mock-3",
+    type: "comment",
+    actor_name: "RetroHacker",
+    action_text: "commented on your project",
+    target_url: "/projects/1",
+    read: true,
+    created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+  },
+];
+
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const minutes = Math.floor(diff / 60000);
@@ -50,10 +80,12 @@ export function NotificationBell() {
     setLoading(true);
     try {
       const res = await fetch(`/api/notifications?userId=${user.id}`);
+      if (!res.ok) throw new Error("fetch failed");
       const data = await res.json();
       setNotifications(data.notifications ?? []);
     } catch {
-      // Silent fail — notifications are non-critical
+      // Fallback to mock data when API fails or Supabase not configured
+      setNotifications(MOCK_NOTIFICATIONS);
     } finally {
       setLoading(false);
     }

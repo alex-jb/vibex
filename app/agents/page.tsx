@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Sparkles,
   Play,
@@ -50,7 +51,8 @@ function AgentCard({
   agent: (typeof agents)[number];
   size?: "featured" | "normal";
 }) {
-  const { lang } = useLang();
+  const { lang, t } = useLang();
+  const router = useRouter();
   const isFeatured = size === "featured";
 
   return (
@@ -128,18 +130,26 @@ function AgentCard({
             <button
               className="nes-btn"
               style={{ fontSize: 9, padding: "4px 12px" }}
-              onClick={(e) => e.preventDefault()}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/agents/builder?fork=${agent.id}`);
+              }}
             >
               <GitFork className="mr-1 inline size-3" />
-              复刻
+              {t("agentPage.fork")}
             </button>
             <button
               className="nes-btn is-success"
               style={{ fontSize: 9, padding: "4px 12px" }}
-              onClick={(e) => e.preventDefault()}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/agents/${agent.id}`);
+              }}
             >
               <Play className="mr-1 inline size-3" />
-              运行
+              {t("agentPage.run")}
             </button>
           </div>
         </div>

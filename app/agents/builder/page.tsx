@@ -81,7 +81,7 @@ function stepIcon(type: string) {
 // ── Page ───────────────────────────────────────────────────────
 
 export default function AgentBuilderPage() {
-  const { lang } = useLang();
+  const { lang, t } = useLang();
   const zh = lang === "zh";
 
   // Form state
@@ -177,7 +177,7 @@ export default function AgentBuilderPage() {
           {/* a) 基本信息 */}
           <section className="glass-card-strong rounded-xl p-6 border border-white/[0.06]">
             <h3 className="font-pixel text-[9px] uppercase tracking-widest text-muted-foreground mb-4">
-              {zh ? "基本信息" : "Basic Info"}
+              {t("builder.basicInfo")}
             </h3>
             <div className="space-y-4">
               <div>
@@ -222,7 +222,7 @@ export default function AgentBuilderPage() {
           {/* b) 模型配置 */}
           <section className="glass-card-strong rounded-xl p-6 border border-white/[0.06]">
             <h3 className="font-pixel text-[9px] uppercase tracking-widest text-muted-foreground mb-4">
-              {zh ? "模型配置" : "Model Config"}
+              {t("builder.modelConfig")}
             </h3>
             <div className="grid grid-cols-3 gap-3 mb-5">
               {MODELS.map((m) => (
@@ -287,7 +287,7 @@ export default function AgentBuilderPage() {
           <section className="glass-card-strong rounded-xl p-6 border border-white/[0.06]">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-pixel text-[9px] uppercase tracking-widest text-muted-foreground">
-                {zh ? "工具选择" : "Tools"}
+                {t("builder.tools")}
               </h3>
               <span className="text-xs text-muted-foreground">
                 {zh ? `已选择 ${selectedTools.length}/${BUILTIN_TOOLS.length} 个工具` : `${selectedTools.length}/${BUILTIN_TOOLS.length} selected`}
@@ -323,14 +323,14 @@ export default function AgentBuilderPage() {
           <div className="flex flex-wrap gap-3">
             <button onClick={() => setShowTest(!showTest)}
               className="nes-btn is-warning" style={{ fontSize: 10, padding: "8px 16px" }}>
-              <Play className="size-4 inline mr-1" />{zh ? "测试 Agent" : "Test Agent"}
+              <Play className="size-4 inline mr-1" />{t("builder.testAgent")}
             </button>
             <button className="nes-btn" style={{ fontSize: 10, padding: "8px 16px" }}>
-              <Save className="size-4 inline mr-1" />{zh ? "保存草稿" : "Save Draft"}
+              <Save className="size-4 inline mr-1" />{t("builder.saveDraft")}
             </button>
             <button disabled={!canPublish}
               className={`nes-btn ${canPublish ? "is-success" : "is-disabled"}`} style={{ fontSize: 10, padding: "8px 16px" }}>
-              <Rocket className="size-4 inline mr-1" />{zh ? "发布到市场" : "Publish"}
+              <Rocket className="size-4 inline mr-1" />{t("builder.publish")}
             </button>
           </div>
         </div>
@@ -342,7 +342,7 @@ export default function AgentBuilderPage() {
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="rpgui-container framed-golden" style={{ padding: 20 }}>
             <h3 className="font-pixel text-[9px] uppercase tracking-widest text-muted-foreground mb-4">
-              {zh ? "Agent 预览卡片" : "Preview Card"}
+              {t("builder.previewCard")}
             </h3>
             <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
               <div className="flex items-center justify-between mb-3">
@@ -390,7 +390,7 @@ export default function AgentBuilderPage() {
                 className="overflow-hidden">
                 <div className="glass-card-strong rounded-xl p-6 border border-white/[0.06]">
                   <h3 className="font-pixel text-[9px] uppercase tracking-widest text-muted-foreground mb-4">
-                    {zh ? "测试面板" : "Test Panel"}
+                    {t("builder.testPanel")}
                   </h3>
                   <Textarea value={testInput} onChange={(e) => setTestInput(e.target.value)}
                     rows={3} placeholder={zh ? "输入测试请求..." : "Enter test input..."}
@@ -406,7 +406,7 @@ export default function AgentBuilderPage() {
                       <div className="flex items-center gap-2 mb-3">
                         <Terminal className="size-4 text-emerald-400" />
                         <span className="font-pixel text-[9px] text-emerald-400 uppercase tracking-wider">
-                          {zh ? "执行日志" : "Execution Log"}
+                          {t("builder.executionLog")}
                         </span>
                       </div>
                       <div className="space-y-2 font-mono text-sm">

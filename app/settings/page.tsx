@@ -195,13 +195,15 @@ export default function SettingsPage() {
                 <Lock className="size-4 text-muted-foreground" />
                 <p className="text-sm text-foreground">修改密码</p>
               </div>
-              <button
-                disabled
-                className="nes-btn is-disabled"
-                style={{ fontSize: 9, padding: "4px 12px" }}
-              >
-                修改
-              </button>
+              <div title="即将推出">
+                <button
+                  disabled
+                  className="nes-btn is-disabled"
+                  style={{ fontSize: 9, padding: "4px 12px" }}
+                >
+                  修改
+                </button>
+              </div>
             </div>
 
             <div className="border-t border-white/[0.06] pt-4">
@@ -210,13 +212,15 @@ export default function SettingsPage() {
                   <Trash2 className="size-4 text-red-400/60" />
                   <p className="text-sm text-red-400/80">删除账户</p>
                 </div>
-                <button
-                  disabled
-                  className="nes-btn is-disabled"
-                  style={{ fontSize: 9, padding: "4px 12px" }}
-                >
-                  删除
-                </button>
+                <div title="即将推出">
+                  <button
+                    disabled
+                    className="nes-btn is-disabled"
+                    style={{ fontSize: 9, padding: "4px 12px" }}
+                  >
+                    删除
+                  </button>
+                </div>
               </div>
             </div>
           </SectionCard>

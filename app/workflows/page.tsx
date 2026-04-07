@@ -41,6 +41,7 @@ export default function WorkflowsPage() {
   const [wfDesc, setWfDesc] = useState("");
   const [showTestModal, setShowTestModal] = useState(false);
   const [testInput, setTestInput] = useState("");
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const addStep = (afterIndex?: number) => {
     const newStep: BuilderStep = { id: crypto.randomUUID(), agentId: agents[0].id };
@@ -64,10 +65,10 @@ export default function WorkflowsPage() {
 
   const handleSave = () => {
     if (!wfName.trim()) {
-      alert("请输入工作流名称");
+      setMessage({ type: "error", text: "请输入工作流名称" });
       return;
     }
-    alert(`工作流「${wfName}」已保存（${steps.length} 个步骤）`);
+    setMessage({ type: "success", text: `工作流「${wfName}」已保存（${steps.length} 个步骤）` });
   };
 
   const handleTestRun = async () => {
@@ -83,9 +84,9 @@ export default function WorkflowsPage() {
         }),
       });
       const data = await res.json();
-      alert(`测试完成: ${JSON.stringify(data).slice(0, 200)}`);
+      setMessage({ type: "success", text: `测试完成: ${JSON.stringify(data).slice(0, 200)}` });
     } catch {
-      alert("测试运行失败，请稍后再试");
+      setMessage({ type: "error", text: "测试运行失败，请稍后再试" });
     }
   };
 
@@ -288,6 +289,28 @@ export default function WorkflowsPage() {
                 测试运行
               </button>
             </div>
+          </div>
+        )}
+
+        {/* Inline message banner */}
+        {message && (
+          <div
+            className={`rpgui-container framed text-center ${message.type === "success" ? "" : ""}`}
+            style={{ padding: 12, marginBottom: 8 }}
+          >
+            <p
+              className={`font-pixel ${message.type === "success" ? "text-emerald-400" : "text-red-400"}`}
+              style={{ fontSize: 11, textShadow: message.type === "success" ? "0 0 10px rgba(57,255,20,0.3)" : "0 0 10px rgba(255,0,0,0.3)" }}
+            >
+              {message.text}
+            </p>
+            <button
+              onClick={() => setMessage(null)}
+              className="font-pixel text-muted-foreground mt-2 hover:text-foreground transition-colors"
+              style={{ fontSize: 8 }}
+            >
+              [dismiss]
+            </button>
           </div>
         )}
 

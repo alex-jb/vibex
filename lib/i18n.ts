@@ -371,6 +371,54 @@ const translations = {
     "dev.tokensPerDay": "Tokens/天",
     "dev.unlimited": "无限制",
     "dev.upgrade": "升级",
+
+    // Analytics page
+    "analytics.title": "Analytics",
+    "analytics.titleHighlight": "Dashboard",
+    "analytics.subtitle": "Agent run data, cost tracking, and performance trends",
+    "analytics.totalRuns": "Total Runs",
+    "analytics.totalTokens": "Total Tokens",
+    "analytics.totalCost": "Total Cost",
+    "analytics.avgSuccess": "Avg Success Rate",
+    "analytics.runTrend": "Run Trend",
+    "analytics.agentRanking": "Agent Ranking",
+    "analytics.category": "Category",
+    "analytics.runCount": "Runs",
+    "analytics.successRate": "Success Rate",
+    "analytics.avgLatency": "Avg Latency",
+    "analytics.estCost": "Est. Cost",
+    "analytics.tokenDistribution": "Token Distribution",
+    "analytics.recentRuns": "Recent Runs",
+    "analytics.success": "Success",
+    "analytics.failed": "Failed",
+    "analytics.costTracking": "Cost Tracking",
+    "analytics.modelUsage": "Model Usage Distribution",
+    "analytics.dailyCostTrend": "Daily Cost Trend",
+    "analytics.mon": "Mon",
+    "analytics.tue": "Tue",
+    "analytics.wed": "Wed",
+    "analytics.thu": "Thu",
+    "analytics.fri": "Fri",
+    "analytics.sat": "Sat",
+    "analytics.sun": "Sun",
+
+    // Agent marketplace page
+    "agentPage.fork": "Fork",
+    "agentPage.run": "Run",
+
+    // Agent builder page
+    "builder.basicInfo": "Basic Info",
+    "builder.modelConfig": "Model Config",
+    "builder.tools": "Tools",
+    "builder.testAgent": "Test Agent",
+    "builder.saveDraft": "Save Draft",
+    "builder.publish": "Publish",
+    "builder.previewCard": "Preview Card",
+    "builder.testPanel": "Test Panel",
+    "builder.executionLog": "Execution Log",
+
+    // Common
+    "common.comingSoon": "Coming soon",
   },
   zh: {
     // Nav items
@@ -737,6 +785,54 @@ const translations = {
     "dev.tokensPerDay": "Tokens/天",
     "dev.unlimited": "无限制",
     "dev.upgrade": "升级",
+
+    // Analytics page
+    "analytics.title": "分析",
+    "analytics.titleHighlight": "面板",
+    "analytics.subtitle": "Agent 运行数据、成本追踪和性能趋势",
+    "analytics.totalRuns": "总运行次数",
+    "analytics.totalTokens": "总 Token 消耗",
+    "analytics.totalCost": "总成本",
+    "analytics.avgSuccess": "平均成功率",
+    "analytics.runTrend": "运行趋势",
+    "analytics.agentRanking": "Agent 排行",
+    "analytics.category": "类别",
+    "analytics.runCount": "运行次数",
+    "analytics.successRate": "成功率",
+    "analytics.avgLatency": "平均延迟",
+    "analytics.estCost": "预估成本",
+    "analytics.tokenDistribution": "Token 消耗分布",
+    "analytics.recentRuns": "最近运行",
+    "analytics.success": "成功",
+    "analytics.failed": "失败",
+    "analytics.costTracking": "成本追踪",
+    "analytics.modelUsage": "模型用量分布",
+    "analytics.dailyCostTrend": "每日成本趋势",
+    "analytics.mon": "周一",
+    "analytics.tue": "周二",
+    "analytics.wed": "周三",
+    "analytics.thu": "周四",
+    "analytics.fri": "周五",
+    "analytics.sat": "周六",
+    "analytics.sun": "周日",
+
+    // Agent marketplace page
+    "agentPage.fork": "复刻",
+    "agentPage.run": "运行",
+
+    // Agent builder page
+    "builder.basicInfo": "基本信息",
+    "builder.modelConfig": "模型配置",
+    "builder.tools": "工具选择",
+    "builder.testAgent": "测试 Agent",
+    "builder.saveDraft": "保存草稿",
+    "builder.publish": "发布到市场",
+    "builder.previewCard": "Agent 预览卡片",
+    "builder.testPanel": "测试面板",
+    "builder.executionLog": "执行日志",
+
+    // Common
+    "common.comingSoon": "即将推出",
   },
 } as const;
 

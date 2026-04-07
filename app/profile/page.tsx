@@ -182,6 +182,7 @@ export default function ProfilePage() {
             {/* Edit button */}
             <button
               disabled
+              title="即将推出"
               className="flex items-center gap-1.5 rounded-lg border border-white/10 px-4 py-2 text-xs text-white/30 cursor-not-allowed"
             >
               <Pencil className="h-3.5 w-3.5" />

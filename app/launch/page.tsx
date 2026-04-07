@@ -53,6 +53,7 @@ export default function LaunchPage() {
   const [tags, setTags] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const { t } = useLang();
 
@@ -115,7 +116,7 @@ export default function LaunchPage() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    alert("Project submitted! (MVP - mock)");
+    setSubmitted(true);
   }
 
   // Suggestion helpers
@@ -313,13 +314,23 @@ export default function LaunchPage() {
             </div>
 
             {/* Submit */}
-            <Button
-              type="submit"
-              className="w-full mt-8 h-12 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-base font-semibold shadow-lg shadow-violet-500/20 transition-all duration-200 hover:shadow-violet-500/30 glow-violet"
-            >
-              <Rocket className="size-4 mr-2" />
-              {t("launch.submit")}
-            </Button>
+            {submitted && (
+              <div className="mt-8 rpgui-container framed p-4 text-center" style={{ padding: 16 }}>
+                <p className="font-pixel text-emerald-400" style={{ fontSize: 12, textShadow: "0 0 10px rgba(57,255,20,0.3)" }}>
+                  <CheckCircle2 className="inline size-4 mr-2" />
+                  Project submitted! (MVP - mock)
+                </p>
+              </div>
+            )}
+            {!submitted && (
+              <Button
+                type="submit"
+                className="w-full mt-8 h-12 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-base font-semibold shadow-lg shadow-violet-500/20 transition-all duration-200 hover:shadow-violet-500/30 glow-violet"
+              >
+                <Rocket className="size-4 mr-2" />
+                {t("launch.submit")}
+              </Button>
+            )}
           </form>
         </motion.div>
 

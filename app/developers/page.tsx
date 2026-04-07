@@ -527,13 +527,15 @@ export default function DevelopersPage() {
                 >
                   {copiedKey ? "✓" : t("dev.copy")}
                 </button>
-                <button
-                  className="nes-btn is-warning"
-                  style={{ fontSize: 9, padding: "6px 12px", opacity: 0.5, cursor: "not-allowed" }}
-                  disabled
-                >
-                  {t("dev.regenerate")}
-                </button>
+                <div title="即将推出">
+                  <button
+                    className="nes-btn is-warning"
+                    style={{ fontSize: 9, padding: "6px 12px", opacity: 0.5, cursor: "not-allowed" }}
+                    disabled
+                  >
+                    {t("dev.regenerate")}
+                  </button>
+                </div>
                 <button
                   className="nes-btn is-success"
                   style={{ fontSize: 9, padding: "6px 12px" }}

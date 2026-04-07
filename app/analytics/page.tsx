@@ -21,7 +21,7 @@ const avgSuccess =
   (agents.reduce((s, a) => s + a.successRate, 0) / agents.length).toFixed(1);
 
 const dailyRuns = [182, 245, 198, 310, 274, 356, 321]; // last 7 days
-const dayLabels = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+const dayLabelKeys = ["analytics.mon", "analytics.tue", "analytics.wed", "analytics.thu", "analytics.fri", "analytics.sat", "analytics.sun"] as const;
 const maxDaily = Math.max(...dailyRuns);
 
 const sortedAgents = [...agents].sort((a, b) => b.runs - a.runs);
@@ -76,7 +76,6 @@ const fadeUp = {
 
 export default function AnalyticsPage() {
   const { t } = useLang();
-  void t; // available for future i18n keys
 
   return (
     <main className="min-h-screen bg-background pt-24 pb-20" style={{ position: "relative", overflow: "hidden" }}>
@@ -100,10 +99,10 @@ export default function AnalyticsPage() {
             {">"} VIBEX://ANALYTICS v2.0
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-            分析<span className="text-gradient-subtle">面板</span>
+            {t("analytics.title")}<span className="text-gradient-subtle">{t("analytics.titleHighlight")}</span>
           </h1>
           <p className="font-pixel text-muted-foreground max-w-lg mx-auto" style={{ fontSize: 10 }}>
-            Agent 运行数据、成本追踪和性能趋势
+            {t("analytics.subtitle")}
           </p>
         </motion.section>
 
@@ -112,10 +111,10 @@ export default function AnalyticsPage() {
           <div className="rpgui-container framed" style={{ padding: 16 }}>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { label: "総運行次数", value: totalRuns.toLocaleString(), icon: Zap, accent: "text-violet-400" },
-                { label: "総 Token 消耗", value: "2.4M", icon: Cpu, accent: "text-cyan-400" },
-                { label: "総成本", value: "$127.50", icon: DollarSign, accent: "text-emerald-400" },
-                { label: "平均成功率", value: `${avgSuccess}%`, icon: CheckCircle, accent: "text-fuchsia-400" },
+                { label: t("analytics.totalRuns"), value: totalRuns.toLocaleString(), icon: Zap, accent: "text-violet-400" },
+                { label: t("analytics.totalTokens"), value: "2.4M", icon: Cpu, accent: "text-cyan-400" },
+                { label: t("analytics.totalCost"), value: "$127.50", icon: DollarSign, accent: "text-emerald-400" },
+                { label: t("analytics.avgSuccess"), value: `${avgSuccess}%`, icon: CheckCircle, accent: "text-fuchsia-400" },
               ].map((s) => (
                 <div key={s.label} className="glass-card-strong rounded-2xl p-5 space-y-2">
                   <div className="flex items-center gap-2">
@@ -132,7 +131,7 @@ export default function AnalyticsPage() {
         {/* ── 运行趋势图 ─────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
-            <TrendingUp className="size-5 text-violet-400" /> {">"} 运行趋势
+            <TrendingUp className="size-5 text-violet-400" /> {">"} {t("analytics.runTrend")}
           </h2>
           <div className="flex items-end gap-3 h-48" style={{ imageRendering: "pixelated" as const }}>
             {dailyRuns.map((v, i) => (
@@ -155,7 +154,7 @@ export default function AnalyticsPage() {
                     }}
                   />
                 </div>
-                <span className="font-pixel text-[8px] text-muted-foreground">{dayLabels[i]}</span>
+                <span className="font-pixel text-[8px] text-muted-foreground">{t(dayLabelKeys[i])}</span>
               </div>
             ))}
           </div>
@@ -164,18 +163,18 @@ export default function AnalyticsPage() {
         {/* ── Agent 排行 ──────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <div className="rpgui-container framed-golden" style={{ padding: 16 }}>
-            <h2 className="font-pixel text-[12px] mb-4">{">"} Agent 排行</h2>
+            <h2 className="font-pixel text-[12px] mb-4">{">"} {t("analytics.agentRanking")}</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-muted-foreground border-b border-white/5">
                     <th className="font-pixel text-[8px] pb-2 pr-4">#</th>
                     <th className="font-pixel text-[8px] pb-2 pr-4">Agent</th>
-                    <th className="font-pixel text-[8px] pb-2 pr-4">类别</th>
-                    <th className="font-pixel text-[8px] pb-2 pr-4 text-right">运行次数</th>
-                    <th className="font-pixel text-[8px] pb-2 pr-4 text-right">成功率</th>
-                    <th className="font-pixel text-[8px] pb-2 pr-4 text-right">平均延迟</th>
-                    <th className="font-pixel text-[8px] pb-2 text-right">预估成本</th>
+                    <th className="font-pixel text-[8px] pb-2 pr-4">{t("analytics.category")}</th>
+                    <th className="font-pixel text-[8px] pb-2 pr-4 text-right">{t("analytics.runCount")}</th>
+                    <th className="font-pixel text-[8px] pb-2 pr-4 text-right">{t("analytics.successRate")}</th>
+                    <th className="font-pixel text-[8px] pb-2 pr-4 text-right">{t("analytics.avgLatency")}</th>
+                    <th className="font-pixel text-[8px] pb-2 text-right">{t("analytics.estCost")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -230,7 +229,7 @@ export default function AnalyticsPage() {
 
         {/* ── Token 消耗分布 ──────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
-          <h2 className="font-pixel text-[12px]">{">"} Token 消耗分布</h2>
+          <h2 className="font-pixel text-[12px]">{">"} {t("analytics.tokenDistribution")}</h2>
           <div className="space-y-3">
             {tokensByAgent.map((t) => (
               <div key={t.name} className="flex items-center gap-3">
@@ -252,7 +251,7 @@ export default function AnalyticsPage() {
         {/* ── 最近运行 ───────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
-            <Clock className="size-5 text-violet-400" /> {">"} 最近运行
+            <Clock className="size-5 text-violet-400" /> {">"} {t("analytics.recentRuns")}
           </h2>
           <div className="space-y-2">
             {recentRuns.map((r, i) => (
@@ -263,9 +262,9 @@ export default function AnalyticsPage() {
               >
                 <span className="text-sm font-medium w-36 truncate">{r.agent}</span>
                 {r.status === "completed" ? (
-                  <span className="nes-btn is-success" style={{ fontSize: 8, padding: "2px 8px" }}>成功</span>
+                  <span className="nes-btn is-success" style={{ fontSize: 8, padding: "2px 8px" }}>{t("analytics.success")}</span>
                 ) : (
-                  <span className="nes-btn is-error" style={{ fontSize: 8, padding: "2px 8px" }}>失败</span>
+                  <span className="nes-btn is-error" style={{ fontSize: 8, padding: "2px 8px" }}>{t("analytics.failed")}</span>
                 )}
                 <span className="flex-1 text-xs text-muted-foreground truncate">{r.input}</span>
                 <span className="text-xs font-mono text-muted-foreground w-16 text-right">{r.tokens.toLocaleString()} tk</span>
@@ -279,12 +278,12 @@ export default function AnalyticsPage() {
         {/* ── 成本追踪 ───────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-6">
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
-            <DollarSign className="size-5 text-emerald-400" /> {">"} 成本追踪
+            <DollarSign className="size-5 text-emerald-400" /> {">"} {t("analytics.costTracking")}
           </h2>
 
           {/* Model breakdown */}
           <div className="space-y-3">
-            <h3 className="font-pixel text-[9px] text-muted-foreground">{">"} 模型用量分布</h3>
+            <h3 className="font-pixel text-[9px] text-muted-foreground">{">"} {t("analytics.modelUsage")}</h3>
             {modelCosts.map((m) => (
               <div key={m.model} className="flex items-center gap-3">
                 <span className="w-24 text-sm">{m.model}</span>
@@ -302,7 +301,7 @@ export default function AnalyticsPage() {
 
           {/* Daily cost trend */}
           <div className="space-y-3">
-            <h3 className="font-pixel text-[9px] text-muted-foreground">{">"} 每日成本趋势</h3>
+            <h3 className="font-pixel text-[9px] text-muted-foreground">{">"} {t("analytics.dailyCostTrend")}</h3>
             <div className="flex items-end gap-3 h-32" style={{ imageRendering: "pixelated" as const }}>
               {dailyCosts.map((v, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-2">
@@ -324,7 +323,7 @@ export default function AnalyticsPage() {
                       }}
                     />
                   </div>
-                  <span className="font-pixel text-[8px] text-muted-foreground">{dayLabels[i]}</span>
+                  <span className="font-pixel text-[8px] text-muted-foreground">{t(dayLabelKeys[i])}</span>
                 </div>
               ))}
             </div>
