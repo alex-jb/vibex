@@ -17,6 +17,7 @@ import {
   type BuddyEvolution,
 } from "@/lib/buddy-system";
 import { BuddyCard } from "@/components/buddy-card";
+import { BuddySprite } from "@/components/buddy-sprite";
 
 /* ─── Summon levels reference ─── */
 const SUMMON_LEVELS = [3, 5, 8, 10, 13, 15, 18, 20, 25, 30];
@@ -173,6 +174,21 @@ export default function BuddyPage() {
     "byte-owl": 5,
     "code-dragon": 3,
     "crystal-phoenix": 1,
+  };
+
+  // Mock buddy metadata (in real app, from DB)
+  const buddyMeta: Record<string, { obtainedAt: string; energy: number }> = {
+    "pixel-fox": { obtainedAt: "2026-03-01", energy: 85 },
+    "neon-slime": { obtainedAt: "2026-03-15", energy: 62 },
+    "byte-owl": { obtainedAt: "2026-03-20", energy: 90 },
+    "code-dragon": { obtainedAt: "2026-04-01", energy: 45 },
+    "crystal-phoenix": { obtainedAt: "2026-04-05", energy: 100 },
+  };
+
+  /** Compute days since a date string */
+  const daysSince = (dateStr: string): number => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
   };
 
   const handleEvolve = useCallback((buddyId: string) => {
@@ -438,6 +454,19 @@ export default function BuddyPage() {
                             {evo.nameZh} (Stage {evo.stage})
                           </div>
                         )}
+
+                        {/* Age & Energy stats (PixPet style) */}
+                        {(() => {
+                          const meta = buddyMeta[buddy.id];
+                          if (!meta) return null;
+                          return (
+                            <div style={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
+                              <span className="font-pixel" style={{ fontSize: 6, color: "#8888A0" }}>
+                                📅 {daysSince(meta.obtainedAt)}天 · ⚡ {meta.energy}/100
+                              </span>
+                            </div>
+                          );
+                        })()}
                       </div>
                     );
                   })}
@@ -518,14 +547,10 @@ export default function BuddyPage() {
                       </motion.div>
                     )}
 
-                    {/* Buddy emoji */}
-                    <motion.div
-                      animate={{ y: [0, -6, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                      style={{ fontSize: 72, lineHeight: 1, marginBottom: 12 }}
-                    >
-                      {summonResult.buddy.emoji}
-                    </motion.div>
+                    {/* Buddy pixel sprite */}
+                    <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                      <BuddySprite buddyTypeId={summonResult.buddy.id} size="lg" animated />
+                    </div>
 
                     {/* Name */}
                     <div className="font-pixel" style={{ fontSize: 14, color: "#E8E8EC", marginBottom: 4 }}>
@@ -667,9 +692,13 @@ export default function BuddyPage() {
                         gap: 6,
                       }}
                     >
-                      {/* Emoji */}
-                      <div style={{ fontSize: 36, textAlign: "center" }}>
-                        {isOwned ? buddy.emoji : "❓"}
+                      {/* Pixel sprite */}
+                      <div style={{ display: "flex", justifyContent: "center" }}>
+                        {isOwned ? (
+                          <BuddySprite buddyTypeId={buddy.id} size="sm" animated />
+                        ) : (
+                          <span style={{ fontSize: 36 }}>❓</span>
+                        )}
                       </div>
 
                       {/* Name */}

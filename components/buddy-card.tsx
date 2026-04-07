@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { BuddyType } from "@/lib/buddy-system";
 import { RARITY_CONFIG } from "@/lib/buddy-system";
+import { BuddySprite } from "@/components/buddy-sprite";
 
 interface BuddyCardProps {
   buddy: BuddyType;
@@ -12,9 +13,9 @@ interface BuddyCardProps {
 }
 
 const sizeMap = {
-  sm: { card: 120, emoji: 28, name: 7, badge: 6 },
-  md: { card: 160, emoji: 40, name: 8, badge: 7 },
-  lg: { card: 200, emoji: 56, name: 10, badge: 8 },
+  sm: { card: 120, emoji: 28, name: 7, badge: 6, sprite: "sm" as const },
+  md: { card: 160, emoji: 40, name: 8, badge: 7, sprite: "sm" as const },
+  lg: { card: 200, emoji: 56, name: 10, badge: 8, sprite: "md" as const },
 };
 
 export function BuddyCard({ buddy, owned, active = false, size = "md" }: BuddyCardProps) {
@@ -68,18 +69,14 @@ export function BuddyCard({ buddy, owned, active = false, size = "md" }: BuddyCa
         </div>
       )}
 
-      {/* Emoji sprite */}
-      <motion.div
-        animate={owned ? { y: [0, -3, 0] } : undefined}
-        transition={owned ? { duration: 2, repeat: Infinity, ease: "easeInOut" } : undefined}
-        style={{
-          fontSize: s.emoji,
-          lineHeight: 1,
-          marginTop: active ? 6 : 0,
-        }}
-      >
-        {owned ? buddy.emoji : "❓"}
-      </motion.div>
+      {/* Pixel sprite */}
+      <div style={{ marginTop: active ? 6 : 0 }}>
+        {owned ? (
+          <BuddySprite buddyTypeId={buddy.id} size={s.sprite} animated={owned} />
+        ) : (
+          <div style={{ fontSize: s.emoji, lineHeight: 1 }}>❓</div>
+        )}
+      </div>
 
       {/* Name */}
       <span
