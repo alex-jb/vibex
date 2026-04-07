@@ -23,6 +23,9 @@ const translations = {
     "nav.analytics": "Analytics",
     "nav.developers": "Developers",
     "nav.launch": "Launch Project",
+    "nav.messages": "Messages",
+    "nav.trade": "Trade",
+    "nav.admin": "Admin",
 
     // Boot sequence
     "boot.0": "VIBEX v2.0.26",
@@ -439,6 +442,9 @@ const translations = {
     "nav.analytics": "\u5206\u6790",
     "nav.developers": "\u5f00\u53d1\u8005",
     "nav.launch": "\u53d1\u5e03\u9879\u76ee",
+    "nav.messages": "\u79c1\u4fe1",
+    "nav.trade": "\u4ea4\u6613",
+    "nav.admin": "\u7ba1\u7406",
 
     // Boot sequence
     "boot.0": "VIBEX v2.0.26",
@@ -855,6 +861,9 @@ const translations = {
     "nav.analytics": "\u5206\u6790",
     "nav.developers": "\u958b\u767a\u8005",
     "nav.launch": "\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u3092\u516c\u958b",
+    "nav.messages": "\u30e1\u30c3\u30bb\u30fc\u30b8",
+    "nav.trade": "\u30c8\u30ec\u30fc\u30c9",
+    "nav.admin": "\u7ba1\u7406",
 
     // Boot sequence
     "boot.0": "VIBEX v2.0.26",

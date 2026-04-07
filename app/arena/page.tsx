@@ -7,6 +7,7 @@ import { projects } from "@/lib/mock-data";
 import type { Project, BattleResult, BattleRound } from "@/lib/types";
 import { simulateBattle, getBattleSummary } from "@/lib/battle-engine";
 import { CLASS_CONFIG, EVOLUTION_CONFIG } from "@/lib/rpg-utils";
+import { SeasonLeaderboard } from "@/components/arena/season-leaderboard";
 
 /* ─── Terminal Typewriter Hook ─── */
 function useTypewriter(text: string, speed = 30, trigger = true) {
@@ -743,6 +744,9 @@ export default function ArenaPage() {
           </div>
         </div>
       </div>
+
+      {/* Season Leaderboard */}
+      <SeasonLeaderboard />
 
       {/* Cursor blink keyframes */}
       <style>{`

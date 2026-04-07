@@ -22,6 +22,7 @@ const primaryNavItems = [
   { href: "/arena", key: "nav.arena" as const },
   { href: "/buddy", key: "nav.buddy" as const },
   { href: "/hunt", key: "nav.hunt" as const },
+  { href: "/messages", key: "nav.messages" as const },
 ];
 
 // Secondary nav items (in "More" dropdown + mobile menu)

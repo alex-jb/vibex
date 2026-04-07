@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useState } from "react";
+import { AgentReviews } from "@/components/agents/agent-reviews";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -292,6 +293,9 @@ export default function AgentDetailPage({
             ))}
           </div>
         </div>
+
+        {/* Reviews section */}
+        <AgentReviews agentId={agent.id} />
       </div>
     </div>
   );
