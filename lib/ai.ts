@@ -303,3 +303,138 @@ Respond with JSON: {"type":"rising|saturated|opportunity|emerging","signal":"str
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   return JSON.parse(jsonMatch?.[0] || "{}");
 }
+
+// ═══════════════════════════════════════════════════════════════
+// AI LAUNCH PACKAGE — Complete launch kit for AI creators
+// ═══════════════════════════════════════════════════════════════
+
+export interface LaunchPackage {
+  positioning: {
+    oneLiner: string;
+    targetAudience: string;
+    problemSolved: string;
+    uniqueValue: string;
+  };
+  copy: {
+    title: string;
+    tagline: string;
+    elevatorPitch: string;
+    productHuntDescription: string;
+  };
+  social: {
+    twitterThread: string[];
+    linkedinPost: string;
+    redditTitle: string;
+    redditBody: string;
+  };
+  distribution: {
+    channels: { name: string; reason: string; priority: "high" | "medium" | "low" }[];
+    timing: string;
+    targetCommunities: string[];
+  };
+  investorPitch: {
+    problem: string;
+    solution: string;
+    market: string;
+    traction: string;
+    ask: string;
+  };
+  demoScript: string;
+  competitors: { name: string; difference: string }[];
+}
+
+export async function generateLaunchPackage(project: {
+  title: string;
+  tagline: string;
+  description: string;
+  category: string;
+  tags: string[];
+  demoUrl?: string;
+}): Promise<LaunchPackage> {
+  const response = await client.messages.create({
+    model: "claude-sonnet-4-6", // Use stronger model for launch package quality
+    max_tokens: 4000,
+    system: `You are a world-class product marketing expert and launch strategist.
+Generate a complete launch package for an AI product. Be specific, actionable, and compelling.
+Write copy that a founder can directly copy-paste and use.
+
+The launch package must include:
+1. positioning: oneLiner (max 15 words), targetAudience, problemSolved, uniqueValue
+2. copy: title (catchy), tagline (max 10 words), elevatorPitch (3 sentences), productHuntDescription (2 paragraphs)
+3. social: twitterThread (array of 4-5 tweets, first one is the hook), linkedinPost (professional tone), redditTitle (attention-grabbing), redditBody (detailed, authentic, not salesy)
+4. distribution: channels (array of {name, reason, priority}), timing (best day/time to launch), targetCommunities (specific subreddits, Discord servers, Slack groups)
+5. investorPitch: problem, solution, market (TAM/SAM), traction (what to highlight), ask (what you need)
+6. demoScript: 30-second script for a product demo video
+7. competitors: array of {name, difference} — 2-3 competitors and how this product is different
+
+Respond ONLY with valid JSON matching this exact structure.`,
+    messages: [
+      {
+        role: "user",
+        content: `Generate a complete launch package for this AI product:
+
+Title: ${project.title}
+Tagline: ${project.tagline}
+Description: ${project.description}
+Category: ${project.category}
+Tags: ${project.tags.join(", ")}
+${project.demoUrl ? `Demo URL: ${project.demoUrl}` : ""}
+
+Respond with JSON only.`,
+      },
+    ],
+  });
+
+  const text = response.content.find((b) => b.type === "text")?.text || "{}";
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  return JSON.parse(jsonMatch?.[0] || "{}") as LaunchPackage;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AI GROWTH SUGGESTIONS — Post-launch optimization advice
+// ═══════════════════════════════════════════════════════════════
+
+export interface GrowthSuggestion {
+  priority: "high" | "medium" | "low";
+  action: string;
+  reason: string;
+  effort: "5min" | "30min" | "1hr" | "1day";
+}
+
+export async function generateGrowthSuggestions(project: {
+  title: string;
+  description: string;
+  category: string;
+  views: number;
+  upvotes: number;
+  comments: number;
+  daysSinceLaunch: number;
+}): Promise<GrowthSuggestion[]> {
+  const response = await client.messages.create({
+    model: MODEL,
+    max_tokens: 1500,
+    system: `You are an AI growth advisor. Based on a project's metrics, suggest 4-6 specific, actionable growth improvements.
+Each suggestion has: priority (high/medium/low), action (specific step), reason (why it matters), effort (time needed: 5min/30min/1hr/1day).
+Focus on what will have the biggest impact for the least effort.
+Respond ONLY with a JSON array.`,
+    messages: [
+      {
+        role: "user",
+        content: `Suggest growth actions for this project:
+Title: ${project.title}
+Description: ${project.description}
+Category: ${project.category}
+Views: ${project.views}
+Upvotes: ${project.upvotes}
+Comments: ${project.comments}
+Days since launch: ${project.daysSinceLaunch}
+
+Respond with JSON array: [{"priority":"high","action":"...","reason":"...","effort":"30min"}, ...]`,
+      },
+    ],
+  });
+
+  const text = response.content.find((b) => b.type === "text")?.text || "[]";
+  const jsonMatch = text.match(/\[[\s\S]*\]/);
+  return JSON.parse(jsonMatch?.[0] || "[]") as GrowthSuggestion[];
+}

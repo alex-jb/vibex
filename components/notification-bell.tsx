@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 
 interface Notification {
   id: string;
-  type: "upvote" | "comment" | "reply" | "follow" | "battle" | "system" | "mention" | "reaction";
+  type: "upvote" | "comment" | "reply" | "follow" | "battle" | "system" | "mention" | "reaction" | "challenge" | "ranking" | "streak";
   actor_name: string;
   action_text: string;
   target_url?: string;
@@ -24,6 +24,9 @@ const TYPE_ICONS: Record<Notification["type"], string> = {
   system: "\uD83D\uDCE2",
   mention: "@",
   reaction: "\uD83D\uDD25",
+  challenge: "\u2694\uFE0F",
+  ranking: "\uD83C\uDFC6",
+  streak: "\uD83D\uDD25",
 };
 
 const MOCK_NOTIFICATIONS: Notification[] = [

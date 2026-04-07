@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 
 import { useLang } from "@/lib/i18n";
+import type { LaunchPackage } from "@/lib/ai";
+import { LaunchPackageDisplay } from "@/components/launch/launch-package";
 import { categories } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,10 +56,43 @@ export default function LaunchPage() {
   const [aiResponse, setAiResponse] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [launchPkg, setLaunchPkg] = useState<LaunchPackage | null>(null);
+  const [pkgLoading, setPkgLoading] = useState(false);
+  const [pkgError, setPkgError] = useState<string | null>(null);
 
   const { t } = useLang();
 
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  const generatePackage = useCallback(async () => {
+    if (pkgLoading || !title.trim() || !description.trim()) return;
+    setPkgLoading(true);
+    setPkgError(null);
+    try {
+      const res = await fetch("/api/ai/launch-package", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.trim(),
+          tagline: tagline.trim(),
+          description: description.trim(),
+          category: category || "AI Tool",
+          tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
+          demoUrl: demoLink || undefined,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Generation failed");
+      }
+      const pkg = await res.json();
+      setLaunchPkg(pkg);
+    } catch (err) {
+      setPkgError(err instanceof Error ? err.message : "Failed to generate");
+    } finally {
+      setPkgLoading(false);
+    }
+  }, [pkgLoading, title, tagline, description, category, tags, demoLink]);
 
   const fetchAIFeedback = useCallback(async () => {
     if (aiLoading) return;
@@ -450,6 +485,40 @@ export default function LaunchPage() {
                       {aiResponse}
                     </p>
                   )}
+                </div>
+              )}
+
+              {/* Generate Launch Package Button */}
+              <div className="mt-4">
+                <Button
+                  type="button"
+                  onClick={generatePackage}
+                  disabled={pkgLoading || !title.trim() || !description.trim()}
+                  className="w-full h-10 bg-gradient-to-r from-amber-600/80 to-orange-600/80 hover:from-amber-500 hover:to-orange-500 text-white text-sm font-medium shadow-md shadow-amber-500/15 transition-all duration-200 hover:shadow-amber-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {pkgLoading ? (
+                    <Loader2 className="size-4 mr-2 animate-spin" />
+                  ) : (
+                    <Rocket className="size-4 mr-2" />
+                  )}
+                  {pkgLoading ? "\u751F\u6210\u4E2D..." : "\uD83D\uDE80 \u4E00\u952E\u751F\u6210\u53D1\u5E03\u5305"}
+                </Button>
+                <p className="text-[10px] text-muted-foreground/40 mt-1 text-center">
+                  {"\u5B9A\u4F4D + \u6587\u6848 + \u63A8\u6587 + \u5206\u53D1\u7B56\u7565 + \u6295\u8D44\u4EBA Pitch"}
+                </p>
+              </div>
+
+              {/* Launch Package Error */}
+              {pkgError && (
+                <div className="mt-3 rounded-lg border border-red-500/20 bg-red-500/5 p-3">
+                  <p className="text-xs text-red-400">{pkgError}</p>
+                </div>
+              )}
+
+              {/* Launch Package Result */}
+              {launchPkg && (
+                <div className="mt-4">
+                  <LaunchPackageDisplay pkg={launchPkg} />
                 </div>
               )}
 
