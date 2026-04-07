@@ -45,9 +45,20 @@ export async function GET(request: Request) {
   }
 
   if (tab === "trending") {
-    query = query
-      .order("likes", { ascending: false })
-      .order("created_at", { ascending: false });
+    // Use algorithmic feed view for trending tab
+    const { data: algoData, error: algoError } = await supabase
+      .from("algorithmic_feed")
+      .select("*")
+      .range(offset, offset + 19);
+
+    if (algoError) {
+      // Fallback to simple likes sort if view doesn't exist
+      query = query
+        .order("likes", { ascending: false })
+        .order("created_at", { ascending: false });
+    } else {
+      return NextResponse.json(algoData ?? []);
+    }
   } else if (tab === "following") {
     // Server-side auth: extract userId from session, not query param
     const user = await getAuthUser();
