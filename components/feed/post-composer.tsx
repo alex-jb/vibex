@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import type { FeedPost } from "@/lib/feed";
+import { MentionAutocomplete } from "./mention-autocomplete";
 
 interface PostComposerProps {
   onNewPost?: (post: FeedPost) => void;
@@ -15,6 +16,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
   const [linkProject, setLinkProject] = useState(false);
   const [mediaUrl, setMediaUrl] = useState("");
   const [showMediaInput, setShowMediaInput] = useState(false);
+  const [mentions, setMentions] = useState<string[]>([]);
   const [posting, setPosting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successFlash, setSuccessFlash] = useState(false);
@@ -42,6 +44,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
           content: content.trim(),
           ...(linkProject ? { projectId: "1" } : {}),
           ...(mediaUrl.trim() ? { mediaUrl: mediaUrl.trim(), mediaType: mediaUrl.match(/\.gif($|\?)/i) ? "gif" : "image" } : {}),
+          ...(mentions.length > 0 ? { mentions } : {}),
         }),
       });
 
@@ -129,31 +132,14 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
         {">"} {"\u53D1\u5E03\u52A8\u6001"}
       </div>
 
-      {/* Textarea */}
-      <textarea
+      {/* Textarea with @mention autocomplete */}
+      <MentionAutocomplete
         value={content}
-        onChange={(e) => {
-          if (e.target.value.length <= MAX_CHARS) setContent(e.target.value);
-        }}
-        placeholder={"\u5206\u4EAB\u4F60\u7684\u60F3\u6CD5..."}
+        onChange={setContent}
+        onMentionsChange={setMentions}
+        placeholder={"\u5206\u4EAB\u4F60\u7684\u60F3\u6CD5... \u8F93\u5165 @ \u63D0\u53CA\u521B\u4F5C\u8005"}
         disabled={posting}
-        className="font-retro"
-        style={{
-          width: "100%",
-          minHeight: 80,
-          background: "#0A0A0C",
-          border: "2px solid #2A2A30",
-          padding: "10px 12px",
-          fontSize: 14,
-          lineHeight: 1.5,
-          color: "#E8E8EC",
-          resize: "vertical",
-          outline: "none",
-          fontFamily: "var(--font-retro)",
-          opacity: posting ? 0.5 : 1,
-        }}
-        onFocus={(e) => { e.currentTarget.style.borderColor = "#9D00FF60"; }}
-        onBlur={(e) => { e.currentTarget.style.borderColor = "#2A2A30"; }}
+        maxLength={MAX_CHARS}
       />
 
       {/* Error message */}

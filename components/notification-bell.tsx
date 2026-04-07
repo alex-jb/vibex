@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 
 interface Notification {
   id: string;
-  type: "upvote" | "comment" | "reply" | "follow" | "battle" | "system";
+  type: "upvote" | "comment" | "reply" | "follow" | "battle" | "system" | "mention" | "reaction";
   actor_name: string;
   action_text: string;
   target_url?: string;
@@ -22,6 +22,8 @@ const TYPE_ICONS: Record<Notification["type"], string> = {
   follow: "\uD83D\uDC64",
   battle: "\u2694\uFE0F",
   system: "\uD83D\uDCE2",
+  mention: "@",
+  reaction: "\uD83D\uDD25",
 };
 
 const MOCK_NOTIFICATIONS: Notification[] = [
@@ -79,7 +81,7 @@ export function NotificationBell() {
     if (!user) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/notifications?userId=${user.id}`);
+      const res = await fetch("/api/notifications");
       if (!res.ok) throw new Error("fetch failed");
       const data = await res.json();
       setNotifications(data.notifications ?? []);
@@ -113,7 +115,7 @@ export function NotificationBell() {
       await fetch("/api/notifications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "markAllRead", userId: user.id }),
+        body: JSON.stringify({ action: "markAllRead" }),
       });
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     } catch {
@@ -127,7 +129,7 @@ export function NotificationBell() {
       await fetch("/api/notifications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "markRead", userId: user.id, ids: [id] }),
+        body: JSON.stringify({ action: "markRead", ids: [id] }),
       });
       setNotifications((prev) =>
         prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
