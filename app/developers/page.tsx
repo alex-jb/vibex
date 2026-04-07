@@ -7,6 +7,7 @@ import { EndpointDocs } from "@/components/dev/endpoint-docs";
 import { ApiKeyPanel } from "@/components/dev/api-key-panel";
 import { CodeExamples } from "@/components/dev/code-examples";
 import { RateLimits } from "@/components/dev/rate-limits";
+import { WebhookPanel } from "@/components/dev/webhook-panel";
 
 /* ─── Main Developer Platform Page ─── */
 export default function DevelopersPage() {
@@ -195,6 +196,11 @@ export default function DevelopersPage() {
 
           {/* Code Examples */}
           <CodeExamples />
+
+          <div style={{ height: 32 }} />
+
+          {/* Webhook Management */}
+          <WebhookPanel />
 
           <div style={{ height: 32 }} />
 
