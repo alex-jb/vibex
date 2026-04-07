@@ -16,6 +16,7 @@ import { NotificationBell } from "@/components/notification-bell";
 // Primary nav items (always visible)
 const primaryNavItems = [
   { href: "/", key: "nav.home" as const },
+  { href: "/feed", key: "nav.feed" as const },
   { href: "/explore", key: "nav.explore" as const },
   { href: "/agents", key: "nav.agents" as const },
   { href: "/arena", key: "nav.arena" as const },

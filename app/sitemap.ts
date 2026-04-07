@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "", "/explore", "/hunt", "/arena", "/ideas",
     "/creators", "/events", "/insights", "/launch", "/login",
     "/agents", "/workflows", "/analytics", "/developers",
-    "/buddy", "/profile", "/settings",
+    "/buddy", "/feed", "/profile", "/settings",
     "/about", "/terms", "/privacy",
   ].map(path => ({
     url: `${baseUrl}${path}`,

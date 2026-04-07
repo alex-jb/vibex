@@ -9,6 +9,7 @@ const translations = {
   en: {
     // Nav items
     "nav.home": "Home",
+    "nav.feed": "Feed",
     "nav.explore": "Explore",
     "nav.hunt": "Hunt",
     "nav.arena": "Arena",
@@ -424,6 +425,7 @@ const translations = {
   zh: {
     // Nav items
     "nav.home": "\u9996\u9875",
+    "nav.feed": "\u52A8\u6001",
     "nav.explore": "\u63a2\u7d22",
     "nav.hunt": "\u72e9\u730e",
     "nav.arena": "\u7ade\u6280\u573a",
@@ -839,6 +841,7 @@ const translations = {
   ja: {
     // Nav items
     "nav.home": "\u30db\u30fc\u30e0",
+    "nav.feed": "\u30D5\u30A3\u30FC\u30C9",
     "nav.explore": "\u63a2\u7d22",
     "nav.hunt": "\u30cf\u30f3\u30c8",
     "nav.arena": "\u30a2\u30ea\u30fc\u30ca",
