@@ -39,18 +39,9 @@ export function BuddyCompanion() {
   const [petCount, setPetCount] = useState(0);
   const [hearts, setHearts] = useState<number[]>([]);
 
-  // Don't render for non-logged-in users
-  if (loading || !user) return null;
-
-  const buddyType = BUDDY_TYPES.find((b) => b.id === MOCK_ACTIVE_BUDDY.typeId);
-  if (!buddyType) return null;
-
-  const rarity = RARITY_CONFIG[buddyType.rarity];
-  const userLevel = computeUserLevel(MOCK_TOTAL_EXP);
-
-  // Show random message periodically
+  // Show random message periodically (must be before conditional returns)
   useEffect(() => {
-    if (state === "minimized" || state === "hidden") return;
+    if (!user || state === "minimized" || state === "hidden") return;
     const interval = setInterval(() => {
       if (Math.random() > 0.6) {
         setMessage(IDLE_MESSAGES[Math.floor(Math.random() * IDLE_MESSAGES.length)]);
@@ -59,7 +50,16 @@ export function BuddyCompanion() {
       }
     }, 15000);
     return () => clearInterval(interval);
-  }, [state]);
+  }, [state, user]);
+
+  // Don't render for non-logged-in users
+  if (loading || !user) return null;
+
+  const buddyType = BUDDY_TYPES.find((b) => b.id === MOCK_ACTIVE_BUDDY.typeId);
+  if (!buddyType) return null;
+
+  const rarity = RARITY_CONFIG[buddyType.rarity];
+  const userLevel = computeUserLevel(MOCK_TOTAL_EXP);
 
   // Pet the buddy
   const handlePet = () => {

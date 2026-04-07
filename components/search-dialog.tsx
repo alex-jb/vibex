@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, Folder, User, Lightbulb } from "lucide-react";
+import { Search, X, Folder, User, Lightbulb, Bot, GitBranch } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { projects, creators, ideas } from "@/lib/mock-data";
+import { agents } from "@/lib/mock-data/agents";
+import { workflows } from "@/lib/mock-data/workflows";
 
 interface SearchResult {
-  type: "project" | "creator" | "idea";
+  type: "project" | "creator" | "idea" | "agent" | "workflow";
   id: string;
   title: string;
   subtitle: string;
@@ -18,12 +20,16 @@ const TYPE_LABELS: Record<SearchResult["type"], string> = {
   project: "项目",
   creator: "创作者",
   idea: "创意",
+  agent: "智能体",
+  workflow: "工作流",
 };
 
 const TYPE_ICONS: Record<SearchResult["type"], typeof Folder> = {
   project: Folder,
   creator: User,
   idea: Lightbulb,
+  agent: Bot,
+  workflow: GitBranch,
 };
 
 interface SearchDialogProps {
@@ -84,6 +90,30 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
           title: i.title,
           subtitle: i.description.slice(0, 60),
           href: `/ideas/${i.id}`,
+        });
+      }
+    }
+
+    for (const a of agents) {
+      if (a.name.toLowerCase().includes(q) || a.description.toLowerCase().includes(q)) {
+        matched.push({
+          type: "agent",
+          id: a.id,
+          title: a.name,
+          subtitle: a.description.slice(0, 60),
+          href: `/agents/${a.id}`,
+        });
+      }
+    }
+
+    for (const w of workflows) {
+      if (w.name.toLowerCase().includes(q) || w.description.toLowerCase().includes(q)) {
+        matched.push({
+          type: "workflow",
+          id: w.id,
+          title: w.name,
+          subtitle: w.description.slice(0, 60),
+          href: `/workflows/${w.id}`,
         });
       }
     }

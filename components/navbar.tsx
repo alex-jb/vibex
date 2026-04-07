@@ -13,26 +13,35 @@ import { LangToggle } from "@/components/lang-toggle";
 import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
 
-const navItemKeys = [
+// Primary nav items (always visible)
+const primaryNavItems = [
   { href: "/", key: "nav.home" as const },
   { href: "/explore", key: "nav.explore" as const },
-  { href: "/hunt", key: "nav.hunt" as const },
+  { href: "/agents", key: "nav.agents" as const },
   { href: "/arena", key: "nav.arena" as const },
+  { href: "/buddy", key: "nav.buddy" as const },
+  { href: "/hunt", key: "nav.hunt" as const },
+];
+
+// Secondary nav items (in "More" dropdown + mobile menu)
+const secondaryNavItems = [
+  { href: "/workflows", key: "nav.workflows" as const },
+  { href: "/analytics", key: "nav.analytics" as const },
   { href: "/ideas", key: "nav.ideas" as const },
   { href: "/creators", key: "nav.creators" as const },
   { href: "/events", key: "nav.events" as const },
   { href: "/insights", key: "nav.insights" as const },
-  { href: "/agents", key: "nav.agents" as const },
-  { href: "/buddy", key: "nav.buddy" as const },
-  { href: "/workflows", key: "nav.workflows" as const },
-  { href: "/analytics", key: "nav.analytics" as const },
   { href: "/developers", key: "nav.developers" as const },
 ];
+
+// All items for mobile menu
+const allNavItems = [...primaryNavItems, ...secondaryNavItems];
 
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const { t } = useLang();
 
   useEffect(() => {
@@ -63,7 +72,7 @@ export function Navbar() {
 
           {/* Desktop Nav */}
           <nav aria-label="Main navigation" className="hidden items-center gap-0.5 md:flex">
-            {navItemKeys.map((item) => {
+            {primaryNavItems.map((item) => {
               const isActive =
                 item.href === "/"
                   ? pathname === "/"
@@ -94,6 +103,45 @@ export function Navbar() {
                 </Link>
               );
             })}
+            {/* More dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setMoreOpen(!moreOpen)}
+                className="relative flex flex-col items-center px-3.5 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
+              >
+                More
+              </button>
+              <AnimatePresence>
+                {moreOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setMoreOpen(false)} />
+                    <motion.div
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      className="absolute right-0 top-full mt-1 z-50 w-44 glass-card-strong rounded-xl border border-white/[0.08] py-1 shadow-xl"
+                    >
+                      {secondaryNavItems.map((item) => {
+                        const isActive = pathname.startsWith(item.href);
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setMoreOpen(false)}
+                            className={cn(
+                              "block px-4 py-2 text-sm transition-colors",
+                              isActive ? "text-foreground bg-white/5" : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                            )}
+                          >
+                            {t(item.key)}
+                          </Link>
+                        );
+                      })}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
           </nav>
 
           {/* Desktop CTA + Lang Toggle + User */}
@@ -145,7 +193,7 @@ export function Navbar() {
             className="overflow-hidden bg-background/60 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/[0.04] md:hidden"
           >
             <nav className="flex flex-col gap-1 p-4">
-              {navItemKeys.map((item) => {
+              {allNavItems.map((item) => {
                 const isActive =
                   item.href === "/"
                     ? pathname === "/"
