@@ -63,12 +63,35 @@ export default function WorkflowsPage() {
     );
   };
 
-  const handleSave = () => {
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
     if (!wfName.trim()) {
       setMessage({ type: "error", text: "请输入工作流名称" });
       return;
     }
-    setMessage({ type: "success", text: `工作流「${wfName}」已保存（${steps.length} 个步骤）` });
+    setSaving(true);
+    try {
+      const res = await fetch("/api/workflows", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: wfName,
+          description: wfDesc,
+          steps: steps.map((s) => ({ agentId: s.agentId })),
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setMessage({ type: "error", text: data.error || "保存失败" });
+        return;
+      }
+      setMessage({ type: "success", text: `工作流「${wfName}」已保存！` });
+    } catch {
+      setMessage({ type: "error", text: "网络错误，请稍后再试" });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleTestRun = async () => {
@@ -282,8 +305,8 @@ export default function WorkflowsPage() {
 
             {/* Actions - NES Buttons */}
             <div className="flex gap-3 justify-center">
-              <button onClick={handleSave} className="nes-btn is-primary" style={{ fontSize: 10, padding: "6px 14px" }}>
-                保存工作流
+              <button onClick={handleSave} disabled={saving} className={`nes-btn is-primary${saving ? " is-disabled" : ""}`} style={{ fontSize: 10, padding: "6px 14px" }}>
+                {saving ? "保存中..." : "保存工作流"}
               </button>
               <button onClick={() => setShowTestModal(true)} className="nes-btn is-warning" style={{ fontSize: 10, padding: "6px 14px" }}>
                 测试运行

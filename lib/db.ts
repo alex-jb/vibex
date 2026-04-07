@@ -11,6 +11,8 @@ import type {
   AIReview,
   BehaviorScore,
 } from "./types";
+import type { AgentDefinition } from "./agent-types";
+import { agents as mockAgents } from "./mock-data/agents";
 
 /**
  * Data access layer.
@@ -375,6 +377,64 @@ export async function getBattleHistory(limit = 20): Promise<BattleResult[]> {
     },
     timestamp: row.created_at,
   }));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AGENTS
+// ═══════════════════════════════════════════════════════════════
+
+function mapAgent(row: Record<string, unknown>): AgentDefinition {
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    description: (row.description as string) || "",
+    version: (row.version as string) || "1.0.0",
+    creatorId: (row.creator_id as string) || "",
+    creatorName: (row.creator_name as string) || "",
+    systemPrompt: (row.system_prompt as string) || "",
+    model: (row.model as AgentDefinition["model"]) || "claude-haiku-4-5",
+    temperature: Number(row.temperature) || 0.7,
+    maxTokens: (row.max_tokens as number) || 4000,
+    tools: (row.tools as string[]) || [],
+    inputSchema: (row.input_schema as AgentDefinition["inputSchema"]) || { type: "text" },
+    outputSchema: (row.output_schema as AgentDefinition["outputSchema"]) || { type: "text" },
+    category: (row.category as AgentDefinition["category"]) || "other",
+    tags: (row.tags as string[]) || [],
+    isPublic: (row.is_public as boolean) ?? true,
+    featured: (row.featured as boolean) || false,
+    runs: (row.runs as number) || 0,
+    avgLatencyMs: (row.avg_latency_ms as number) || 0,
+    successRate: Number(row.success_rate) || 0,
+    upvotes: (row.upvotes as number) || 0,
+    forks: (row.forks as number) || 0,
+    createdAt: (row.created_at as string) || "",
+    updatedAt: (row.updated_at as string) || "",
+  };
+}
+
+export async function getAgents(): Promise<AgentDefinition[]> {
+  if (!USE_SUPABASE) return mockAgents;
+
+  const { data, error } = await supabase
+    .from("agent_definitions")
+    .select("*")
+    .order("runs", { ascending: false });
+
+  if (error || !data) return mockAgents;
+  return data.map(mapAgent);
+}
+
+export async function getAgentById(id: string): Promise<AgentDefinition | undefined> {
+  if (!USE_SUPABASE) return mockAgents.find((a) => a.id === id);
+
+  const { data, error } = await supabase
+    .from("agent_definitions")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) return mockAgents.find((a) => a.id === id);
+  return mapAgent(data);
 }
 
 // ═══════════════════════════════════════════════════════════════
