@@ -36,6 +36,7 @@ export async function GET(request: Request) {
     .from("posts")
     .select("*")
     .is("parent_id", null)
+    .in("moderation_status", ["active", "flagged"])
     .range(offset, offset + 19);
 
   // Filter by hashtag if specified

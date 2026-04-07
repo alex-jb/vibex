@@ -7,6 +7,7 @@ import type { FeedPost } from "@/lib/feed";
 import { ReactionBar, type ReactionCounts, type ReactionType } from "./reaction-bar";
 import { MediaAttachment } from "./media-attachment";
 import { LevelBadge, type CreatorLevel } from "./level-badge";
+import { ReportButton } from "./report-button";
 
 /* ─── Helpers ─── */
 
@@ -131,8 +132,8 @@ export function PostCard({
             {relativeTime(post.createdAt)}
           </span>
         </div>
-        {/* Delete button for own posts */}
-        {isOwn && (
+        {/* Delete button for own posts / Report for others */}
+        {isOwn ? (
           <button
             className="nes-btn is-error"
             onClick={handleDelete}
@@ -141,6 +142,8 @@ export function PostCard({
           >
             {confirming ? "\u786E\u8BA4?" : "\u5220\u9664"}
           </button>
+        ) : (
+          <ReportButton postId={post.id} />
         )}
       </div>
 
