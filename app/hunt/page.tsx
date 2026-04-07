@@ -15,7 +15,8 @@ import {
 } from "lucide-react";
 
 import { projects } from "@/lib/mock-data";
-import type { Project } from "@/lib/types";
+import type { LeaderboardEntry, LeaderboardPeriod } from "@/lib/leaderboard";
+import { useRealtimeLeaderboard } from "@/lib/realtime";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,22 +24,14 @@ import { ClassIcon } from "@/components/rpg/class-icon";
 import { EvolutionBadge } from "@/components/rpg/evolution-badge";
 import { useLang } from "@/lib/i18n";
 
-function getSortedProjects(tab: string): Project[] {
-  const sorted = [...projects];
+/** Map tab names to LeaderboardPeriod */
+function tabToPeriod(tab: string): LeaderboardPeriod {
   switch (tab) {
-    case "daily":
-      return sorted.sort((a, b) => b.score - a.score).slice(0, 10);
-    case "weekly":
-      return sorted.sort((a, b) => b.upvotes - a.upvotes).slice(0, 10);
-    case "trending":
-      return sorted.sort((a, b) => b.views - a.views).slice(0, 10);
-    case "new":
-      return sorted.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-    default:
-      return sorted;
+    case "daily": return "daily";
+    case "weekly": return "weekly";
+    case "trending": return "monthly";
+    case "new": return "allTime";
+    default: return "daily";
   }
 }
 
@@ -63,10 +56,80 @@ function getStats() {
   return { todayProjects, totalUpvotes, creators };
 }
 
+/** Pulsing LIVE indicator */
+function LiveBadge({ connected }: { connected: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-2.5 py-0.5 text-[10px] font-semibold tracking-wide text-red-400">
+      <span
+        className={`inline-block size-1.5 rounded-full ${
+          connected ? "bg-red-500 animate-pulse" : "bg-red-500/40"
+        }`}
+      />
+      LIVE
+    </span>
+  );
+}
+
+/** Rank change indicator: green arrow up, red arrow down, gray dash */
+function RankChange({ change }: { change: number }) {
+  if (change > 0) {
+    return (
+      <span className="flex items-center gap-0.5 text-[10px] font-bold text-emerald-400">
+        <span>&#9650;</span>
+        {change}
+      </span>
+    );
+  }
+  if (change < 0) {
+    return (
+      <span className="flex items-center gap-0.5 text-[10px] font-bold text-red-400">
+        <span>&#9660;</span>
+        {Math.abs(change)}
+      </span>
+    );
+  }
+  return (
+    <span className="text-[10px] font-bold text-muted-foreground/40">&mdash;</span>
+  );
+}
+
+function LeaderboardTab({ tab }: { tab: string }) {
+  const period = tabToPeriod(tab);
+  const { entries, loading, connected } = useRealtimeLeaderboard(period, 10);
+
+  if (loading) {
+    return (
+      <div className="mt-6 glass-card-strong noise-bg rounded-2xl p-6 text-center">
+        <span className="font-pixel text-[8px] text-muted-foreground animate-pulse">
+          Loading rankings...
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      key={tab}
+      className="mt-6 glass-card-strong noise-bg rounded-2xl p-2 sm:p-3"
+    >
+      <div className="divide-y divide-white/5">
+        {entries.map((entry) => (
+          <RankItem key={entry.projectId} entry={entry} />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function HuntPage() {
   const [activeTab, setActiveTab] = useState("daily");
   const stats = getStats();
   const { t } = useLang();
+  const period = tabToPeriod(activeTab);
+  const { connected } = useRealtimeLeaderboard(period, 1);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
@@ -82,9 +145,12 @@ export default function HuntPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="mb-3 inline-block rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-400">
-              {t("hunt.badge")}
-            </span>
+            <div className="mb-3 flex items-center justify-center gap-2">
+              <span className="inline-block rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-400">
+                {t("hunt.badge")}
+              </span>
+              <LiveBadge connected={connected} />
+            </div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
               {t("hunt.title")} <span className="text-gradient">{t("hunt.titleHighlight")}</span>
             </h1>
@@ -145,23 +211,7 @@ export default function HuntPage() {
 
           {["daily", "weekly", "trending", "new"].map((tab) => (
             <TabsContent key={tab} value={tab}>
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-                key={tab}
-                className="mt-6 glass-card-strong noise-bg rounded-2xl p-2 sm:p-3"
-              >
-                <div className="divide-y divide-white/5">
-                  {getSortedProjects(tab).map((project, index) => (
-                    <RankItem
-                      key={project.id}
-                      project={project}
-                      rank={index + 1}
-                    />
-                  ))}
-                </div>
-              </motion.div>
+              <LeaderboardTab tab={tab} />
             </TabsContent>
           ))}
         </Tabs>
@@ -200,12 +250,6 @@ function RankBadge({ rank }: { rank: number }) {
 }
 
 function ScoreIndicator({ score }: { score: number }) {
-  const color =
-    score >= 90
-      ? "from-violet-500 to-fuchsia-500"
-      : score >= 80
-        ? "from-amber-500 to-orange-500"
-        : "from-zinc-500 to-zinc-400";
   const pct = score;
 
   return (
@@ -229,7 +273,7 @@ function ScoreIndicator({ score }: { score: number }) {
             strokeWidth="2.5"
             strokeDasharray={`${(pct / 100) * 94.2} 94.2`}
             strokeLinecap="round"
-            className={`stroke-current`}
+            className="stroke-current"
             style={{
               color:
                 score >= 90
@@ -248,13 +292,12 @@ function ScoreIndicator({ score }: { score: number }) {
   );
 }
 
-function RankItem({ project, rank }: { project: Project; rank: number }) {
-  const isTop3 = rank <= 3;
-  const isFirst = rank === 1;
-  const hero = project.hero;
+function RankItem({ entry }: { entry: LeaderboardEntry }) {
+  const isTop3 = entry.rank <= 3;
+  const isFirst = entry.rank === 1;
   const { t } = useLang();
 
-  const gymTitle = rank === 1 ? t("hunt.gymMaster") : rank === 2 ? t("hunt.eliteFour") : rank === 3 ? t("hunt.challenger") : null;
+  const gymTitle = entry.rank === 1 ? t("hunt.gymMaster") : entry.rank === 2 ? t("hunt.eliteFour") : entry.rank === 3 ? t("hunt.challenger") : null;
 
   const wrapperClasses = isFirst
     ? "fire-border border-glow glow-soft rounded-xl p-1"
@@ -271,7 +314,12 @@ function RankItem({ project, rank }: { project: Project; rank: number }) {
       >
         {/* Rank badge */}
         <div className="shrink-0">
-          <RankBadge rank={rank} />
+          <RankBadge rank={entry.rank} />
+        </div>
+
+        {/* Rank change arrow */}
+        <div className="shrink-0 w-6 text-center">
+          <RankChange change={entry.change} />
         </div>
 
         {/* Upvote column */}
@@ -282,42 +330,26 @@ function RankItem({ project, rank }: { project: Project; rank: number }) {
           >
             <ChevronUp className="size-4 text-violet-400" />
             <span className="text-xs font-semibold text-muted-foreground">
-              {project.upvotes}
+              {entry.upvotes}
             </span>
           </button>
         </div>
-
-        {/* RPG Class Icon */}
-        {hero && (
-          <div className="hidden sm:flex shrink-0">
-            <ClassIcon heroClass={hero.heroClass} size={18} />
-          </div>
-        )}
 
         {/* Main content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <p className={`font-semibold truncate ${isFirst ? "text-lg" : ""}`}>
-              {project.title}
+              {entry.title}
             </p>
-            {hero && (
-              <span className="level-badge shrink-0">
-                <span className="text-violet-400">Lv</span>
-                <span className="ml-0.5">{hero.level}</span>
-              </span>
-            )}
             {isTop3 && gymTitle && (
               <span className="font-pixel text-[6px] text-amber-400 uppercase tracking-wider shrink-0 hidden md:inline">
                 {gymTitle}
               </span>
             )}
           </div>
-          <p className="text-sm text-muted-foreground truncate">
-            {project.tagline}
-          </p>
           <p className="text-xs text-muted-foreground/60 mt-0.5">
             {t("hunt.by")}{" "}
-            <span className="text-muted-foreground">{project.creatorName}</span>
+            <span className="text-muted-foreground">{entry.creatorName}</span>
           </p>
         </div>
 
@@ -326,24 +358,17 @@ function RankItem({ project, rank }: { project: Project; rank: number }) {
           variant="secondary"
           className="hidden sm:inline-flex shrink-0 bg-white/5 border-white/10 text-muted-foreground"
         >
-          {project.category}
+          {entry.category}
         </Badge>
-
-        {/* Evolution badge */}
-        {hero && isTop3 && (
-          <div className="hidden lg:flex shrink-0">
-            <EvolutionBadge stage={hero.evolutionStage} size="sm" />
-          </div>
-        )}
 
         {/* Score indicator */}
         <div className="hidden sm:flex shrink-0">
-          <ScoreIndicator score={project.score} />
+          <ScoreIndicator score={entry.score} />
         </div>
 
         {/* Link arrow */}
         <Link
-          href={`/project/${project.id}`}
+          href={`/project/${entry.projectId}`}
           className="shrink-0 rounded-lg p-2 transition-all hover:bg-white/10 hover:scale-105"
         >
           <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-foreground transition-colors" />

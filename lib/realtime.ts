@@ -1,7 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "./supabase";
+import {
+  getProjectLeaderboard,
+  type LeaderboardPeriod,
+  type LeaderboardEntry,
+} from "./leaderboard";
 
 /**
  * Hook to subscribe to real-time changes on a table
@@ -89,4 +94,58 @@ export function useRealtimeUpvotes(projectId: string): number | null {
   }, [projectId]);
 
   return count;
+}
+
+/**
+ * Hook for real-time leaderboard updates.
+ * Subscribes to projects table; re-fetches and re-sorts rankings
+ * whenever score or upvotes change.
+ */
+export function useRealtimeLeaderboard(
+  period: LeaderboardPeriod,
+  limit = 10,
+): { entries: LeaderboardEntry[]; loading: boolean; connected: boolean } {
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [connected, setConnected] = useState(false);
+
+  const fetchLeaderboard = useCallback(async () => {
+    const data = await getProjectLeaderboard(period, limit);
+    setEntries(data);
+    setLoading(false);
+  }, [period, limit]);
+
+  useEffect(() => {
+    // Initial fetch
+    fetchLeaderboard();
+
+    // Subscribe to project score/upvote changes
+    const channel = supabase
+      .channel(`leaderboard-${period}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "projects" },
+        () => {
+          // Re-fetch the full leaderboard on any project update
+          fetchLeaderboard();
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "projects" },
+        () => {
+          fetchLeaderboard();
+        },
+      )
+      .subscribe((status) => {
+        setConnected(status === "SUBSCRIBED");
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+      setConnected(false);
+    };
+  }, [period, limit, fetchLeaderboard]);
+
+  return { entries, loading, connected };
 }
