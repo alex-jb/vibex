@@ -22,6 +22,7 @@ const navItemKeys = [
   { href: "/creators", key: "nav.creators" as const },
   { href: "/events", key: "nav.events" as const },
   { href: "/insights", key: "nav.insights" as const },
+  { href: "/agents", key: "nav.agents" as const },
 ];
 
 export function Navbar() {
