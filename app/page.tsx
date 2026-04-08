@@ -26,6 +26,7 @@ import {
 } from "@/lib/mock-data";
 import { useLang } from "@/lib/i18n";
 import { BootSequence } from "@/components/home/boot-sequence";
+import { ValueHero } from "@/components/home/value-hero";
 import { HeroSection } from "@/components/home/hero-section";
 import { QuestBoard } from "@/components/home/quest-board";
 import { CtaSection } from "@/components/home/cta-section";
@@ -110,6 +111,9 @@ export default function Home() {
 
       {/* SECTION 1 -- TERMINAL BOOT HERO */}
       <BootSequence communityStats={communityStats} />
+
+      {/* VALUE HERO — 3-second value proposition */}
+      <ValueHero />
 
       {/* SECTION 2 -- BOSS ENCOUNTER (Featured Project) */}
       <HeroSection bossProject={bossProject} />

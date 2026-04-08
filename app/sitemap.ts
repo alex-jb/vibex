@@ -10,11 +10,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/agents", "/workflows", "/analytics", "/developers",
     "/buddy", "/feed", "/profile", "/settings",
     "/about", "/terms", "/privacy",
+    // New pages
+    "/messages", "/admin", "/admin/analytics",
+    "/buddy/trade", "/creators/graph", "/insights/growth",
   ].map(path => ({
     url: `${baseUrl}${path}`,
     lastModified: new Date(),
     changeFrequency: "daily" as const,
-    priority: path === "" ? 1 : 0.8,
+    priority: path === "" ? 1 : path === "/feed" ? 0.9 : path === "/launch" ? 0.9 : 0.8,
   }));
 
   const projectPages = projects.map(p => ({
