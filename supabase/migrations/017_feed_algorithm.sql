@@ -13,10 +13,10 @@ CREATE OR REPLACE FUNCTION feed_score(
   p_likes INTEGER,
   p_replies INTEGER,
   p_created_at TIMESTAMPTZ,
-  p_reaction_fire INTEGER DEFAULT 0,
-  p_reaction_game INTEGER DEFAULT 0,
-  p_reaction_art INTEGER DEFAULT 0,
-  p_reaction_mindblown INTEGER DEFAULT 0
+  p_reaction_fire BIGINT DEFAULT 0,
+  p_reaction_game BIGINT DEFAULT 0,
+  p_reaction_art BIGINT DEFAULT 0,
+  p_reaction_mindblown BIGINT DEFAULT 0
 )
 RETURNS FLOAT
 LANGUAGE plpgsql

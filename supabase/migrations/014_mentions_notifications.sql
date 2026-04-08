@@ -14,11 +14,23 @@ CREATE TABLE IF NOT EXISTS notifications (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_notifications_user ON notifications(user_id, read, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, read, created_at DESC);
 
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Own read notifications" ON notifications FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "System insert notifications" ON notifications FOR INSERT WITH CHECK (true);
-CREATE POLICY "Own update notifications" ON notifications FOR UPDATE USING (auth.uid() = user_id);
 
-ALTER PUBLICATION supabase_realtime ADD TABLE notifications;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename='notifications' AND policyname='Own read notifications') THEN
+    CREATE POLICY "Own read notifications" ON notifications FOR SELECT USING (auth.uid() = user_id);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename='notifications' AND policyname='System insert notifications') THEN
+    CREATE POLICY "System insert notifications" ON notifications FOR INSERT WITH CHECK (true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename='notifications' AND policyname='Own update notifications') THEN
+    CREATE POLICY "Own update notifications" ON notifications FOR UPDATE USING (auth.uid() = user_id);
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE notifications;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;

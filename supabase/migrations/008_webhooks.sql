@@ -1,8 +1,10 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
+
 CREATE TABLE IF NOT EXISTS webhooks (
   id TEXT PRIMARY KEY DEFAULT 'wh-' || gen_random_uuid()::text,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   url TEXT NOT NULL,
-  secret TEXT NOT NULL DEFAULT 'whsec_' || encode(gen_random_bytes(24), 'hex'),
+  secret TEXT NOT NULL DEFAULT 'whsec_' || replace(gen_random_uuid()::text, '-', ''),
   events TEXT[] NOT NULL DEFAULT '{}',
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   last_triggered_at TIMESTAMPTZ,
