@@ -65,7 +65,7 @@ export function ProGate({ featureName, children, blurPreview = true }: ProGatePr
             PRO FEATURE
           </div>
           <div className="font-retro" style={{ fontSize: 12, color: "#E8E8EC", marginBottom: 12, lineHeight: 1.5 }}>
-            {"\u89E3\u9501\u5B8C\u6574\u53D1\u5E03\u5305\u3001\u5206\u53D1\u7B56\u7565\u3001\u7ADE\u54C1\u5206\u6790\u3001\u6295\u8D44\u4EBA Pitch"}
+            {"Unlock full launch packages, distribution strategies, competitive analysis, and investor pitch tools"}
           </div>
           <div className="font-pixel" style={{ fontSize: 14, color: "#FACC15", marginBottom: 12 }}>
             {PRICING.pro.priceLabel}<span style={{ fontSize: 8, color: "#888" }}>{PRICING.pro.period}</span>
@@ -74,10 +74,10 @@ export function ProGate({ featureName, children, blurPreview = true }: ProGatePr
           {clicked ? (
             <div>
               <div className="font-pixel" style={{ fontSize: 9, color: "#39FF14", marginBottom: 8 }}>
-                {"\u2714 \u5DF2\u8BB0\u5F55\u4F60\u7684\u5174\u8DA3\uFF01"}
+                {"Your interest has been recorded!"}
               </div>
               <div className="font-retro" style={{ fontSize: 11, color: "#888" }}>
-                Pro \u529F\u80FD\u5373\u5C06\u4E0A\u7EBF\uFF0C\u6211\u4EEC\u4F1A\u901A\u77E5\u4F60\u3002
+                Pro features coming soon. We will notify you.
               </div>
             </div>
           ) : (
@@ -86,7 +86,7 @@ export function ProGate({ featureName, children, blurPreview = true }: ProGatePr
               onClick={handleUnlock}
               style={{ fontSize: 9, padding: "6px 16px" }}
             >
-              {"\u89E3\u9501 Pro \u529F\u80FD"}
+              {"Unlock Pro Features"}
             </button>
           )}
         </div>

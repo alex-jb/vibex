@@ -10,6 +10,7 @@ import { FeedTabs } from "@/components/feed/feed-tabs";
 import { NewPostsToast } from "@/components/feed/new-posts-toast";
 import { TrendingSidebar } from "@/components/feed/trending-sidebar";
 import Link from "next/link";
+import { useLang } from "@/lib/i18n";
 
 /* ─── Skeleton card for loading states ─── */
 function SkeletonPostCard() {
@@ -95,6 +96,7 @@ function SkeletonPostCard() {
 }
 
 export default function FeedPage() {
+  const { t } = useLang();
   const [tab, setTab] = useState<FeedTab>("trending");
   const { posts, loading, error, connected, refetch, bufferedPosts, flushBuffered } = useRealtimeFeed(tab);
   const { user } = useAuth();
@@ -122,7 +124,6 @@ export default function FeedPage() {
   const hasMore = localPosts.length > 0 && localPosts.length % 20 === 0;
   const exhausted = !hasMore && localPosts.length > 0;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleReply = useCallback((_postId: string) => {
     // placeholder for reply interaction
   }, []);
@@ -131,7 +132,6 @@ export default function FeedPage() {
     setLocalPosts((prev) => prev.filter((p) => p.id !== postId));
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleNewPost = useCallback((_post: FeedPost) => {
     // Don't optimistically prepend — realtime subscription will deliver the post.
     // This avoids the duplicate post bug where both optimistic add + realtime INSERT
@@ -181,14 +181,14 @@ export default function FeedPage() {
       return (
         <div style={{ textAlign: "center", padding: "40px 0" }}>
           <div className="font-retro" style={{ fontSize: 14, color: "#555", marginBottom: 16 }}>
-            {"\u8FD8\u6CA1\u6709\u5173\u6CE8\u4EFB\u4F55\u4EBA\uFF0C\u53BB\u53D1\u73B0\u521B\u4F5C\u8005\u5427\uFF01"}
+            {t("feed.emptyFollowing")}
           </div>
           <Link href="/creators">
             <button
               className="nes-btn is-primary"
               style={{ fontSize: 10, padding: "8px 20px" }}
             >
-              {"\u53D1\u73B0\u521B\u4F5C\u8005"}
+              {t("feed.discoverCreators")}
             </button>
           </Link>
         </div>
@@ -198,7 +198,7 @@ export default function FeedPage() {
       return (
         <div style={{ textAlign: "center", padding: "40px 0" }}>
           <div className="font-retro" style={{ fontSize: 14, color: "#555" }}>
-            {"\u8FD8\u6CA1\u6709\u70ED\u95E8\u52A8\u6001"}
+            {t("feed.emptyTrending")}
           </div>
         </div>
       );
@@ -207,14 +207,14 @@ export default function FeedPage() {
     return (
       <div style={{ textAlign: "center", padding: "40px 0" }}>
         <div className="font-retro" style={{ fontSize: 14, color: "#555", marginBottom: 16 }}>
-          {"\u8FD8\u6CA1\u6709\u52A8\u6001\uFF0C\u53D1\u5E03\u7B2C\u4E00\u6761\u5427\uFF01"}
+          {t("feed.emptyLatest")}
         </div>
         <button
           className="nes-btn is-primary"
           style={{ fontSize: 10, padding: "8px 20px" }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          {"\u53D1\u5E03\u52A8\u6001"}
+          {t("feed.publishFirst")}
         </button>
       </div>
     );
@@ -302,7 +302,7 @@ export default function FeedPage() {
               marginBottom: 16,
             }}
           >
-            {"> \u52A8\u6001"}
+            {"> "}{t("feed.title")}
           </motion.div>
 
           {/* Composer */}
@@ -333,14 +333,14 @@ export default function FeedPage() {
           {!showSkeleton && error && (
             <div style={{ textAlign: "center", padding: "40px 0" }}>
               <div className="font-retro" style={{ fontSize: 14, color: "#FF4500", marginBottom: 16 }}>
-                {"\u52A0\u8F7D\u5931\u8D25"}
+                {t("feed.loadFailed")}
               </div>
               <button
                 className="nes-btn is-error"
                 onClick={refetch}
                 style={{ fontSize: 10, padding: "8px 20px" }}
               >
-                {"\u91CD\u8BD5"}
+                {t("feed.retry")}
               </button>
             </div>
           )}
@@ -369,7 +369,7 @@ export default function FeedPage() {
                     disabled={loadingMore}
                     style={{ fontSize: 10, padding: "8px 20px" }}
                   >
-                    {loadingMore ? "\u52A0\u8F7D\u4E2D..." : "\u52A0\u8F7D\u66F4\u591A"}
+                    {loadingMore ? t("feed.loading") : t("feed.loadMore")}
                   </button>
                 )}
                 {exhausted && (
@@ -378,7 +378,7 @@ export default function FeedPage() {
                     disabled
                     style={{ fontSize: 10, padding: "8px 20px", opacity: 0.4, cursor: "not-allowed" }}
                   >
-                    {"\u6CA1\u6709\u66F4\u591A\u4E86"}
+                    {t("feed.noMore")}
                   </button>
                 )}
               </div>
@@ -442,7 +442,7 @@ export default function FeedPage() {
               textAlign: "center",
             }}
           >
-            {"\u7B5B\u9009: #"}{activeTag}
+            {t("feed.filter")}: #{activeTag}
           </div>
         )}
       </div>

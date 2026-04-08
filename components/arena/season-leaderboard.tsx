@@ -45,7 +45,7 @@ export function SeasonLeaderboard() {
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
         <div className="font-pixel" style={{ fontSize: 10, color: "#FACC15" }}>
-          {"\uD83C\uDFC6 \u8D5B\u5B63\u6392\u884C\u699C"}
+          {"Season Leaderboard"}
         </div>
         {season && (
           <div className="font-pixel" style={{ fontSize: 7, color: "#9D00FF" }}>
@@ -62,7 +62,7 @@ export function SeasonLeaderboard() {
 
       {!loading && entries.length === 0 && (
         <div className="font-pixel" style={{ fontSize: 8, color: "#555", textAlign: "center", padding: 20 }}>
-          {"\u6682\u65E0\u6392\u540D\u6570\u636E"}
+          {"No ranking data yet"}
         </div>
       )}
 

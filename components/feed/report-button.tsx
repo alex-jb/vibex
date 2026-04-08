@@ -1,24 +1,26 @@
 "use client";
 
 import { useState, useCallback } from "react";
-
-const REASONS = [
-  { value: "spam", label: "\u5783\u573E\u5185\u5BB9" },
-  { value: "harassment", label: "\u9A9A\u6270/\u8FB1\u9A82" },
-  { value: "nsfw", label: "\u4E0D\u5F53\u5185\u5BB9" },
-  { value: "misinformation", label: "\u8BEF\u5BFC\u4FE1\u606F" },
-  { value: "other", label: "\u5176\u4ED6" },
-] as const;
+import { useLang } from "@/lib/i18n";
 
 interface ReportButtonProps {
   postId: string;
 }
 
 export function ReportButton({ postId }: ReportButtonProps) {
+  const { t } = useLang();
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const REASONS = [
+    { value: "spam", label: t("feed.reportSpam") },
+    { value: "harassment", label: t("feed.reportHarassment") },
+    { value: "nsfw", label: t("feed.reportNsfw") },
+    { value: "misinformation", label: t("feed.reportMisinfo") },
+    { value: "other", label: t("feed.reportOther") },
+  ];
 
   const handleReport = useCallback(
     async (reason: string) => {
@@ -38,21 +40,21 @@ export function ReportButton({ postId }: ReportButtonProps) {
           }, 1500);
         } else {
           const data = await res.json().catch(() => ({}));
-          setError(data.error ?? "\u4E3E\u62A5\u5931\u8D25");
+          setError(data.error ?? t("feed.reportFailed"));
         }
       } catch {
-        setError("\u7F51\u7EDC\u9519\u8BEF");
+        setError(t("feed.networkError"));
       } finally {
         setSubmitting(false);
       }
     },
-    [postId],
+    [postId, t],
   );
 
   if (done) {
     return (
       <span className="font-pixel" style={{ fontSize: 7, color: "#39FF14" }}>
-        {"\u2714 \u5DF2\u4E3E\u62A5"}
+        {"\u2714 "}{t("feed.reported")}
       </span>
     );
   }
@@ -69,7 +71,7 @@ export function ReportButton({ postId }: ReportButtonProps) {
           border: "none",
           cursor: "pointer",
         }}
-        aria-label={"\u4E3E\u62A5"}
+        aria-label={t("feed.report")}
       >
         {"\u26A0\uFE0F"}
       </button>
@@ -88,7 +90,7 @@ export function ReportButton({ postId }: ReportButtonProps) {
           }}
         >
           <div className="font-pixel" style={{ fontSize: 7, color: "#FF4500", marginBottom: 6 }}>
-            {"\u4E3E\u62A5\u539F\u56E0"}
+            {t("feed.reportReason")}
           </div>
           {error && (
             <div className="font-pixel" style={{ fontSize: 7, color: "#FF4500", marginBottom: 4 }}>

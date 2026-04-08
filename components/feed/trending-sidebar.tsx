@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLang } from "@/lib/i18n";
 
 interface TrendingTag {
   tag: string;
@@ -13,6 +14,7 @@ interface TrendingSidebarProps {
 }
 
 export function TrendingSidebar({ activeTag, onTagClick }: TrendingSidebarProps) {
+  const { t } = useLang();
   const [tags, setTags] = useState<TrendingTag[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,7 +47,7 @@ export function TrendingSidebar({ activeTag, onTagClick }: TrendingSidebarProps)
         className="font-pixel"
         style={{ fontSize: 8, color: "#FACC15", marginBottom: 10 }}
       >
-        {"\uD83D\uDD25 \u70ED\u95E8\u6807\u7B7E"}
+        {"\uD83D\uDD25 "}{t("feed.trendingTags")}
       </div>
 
       {/* Tag list */}
@@ -64,7 +66,7 @@ export function TrendingSidebar({ activeTag, onTagClick }: TrendingSidebarProps)
               padding: "2px 0",
             }}
           >
-            {"\u2716 \u6E05\u9664\u7B5B\u9009"}
+            {"\u2716 "}{t("feed.clearFilter")}
           </button>
         )}
         {tags.map((t) => (

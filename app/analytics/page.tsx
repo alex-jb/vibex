@@ -24,8 +24,6 @@ const avgSuccess =
 
 const dailyRuns = [182, 245, 198, 310, 274, 356, 321]; // last 7 days
 const dayLabelKeys = ["analytics.mon", "analytics.tue", "analytics.wed", "analytics.thu", "analytics.fri", "analytics.sat", "analytics.sun"] as const;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const maxDaily = Math.max(...dailyRuns);
 
 const sortedAgents = [...agents].sort((a, b) => b.runs - a.runs);
 
@@ -52,11 +50,11 @@ const categoryColors: Record<string, string> = {
 };
 
 const recentRuns = [
-  { agentId: "agent-7", agent: "TaskPilot", status: "completed" as const, input: "Schedule weekly standup every Monday at 10am...", tokens: 1240, latency: 1180, time: "2 分钟前" },
-  { agentId: "agent-1", agent: "CodeReviewer Pro", status: "completed" as const, input: "Review PR #482: add rate limiter middleware...", tokens: 3800, latency: 3100, time: "8 分钟前" },
-  { agentId: "agent-5", agent: "AlphaSignal", status: "failed" as const, input: "Analyze BTC/USD 4h chart with RSI divergence...", tokens: 2100, latency: 8400, time: "15 分钟前" },
-  { agentId: "agent-2", agent: "DeepResearch", status: "completed" as const, input: "Research latest advances in protein folding...", tokens: 7200, latency: 12800, time: "23 分钟前" },
-  { agentId: "agent-6", agent: "StudyBuddy", status: "completed" as const, input: "Generate calculus practice quiz on integrals...", tokens: 2400, latency: 3600, time: "31 分钟前" },
+  { agentId: "agent-7", agent: "TaskPilot", status: "completed" as const, input: "Schedule weekly standup every Monday at 10am...", tokens: 1240, latency: 1180, time: "2 min ago" },
+  { agentId: "agent-1", agent: "CodeReviewer Pro", status: "completed" as const, input: "Review PR #482: add rate limiter middleware...", tokens: 3800, latency: 3100, time: "8 min ago" },
+  { agentId: "agent-5", agent: "AlphaSignal", status: "failed" as const, input: "Analyze BTC/USD 4h chart with RSI divergence...", tokens: 2100, latency: 8400, time: "15 min ago" },
+  { agentId: "agent-2", agent: "DeepResearch", status: "completed" as const, input: "Research latest advances in protein folding...", tokens: 7200, latency: 12800, time: "23 min ago" },
+  { agentId: "agent-6", agent: "StudyBuddy", status: "completed" as const, input: "Generate calculus practice quiz on integrals...", tokens: 2400, latency: 3600, time: "31 min ago" },
 ];
 
 const modelCosts = [
@@ -66,8 +64,6 @@ const modelCosts = [
 ];
 
 const dailyCosts = [14.2, 18.6, 16.1, 22.4, 19.8, 24.1, 12.3];
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const maxCost = Math.max(...dailyCosts);
 
 // ── Animations ──────────────────────────────────────────────────────
 
@@ -80,7 +76,7 @@ const fadeUp = {
 
 type DateRange = 7 | 30 | 90;
 
-const rangeLabelMap: Record<DateRange, string> = { 7: "7天", 30: "30天", 90: "90天" };
+const rangeLabelKeyMap: Record<DateRange, "analytics.7d" | "analytics.30d" | "analytics.90d"> = { 7: "analytics.7d", 30: "analytics.30d", 90: "analytics.90d" };
 
 function dayLabelsForRange(range: DateRange, t: (k: typeof dayLabelKeys[number]) => string): string[] {
   if (range === 7) return dayLabelKeys.map((k) => t(k));
@@ -166,7 +162,7 @@ export default function AnalyticsPage() {
                 className={range === r ? "nes-btn is-primary" : "nes-btn"}
                 style={{ fontSize: 10, padding: "4px 12px" }}
               >
-                <span className="font-pixel">{rangeLabelMap[r]}</span>
+                <span className="font-pixel">{t(rangeLabelKeyMap[r])}</span>
               </button>
             ))}
             <button
@@ -175,7 +171,7 @@ export default function AnalyticsPage() {
               style={{ fontSize: 10, padding: "4px 12px" }}
             >
               <span className="font-pixel flex items-center gap-1">
-                <Download className="size-3 inline-block" /> 导出 CSV
+                <Download className="size-3 inline-block" /> {t("analytics.exportCsv")}
               </span>
             </button>
           </div>
@@ -203,7 +199,7 @@ export default function AnalyticsPage() {
           </div>
         </motion.section>
 
-        {/* ── 运行趋势图 ─────────────────────────────── */}
+        {/* ── Run Trend Chart ─────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
             <TrendingUp className="size-5 text-violet-400" /> {">"} {t("analytics.runTrend")}
@@ -235,7 +231,7 @@ export default function AnalyticsPage() {
           </div>
         </motion.section>
 
-        {/* ── Agent 排行 ──────────────────────────────── */}
+        {/* ── Agent Ranking ────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <div className="rpgui-container framed-golden" style={{ padding: 16 }}>
             <h2 className="font-pixel text-[12px] mb-4">{">"} {t("analytics.agentRanking")}</h2>
@@ -303,7 +299,7 @@ export default function AnalyticsPage() {
           </div>
         </motion.section>
 
-        {/* ── Token 消耗分布 ──────────────────────────── */}
+        {/* ── Token Distribution ─────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4" aria-label={t("analytics.tokenDistribution")}>
           <h2 className="font-pixel text-[12px]">{">"} {t("analytics.tokenDistribution")}</h2>
           <div className="space-y-3">
@@ -324,7 +320,7 @@ export default function AnalyticsPage() {
           </div>
         </motion.section>
 
-        {/* ── 最近运行 ───────────────────────────────── */}
+        {/* ── Recent Runs ──────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
             <Clock className="size-5 text-violet-400" /> {">"} {t("analytics.recentRuns")}
@@ -351,7 +347,7 @@ export default function AnalyticsPage() {
           </div>
         </motion.section>
 
-        {/* ── 成本追踪 ───────────────────────────────── */}
+        {/* ── Cost Tracking ────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-6" aria-label={t("analytics.costTracking")}>
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
             <DollarSign className="size-5 text-emerald-400" /> {">"} {t("analytics.costTracking")}

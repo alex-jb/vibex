@@ -1,4 +1,9 @@
+"use client";
+
+import { useLang } from "@/lib/i18n";
+
 export default function TermsPage() {
+  const { t } = useLang();
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
       {/* Terminal Header */}
@@ -26,28 +31,28 @@ export default function TermsPage() {
       {/* Body */}
       <div className="rpgui-container framed" style={{ padding: 24 }}>
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          服务条款
+          {t("terms.title")}
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
-          欢迎使用 VibeX 平台。使用本平台即表示您同意遵守以下条款。您不得利用本平台进行任何违法行为或损害他人权益的活动。我们保留随时修改服务条款的权利。
+          Welcome to the VibeX platform. By using this platform, you agree to abide by the following terms. You may not use this platform for any unlawful activity or to harm the rights of others. We reserve the right to modify these terms of service at any time.
         </p>
 
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          知识产权
+          {t("terms.ip")}
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
-          VibeX 平台采用 source-available 许可证。用户在平台上创建的项目归用户所有，但平台有权展示和推广用户公开发布的内容。
+          The VibeX platform is released under a source-available license. Projects created by users on the platform remain the property of their creators, but the platform reserves the right to display and promote publicly published content.
         </p>
 
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          免责声明
+          {t("terms.disclaimer")}
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
-          本平台的 AI 功能（包括战斗系统、项目评估等）仅供娱乐和参考，不构成专业建议。AI 生成的内容可能存在不准确之处，用户应自行判断。
+          The AI features on this platform (including the battle system, project evaluation, etc.) are for entertainment and reference only and do not constitute professional advice. AI-generated content may contain inaccuracies, and users should exercise their own judgment.
         </p>
 
         <p className="font-pixel" style={{ fontSize: 7, color: "#555", marginTop: 32 }}>
-          最后更新：2026-04-06
+          {t("terms.lastUpdated")}
         </p>
       </div>
     </div>

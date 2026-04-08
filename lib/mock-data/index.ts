@@ -54,8 +54,8 @@ export function generateShareContent(project: Project): ShareContent {
 
   return {
     twitter: `Just discovered "${project.title}" on @VibeX — ${project.tagline.toLowerCase()}. This is what AI-native building looks like. Try it yourself: ${playableUrl} #vibecoding #ai`,
-    xiaohongshu: `🔥 发现了一个超酷的AI项目「${project.title}」！${project.tagline} ✨ 已经有${project.upvotes}人点赞了，快来体验一下吧！链接在主页 #AI创作 #VibeX #科技前沿 #独立开发`,
-    douyin: `这个AI项目火了！「${project.title}」— ${project.tagline}，${project.plays}人已经在玩了 🚀 #AI #科技 #独立开发者`,
+    xiaohongshu: `Found an amazing AI project "${project.title}"! ${project.tagline} Already ${project.upvotes} upvotes, come try it out! Link in bio #AICreation #VibeX #TechFrontier #IndieDev`,
+    douyin: `This AI project is trending! "${project.title}" — ${project.tagline}, ${project.plays} people already playing #AI #Tech #IndieDev`,
     embedCode: `<iframe src="${playableUrl}" width="100%" height="500" />`,
     playableUrl,
   };

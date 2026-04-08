@@ -26,6 +26,7 @@ export async function GET() {
     return NextResponse.json(MOCK_BENCHMARKS);
   }
 
-  // TODO: compute from launch_outcomes when real data exists
+  // Real data: query launch_outcomes table and compute category/overall aggregates.
+  // Until launch_outcomes is populated, return the same mock benchmarks above.
   return NextResponse.json(MOCK_BENCHMARKS);
 }

@@ -1,7 +1,7 @@
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata = createMetadata({
-  title: "\u79C1\u4FE1",
+  title: "Messages",
   description: "Send and receive direct messages on VibeX",
   path: "/messages",
 });

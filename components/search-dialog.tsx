@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { projects, creators, ideas } from "@/lib/mock-data";
 import { agents } from "@/lib/mock-data/agents";
 import { workflows } from "@/lib/mock-data/workflows";
+import { useLang } from "@/lib/i18n";
 
 interface SearchResult {
   type: "project" | "creator" | "idea" | "agent" | "workflow";
@@ -16,12 +17,13 @@ interface SearchResult {
   href: string;
 }
 
-const TYPE_LABELS: Record<SearchResult["type"], string> = {
-  project: "项目",
-  creator: "创作者",
-  idea: "创意",
-  agent: "智能体",
-  workflow: "工作流",
+// Labels resolved at render time via useLang
+const TYPE_LABEL_KEYS: Record<SearchResult["type"], "search.project" | "search.creator" | "search.idea" | "search.agent" | "search.workflow"> = {
+  project: "search.project",
+  creator: "search.creator",
+  idea: "search.idea",
+  agent: "search.agent",
+  workflow: "search.workflow",
 };
 
 const TYPE_ICONS: Record<SearchResult["type"], typeof Folder> = {
@@ -38,6 +40,7 @@ interface SearchDialogProps {
 }
 
 export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
+  const { t } = useLang();
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -193,8 +196,9 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="搜索项目、创作者、创意..."
-                className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                placeholder={t("search.placeholder")}
+                className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none"
+                style={{ fontFamily: "var(--font-pixel), monospace", fontSize: 11 }}
               />
               <button onClick={() => onOpenChange(false)} className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="size-4" />
@@ -204,7 +208,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
             {/* Results */}
             <div className="max-h-[50vh] overflow-y-auto p-2">
               {query.trim() && results.length === 0 && (
-                <p className="px-3 py-8 text-center text-sm text-muted-foreground">无结果</p>
+                <p className="px-3 py-8 text-center text-sm text-muted-foreground">{t("search.noResults")}</p>
               )}
 
               {(() => {
@@ -213,8 +217,8 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                   const Icon = TYPE_ICONS[type];
                   return (
                     <div key={type} className="mb-2">
-                      <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                        {TYPE_LABELS[type]}
+                      <p className="px-3 py-1.5 font-pixel text-[8px] uppercase tracking-wider text-muted-foreground">
+                        {t(TYPE_LABEL_KEYS[type])}
                       </p>
                       {items.map((item) => {
                         const idx = flatIndex++;
@@ -230,8 +234,8 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                           >
                             <Icon className="size-4 shrink-0 text-violet-400" />
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium text-foreground">{item.title}</p>
-                              <p className="truncate text-xs text-muted-foreground">{item.subtitle}</p>
+                              <p className="truncate font-pixel text-[10px] text-foreground">{item.title}</p>
+                              <p className="truncate text-[9px] text-muted-foreground">{item.subtitle}</p>
                             </div>
                           </button>
                         );
@@ -242,7 +246,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
               })()}
 
               {!query.trim() && (
-                <p className="px-3 py-8 text-center text-xs text-muted-foreground">输入关键词开始搜索</p>
+                <p className="px-3 py-8 text-center text-xs text-muted-foreground">{t("search.startSearch")}</p>
               )}
             </div>
           </motion.div>

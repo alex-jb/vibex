@@ -28,11 +28,11 @@ interface Message {
 function relativeTime(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "\u521A\u521A";
-  if (mins < 60) return `${mins}\u5206\u949F\u524D`;
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins}m ago`;
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}\u5C0F\u65F6\u524D`;
-  return `${Math.floor(hrs / 24)}\u5929\u524D`;
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
 }
 
 export default function MessagesPage() {
@@ -93,11 +93,11 @@ export default function MessagesPage() {
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="rpgui-container framed" style={{ padding: 40, textAlign: "center" }}>
           <div className="font-pixel" style={{ fontSize: 12, color: "#888", marginBottom: 16 }}>
-            {"\u767B\u5F55\u540E\u67E5\u770B\u79C1\u4FE1"}
+            {"Log in to view messages"}
           </div>
           <Link href="/login">
             <button className="nes-btn is-primary" style={{ fontSize: 10, padding: "8px 20px" }}>
-              {"\u767B\u5F55"}
+              {"Log In"}
             </button>
           </Link>
         </div>
@@ -155,7 +155,7 @@ export default function MessagesPage() {
             }}
           >
             <div className="font-pixel" style={{ fontSize: 10, color: "#9D00FF", padding: "12px 12px 8px" }}>
-              {"> \u5BF9\u8BDD"}
+              {"> Conversations"}
             </div>
 
             {loading && (
@@ -166,7 +166,7 @@ export default function MessagesPage() {
 
             {!loading && conversations.length === 0 && (
               <div className="font-pixel" style={{ fontSize: 7, color: "#555", padding: 12 }}>
-                {"\u6682\u65E0\u5BF9\u8BDD"}
+                {"No conversations yet"}
               </div>
             )}
 
@@ -224,7 +224,7 @@ export default function MessagesPage() {
             {!activeConv ? (
               <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <div className="font-pixel" style={{ fontSize: 10, color: "#555" }}>
-                  {"\u2190 \u9009\u62E9\u4E00\u4E2A\u5BF9\u8BDD"}
+                  {"Select a conversation"}
                 </div>
               </div>
             ) : (
@@ -276,7 +276,7 @@ export default function MessagesPage() {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
-                    placeholder={"\u8F93\u5165\u6D88\u606F..."}
+                    placeholder={"Type a message..."}
                     disabled={sending}
                     className="font-retro"
                     style={{
@@ -295,7 +295,7 @@ export default function MessagesPage() {
                     disabled={!newMessage.trim() || sending}
                     style={{ fontSize: 9, padding: "6px 14px", opacity: !newMessage.trim() ? 0.4 : 1 }}
                   >
-                    {sending ? "..." : "\u53D1\u9001"}
+                    {sending ? "..." : "Send"}
                   </button>
                 </div>
               </>

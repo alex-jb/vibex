@@ -84,7 +84,7 @@ export function AgentReviews({ agentId }: AgentReviewsProps) {
       {/* Header with avg rating */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
         <div className="font-pixel" style={{ fontSize: 10, color: "#FACC15" }}>
-          {"\u2B50 \u8BC4\u4EF7"} ({totalReviews})
+          {"Reviews"} ({totalReviews})
         </div>
         {avgRating > 0 && (
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -100,13 +100,13 @@ export function AgentReviews({ agentId }: AgentReviewsProps) {
       {!submitted && (
         <div style={{ marginBottom: 16, padding: 10, background: "#0A0A0C", border: "1px solid #2A2A30" }}>
           <div className="font-pixel" style={{ fontSize: 7, color: "#888", marginBottom: 6 }}>
-            {"\u5199\u8BC4\u4EF7"}
+            {"Write a Review"}
           </div>
           <StarRating rating={myRating} interactive onChange={setMyRating} />
           <textarea
             value={myContent}
             onChange={(e) => setMyContent(e.target.value.slice(0, 1000))}
-            placeholder={"\u5206\u4EAB\u4F60\u7684\u4F7F\u7528\u4F53\u9A8C... (\u53EF\u9009)"}
+            placeholder={"Share your experience... (optional)"}
             className="font-retro"
             style={{
               width: "100%", minHeight: 50, marginTop: 8,
@@ -120,7 +120,7 @@ export function AgentReviews({ agentId }: AgentReviewsProps) {
             disabled={myRating === 0 || submitting}
             style={{ fontSize: 8, padding: "4px 12px", marginTop: 6, opacity: myRating === 0 ? 0.4 : 1 }}
           >
-            {submitting ? "\u63D0\u4EA4\u4E2D..." : "\u63D0\u4EA4\u8BC4\u4EF7"}
+            {submitting ? "Submitting..." : "Submit Review"}
           </button>
         </div>
       )}
@@ -129,7 +129,7 @@ export function AgentReviews({ agentId }: AgentReviewsProps) {
       {loading && <div className="font-pixel" style={{ fontSize: 8, color: "#555" }}>Loading...</div>}
       {!loading && reviews.length === 0 && (
         <div className="font-pixel" style={{ fontSize: 8, color: "#555", textAlign: "center", padding: 16 }}>
-          {"\u6682\u65E0\u8BC4\u4EF7\uFF0C\u6210\u4E3A\u7B2C\u4E00\u4E2A\u8BC4\u4EF7\u8005\uFF01"}
+          {"No reviews yet. Be the first to review!"}
         </div>
       )}
       {reviews.map((r) => (

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "服务条款 | VibeX",
-  description: "VibeX 平台服务条款",
+  title: "Terms of Service | VibeX",
+  description: "VibeX platform terms of service",
 };
 
 export default function TermsLayout({ children }: { children: React.ReactNode }) {

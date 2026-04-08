@@ -113,14 +113,14 @@ export default function LaunchPage() {
 
       if (!response.ok) {
         const errorText = await response.text();
-        setAiResponse(`Error: ${response.status} - ${errorText || "请求失败，请稍后重试"}`);
+        setAiResponse(`Error: ${response.status} - ${errorText || "Request failed, please try again later"}`);
         setAiLoading(false);
         return;
       }
 
       const reader = response.body?.getReader();
       if (!reader) {
-        setAiResponse("Error: 无法读取响应流");
+        setAiResponse("Error: Unable to read response stream");
         setAiLoading(false);
         return;
       }
@@ -139,7 +139,7 @@ export default function LaunchPage() {
       if (error instanceof DOMException && error.name === "AbortError") {
         return;
       }
-      setAiResponse("Error: 网络错误，请检查连接后重试");
+      setAiResponse("Error: Network error, please check your connection and try again");
     } finally {
       setAiLoading(false);
     }
@@ -459,7 +459,7 @@ export default function LaunchPage() {
                   ) : (
                     <Sparkles className="size-4 mr-2" />
                   )}
-                  {aiLoading ? "分析中..." : "AI 深度分析"}
+                  {aiLoading ? "Analyzing..." : "AI Deep Analysis"}
                 </Button>
               </div>
 
@@ -469,13 +469,13 @@ export default function LaunchPage() {
                   <div className="flex items-center gap-2 mb-2">
                     <Sparkles className="size-3.5 text-violet-400" />
                     <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">
-                      AI 分析结果
+                      AI Analysis Result
                     </span>
                   </div>
                   {aiLoading && !aiResponse && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground/60">
                       <Loader2 className="size-3.5 animate-spin text-violet-400" />
-                      <span>正在分析你的项目...</span>
+                      <span>Analyzing your project...</span>
                     </div>
                   )}
                   {aiResponse && (
@@ -499,10 +499,10 @@ export default function LaunchPage() {
                   ) : (
                     <Rocket className="size-4 mr-2" />
                   )}
-                  {pkgLoading ? "\u751F\u6210\u4E2D..." : "\uD83D\uDE80 \u4E00\u952E\u751F\u6210\u53D1\u5E03\u5305"}
+                  {pkgLoading ? "Generating..." : "Generate Launch Package"}
                 </Button>
                 <p className="text-[10px] text-muted-foreground/40 mt-1 text-center">
-                  {"\u5B9A\u4F4D + \u6587\u6848 + \u63A8\u6587 + \u5206\u53D1\u7B56\u7565 + \u6295\u8D44\u4EBA Pitch"}
+                  {"Positioning + Copy + Tweets + Distribution Strategy + Investor Pitch"}
                 </p>
               </div>
 

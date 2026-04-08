@@ -2,13 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { getOnboardingState, toggleViewMode } from "@/lib/onboarding";
+import { useLang } from "@/lib/i18n";
 
 /**
- * Toggle between simple (新手) and full (专家) view modes.
+ * Toggle between simple (Beginner) and full (Expert) view modes.
  * Simple mode hides complex info like radar charts, detailed stats, tech stack.
  * Place this in the navbar or settings area.
  */
 export function ViewModeToggle() {
+  const { t } = useLang();
   const [mode, setMode] = useState<"simple" | "full">("simple");
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export function ViewModeToggle() {
     <button
       onClick={handleToggle}
       className="font-pixel"
-      title={mode === "simple" ? "\u5207\u6362\u5230\u4E13\u5BB6\u6A21\u5F0F" : "\u5207\u6362\u5230\u7B80\u6D01\u6A21\u5F0F"}
+      title={mode === "simple" ? t("viewMode.expert") : t("viewMode.simple")}
       style={{
         fontSize: 7,
         color: mode === "simple" ? "#39FF14" : "#9D00FF",
@@ -36,7 +38,7 @@ export function ViewModeToggle() {
         cursor: "pointer",
       }}
     >
-      {mode === "simple" ? "\uD83C\uDFAE \u65B0\u624B" : "\u2699\uFE0F \u4E13\u5BB6"}
+      {mode === "simple" ? t("viewMode.beginner") : t("viewMode.expertLabel")}
     </button>
   );
 }

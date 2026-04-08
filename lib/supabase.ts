@@ -41,10 +41,13 @@ function createMockClient(): SupabaseClient {
       if (prop === "auth") return mockAuth;
       if (prop === "from") return () => ({ ...chainable });
       if (prop === "rpc") return () => Promise.resolve(noopResult);
-      if (prop === "channel") return () => ({
-        on: () => ({ on: () => ({ on: () => ({ subscribe: () => "SUBSCRIBED" }) }) }),
-        subscribe: () => "SUBSCRIBED",
-      });
+      if (prop === "channel") return () => {
+        const ch: Record<string, unknown> = {};
+        ch.on = () => ch;
+        ch.subscribe = () => ch;
+        ch.unsubscribe = () => {};
+        return ch;
+      };
       if (prop === "removeChannel") return () => {};
       return () => noopResult;
     },

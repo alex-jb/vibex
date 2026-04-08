@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
+import { useLang } from "@/lib/i18n";
 
 export type ReactionType = "fire" | "game" | "art" | "mindblown";
 
@@ -12,11 +13,11 @@ export interface ReactionCounts {
   mindblown: number;
 }
 
-const REACTION_CONFIG: Record<ReactionType, { emoji: string; label: string }> = {
-  fire: { emoji: "🔥", label: "厉害" },
-  game: { emoji: "🎮", label: "好玩" },
-  art: { emoji: "🎨", label: "好看" },
-  mindblown: { emoji: "🤯", label: "震撼" },
+const REACTION_CONFIG: Record<ReactionType, { emoji: string; i18nKey: "feed.reactionFire" | "feed.reactionFun" | "feed.reactionLove" | "feed.reactionDance" }> = {
+  fire: { emoji: "🔥", i18nKey: "feed.reactionFire" },
+  game: { emoji: "🎮", i18nKey: "feed.reactionFun" },
+  art: { emoji: "🎨", i18nKey: "feed.reactionLove" },
+  mindblown: { emoji: "🤯", i18nKey: "feed.reactionDance" },
 };
 
 interface ReactionBarProps {
@@ -26,6 +27,7 @@ interface ReactionBarProps {
 }
 
 export function ReactionBar({ postId, counts, userReactions }: ReactionBarProps) {
+  const { t } = useLang();
   const [localCounts, setLocalCounts] = useState<ReactionCounts>(counts);
   const [localUserReactions, setLocalUserReactions] = useState<Set<ReactionType>>(
     new Set(userReactions),
@@ -97,7 +99,8 @@ export function ReactionBar({ postId, counts, userReactions }: ReactionBarProps)
   return (
     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
       {(Object.keys(REACTION_CONFIG) as ReactionType[]).map((type) => {
-        const { emoji, label } = REACTION_CONFIG[type];
+        const { emoji, i18nKey } = REACTION_CONFIG[type];
+        const label = t(i18nKey);
         const isActive = localUserReactions.has(type);
         const count = localCounts[type];
 

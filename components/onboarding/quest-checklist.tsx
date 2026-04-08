@@ -22,7 +22,7 @@ export function QuestChecklist() {
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
         <div className="font-pixel" style={{ fontSize: 9, color: "#FACC15" }}>
-          {"\uD83D\uDCDC \u65B0\u624B\u4EFB\u52A1"} ({completedCount}/{STARTER_QUESTS.length})
+          {"Starter Quests"} ({completedCount}/{STARTER_QUESTS.length})
         </div>
         <div className="font-pixel" style={{ fontSize: 7, color: "#39FF14" }}>
           +{totalXp} XP
@@ -59,7 +59,7 @@ export function QuestChecklist() {
             </span>
             <div style={{ flex: 1 }}>
               <div className="font-pixel" style={{ fontSize: 7, color: done ? "#39FF14" : "#E8E8EC", textDecoration: done ? "line-through" : "none" }}>
-                {quest.titleZh}
+                {quest.title}
               </div>
               <div className="font-retro" style={{ fontSize: 10, color: "#666" }}>
                 {quest.description}

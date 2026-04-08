@@ -75,7 +75,7 @@ export default function GrowthPatternsPage() {
             {"> Growth Intelligence"}
           </motion.div>
           <div className="font-retro" style={{ fontSize: 12, color: "#888", marginBottom: 20 }}>
-            {"\u4ECE\u771F\u5B9E\u53D1\u5E03\u6570\u636E\u4E2D\u63D0\u53D6\u7684\u589E\u957F\u6A21\u5F0F\u3002\u8FD9\u4E9B\u6570\u636E\u662F VibeX \u7684\u62A4\u57CE\u6CB3\u3002"}
+            {"Growth patterns extracted from real launch data. This data is the VibeX moat."}
           </div>
 
           {loading && <div className="font-pixel" style={{ fontSize: 8, color: "#555", textAlign: "center", padding: 40 }}>LOADING INTELLIGENCE...</div>}
@@ -84,7 +84,7 @@ export default function GrowthPatternsPage() {
             <>
               {/* Growth Patterns */}
               <div className="font-pixel" style={{ fontSize: 10, color: "#FACC15", marginBottom: 10 }}>
-                {"\uD83E\uDDE0 \u5DF2\u9A8C\u8BC1\u7684\u589E\u957F\u6A21\u5F0F"} ({patterns.length})
+                {"Verified Growth Patterns"} ({patterns.length})
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 10, marginBottom: 24 }}>
@@ -132,7 +132,7 @@ export default function GrowthPatternsPage() {
 
               {/* Category Benchmarks */}
               <div className="font-pixel" style={{ fontSize: 10, color: "#06B6D4", marginBottom: 10 }}>
-                {"\uD83D\uDCCA \u54C1\u7C7B\u57FA\u51C6\u6570\u636E"}
+                {"Category Benchmarks"}
               </div>
 
               <div className="retro-card" style={{ padding: 12 }}>

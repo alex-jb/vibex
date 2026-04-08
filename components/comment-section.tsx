@@ -94,11 +94,11 @@ function relativeTime(dateStr: string): string {
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
 
-  if (minutes < 1) return "刚刚";
-  if (minutes < 60) return `${minutes}分钟前`;
-  if (hours < 24) return `${hours}小时前`;
-  if (days < 30) return `${days}天前`;
-  return `${Math.floor(days / 30)}个月前`;
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m`;
+  if (hours < 24) return `${hours}h`;
+  if (days < 30) return `${days}d`;
+  return `${Math.floor(days / 30)}mo`;
 }
 
 interface CommentItemProps {
@@ -155,7 +155,7 @@ function CommentItem({
               className="flex items-center gap-1 text-xs text-muted-foreground hover:text-violet-400 transition-colors"
             >
               <Reply className="size-3.5" />
-              <span>回复</span>
+              <span>Reply</span>
             </button>
           </div>
 
@@ -175,7 +175,7 @@ function CommentItem({
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && replyText.trim()) onSubmitReply();
                     }}
-                    placeholder={`回复 ${comment.user_name}...`}
+                    placeholder={`Reply to ${comment.user_name}...`}
                     className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-violet-500/50"
                   />
                   <button
@@ -316,7 +316,7 @@ export function CommentSection({ projectId }: { projectId: string }) {
       <div className="flex items-center gap-2 mb-6">
         <MessageSquare className="size-5 text-violet-400" />
         <h3 className="text-lg font-semibold text-foreground">
-          评论 ({comments.length})
+          {t("comment.comments")} ({comments.length})
         </h3>
       </div>
 
@@ -345,7 +345,7 @@ export function CommentSection({ projectId }: { projectId: string }) {
               onKeyDown={(e) => {
                 if (e.key === "Enter" && newComment.trim()) handleSubmit();
               }}
-              placeholder="写下你的评论..."
+              placeholder={t("comment.placeholder")}
               className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-violet-500/50 transition-colors"
             />
             <button
@@ -354,7 +354,7 @@ export function CommentSection({ projectId }: { projectId: string }) {
               className="rounded-lg bg-violet-600/80 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
             >
               <Send className="size-4" />
-              <span>发送</span>
+              <span>{t("comment.send")}</span>
             </button>
           </div>
         </div>
@@ -365,9 +365,9 @@ export function CommentSection({ projectId }: { projectId: string }) {
               href="/login"
               className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors"
             >
-              登录
+              {t("comment.signIn")}
             </Link>
-            后发表评论
+            {t("comment.toComment")}
           </p>
         </div>
       )}
@@ -397,7 +397,7 @@ export function CommentSection({ projectId }: { projectId: string }) {
 
       {topLevelComments.length === 0 && (
         <div className="text-center py-8 text-muted-foreground text-sm">
-          还没有评论，来写第一条吧！
+          {t("comment.empty")}
         </div>
       )}
     </div>

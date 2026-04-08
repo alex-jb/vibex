@@ -341,9 +341,9 @@ export function RealtimeChat({ projectId }: { projectId: string }) {
                     textUnderlineOffset: 3,
                   }}
                 >
-                  登录
+                  Log in
                 </Link>
-                后参与讨论
+                {" "}to join the discussion
               </span>
             </div>
           )}

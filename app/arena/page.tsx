@@ -1,217 +1,17 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useLang } from "@/lib/i18n";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { projects } from "@/lib/mock-data";
 import type { Project, BattleResult } from "@/lib/types";
 import { simulateBattle, getBattleSummary } from "@/lib/battle-engine";
-import { CLASS_CONFIG, EVOLUTION_CONFIG } from "@/lib/rpg-utils";
 import { SeasonLeaderboard } from "@/components/arena/season-leaderboard";
 import { onBattleWon } from "@/lib/feed-events";
-
-/* ─── Terminal Typewriter Hook ─── */
-function useTypewriter(text: string, speed = 30, trigger = true) { // eslint-disable-line @typescript-eslint/no-unused-vars
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    if (!trigger) { setDisplayed(""); setDone(false); return; }
-    setDisplayed("");
-    setDone(false);
-    let i = 0;
-    const t = setInterval(() => {
-      i++;
-      setDisplayed(text.slice(0, i));
-      if (i >= text.length) { clearInterval(t); setDone(true); }
-    }, speed);
-    return () => clearInterval(t);
-  }, [text, speed, trigger]);
-
-  return { displayed, done };
-}
-
-/* ─── Terminal Line Component ─── */
-function TermLine({
-  prefix = ">",
-  color = "#39FF14",
-  children,
-  delay = 0,
-}: {
-  prefix?: string;
-  color?: string;
-  children: React.ReactNode;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -8 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay, duration: 0.15 }}
-      className="font-retro"
-      style={{ fontSize: "18px", lineHeight: "1.6", color: "#E8E8EC" }}
-    >
-      <span style={{ color, marginRight: 8 }}>{prefix}</span>
-      {children}
-    </motion.div>
-  );
-}
-
-/* ─── Pixel HP Bar ─── */
-function PixelBar({
-  label,
-  value,
-  max,
-  type,
-}: {
-  label: string;
-  value: number;
-  max: number;
-  type: "hp" | "mp" | "exp";
-}) {
-  const pct = Math.min(100, (value / max) * 100);
-  const colors = {
-    hp: pct > 50 ? "#39FF14" : pct > 25 ? "#FACC15" : "#FF4500",
-    mp: "#06B6D4",
-    exp: "#9D00FF",
-  };
-
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <span className="font-pixel" style={{ fontSize: 7, color: colors[type], width: 24 }}>
-        {label}
-      </span>
-      <div
-        style={{
-          flex: 1,
-          height: 12,
-          background: "#0A0A0C",
-          border: "2px solid #2A2A30",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            height: "100%",
-            background: colors[type],
-            position: "relative",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "repeating-linear-gradient(90deg, transparent 0, transparent 5px, rgba(0,0,0,0.3) 5px, rgba(0,0,0,0.3) 7px)",
-            }}
-          />
-        </motion.div>
-      </div>
-      <span className="font-pixel" style={{ fontSize: 7, color: "#8888A0", width: 55, textAlign: "right" }}>
-        {value}/{max}
-      </span>
-    </div>
-  );
-}
-
-/* ─── Fighter Panel (Pokemon Battle Style) ─── */
-function FighterPanel({
-  project,
-  side,
-  isAttacking,
-}: {
-  project: Project;
-  side: "left" | "right";
-  isAttacking?: boolean;
-}) {
-  const hero = project.hero!;
-  const cls = CLASS_CONFIG[hero.heroClass];
-  const evo = EVOLUTION_CONFIG[hero.evolutionStage];
-
-  return (
-    <div style={{ textAlign: side === "right" ? "right" : "left" }}>
-      {/* Name + Level */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: side === "right" ? "flex-end" : "flex-start",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {side === "left" && (
-            <span className="font-pixel" style={{ fontSize: 10, color: "#E8E8EC" }}>
-              {project.title}
-            </span>
-          )}
-          <span
-            className="font-pixel"
-            style={{
-              fontSize: 8,
-              color: "#0D0D0D",
-              background: cls.color,
-              padding: "2px 6px",
-            }}
-          >
-            Lv{hero.level}
-          </span>
-          {side === "right" && (
-            <span className="font-pixel" style={{ fontSize: 10, color: "#E8E8EC" }}>
-              {project.title}
-            </span>
-          )}
-        </div>
-
-        <span className="font-pixel" style={{ fontSize: 7, color: cls.color }}>
-          {hero.heroClass} · {evo.label}
-        </span>
-      </div>
-
-      {/* HP/MP bars */}
-      <div style={{ marginTop: 8, maxWidth: 280 }}>
-        <PixelBar label="HP" value={hero.hp} max={hero.maxHp} type="hp" />
-        <div style={{ height: 3 }} />
-        <PixelBar label="MP" value={hero.mp} max={hero.maxMp} type="mp" />
-      </div>
-
-      {/* Sprite area */}
-      <motion.div
-        animate={
-          isAttacking
-            ? { x: side === "left" ? [0, 20, 0] : [0, -20, 0] }
-            : { y: [0, -4, 0] }
-        }
-        transition={
-          isAttacking
-            ? { duration: 0.3, ease: "easeInOut" }
-            : { duration: 2, repeat: Infinity, ease: "easeInOut" }
-        }
-        style={{
-          width: 64,
-          height: 64,
-          margin: side === "right" ? "12px 0 0 auto" : "12px 0 0 0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          border: `2px solid ${cls.color}40`,
-          background: `${cls.color}08`,
-          fontSize: 32,
-        }}
-      >
-        {hero.heroClass === "Architect" && "🏗️"}
-        {hero.heroClass === "Artisan" && "🎨"}
-        {hero.heroClass === "Enchanter" && "✨"}
-        {hero.heroClass === "Alchemist" && "🧪"}
-        {hero.heroClass === "Sentinel" && "🛡️"}
-      </motion.div>
-    </div>
-  );
-}
+import { FighterPanel } from "@/components/arena/battle-hud-display";
+import { ProjectRoster } from "@/components/arena/project-roster";
+import { BattlePhase } from "@/components/arena/battle-result";
+import { TermLine, CriticalHitOverlay, FlashOverlay } from "@/components/arena/battle-narrative";
 
 /* ─── Main Arena Page ─── */
 export default function ArenaPage() {
@@ -224,7 +24,6 @@ export default function ArenaPage() {
   const [showCrit, setShowCrit] = useState(false);
   const [attackingSide, setAttackingSide] = useState<"left" | "right" | null>(null);
   const [, setAiNarrative] = useState<{intro: string; roundNarratives: string[]; conclusion: string; mvpComment: string} | null>(null);
-  const logRef = useRef<HTMLDivElement>(null);
   const { t } = useLang();
 
   const available = projects.filter((p) => p.hero);
@@ -298,7 +97,7 @@ export default function ArenaPage() {
               setAiNarrative(data);
               const narrativeLines: string[] = [
                 ``,
-                `═══ AI 戦闘解説 ═══`,
+                `═══ AI Battle Commentary ═══`,
                 data.intro,
                 ...data.roundNarratives,
                 data.conclusion,
@@ -343,67 +142,35 @@ export default function ArenaPage() {
     }, 1000);
   }, [challenger, defender]);
 
-  // Auto-scroll battle log
-  useEffect(() => {
-    if (logRef.current) {
-      logRef.current.scrollTop = logRef.current.scrollHeight;
-    }
-  }, [battleLog]);
+  const handleRosterSelect = (p: Project) => {
+    if (!challenger) setChallenger(p);
+    else if (!defender) setDefender(p);
+    else { setChallenger(p); setDefender(null); }
+  };
+
+  const handleRematch = () => {
+    setPhase("select");
+    setResult(null);
+    setBattleLog([]);
+    setCurrentRound(-1);
+  };
+
+  const handleNewMatch = () => {
+    setPhase("select");
+    setResult(null);
+    setBattleLog([]);
+    setCurrentRound(-1);
+    setChallenger(null);
+    setDefender(null);
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
       {/* ═══ Critical Hit Overlay ═══ */}
-      <AnimatePresence>
-        {showCrit && (
-          <motion.div
-            style={{
-              position: "fixed",
-              inset: 0,
-              zIndex: 9998,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              pointerEvents: "none",
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="font-pixel"
-              style={{
-                fontSize: 36,
-                color: "#FACC15",
-                textShadow:
-                  "3px 3px 0 #B8860B, -2px -2px 0 #B8860B, 0 0 40px rgba(250,204,21,0.5)",
-                letterSpacing: 4,
-              }}
-              initial={{ scale: 0.3, y: 20 }}
-              animate={{ scale: [0.3, 1.5, 1], y: [20, -10, 0] }}
-              transition={{ duration: 0.5 }}
-            >
-              {t("arena.criticalHit")}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <CriticalHitOverlay show={showCrit} />
 
       {/* ═══ Flash Overlay ═══ */}
-      <AnimatePresence>
-        {phase === "flash" && (
-          <motion.div
-            style={{
-              position: "fixed",
-              inset: 0,
-              zIndex: 9999,
-              background: "white",
-              pointerEvents: "none",
-            }}
-            animate={{ opacity: [0, 1, 0, 1, 0, 0.8, 0] }}
-            transition={{ duration: 1, times: [0, 0.12, 0.2, 0.32, 0.4, 0.52, 0.6] }}
-          />
-        )}
-      </AnimatePresence>
+      <FlashOverlay show={phase === "flash"} />
 
       {/* ═══ Terminal Header ═══ */}
       <div
@@ -575,169 +342,26 @@ export default function ArenaPage() {
               </div>
 
               {/* Project roster */}
-              <div style={{ marginTop: 24 }}>
-                <TermLine color="#9D00FF" prefix="[">
-                  {`${t("arena.roster")} ]`}
-                </TermLine>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                    gap: 6,
-                    marginTop: 8,
-                  }}
-                >
-                  {available.map((p) => {
-                    const hero = p.hero!;
-                    const cls = CLASS_CONFIG[hero.heroClass];
-                    const selected = p.id === challenger?.id || p.id === defender?.id;
-
-                    return (
-                      <button
-                        key={p.id}
-                        onClick={() => {
-                          if (selected) return;
-                          if (!challenger) setChallenger(p);
-                          else if (!defender) setDefender(p);
-                          else { setChallenger(p); setDefender(null); }
-                        }}
-                        style={{
-                          background: selected ? `${cls.color}15` : "#111114",
-                          border: `2px solid ${selected ? cls.color : "#2A2A30"}`,
-                          padding: "8px 10px",
-                          textAlign: "left",
-                          cursor: selected ? "default" : "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 8,
-                          transition: "border-color 0.15s",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (!selected) (e.currentTarget.style.borderColor = cls.color);
-                        }}
-                        onMouseLeave={(e) => {
-                          if (!selected) (e.currentTarget.style.borderColor = "#2A2A30");
-                        }}
-                      >
-                        <span
-                          className="font-pixel"
-                          style={{ fontSize: 7, color: "#0D0D0D", background: cls.color, padding: "1px 4px" }}
-                        >
-                          {hero.level}
-                        </span>
-                        <span className="font-pixel" style={{ fontSize: 7, color: "#E8E8EC", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {p.title}
-                        </span>
-                        <span className="font-pixel" style={{ fontSize: 6, color: cls.color }}>
-                          {hero.heroClass.slice(0, 3).toUpperCase()}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <ProjectRoster
+                available={available}
+                challenger={challenger}
+                defender={defender}
+                onSelect={handleRosterSelect}
+              />
             </motion.div>
           )}
 
           {/* ═══ BATTLE PHASE ═══ */}
           {(phase === "battle" || phase === "result") && challenger && defender && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              {/* Fighter HUDs */}
-              <div className="grid grid-cols-1 md:grid-cols-[1fr_40px_1fr] gap-3" style={{ marginBottom: 20 }}>
-                <FighterPanel project={challenger} side="left" isAttacking={attackingSide === "left"} />
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span className="font-pixel" style={{ fontSize: 10, color: "#FF4500" }}>VS</span>
-                </div>
-                <FighterPanel project={defender} side="right" isAttacking={attackingSide === "right"} />
-              </div>
-
-              {/* Battle Log (RPGUI golden frame) */}
-              <div
-                ref={logRef}
-                role="log"
-                className="rpgui-container framed-golden max-h-52 sm:max-h-64 md:max-h-80"
-                style={{
-                  overflowY: "auto",
-                  fontFamily: "var(--font-retro)",
-                  fontSize: 18,
-                  lineHeight: 1.5,
-                  padding: 16,
-                }}
-              >
-                {battleLog.map((line, i) => {
-                  let color = "#8888A0";
-                  if (line.includes("[SYSTEM]")) color = "#555";
-                  else if (line.includes("CRITICAL")) color = "#FACC15";
-                  else if (line.includes("WIN") || line.includes("defeats")) color = "#39FF14";
-                  else if (line.includes("LOSE")) color = "#FF4500";
-                  else if (line.includes("Round")) color = "#9D00FF";
-                  else if (line.includes("AI 戦闘解説")) color = "#06B6D4";
-                  else if (line.includes("═")) color = "#333";
-                  else if (line.includes("EXP")) color = "#9D00FF";
-                  else if (line.includes("vs")) color = "#E8E8EC";
-
-                  return (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.05 }}
-                      style={{ color, whiteSpace: "pre-wrap" }}
-                    >
-                      {line || "\u00A0"}
-                    </motion.div>
-                  );
-                })}
-                {phase === "battle" && (
-                  <span
-                    style={{
-                      display: "inline-block",
-                      width: 8,
-                      height: 16,
-                      background: "#FF4500",
-                      animation: "blink-cursor 0.6s step-end infinite",
-                    }}
-                  />
-                )}
-              </div>
-
-              {/* Result actions */}
-              {phase === "result" && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  style={{ marginTop: 16, display: "flex", gap: 8 }}
-                >
-                  <button
-                    className="nes-btn is-error"
-                    style={{ fontSize: 10, padding: "10px 16px" }}
-                    onClick={() => {
-                      setPhase("select");
-                      setResult(null);
-                      setBattleLog([]);
-                      setCurrentRound(-1);
-                    }}
-                  >
-                    {`⚔ ${t("arena.rematch")}`}
-                  </button>
-                  <button
-                    className="nes-btn"
-                    style={{ fontSize: 10, padding: "10px 16px" }}
-                    onClick={() => {
-                      setPhase("select");
-                      setResult(null);
-                      setBattleLog([]);
-                      setCurrentRound(-1);
-                      setChallenger(null);
-                      setDefender(null);
-                    }}
-                  >
-                    {`↻ ${t("arena.newMatch")}`}
-                  </button>
-                </motion.div>
-              )}
-            </motion.div>
+            <BattlePhase
+              challenger={challenger}
+              defender={defender}
+              attackingSide={attackingSide}
+              battleLog={battleLog}
+              phase={phase}
+              onRematch={handleRematch}
+              onNewMatch={handleNewMatch}
+            />
           )}
 
           {/* ─── Terminal prompt at bottom ─── */}

@@ -87,7 +87,7 @@ const trendTypeConfig: Record<
    ═══════════════════════════════════════════════════════════════════════════ */
 
 export default function Home() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   const communityStats = useMemo(() => [
     { label: t("stats.questsLaunched"), value: "12K+", color: "var(--neon-green)" },
@@ -335,7 +335,7 @@ export default function Home() {
                       <div className="mt-4 pt-3 flex items-center gap-4 font-retro text-sm" style={{ borderTop: "2px solid var(--border-metal)", color: "#555" }}>
                         <span className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" style={{ color: typeColor }} />
-                          {new Date(event.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                          {new Date(event.date).toLocaleDateString(lang === "zh" ? "zh-CN" : "en-US", { month: "short", day: "numeric" })}
                         </span>
                         <span className="flex items-center gap-1">
                           <MapPin className="h-3 w-3" style={{ color: typeColor }} />
@@ -379,7 +379,7 @@ export default function Home() {
                       </div>
                       <div>
                         <h3 className="font-pixel text-[8px]" style={{ color: "#E8E8EC" }}>{creator.name}</h3>
-                        <p className="font-retro text-sm" style={{ color: "#666" }}>Rank #{creator.rank}</p>
+                        <p className="font-retro text-sm" style={{ color: "#666" }}>{t("guild.rank")} #{creator.rank}</p>
                       </div>
                     </div>
                     <div className="space-y-2">

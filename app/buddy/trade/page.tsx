@@ -91,7 +91,7 @@ export default function BuddyTradePage() {
             className="font-pixel"
             style={{ fontSize: 14, color: "#FACC15", textShadow: "0 0 12px #FACC1540", marginBottom: 16 }}
           >
-            {"> Buddy \u4EA4\u6613\u5E02\u573A"}
+            {"> Buddy Trade Market"}
           </motion.div>
 
           {/* Rarity filter */}
@@ -103,7 +103,7 @@ export default function BuddyTradePage() {
                 onClick={() => setFilter(r)}
                 style={{ fontSize: 7, padding: "3px 10px" }}
               >
-                {r === "all" ? "\u5168\u90E8" : r.toUpperCase()}
+                {r === "all" ? "All" : r.toUpperCase()}
               </button>
             ))}
           </div>
@@ -165,7 +165,7 @@ export default function BuddyTradePage() {
                       className="nes-btn is-success"
                       style={{ fontSize: 7, padding: "3px 10px" }}
                     >
-                      {"\u8D2D\u4E70"}
+                      {"Buy"}
                     </button>
                   </div>
                 </motion.div>
@@ -175,7 +175,7 @@ export default function BuddyTradePage() {
 
           {filtered.length === 0 && (
             <div className="font-pixel" style={{ fontSize: 10, color: "#555", textAlign: "center", padding: 40 }}>
-              {"\u6682\u65E0\u8BE5\u7A00\u6709\u5EA6\u7684 Buddy \u5728\u552E"}
+              {"No Buddies of this rarity available for sale"}
             </div>
           )}
 

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import { useLang } from "@/lib/i18n";
 
 interface Notification {
   id: string;
@@ -62,16 +63,17 @@ const MOCK_NOTIFICATIONS: Notification[] = [
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "\u521A\u521A";
-  if (minutes < 60) return `${minutes}\u5206\u949F\u524D`;
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}\u5C0F\u65F6\u524D`;
+  if (hours < 24) return `${hours}h`;
   const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}\u5929\u524D`;
-  return `${Math.floor(days / 30)}\u4E2A\u6708\u524D`;
+  if (days < 30) return `${days}d`;
+  return `${Math.floor(days / 30)}mo`;
 }
 
 export function NotificationBell() {
+  const { t } = useLang();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -148,7 +150,7 @@ export function NotificationBell() {
     <div className="relative" ref={panelRef}>
       {/* Bell button */}
       <button
-        aria-label="通知"
+        aria-label="Notifications"
         aria-expanded={open}
         onClick={() => {
           setOpen((v) => !v);
@@ -181,13 +183,13 @@ export function NotificationBell() {
             >
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
-                <span className="text-sm font-medium">通知</span>
+                <span className="text-sm font-medium">{t("notif.title")}</span>
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllRead}
                     className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
                   >
-                    全部标为已读
+                    {t("notif.markAllRead")}
                   </button>
                 )}
               </div>
@@ -196,11 +198,11 @@ export function NotificationBell() {
               <div className="max-h-64 sm:max-h-80 overflow-y-auto">
                 {loading && notifications.length === 0 ? (
                   <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-                    加载中...
+                    {t("notif.loading")}
                   </div>
                 ) : notifications.length === 0 ? (
                   <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-                    暂无通知
+                    {t("notif.empty")}
                   </div>
                 ) : (
                   notifications.map((n) => (

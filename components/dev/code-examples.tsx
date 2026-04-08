@@ -10,30 +10,30 @@ const vx = new VibeX({ apiKey: "vx-pk-..." });
 
 const result = await vx.agents.run({
   agentId: "agent_abc123",
-  input: { prompt: "分析这段代码的质量" },
+  input: { prompt: "Analyze this code quality" },
   config: { maxTokens: 4096 },
 });
 
 console.log(result.output);
-// => "代码分析结果: 整体质量良好..."`,
+// => "Code analysis result: Overall quality is good..."`,
   python: `from vibex import VibeX
 
 vx = VibeX(api_key="vx-pk-...")
 
 result = vx.agents.run(
     agent_id="agent_abc123",
-    input={"prompt": "分析这段代码的质量"},
+    input={"prompt": "Analyze this code quality"},
     config={"max_tokens": 4096},
 )
 
 print(result.output)
-# => "代码分析结果: 整体质量良好..."`,
+# => "Code analysis result: Overall quality is good..."`,
   curl: `curl -X POST https://vibex.app/api/agents/run \\
   -H "Authorization: Bearer vx-pk-..." \\
   -H "Content-Type: application/json" \\
   -d '{
     "agentId": "agent_abc123",
-    "input": { "prompt": "分析这段代码的质量" },
+    "input": { "prompt": "Analyze this code quality" },
     "config": { "maxTokens": 4096 }
   }'`,
 };

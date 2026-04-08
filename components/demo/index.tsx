@@ -58,7 +58,7 @@ export default function PlayableDemo({
   demoType,
   demoUrl,
   projectTitle,
-  projectId, // eslint-disable-line @typescript-eslint/no-unused-vars
+  projectId: _projectId, // reserved for future analytics tracking
 }: PlayableDemoProps) {
   const { t } = useLang();
   const [playCount] = useState(() => Math.floor(Math.random() * 500) + 100);

@@ -126,9 +126,9 @@ export default function PublicProfilePage({ params }: { params: Promise<{ id: st
           {/* Stats row */}
           <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
             {[
-              { label: "\u5E16\u5B50", value: profile.posts, color: "#39FF14" },
-              { label: "\u7C89\u4E1D", value: profile.followers, color: "#9D00FF" },
-              { label: "\u5173\u6CE8", value: profile.following, color: "#06B6D4" },
+              { label: "Posts", value: profile.posts, color: "#39FF14" },
+              { label: "Followers", value: profile.followers, color: "#9D00FF" },
+              { label: "Following", value: profile.following, color: "#06B6D4" },
               { label: "XP", value: profile.xp.toLocaleString(), color: "#FACC15" },
             ].map((stat) => (
               <div key={stat.label} className="retro-card" style={{ padding: "8px 16px", textAlign: "center" }}>
@@ -145,7 +145,7 @@ export default function PublicProfilePage({ params }: { params: Promise<{ id: st
               onClick={() => setActiveTab("posts")}
               style={{ fontSize: 8, padding: "4px 12px" }}
             >
-              {"\u5E16\u5B50"}
+              {"Posts"}
             </button>
             <button
               className={`nes-btn ${activeTab === "buddies" ? "is-primary" : ""}`}
@@ -159,7 +159,7 @@ export default function PublicProfilePage({ params }: { params: Promise<{ id: st
           {/* Content */}
           {activeTab === "posts" && (
             <div className="font-pixel" style={{ fontSize: 8, color: "#555", padding: 20, textAlign: "center" }}>
-              {"\u5E16\u5B50\u5217\u8868\u52A0\u8F7D\u4E2D..."}
+              {"Loading posts..."}
             </div>
           )}
 
@@ -167,7 +167,7 @@ export default function PublicProfilePage({ params }: { params: Promise<{ id: st
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 10 }}>
               {profile.buddies.length === 0 && (
                 <div className="font-pixel" style={{ fontSize: 8, color: "#555", gridColumn: "1 / -1", textAlign: "center", padding: 20 }}>
-                  {"\u8FD8\u6CA1\u6709 Buddy"}
+                  {"No Buddies yet"}
                 </div>
               )}
               {profile.buddies.map((buddy, i) => {

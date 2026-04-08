@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Minimize2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
+import { useLang } from "@/lib/i18n";
 import { BUDDY_TYPES, RARITY_CONFIG, computeUserLevel } from "@/lib/buddy-system";
 
 import { BuddySprite } from "@/components/buddy-sprite";
@@ -21,17 +22,6 @@ const MOCK_ACTIVE_BUDDY = {
 const MOCK_TOTAL_EXP = 2850;
 
 type CompanionState = "idle" | "expanded" | "minimized" | "hidden";
-
-/** Floating buddy messages based on context */
-const IDLE_MESSAGES = [
-  "嘿！今天想做什么？",
-  "要不要去竞技场战斗？",
-  "发布新项目可以获得经验哦！",
-  "点我查看状态~",
-  "...(打盹中)...",
-  "有新通知吗？让我看看！",
-  "距离下一级还差一点点！",
-];
 
 /** Compute days since a date string */
 function daysSince(dateStr: string): number {
@@ -78,6 +68,17 @@ function MiniPixelBar({ value, max, color }: { value: number; max: number; color
 
 export function BuddyCompanion() {
   const { user, loading } = useAuth();
+  const { t } = useLang();
+
+  const IDLE_MESSAGES = [
+    t("buddy.messages.hey"),
+    t("buddy.messages.arena"),
+    t("buddy.messages.publish"),
+    t("buddy.messages.status"),
+    t("buddy.messages.nap"),
+    t("buddy.messages.notif"),
+    t("buddy.messages.level"),
+  ];
   const [state, setState] = useState<CompanionState>("idle");
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
@@ -116,7 +117,7 @@ export function BuddyCompanion() {
     setTimeout(() => setHearts((h) => h.filter((x) => x !== id)), 1000);
 
     if (petCount % 3 === 0) {
-      setMessage("开心！♥");
+      setMessage(t("buddy.happy"));
       setShowMessage(true);
       setTimeout(() => setShowMessage(false), 2000);
     }
@@ -129,7 +130,7 @@ export function BuddyCompanion() {
         animate={{ scale: 1 }}
         onClick={() => setState("idle")}
         className="fixed bottom-4 right-4 z-[100] size-10 rounded-full flex items-center justify-center retro-border bg-background/80 backdrop-blur-sm hover:scale-110 transition-transform"
-        title="显示伙伴"
+        title="Show buddy"
       >
         <BuddySprite buddyTypeId={MOCK_ACTIVE_BUDDY.typeId} size="sm" />
       </motion.button>
@@ -163,7 +164,7 @@ export function BuddyCompanion() {
           onClick={() => setState("expanded")}
           onDoubleClick={handlePet}
           className="relative group"
-          title="点击展开 · 双击互动"
+          title="Click to expand"
         >
           {/* Hearts animation */}
           {hearts.map((id) => (
@@ -258,14 +259,14 @@ export function BuddyCompanion() {
             <button
               onClick={() => setState("minimized")}
               className="size-5 flex items-center justify-center rounded hover:bg-white/10 transition-colors"
-              title="最小化"
+              title="Minimize"
             >
               <Minimize2 className="size-3 text-muted-foreground" />
             </button>
             <button
               onClick={() => setState("hidden")}
               className="size-5 flex items-center justify-center rounded hover:bg-white/10 transition-colors"
-              title="隐藏"
+              title="Hide"
             >
               <X className="size-3 text-muted-foreground" />
             </button>
@@ -291,7 +292,7 @@ export function BuddyCompanion() {
             onClick={handlePet}
             whileTap={{ scale: 1.15 }}
             className="cursor-pointer"
-            title="摸摸头"
+            title="Pet"
           >
             <BuddySprite buddyTypeId={MOCK_ACTIVE_BUDDY.typeId} size="md" animated />
           </motion.button>
@@ -315,13 +316,13 @@ export function BuddyCompanion() {
           {/* Age */}
           <div className="flex items-center gap-2">
             <span style={{ fontSize: 12 }}>📅</span>
-            <span className="font-pixel" style={{ fontSize: 7, color: "#8888A0", width: 36 }}>年龄</span>
-            <span className="font-pixel" style={{ fontSize: 7, color: "#E8E8EC" }}>{buddyAge}天</span>
+            <span className="font-pixel" style={{ fontSize: 7, color: "#8888A0", width: 36 }}>{t("buddy.age")}</span>
+            <span className="font-pixel" style={{ fontSize: 7, color: "#E8E8EC" }}>{buddyAge}d</span>
           </div>
           {/* Energy */}
           <div className="flex items-center gap-2">
             <span style={{ fontSize: 12 }}>⚡</span>
-            <span className="font-pixel" style={{ fontSize: 7, color: "#8888A0", width: 36 }}>能量</span>
+            <span className="font-pixel" style={{ fontSize: 7, color: "#8888A0", width: 36 }}>{t("buddy.energy")}</span>
             <MiniPixelBar value={energy} max={100} color="#FACC15" />
             <span className="font-pixel" style={{ fontSize: 6, color: "#FACC15", width: 28, textAlign: "right" }}>
               {energy}/100
@@ -340,21 +341,21 @@ export function BuddyCompanion() {
         <div className="px-3 py-2 border-t border-white/5 grid grid-cols-2 gap-1.5">
           <button
             onClick={() => {
-              setMessage("好吃！能量+10！");
+              setMessage("Yum! Energy+10!");
               setShowMessage(true);
               setTimeout(() => setShowMessage(false), 2500);
             }}
             className="nes-btn is-success"
             style={{ fontSize: 7, padding: "4px 6px" }}
           >
-            🍖 喂食
+            🍖 Feed
           </button>
           <Link href="/arena">
             <button
               className="nes-btn is-warning w-full"
               style={{ fontSize: 7, padding: "4px 6px" }}
             >
-              ⚔️ 战斗
+              ⚔️ Battle
             </button>
           </Link>
           <Link href="/feed">
@@ -362,7 +363,7 @@ export function BuddyCompanion() {
               className="nes-btn is-primary w-full"
               style={{ fontSize: 7, padding: "4px 6px" }}
             >
-              📋 任务
+              📋 Tasks
             </button>
           </Link>
           <Link href="/buddy">
@@ -370,7 +371,7 @@ export function BuddyCompanion() {
               className="nes-btn w-full"
               style={{ fontSize: 7, padding: "4px 6px" }}
             >
-              ✨ 形象
+              ✨ Style
             </button>
           </Link>
         </div>

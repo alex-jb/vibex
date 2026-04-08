@@ -13,6 +13,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useLang } from "@/lib/i18n";
 import type { Project } from "@/lib/types";
 
 const categoryColors: Record<string, string> = {
@@ -82,7 +83,14 @@ function getAvatarColor(name: string): string {
   return colors[Math.abs(hash) % colors.length];
 }
 
+const CATEGORY_I18N: Record<string, string> = {
+  "AI Agent": "cat.aiAgent", "AI Tool": "cat.aiTool", "AI Game": "cat.aiGame",
+  "AI Workflow": "cat.aiWorkflow", "AI Utility": "cat.aiUtility",
+  "Experimental": "cat.experimental", "Demo": "cat.demo",
+};
+
 export function ProjectCard({ project }: { project: Project }) {
+  const { t } = useLang();
   const DemoIcon = demoIcons[project.demoType] ?? Monitor;
 
   return (
@@ -123,13 +131,13 @@ export function ProjectCard({ project }: { project: Project }) {
               <div className="absolute top-3 left-3 z-10 flex gap-1.5">
                 {project.featured && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-2.5 py-0.5 text-[10px] font-semibold tracking-wide text-white shadow-lg shadow-violet-500/20">
-                    Featured
+                    {t("cat.featured")}
                   </span>
                 )}
                 {project.viralBoosted && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-rose-600 to-orange-600 px-2 py-0.5 text-[10px] font-semibold text-white">
                     <Zap className="h-2.5 w-2.5" />
-                    Viral
+                    {t("cat.viral")}
                   </span>
                 )}
               </div>
@@ -141,7 +149,7 @@ export function ProjectCard({ project }: { project: Project }) {
                 variant="outline"
                 className={`text-[10px] backdrop-blur-sm ${categoryColors[project.category] ?? ""}`}
               >
-                {project.category}
+                {CATEGORY_I18N[project.category] ? t(CATEGORY_I18N[project.category] as Parameters<typeof t>[0]) : project.category}
               </Badge>
             </div>
           </div>

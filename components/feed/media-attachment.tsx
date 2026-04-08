@@ -55,6 +55,7 @@ export function MediaAttachment({ url, type }: MediaAttachmentProps) {
       )}
 
       {/* Image */}
+      {/* User-uploaded media from external URLs -- next/image requires explicit domain allowlisting */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={url}

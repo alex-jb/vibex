@@ -98,14 +98,6 @@ const statTypes: TrendInsight["type"][] = [
   "emerging",
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const statLabels: Record<TrendInsight["type"], string> = {
-  rising: "Rising Categories",
-  opportunity: "Opportunity Zones",
-  saturated: "Saturated Areas",
-  emerging: "Emerging Signals",
-};
-
 function getTypeLabel(type: TrendInsight["type"], t: (key: any) => string): string {
   const labels: Record<TrendInsight["type"], string> = {
     rising: t("insights.rising"),

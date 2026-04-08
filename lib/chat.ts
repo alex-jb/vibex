@@ -22,9 +22,9 @@ const USE_SUPABASE = !!(
 
 // Mock messages for when Supabase is not configured
 const MOCK_MESSAGES: ChatMessage[] = [
-  { id: "m1", projectId: "1", userId: "u1", userName: "Alex", content: "这个项目太酷了！翻译质量很高", createdAt: new Date(Date.now() - 300000).toISOString() },
-  { id: "m2", projectId: "1", userId: "u2", userName: "Yuki", content: "同意！特别是情感检测部分，很精准", createdAt: new Date(Date.now() - 180000).toISOString() },
-  { id: "m3", projectId: "1", userId: "u3", userName: "Sarah", content: "谢谢大家的反馈！下周会加入更多语言支持", createdAt: new Date(Date.now() - 60000).toISOString() },
+  { id: "m1", projectId: "1", userId: "u1", userName: "Alex", content: "This project is so cool! The translation quality is impressive", createdAt: new Date(Date.now() - 300000).toISOString() },
+  { id: "m2", projectId: "1", userId: "u2", userName: "Yuki", content: "Agreed! Especially the sentiment detection part, very accurate", createdAt: new Date(Date.now() - 180000).toISOString() },
+  { id: "m3", projectId: "1", userId: "u3", userName: "Sarah", content: "Thanks for the feedback everyone! Adding more language support next week", createdAt: new Date(Date.now() - 60000).toISOString() },
 ];
 
 /**

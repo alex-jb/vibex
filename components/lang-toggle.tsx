@@ -3,9 +3,8 @@
 import { useLang } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 
-const langCycle: Lang[] = ["en", "zh", "ja"];
-const langLabels: Record<Lang, string> = { en: "EN", zh: "\u4e2d\u6587", ja: "\u65e5\u672c\u8a9e" };
-const langTitles: Record<Lang, string> = { en: "Switch to Chinese", zh: "Switch to Japanese", ja: "Switch to English" };
+const langCycle: Lang[] = ["en", "zh"];
+const langLabels: Record<Lang, string> = { en: "EN", zh: "\u4e2d\u6587" };
 
 export function LangToggle() {
   const { lang, setLang } = useLang();
@@ -23,9 +22,9 @@ export function LangToggle() {
         imageRendering: "pixelated",
         cursor: "pointer",
       }}
-      title={langTitles[lang]}
+      title={lang === "en" ? "Switch to Chinese" : "Switch to English"}
     >
-      {langLabels[nextLang]}
+      {langLabels[lang]}
     </button>
   );
 }

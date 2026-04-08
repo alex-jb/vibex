@@ -72,7 +72,7 @@ export default function AnalyticsPage() {
 
       <div className="rpgui-container framed" style={{ padding: 20, minHeight: "70vh" }}>
         <div className="font-pixel" style={{ fontSize: 14, color: "#06B6D4", marginBottom: 16 }}>
-          {"> \u6570\u636E\u5206\u6790"}
+          {"> Analytics"}
         </div>
 
         {loading && (
@@ -85,7 +85,7 @@ export default function AnalyticsPage() {
           <>
             {/* Overview Stats */}
             <div className="font-pixel" style={{ fontSize: 9, color: "#FACC15", marginBottom: 8 }}>
-              {"\uD83D\uDCCA \u5E73\u53F0\u6982\u89C8"}
+              {"Platform Overview"}
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
               {Object.entries(data.overview).map(([key, val]) => (
@@ -100,7 +100,7 @@ export default function AnalyticsPage() {
 
             {/* Daily Stats */}
             <div className="font-pixel" style={{ fontSize: 9, color: "#FACC15", marginBottom: 8 }}>
-              {"\uD83D\uDCC5 \u4ECA\u65E5\u6570\u636E"}
+              {"Today's Stats"}
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
               {Object.entries(data.daily).map(([key, val]) => (
@@ -117,7 +117,7 @@ export default function AnalyticsPage() {
             {data.growth && (
               <>
                 <div className="font-pixel" style={{ fontSize: 9, color: "#FACC15", marginBottom: 8 }}>
-                  {"\uD83D\uDCC8 \u5468\u73AF\u6BD4\u589E\u957F"}
+                  {"Week-over-Week Growth"}
                 </div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
                   {Object.entries(data.growth).map(([key, val]) => (
@@ -136,7 +136,7 @@ export default function AnalyticsPage() {
             {data.topCreators && data.topCreators.length > 0 && (
               <>
                 <div className="font-pixel" style={{ fontSize: 9, color: "#FACC15", marginBottom: 8 }}>
-                  {"\uD83C\uDFC6 \u9876\u7EA7\u521B\u4F5C\u8005"}
+                  {"Top Creators"}
                 </div>
                 <BarChart data={data.topCreators} labelKey="name" valueKey="reactions_received" color="#9D00FF" />
                 <div style={{ marginBottom: 20 }} />
@@ -147,7 +147,7 @@ export default function AnalyticsPage() {
             {data.topHashtags && data.topHashtags.length > 0 && (
               <>
                 <div className="font-pixel" style={{ fontSize: 9, color: "#FACC15", marginBottom: 8 }}>
-                  {"# \u70ED\u95E8\u6807\u7B7E"}
+                  {"# Trending Tags"}
                 </div>
                 <BarChart data={data.topHashtags} labelKey="tag" valueKey="count" color="#06B6D4" />
               </>

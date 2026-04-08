@@ -18,7 +18,7 @@ export function Footer() {
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/20">
                 <Sparkles className="h-3.5 w-3.5 text-white" />
               </div>
-              <span className="text-sm font-bold tracking-wide">
+              <span className="font-pixel text-[10px] tracking-widest">
                 Vibe<span className="text-gradient-subtle">X</span>
               </span>
             </div>
@@ -27,38 +27,38 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h4 className="mb-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/50">
+            <h4 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-muted-foreground/50">
               {t("footer.platform")}
             </h4>
             <div className="flex flex-col gap-2.5">
-              <Link href="/discover" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.explore")}</Link>
-              <Link href="/hunt" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.hunt")}</Link>
-              <Link href="/ideas" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("footer.ideaLab")}</Link>
-              <Link href="/creators" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.creators")}</Link>
-              <Link href="/launch" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.launch")}</Link>
-              <Link href="/events" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.events")}</Link>
+              <Link href="/discover" className="font-pixel text-[9px] text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.explore")}</Link>
+              <Link href="/hunt" className="font-pixel text-[9px] text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.hunt")}</Link>
+              <Link href="/ideas" className="font-pixel text-[9px] text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("footer.ideaLab")}</Link>
+              <Link href="/creators" className="font-pixel text-[9px] text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.creators")}</Link>
+              <Link href="/launch" className="font-pixel text-[9px] text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.launch")}</Link>
+              <Link href="/events" className="font-pixel text-[9px] text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.events")}</Link>
             </div>
           </div>
           <div>
-            <h4 className="mb-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/50">
+            <h4 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-muted-foreground/50">
               {t("footer.resources")}
             </h4>
             <div className="flex flex-col gap-2.5">
-              <Link href="/insights" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("footer.trendsInsights")}</Link>
-              <span className="text-sm text-muted-foreground/30">{t("footer.apiComingSoon")}</span>
-              <span className="text-sm text-muted-foreground/30">{t("footer.documentation")}</span>
-              <span className="text-sm text-muted-foreground/30">{t("footer.changelog")}</span>
+              <Link href="/insights" className="font-pixel text-[9px] text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("footer.trendsInsights")}</Link>
+              <span className="font-pixel text-[9px] text-muted-foreground/30">{t("footer.apiComingSoon")}</span>
+              <span className="font-pixel text-[9px] text-muted-foreground/30">{t("footer.documentation")}</span>
+              <span className="font-pixel text-[9px] text-muted-foreground/30">{t("footer.changelog")}</span>
             </div>
           </div>
           <div>
-            <h4 className="mb-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/50">
+            <h4 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-muted-foreground/50">
               {t("footer.community")}
             </h4>
             <div className="flex flex-col gap-2.5">
-              <span className="text-sm text-muted-foreground/30">Discord</span>
-              <span className="text-sm text-muted-foreground/30">Twitter / X</span>
-              <span className="text-sm text-muted-foreground/30">GitHub</span>
-              <span className="text-sm text-muted-foreground/30">{t("footer.newsletter")}</span>
+              <span className="font-pixel text-[9px] text-muted-foreground/30">Discord</span>
+              <span className="font-pixel text-[9px] text-muted-foreground/30">Twitter / X</span>
+              <span className="font-pixel text-[9px] text-muted-foreground/30">GitHub</span>
+              <span className="font-pixel text-[9px] text-muted-foreground/30">{t("footer.newsletter")}</span>
             </div>
           </div>
         </div>

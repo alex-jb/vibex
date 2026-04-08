@@ -1,19 +1,21 @@
 "use client";
 
 import type { FeedTab } from "@/lib/feed";
+import { useLang } from "@/lib/i18n";
 
 interface FeedTabsProps {
   activeTab: FeedTab;
   onTabChange: (tab: FeedTab) => void;
 }
 
-const TABS: { key: FeedTab; label: string }[] = [
-  { key: "following", label: "\u5173\u6CE8" },
-  { key: "trending", label: "\u70ED\u95E8" },
-  { key: "latest", label: "\u6700\u65B0" },
+const TABS: { key: FeedTab; i18nKey: "feed.following" | "feed.trending" | "feed.latest" }[] = [
+  { key: "following", i18nKey: "feed.following" },
+  { key: "trending", i18nKey: "feed.trending" },
+  { key: "latest", i18nKey: "feed.latest" },
 ];
 
 export function FeedTabs({ activeTab, onTabChange }: FeedTabsProps) {
+  const { t } = useLang();
   return (
     <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
       {TABS.map((tab) => (
@@ -23,7 +25,7 @@ export function FeedTabs({ activeTab, onTabChange }: FeedTabsProps) {
           onClick={() => onTabChange(tab.key)}
           style={{ fontSize: 10, padding: "6px 14px" }}
         >
-          {tab.label}
+          {t(tab.i18nKey)}
         </button>
       ))}
     </div>

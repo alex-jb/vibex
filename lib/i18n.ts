@@ -582,6 +582,13 @@ const translations = {
     "profile.recentBattles": "Recent Battles",
     "profile.achievements": "Achievement Badges",
     "profile.comingSoon": "Coming soon",
+    "profile.editMode": "Edit Profile",
+    "profile.saveDone": "Saved!",
+    "profile.bio": "Bio",
+    "profile.bioPlaceholder": "Write your trainer bio...",
+    "profile.avatarUpload": "Click to upload avatar",
+    "profile.save": "Save",
+    "profile.cancel": "Cancel",
 
     // Settings page
     "settings.langPref": "Language Preference",
@@ -1390,6 +1397,13 @@ const translations = {
     "profile.recentBattles": "最近战斗",
     "profile.achievements": "成就徽章",
     "profile.comingSoon": "即将推出",
+    "profile.editMode": "编辑资料",
+    "profile.saveDone": "已保存！",
+    "profile.bio": "简介",
+    "profile.bioPlaceholder": "写下你的训练师简介...",
+    "profile.avatarUpload": "点击上传头像",
+    "profile.save": "保存",
+    "profile.cancel": "取消",
 
     // Settings page
     "settings.langPref": "语言偏好",

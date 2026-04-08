@@ -119,7 +119,7 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
 
         <div style={{ position: "relative", zIndex: 2 }}>
           <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} className="font-pixel" style={{ fontSize: 14, color: "#06B6D4", marginBottom: 16 }}>
-            {"> \u9879\u76EE\u6570\u636E\u8FFD\u8E2A"}
+            {"> Project Analytics"}
           </motion.div>
 
           {loading && (
@@ -133,12 +133,12 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
               {/* Stat cards */}
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
                 {[
-                  { label: "\u6D4F\u89C8", value: data.totals.views, color: "#39FF14" },
-                  { label: "\u70B9\u51FB", value: data.totals.clicks, color: "#06B6D4" },
-                  { label: "\u5206\u4EAB", value: data.totals.shares, color: "#9D00FF" },
-                  { label: "\u70B9\u8D5E", value: data.totals.upvotes, color: "#FACC15" },
+                  { label: "Views", value: data.totals.views, color: "#39FF14" },
+                  { label: "Clicks", value: data.totals.clicks, color: "#06B6D4" },
+                  { label: "Shares", value: data.totals.shares, color: "#9D00FF" },
+                  { label: "Upvotes", value: data.totals.upvotes, color: "#FACC15" },
                   { label: "Demo", value: data.totals.demo_plays, color: "#FF4500" },
-                  { label: "\u8F6C\u5316\u7387", value: `${data.conversionRate}%`, color: "#FF69B4" },
+                  { label: "Conv. Rate", value: `${data.conversionRate}%`, color: "#FF69B4" },
                 ].map((s) => (
                   <div key={s.label} className="retro-card" style={{ padding: "8px 14px", textAlign: "center", minWidth: 80 }}>
                     <div className="font-pixel" style={{ fontSize: 14, color: s.color }}>{s.value}</div>
@@ -150,10 +150,10 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
               {/* Charts */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
                 {[
-                  { key: "views" as const, label: "\u6D4F\u89C8\u91CF", color: "#39FF14" },
-                  { key: "clicks" as const, label: "\u70B9\u51FB\u91CF", color: "#06B6D4" },
-                  { key: "shares" as const, label: "\u5206\u4EAB\u91CF", color: "#9D00FF" },
-                  { key: "upvotes" as const, label: "\u70B9\u8D5E\u91CF", color: "#FACC15" },
+                  { key: "views" as const, label: "Views", color: "#39FF14" },
+                  { key: "clicks" as const, label: "Clicks", color: "#06B6D4" },
+                  { key: "shares" as const, label: "Shares", color: "#9D00FF" },
+                  { key: "upvotes" as const, label: "Upvotes", color: "#FACC15" },
                 ].map((chart) => (
                   <div key={chart.key} className="retro-card" style={{ padding: 10 }}>
                     <div className="font-pixel" style={{ fontSize: 7, color: chart.color, marginBottom: 6 }}>
@@ -168,7 +168,7 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
               <div className="retro-card l-corner" style={{ padding: 14 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                   <div className="font-pixel" style={{ fontSize: 10, color: "#FACC15" }}>
-                    {"\uD83E\uDDE0 AI \u589E\u957F\u5EFA\u8BAE"}
+                    {"AI Growth Suggestions"}
                   </div>
                   <button
                     className="nes-btn is-primary"
@@ -176,13 +176,13 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
                     disabled={sugLoading}
                     style={{ fontSize: 7, padding: "3px 10px" }}
                   >
-                    {sugLoading ? "..." : "\u751F\u6210\u5EFA\u8BAE"}
+                    {sugLoading ? "..." : "Generate Suggestions"}
                   </button>
                 </div>
 
                 {suggestions.length === 0 && !sugLoading && (
                   <div className="font-pixel" style={{ fontSize: 8, color: "#555" }}>
-                    {"\u70B9\u51FB\u201C\u751F\u6210\u5EFA\u8BAE\u201D\u83B7\u53D6 AI \u4F18\u5316\u5EFA\u8BAE"}
+                    {"Click 'Generate Suggestions' to get AI optimization tips"}
                   </div>
                 )}
 

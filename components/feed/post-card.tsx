@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { FeedPost } from "@/lib/feed";
+import { useLang } from "@/lib/i18n";
 import { ReactionBar, type ReactionCounts, type ReactionType } from "./reaction-bar";
 import { MediaAttachment } from "./media-attachment";
 import { LevelBadge, type CreatorLevel } from "./level-badge";
@@ -32,16 +33,16 @@ function avatarColor(name: string): string {
   return palette[Math.abs(h) % palette.length];
 }
 
-function relativeTime(dateStr: string): string {
+function relativeTime(dateStr: string, t: (key: string) => string): string {
   const diffMs = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diffMs / 60000);
   const hrs = Math.floor(mins / 60);
   const days = Math.floor(hrs / 24);
 
-  if (mins < 1) return "\u521a\u521a";
-  if (mins < 60) return `${mins}\u5206\u949f\u524d`;
-  if (hrs < 24) return `${hrs}\u5c0f\u65f6\u524d`;
-  return `${days}\u5929\u524d`;
+  if (mins < 1) return t("feed.justNow");
+  if (mins < 60) return `${mins}${t("feed.minutesAgo")}`;
+  if (hrs < 24) return `${hrs}${t("feed.hoursAgo")}`;
+  return `${days}${t("feed.daysAgo")}`;
 }
 
 const TRUNCATE_LENGTH = 280;
@@ -67,6 +68,7 @@ export function PostCard({
   creatorLevel,
   isOwn = false,
 }: PostCardProps) {
+  const { t } = useLang();
   const [expanded, setExpanded] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const color = avatarColor(post.userName);
@@ -129,7 +131,7 @@ export function PostCard({
             {creatorLevel && <LevelBadge level={creatorLevel} />}
           </span>
           <span className="font-pixel" style={{ fontSize: 7, color: "#555", marginLeft: 8 }}>
-            {relativeTime(post.createdAt)}
+            {relativeTime(post.createdAt, t as (key: string) => string)}
           </span>
         </div>
         {/* Delete button for own posts / Report for others */}
@@ -140,7 +142,7 @@ export function PostCard({
             aria-label="Delete post"
             style={{ fontSize: 7, padding: "2px 8px", minWidth: "auto" }}
           >
-            {confirming ? "\u786E\u8BA4?" : "\u5220\u9664"}
+            {confirming ? t("feed.confirmDelete") : t("feed.delete")}
           </button>
         ) : (
           <ReportButton postId={post.id} />
@@ -174,7 +176,7 @@ export function PostCard({
               marginLeft: 2,
             }}
           >
-            {"...\u5C55\u5F00\u5168\u6587"}
+            {t("feed.expand")}
           </button>
         )}
         {needsTruncation && expanded && (
@@ -191,7 +193,7 @@ export function PostCard({
               marginLeft: 4,
             }}
           >
-            {"\u6536\u8D77"}
+            {t("feed.collapse")}
           </button>
         )}
       </div>
@@ -240,12 +242,12 @@ export function PostCard({
           <button
             className="nes-btn"
             onClick={() => onReply(post.id)}
-            aria-label={`\u56DE\u590D (${post.repliesCount})`}
+            aria-label={`${t("feed.reply")} (${post.repliesCount})`}
             style={{ fontSize: 9, padding: "4px 10px", display: "flex", alignItems: "center", gap: 4 }}
           >
             <span>{"\uD83D\uDCAC"}</span>
             <span className="font-pixel" style={{ fontSize: 7 }}>{post.repliesCount}</span>
-            <span className="hidden sm:inline font-pixel" style={{ fontSize: 7 }}>{"\u56DE\u590D"}</span>
+            <span className="hidden sm:inline font-pixel" style={{ fontSize: 7 }}>{t("feed.reply")}</span>
           </button>
         </div>
       </div>

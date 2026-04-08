@@ -13,18 +13,18 @@ interface TutorialStep {
 const STEPS: TutorialStep[] = [
   {
     emoji: "\uD83C\uDFAE",
-    title: "\u6B22\u8FCE\u6765\u5230 VibeX!",
-    description: "\u8FD9\u662F AI \u521B\u4F5C\u8005\u7684\u53D1\u5E03\u4E0E\u589E\u957F\u5E73\u53F0\u3002\u63A2\u7D22\u9879\u76EE\u3001\u53C2\u4E0E\u6218\u6597\u3001\u53EC\u5524 Buddy\u3001\u53D1\u5E03\u4F60\u7684 AI \u4F5C\u54C1\u3002",
+    title: "Welcome to VibeX!",
+    description: "This is the launch and growth platform for AI creators. Explore projects, join battles, summon Buddies, and publish your AI creations.",
   },
   {
     emoji: "\uD83D\uDE80",
-    title: "\u4F60\u7684\u7B2C\u4E00\u6B65",
-    description: "\u70B9\u51FB\u201C\u63A2\u7D22\u201D\u53D1\u73B0\u70ED\u95E8 AI \u9879\u76EE\uFF0C\u7528 \uD83D\uDD25\uD83C\uDFAE\uD83C\uDFA8\uD83E\uDD2F \u53CD\u5E94\u8868\u8FBE\u4F60\u7684\u770B\u6CD5\uFF0C\u5728 Feed \u5206\u4EAB\u4F60\u7684\u60F3\u6CD5\u3002",
+    title: "Your First Step",
+    description: "Click 'Explore' to discover trending AI projects, react with emojis to share your thoughts, and post your ideas in the Feed.",
   },
   {
     emoji: "\u2B50",
-    title: "\u5347\u7EA7\u4F60\u7684\u5F81\u7A0B",
-    description: "\u5B8C\u6210\u4EFB\u52A1\u83B7\u5F97 XP\uFF0C\u5347\u7EA7\u4F60\u7684 Creator \u7B49\u7EA7 (Lv.1\u219250)\uFF0C\u53EC\u5524\u50CF\u7D20\u5B0D\u7269\uFF0C\u5728 Arena \u6311\u6218\u5176\u4ED6\u9879\u76EE\uFF01",
+    title: "Level Up Your Journey",
+    description: "Complete quests to earn XP, level up your Creator rank (Lv.1-50), summon pixel pets, and challenge other projects in the Arena!",
   },
 ];
 
@@ -111,14 +111,14 @@ export function TutorialOverlay() {
               onClick={handleSkip}
               style={{ fontSize: 8, padding: "4px 14px", opacity: 0.6 }}
             >
-              {"\u8DF3\u8FC7"}
+              {"Skip"}
             </button>
             <button
               className="nes-btn is-primary"
               onClick={handleNext}
               style={{ fontSize: 8, padding: "4px 14px" }}
             >
-              {step < STEPS.length - 1 ? "\u4E0B\u4E00\u6B65 \u2192" : "\u5F00\u59CB\u5192\u9669\uFF01"}
+              {step < STEPS.length - 1 ? "Next \u2192" : "Start Adventure!"}
             </button>
           </div>
         </motion.div>

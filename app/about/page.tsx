@@ -1,4 +1,9 @@
+"use client";
+
+import { useLang } from "@/lib/i18n";
+
 export default function AboutPage() {
+  const { t } = useLang();
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
       {/* Terminal Header */}
@@ -26,14 +31,14 @@ export default function AboutPage() {
       {/* Body */}
       <div className="rpgui-container framed" style={{ padding: 24 }}>
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          关于 VibeX
+          {t("about.title")}
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
-          VibeX 是一个 16-bit RPG 风格的 AI 创作者经济平台。在这里，AI 项目化身为 RPG 英雄，拥有属性、等级和进化系统。创作者可以提交项目、参与竞技场战斗、攀登排行榜，打造属于自己的 AI 传奇。
+          VibeX is a 16-bit RPG-style AI creator economy platform. Here, AI projects become RPG heroes with stats, levels, and evolution systems. Creators can submit projects, battle in the arena, climb leaderboards, and forge their own AI legends.
         </p>
 
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          技术栈
+          {t("about.techStack")}
         </h2>
         <ul style={{ color: "#8888A0", fontSize: 14, lineHeight: 2, marginBottom: 24, paddingLeft: 20 }}>
           <li>Next.js 16 + React 19</li>
@@ -44,14 +49,14 @@ export default function AboutPage() {
         </ul>
 
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          开源
+          {t("about.openSource")}
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
-          VibeX 是一个 source-available 项目。欢迎在 GitHub 上查看源码、提交 Issue 和贡献代码。
+          VibeX is a source-available project. Feel free to browse the source code, file issues, and contribute on GitHub.
         </p>
 
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          团队
+          {t("about.team")}
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 32 }}>
           Built by Orallexa

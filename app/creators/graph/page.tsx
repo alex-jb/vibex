@@ -70,7 +70,7 @@ export default function CreatorGraphPage() {
               {/* Main: Creator cards */}
               <div style={{ flex: 1, minWidth: 300 }}>
                 <div className="font-pixel" style={{ fontSize: 9, color: "#FACC15", marginBottom: 10 }}>
-                  {"\uD83C\uDFC6 \u521B\u4F5C\u8005\u6392\u884C"}
+                  {"Creator Rankings"}
                 </div>
                 {creators.map((c, i) => (
                   <motion.div
@@ -118,7 +118,7 @@ export default function CreatorGraphPage() {
                 {/* Top Skills */}
                 <div className="rpgui-container framed" style={{ padding: 12, marginBottom: 12 }}>
                   <div className="font-pixel" style={{ fontSize: 8, color: "#FACC15", marginBottom: 8 }}>
-                    {"\uD83D\uDEE0\uFE0F \u70ED\u95E8\u6280\u80FD"}
+                    {"Top Skills"}
                   </div>
                   {topSkills.map((s) => (
                     <div key={s.skill} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0" }}>
@@ -131,7 +131,7 @@ export default function CreatorGraphPage() {
                 {/* Rising Creators */}
                 <div className="rpgui-container framed" style={{ padding: 12 }}>
                   <div className="font-pixel" style={{ fontSize: 8, color: "#FF4500", marginBottom: 8 }}>
-                    {"\uD83D\uDE80 \u4E0A\u5347\u6700\u5FEB"}
+                    {"Rising Fastest"}
                   </div>
                   {rising.map((c) => (
                     <div key={c.name} style={{ padding: "4px 0", borderBottom: "1px solid #1A1A1E" }}>

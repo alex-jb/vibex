@@ -2,12 +2,8 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { validateString, sanitize } from "@/lib/validate";
 import { checkRateLimit } from "@/lib/rate-limit";
-// import { createNotification } from "@/lib/db"; // TODO: wire up notifications
-
-const USE_SUPABASE = !!(
-  process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+import { USE_SUPABASE } from "@/lib/mock-adapter";
+import { createNotification } from "@/lib/db";
 
 interface CommentRow {
   id: string;
@@ -167,16 +163,28 @@ export async function POST(request: Request) {
     );
   }
 
-  // TODO: Notify project owner about the new comment once we have project owner lookup
-  // await createNotification({
-  //   userId: projectOwnerId,
-  //   type: parentId ? "reply" : "comment",
-  //   title: `${userName} commented on your project`,
-  //   body: sanitize(content!.trim()).slice(0, 100),
-  //   link: `/project/${projectId}`,
-  //   actorName: userName as string,
-  //   projectId: projectId as string,
-  // });
+  // Notify the project owner about the new comment (best-effort, non-blocking)
+  try {
+    const { data: project } = await supabase
+      .from("projects")
+      .select("creator_id")
+      .eq("id", projectId)
+      .single();
+
+    if (project?.creator_id && project.creator_id !== userId) {
+      await createNotification({
+        userId: project.creator_id as string,
+        type: parentId ? "reply" : "comment",
+        title: `${userName} commented on your project`,
+        body: sanitize(content!.trim()).slice(0, 100),
+        link: `/project/${projectId}`,
+        actorName: userName as string,
+        projectId: projectId as string,
+      });
+    }
+  } catch {
+    // Notification failure should not block the comment response
+  }
 
   return NextResponse.json(data, { status: 201 });
 }

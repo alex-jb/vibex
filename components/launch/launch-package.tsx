@@ -45,34 +45,34 @@ export function LaunchPackageDisplay({ pkg }: LaunchPackageDisplayProps) {
       transition={{ duration: 0.3 }}
     >
       {/* Positioning */}
-      <Section title={"\uD83C\uDFAF \u4EA7\u54C1\u5B9A\u4F4D"} color="#9D00FF">
+      <Section title={"Product Positioning"} color="#9D00FF">
         <div style={{ marginBottom: 8 }}>
           <div className="font-pixel" style={{ fontSize: 7, color: "#888" }}>One-liner</div>
           <div className="font-retro" style={{ fontSize: 14, color: "#FACC15", marginBottom: 4 }}>
             {pkg.positioning.oneLiner}
           </div>
-          <CopyButton text={pkg.positioning.oneLiner} label="\u590D\u5236" />
+          <CopyButton text={pkg.positioning.oneLiner} label="Copy" />
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <div>
-            <div className="font-pixel" style={{ fontSize: 7, color: "#888" }}>{"\u76EE\u6807\u7528\u6237"}</div>
+            <div className="font-pixel" style={{ fontSize: 7, color: "#888" }}>{"Target Audience"}</div>
             <div className="font-retro" style={{ fontSize: 12, color: "#E8E8EC" }}>{pkg.positioning.targetAudience}</div>
           </div>
           <div>
-            <div className="font-pixel" style={{ fontSize: 7, color: "#888" }}>{"\u89E3\u51B3\u95EE\u9898"}</div>
+            <div className="font-pixel" style={{ fontSize: 7, color: "#888" }}>{"Problem Solved"}</div>
             <div className="font-retro" style={{ fontSize: 12, color: "#E8E8EC" }}>{pkg.positioning.problemSolved}</div>
           </div>
         </div>
       </Section>
 
       {/* Copy */}
-      <Section title={"\u270D\uFE0F \u53D1\u5E03\u6587\u6848"} color="#39FF14">
+      <Section title={"Launch Copy"} color="#39FF14">
         <div style={{ marginBottom: 10 }}>
           <div className="font-pixel" style={{ fontSize: 7, color: "#888" }}>Product Hunt</div>
           <div className="font-retro" style={{ fontSize: 12, color: "#E8E8EC", lineHeight: 1.5, marginBottom: 4 }}>
             {pkg.copy.productHuntDescription}
           </div>
-          <CopyButton text={pkg.copy.productHuntDescription} label="PH \u6587\u6848" />
+          <CopyButton text={pkg.copy.productHuntDescription} label="PH Copy" />
         </div>
         <div>
           <div className="font-pixel" style={{ fontSize: 7, color: "#888" }}>Elevator Pitch</div>
@@ -84,7 +84,7 @@ export function LaunchPackageDisplay({ pkg }: LaunchPackageDisplayProps) {
       </Section>
 
       {/* Social */}
-      <Section title={"\uD83D\uDCF1 \u793E\u5A92\u5185\u5BB9"} color="#06B6D4">
+      <Section title={"Social Media Content"} color="#06B6D4">
         {/* Twitter thread */}
         <div style={{ marginBottom: 10 }}>
           <div className="font-pixel" style={{ fontSize: 7, color: "#888" }}>Twitter/X Thread</div>
@@ -118,9 +118,9 @@ export function LaunchPackageDisplay({ pkg }: LaunchPackageDisplayProps) {
       </Section>
 
       {/* Distribution */}
-      <Section title={"\uD83D\uDE80 \u5206\u53D1\u7B56\u7565"} color="#FACC15">
+      <Section title={"Distribution Strategy"} color="#FACC15">
         <div className="font-pixel" style={{ fontSize: 7, color: "#888", marginBottom: 4 }}>
-          {"\u6700\u4F73\u53D1\u5E03\u65F6\u95F4: "}{pkg.distribution.timing}
+          {"Best launch time: "}{pkg.distribution.timing}
         </div>
         {pkg.distribution.channels.map((ch, i) => (
           <div key={i} style={{ display: "flex", gap: 8, alignItems: "center", padding: "4px 0", borderBottom: "1px solid #1A1A1E" }}>
@@ -141,7 +141,7 @@ export function LaunchPackageDisplay({ pkg }: LaunchPackageDisplayProps) {
         ))}
         {pkg.distribution.targetCommunities.length > 0 && (
           <div style={{ marginTop: 8 }}>
-            <div className="font-pixel" style={{ fontSize: 7, color: "#888" }}>{"\u76EE\u6807\u793E\u533A"}</div>
+            <div className="font-pixel" style={{ fontSize: 7, color: "#888" }}>{"Target Communities"}</div>
             <div className="font-retro" style={{ fontSize: 11, color: "#9D00FF" }}>
               {pkg.distribution.targetCommunities.join(" \u2022 ")}
             </div>
@@ -150,7 +150,7 @@ export function LaunchPackageDisplay({ pkg }: LaunchPackageDisplayProps) {
       </Section>
 
       {/* Investor Pitch */}
-      <Section title={"\uD83D\uDCBC \u6295\u8D44\u4EBA Pitch"} color="#FF4500">
+      <Section title={"Investor Pitch"} color="#FF4500">
         {Object.entries(pkg.investorPitch).map(([key, val]) => (
           <div key={key} style={{ marginBottom: 6 }}>
             <span className="font-pixel" style={{ fontSize: 7, color: "#FF4500" }}>
@@ -167,7 +167,7 @@ export function LaunchPackageDisplay({ pkg }: LaunchPackageDisplayProps) {
 
       {/* Competitors */}
       {pkg.competitors.length > 0 && (
-        <Section title={"\u2694\uFE0F \u7ADE\u54C1\u5BF9\u6BD4"} color="#FF69B4">
+        <Section title={"Competitor Comparison"} color="#FF69B4">
           {pkg.competitors.map((c, i) => (
             <div key={i} style={{ padding: "4px 0", borderBottom: "1px solid #1A1A1E" }}>
               <span className="font-pixel" style={{ fontSize: 8, color: "#FF69B4" }}>{c.name}</span>

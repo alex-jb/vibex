@@ -111,15 +111,15 @@ Data that gets more valuable over time:
 
 | Metric | Count |
 |--------|-------|
-| 📄 Pages | 64+ |
-| 🔌 API Routes | 35+ |
+| 📄 Pages | 34 |
+| 🔌 API Routes | 40+ |
 | 🗄 DB Migrations | 25 |
 | ✅ Tests | 75 (unit + E2E) |
-| 🧩 Components | 100+ |
+| 🧩 Components | 95+ |
 | 🌐 i18n Keys | 780+ (EN/ZH/JA) |
 | 🤖 AI Functions | 9 (Claude API) |
 | 🎮 Buddy Forms | 15 (5 × 3 evolutions) |
-| 📝 Commits | 55+ |
+| 📝 Commits | 68+ |
 
 <p align="right"><a href="#️-vibex">⬆ Back to top</a></p>
 
@@ -205,8 +205,8 @@ npm run dev
 ```
 app/
   ├── feed/              # Social timeline (realtime)
-  ├── explore/           # Project browser
-  ├── agents/            # Agent marketplace + builder
+  ├── discover/          # Project browser + search
+  ├── dojo/              # Learning hub + agent marketplace
   ├── arena/             # Battle simulator + leaderboard
   ├── buddy/             # Pet collection + trade
   ├── launch/            # Launch Copilot (AI package gen)
@@ -214,6 +214,8 @@ app/
   ├── messages/          # DM inbox
   ├── admin/             # Moderation + analytics
   ├── creators/          # Creator graph
+  ├── developers/        # API docs + developer portal
+  ├── about/             # About page
   └── api/
       ├── ai/            # 9 AI endpoints (Claude)
       ├── feed/          # CRUD + reactions + reports

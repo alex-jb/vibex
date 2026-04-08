@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       action,
       buddyId,
       affinityGained: AFFINITY_REWARDS[action],
-      message: action === "feed" ? "\u5582\u98DF\u6210\u529F\uFF01" : action === "train" ? "\u8BAD\u7EC3\u5B8C\u6210\uFF01" : "\u73A9\u800D\u5F00\u5FC3\uFF01",
+      message: action === "feed" ? "Fed successfully!" : action === "train" ? "Training complete!" : "Had fun playing!",
     });
   }
 
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     if (elapsed < cooldown) {
       const remaining = Math.ceil((cooldown - elapsed) / 60000);
       return NextResponse.json(
-        { error: `\u51B7\u5374\u4E2D\uFF0C\u8FD8\u9700 ${remaining} \u5206\u949F` },
+        { error: `On cooldown, ${remaining} minutes remaining` },
         { status: 429 },
       );
     }
@@ -77,9 +77,9 @@ export async function POST(request: Request) {
   }
 
   const messages: Record<string, string> = {
-    feed: "\u5582\u98DF\u6210\u529F\uFF01",
-    train: "\u8BAD\u7EC3\u5B8C\u6210\uFF01",
-    play: "\u73A9\u800D\u5F00\u5FC3\uFF01",
+    feed: "Fed successfully!",
+    train: "Training complete!",
+    play: "Had fun playing!",
   };
 
   return NextResponse.json({

@@ -11,26 +11,26 @@
 // ═══════════════════════════════════════════════════════════════
 
 export const EXP_REWARDS = {
-  publishProject: 100,    // 发布项目
-  publishDemo: 50,        // 发布 Demo
-  publishIdea: 30,        // 提交创意
-  postArticle: 40,        // 发布文章
-  shareContent: 10,       // 分享内容
-  receiveUpvote: 5,       // 被点赞 (每次)
-  giveComment: 5,         // 发表评论
-  receiveComment: 3,      // 收到评论
-  winBattle: 25,          // 赢得战斗
-  loseBattle: 10,         // 输掉战斗 (参与奖)
-  drawBattle: 15,         // 平局
-  dailyLogin: 10,         // 每日登录
-  getFollowed: 15,        // 被关注
-  forkProject: 20,        // 复刻项目
-  runAgent: 8,            // 运行 Agent
-  createWorkflow: 35,     // 创建工作流
-  completeProfile: 50,    // 完善个人资料
-  firstProject: 200,      // 首个项目 (一次性)
-  firstBattle: 100,       // 首次战斗 (一次性)
-  firstBuddy: 50,         // 首个 Buddy (一次性)
+  publishProject: 100,    // Publish project
+  publishDemo: 50,        // Publish Demo
+  publishIdea: 30,        // Submit idea
+  postArticle: 40,        // Publish article
+  shareContent: 10,       // Share content
+  receiveUpvote: 5,       // Receive upvote (each)
+  giveComment: 5,         // Post comment
+  receiveComment: 3,      // Receive comment
+  winBattle: 25,          // Win battle
+  loseBattle: 10,         // Lose battle (participation)
+  drawBattle: 15,         // Draw
+  dailyLogin: 10,         // Daily login
+  getFollowed: 15,        // Get followed
+  forkProject: 20,        // Fork project
+  runAgent: 8,            // Run Agent
+  createWorkflow: 35,     // Create workflow
+  completeProfile: 50,    // Complete profile
+  firstProject: 200,      // First project (one-time)
+  firstBattle: 100,       // First battle (one-time)
+  firstBuddy: 50,         // First Buddy (one-time)
 } as const;
 
 // ═══════════════════════════════════════════════════════════════
@@ -56,15 +56,15 @@ function expForLevel(level: number): number {
 
 /** Level titles (RPG ranks) */
 function getLevelTitle(level: number): string {
-  if (level >= 30) return "传说训练师";  // Legendary Trainer
-  if (level >= 25) return "大师训练师";  // Master Trainer
-  if (level >= 20) return "精英训练师";  // Elite Trainer
-  if (level >= 15) return "资深训练师";  // Senior Trainer
-  if (level >= 10) return "高级训练师";  // Advanced Trainer
-  if (level >= 7) return "中级训练师";   // Intermediate Trainer
-  if (level >= 5) return "初级训练师";   // Junior Trainer
-  if (level >= 3) return "新手训练师";   // Novice Trainer
-  return "见习训练师";                   // Apprentice
+  if (level >= 30) return "Legendary Trainer";
+  if (level >= 25) return "Master Trainer";
+  if (level >= 20) return "Elite Trainer";
+  if (level >= 15) return "Senior Trainer";
+  if (level >= 10) return "Advanced Trainer";
+  if (level >= 7) return "Intermediate Trainer";
+  if (level >= 5) return "Junior Trainer";
+  if (level >= 3) return "Novice Trainer";
+  return "Apprentice";
 }
 
 /** Levels that unlock buddy summon */
@@ -117,10 +117,10 @@ export const BUDDY_TYPES: BuddyType[] = [
   {
     id: "pixel-fox",
     name: "PixelFox",
-    nameZh: "像素狐",
+    nameZh: "PixelFox",
     nameJa: "ピクセルフォックス",
     description: "A mischievous fire fox that boosts your project visibility",
-    descriptionZh: "调皮的火狐，提升你的项目曝光度",
+    descriptionZh: "A mischievous fire fox that boosts your project visibility",
     rarity: "common",
     element: "Fire",
     emoji: "🦊",
@@ -128,15 +128,15 @@ export const BUDDY_TYPES: BuddyType[] = [
     baseWeight: 40,
     color: "#FF6B35",
     passive: "+10% project views",
-    passiveZh: "项目浏览量 +10%",
+    passiveZh: "+10% project views",
   },
   {
     id: "neon-slime",
     name: "NeonSlime",
-    nameZh: "霓虹史莱姆",
+    nameZh: "NeonSlime",
     nameJa: "ネオンスライム",
     description: "A bouncy neon blob that attracts upvotes",
-    descriptionZh: "弹弹的霓虹果冻，吸引点赞",
+    descriptionZh: "A bouncy neon blob that attracts upvotes",
     rarity: "common",
     element: "Electric",
     emoji: "🟢",
@@ -144,15 +144,15 @@ export const BUDDY_TYPES: BuddyType[] = [
     baseWeight: 40,
     color: "#39FF14",
     passive: "+5% upvote rate",
-    passiveZh: "点赞率 +5%",
+    passiveZh: "+5% upvote rate",
   },
   {
     id: "byte-owl",
     name: "ByteOwl",
-    nameZh: "字节猫头鹰",
+    nameZh: "ByteOwl",
     nameJa: "バイトフクロウ",
     description: "A wise owl that enhances AI review scores",
-    descriptionZh: "智慧猫头鹰，提升 AI 评审分数",
+    descriptionZh: "A wise owl that enhances AI review scores",
     rarity: "uncommon",
     element: "Wisdom",
     emoji: "🦉",
@@ -160,15 +160,15 @@ export const BUDDY_TYPES: BuddyType[] = [
     baseWeight: 25,
     color: "#9D00FF",
     passive: "+5 AI review score",
-    passiveZh: "AI 评审分数 +5",
+    passiveZh: "+5 AI review score",
   },
   {
     id: "code-dragon",
     name: "CodeDragon",
-    nameZh: "代码龙",
+    nameZh: "CodeDragon",
     nameJa: "コードドラゴン",
     description: "A fierce dragon that powers up battle stats",
-    descriptionZh: "凶猛的代码龙，强化战斗属性",
+    descriptionZh: "A fierce dragon that powers up battle stats",
     rarity: "rare",
     element: "Power",
     emoji: "🐉",
@@ -176,15 +176,15 @@ export const BUDDY_TYPES: BuddyType[] = [
     baseWeight: 12,
     color: "#FF4500",
     passive: "+15% battle power",
-    passiveZh: "战斗力 +15%",
+    passiveZh: "+15% battle power",
   },
   {
     id: "crystal-phoenix",
     name: "CrystalPhoenix",
-    nameZh: "水晶凤凰",
+    nameZh: "CrystalPhoenix",
     nameJa: "クリスタルフェニックス",
     description: "A legendary phoenix that grants evolution bonuses",
-    descriptionZh: "传说中的水晶凤凰，赋予进化加成",
+    descriptionZh: "A legendary phoenix that grants evolution bonuses",
     rarity: "legendary",
     element: "Evolution",
     emoji: "🔥",
@@ -192,7 +192,104 @@ export const BUDDY_TYPES: BuddyType[] = [
     baseWeight: 3,
     color: "#FFD700",
     passive: "+25% EXP gain",
-    passiveZh: "经验获取 +25%",
+    passiveZh: "+25% EXP gain",
+  },
+  // ── Wave 2: 6 new buddies ──
+  {
+    id: "aqua-turtle",
+    name: "AquaTurtle",
+    nameZh: "AquaTurtle",
+    nameJa: "",
+    description: "A calm water turtle that reduces battle cooldowns",
+    descriptionZh: "A calm water turtle that reduces battle cooldowns",
+    rarity: "common",
+    element: "Water",
+    emoji: "🐢",
+    minLevel: 3,
+    baseWeight: 35,
+    color: "#00BFFF",
+    passive: "-10% battle cooldown",
+    passiveZh: "-10% battle cooldown",
+  },
+  {
+    id: "frost-cat",
+    name: "FrostCat",
+    nameZh: "FrostCat",
+    nameJa: "",
+    description: "A frosty feline that freezes competition in rankings",
+    descriptionZh: "A frosty feline that freezes competition in rankings",
+    rarity: "uncommon",
+    element: "Ice",
+    emoji: "🐱",
+    minLevel: 5,
+    baseWeight: 22,
+    color: "#88DDFF",
+    passive: "+8% ranking score",
+    passiveZh: "+8% ranking score",
+  },
+  {
+    id: "shadow-bat",
+    name: "ShadowBat",
+    nameZh: "ShadowBat",
+    nameJa: "",
+    description: "A dark bat that steals opponent buffs in battle",
+    descriptionZh: "A dark bat that steals opponent buffs in battle",
+    rarity: "rare",
+    element: "Dark",
+    emoji: "🦇",
+    minLevel: 8,
+    baseWeight: 15,
+    color: "#8B5CF6",
+    passive: "Steal 5% opponent buff",
+    passiveZh: "Steal 5% opponent buff",
+  },
+  {
+    id: "volt-rabbit",
+    name: "VoltRabbit",
+    nameZh: "VoltRabbit",
+    nameJa: "",
+    description: "A speedy electric rabbit that doubles daily login rewards",
+    descriptionZh: "A speedy electric rabbit that doubles daily login rewards",
+    rarity: "uncommon",
+    element: "Electric",
+    emoji: "🐰",
+    minLevel: 5,
+    baseWeight: 20,
+    color: "#FFE033",
+    passive: "2x daily login EXP",
+    passiveZh: "2x daily login EXP",
+  },
+  {
+    id: "terra-golem",
+    name: "TerraGolem",
+    nameZh: "TerraGolem",
+    nameJa: "",
+    description: "A sturdy earth golem that shields your projects from downvotes",
+    descriptionZh: "A sturdy earth golem that shields your projects from downvotes",
+    rarity: "epic",
+    element: "Earth",
+    emoji: "🪨",
+    minLevel: 12,
+    baseWeight: 8,
+    color: "#CD853F",
+    passive: "+20% defense rating",
+    passiveZh: "+20% defense rating",
+  },
+  {
+    id: "stellar-jellyfish",
+    name: "StellarJelly",
+    nameZh: "StellarJelly",
+    nameJa: "",
+    description: "A cosmic jellyfish that boosts all allies in guild events",
+    descriptionZh: "A cosmic jellyfish that boosts all allies in guild events",
+    rarity: "legendary",
+    element: "Cosmic",
+    emoji: "🪼",
+    minLevel: 18,
+    baseWeight: 2,
+    color: "#FF69B4",
+    passive: "+15% guild event bonus",
+    passiveZh: "+15% guild event bonus",
   },
 ];
 
@@ -213,29 +310,59 @@ export interface BuddyEvolution {
 /** Evolution chains for each buddy type */
 const BUDDY_EVOLUTIONS: Record<string, BuddyEvolution[]> = {
   "pixel-fox": [
-    { stage: 0, name: "PixelFox", nameZh: "像素狐", emoji: "🦊", requiredLevel: 0, newPassive: "+10% project views", newPassiveZh: "项目浏览量 +10%" },
-    { stage: 1, name: "InfernoFox", nameZh: "炎狐", emoji: "🔥", requiredLevel: 8, newPassive: "+20% project views", newPassiveZh: "项目浏览量 +20%" },
-    { stage: 2, name: "ThunderFox", nameZh: "雷狐", emoji: "⚡", requiredLevel: 15, newPassive: "+35% project views", newPassiveZh: "项目浏览量 +35%" },
+    { stage: 0, name: "PixelFox", nameZh: "PixelFox", emoji: "🦊", requiredLevel: 0, newPassive: "+10% project views", newPassiveZh: "+10% project views" },
+    { stage: 1, name: "InfernoFox", nameZh: "InfernoFox", emoji: "🔥", requiredLevel: 8, newPassive: "+20% project views", newPassiveZh: "+20% project views" },
+    { stage: 2, name: "ThunderFox", nameZh: "ThunderFox", emoji: "⚡", requiredLevel: 15, newPassive: "+35% project views", newPassiveZh: "+35% project views" },
   ],
   "neon-slime": [
-    { stage: 0, name: "NeonSlime", nameZh: "霓虹史莱姆", emoji: "🟢", requiredLevel: 0, newPassive: "+5% upvote rate", newPassiveZh: "点赞率 +5%" },
-    { stage: 1, name: "MegaSlime", nameZh: "超级史莱姆", emoji: "💚", requiredLevel: 8, newPassive: "+12% upvote rate", newPassiveZh: "点赞率 +12%" },
-    { stage: 2, name: "CrystalSlime", nameZh: "水晶史莱姆", emoji: "💎", requiredLevel: 15, newPassive: "+25% upvote rate", newPassiveZh: "点赞率 +25%" },
+    { stage: 0, name: "NeonSlime", nameZh: "NeonSlime", emoji: "🟢", requiredLevel: 0, newPassive: "+5% upvote rate", newPassiveZh: "+5% upvote rate" },
+    { stage: 1, name: "MegaSlime", nameZh: "MegaSlime", emoji: "💚", requiredLevel: 8, newPassive: "+12% upvote rate", newPassiveZh: "+12% upvote rate" },
+    { stage: 2, name: "CrystalSlime", nameZh: "CrystalSlime", emoji: "💎", requiredLevel: 15, newPassive: "+25% upvote rate", newPassiveZh: "+25% upvote rate" },
   ],
   "byte-owl": [
-    { stage: 0, name: "ByteOwl", nameZh: "字节猫头鹰", emoji: "🦉", requiredLevel: 0, newPassive: "+5 AI review score", newPassiveZh: "AI 评审分数 +5" },
-    { stage: 1, name: "MoonOwl", nameZh: "月夜猫头鹰", emoji: "🌙", requiredLevel: 12, newPassive: "+10 AI review score", newPassiveZh: "AI 评审分数 +10" },
-    { stage: 2, name: "StarOwl", nameZh: "星辰猫头鹰", emoji: "🌟", requiredLevel: 20, newPassive: "+20 AI review score", newPassiveZh: "AI 评审分数 +20" },
+    { stage: 0, name: "ByteOwl", nameZh: "ByteOwl", emoji: "🦉", requiredLevel: 0, newPassive: "+5 AI review score", newPassiveZh: "+5 AI review score" },
+    { stage: 1, name: "MoonOwl", nameZh: "MoonOwl", emoji: "🌙", requiredLevel: 12, newPassive: "+10 AI review score", newPassiveZh: "+10 AI review score" },
+    { stage: 2, name: "StarOwl", nameZh: "StarOwl", emoji: "🌟", requiredLevel: 20, newPassive: "+20 AI review score", newPassiveZh: "+20 AI review score" },
   ],
   "code-dragon": [
-    { stage: 0, name: "CodeDragon", nameZh: "代码龙", emoji: "🐉", requiredLevel: 0, newPassive: "+15% battle power", newPassiveZh: "战斗力 +15%" },
-    { stage: 1, name: "FlameDragon", nameZh: "烈焰龙", emoji: "🔥", requiredLevel: 15, newPassive: "+30% battle power", newPassiveZh: "战斗力 +30%" },
-    { stage: 2, name: "SwordDragon", nameZh: "剑龙", emoji: "⚔️", requiredLevel: 25, newPassive: "+50% battle power", newPassiveZh: "战斗力 +50%" },
+    { stage: 0, name: "CodeDragon", nameZh: "CodeDragon", emoji: "🐉", requiredLevel: 0, newPassive: "+15% battle power", newPassiveZh: "+15% battle power" },
+    { stage: 1, name: "FlameDragon", nameZh: "FlameDragon", emoji: "🔥", requiredLevel: 15, newPassive: "+30% battle power", newPassiveZh: "+30% battle power" },
+    { stage: 2, name: "SwordDragon", nameZh: "SwordDragon", emoji: "⚔️", requiredLevel: 25, newPassive: "+50% battle power", newPassiveZh: "+50% battle power" },
   ],
   "crystal-phoenix": [
-    { stage: 0, name: "CrystalPhoenix", nameZh: "水晶凤凰", emoji: "🔥", requiredLevel: 0, newPassive: "+25% EXP gain", newPassiveZh: "经验获取 +25%" },
-    { stage: 1, name: "PrismPhoenix", nameZh: "棱镜凤凰", emoji: "🌈", requiredLevel: 20, newPassive: "+40% EXP gain", newPassiveZh: "经验获取 +40%" },
-    { stage: 2, name: "EternalPhoenix", nameZh: "永恒凤凰", emoji: "👑", requiredLevel: 30, newPassive: "+60% EXP gain", newPassiveZh: "经验获取 +60%" },
+    { stage: 0, name: "CrystalPhoenix", nameZh: "CrystalPhoenix", emoji: "🔥", requiredLevel: 0, newPassive: "+25% EXP gain", newPassiveZh: "+25% EXP gain" },
+    { stage: 1, name: "PrismPhoenix", nameZh: "PrismPhoenix", emoji: "🌈", requiredLevel: 20, newPassive: "+40% EXP gain", newPassiveZh: "+40% EXP gain" },
+    { stage: 2, name: "EternalPhoenix", nameZh: "EternalPhoenix", emoji: "👑", requiredLevel: 30, newPassive: "+60% EXP gain", newPassiveZh: "+60% EXP gain" },
+  ],
+  "aqua-turtle": [
+    { stage: 0, name: "AquaTurtle", nameZh: "AquaTurtle", emoji: "🐢", requiredLevel: 0, newPassive: "-10% battle cooldown", newPassiveZh: "-10% battle cooldown" },
+    { stage: 1, name: "TidalTurtle", nameZh: "TidalTurtle", emoji: "🌊", requiredLevel: 8, newPassive: "-20% battle cooldown", newPassiveZh: "-20% battle cooldown" },
+    { stage: 2, name: "OceanKing", nameZh: "OceanKing", emoji: "🔱", requiredLevel: 15, newPassive: "-35% battle cooldown", newPassiveZh: "-35% battle cooldown" },
+  ],
+  "frost-cat": [
+    { stage: 0, name: "FrostCat", nameZh: "FrostCat", emoji: "🐱", requiredLevel: 0, newPassive: "+8% ranking score", newPassiveZh: "+8% ranking score" },
+    { stage: 1, name: "BlizzardCat", nameZh: "BlizzardCat", emoji: "❄️", requiredLevel: 10, newPassive: "+18% ranking score", newPassiveZh: "+18% ranking score" },
+    { stage: 2, name: "AbsoluteZero", nameZh: "AbsoluteZero", emoji: "🧊", requiredLevel: 20, newPassive: "+30% ranking score", newPassiveZh: "+30% ranking score" },
+  ],
+  "shadow-bat": [
+    { stage: 0, name: "ShadowBat", nameZh: "ShadowBat", emoji: "🦇", requiredLevel: 0, newPassive: "Steal 5% buff", newPassiveZh: "Steal 5% buff" },
+    { stage: 1, name: "NightWing", nameZh: "NightWing", emoji: "🌑", requiredLevel: 12, newPassive: "Steal 12% buff", newPassiveZh: "Steal 12% buff" },
+    { stage: 2, name: "VoidLord", nameZh: "VoidLord", emoji: "🕳️", requiredLevel: 22, newPassive: "Steal 25% buff", newPassiveZh: "Steal 25% buff" },
+  ],
+  "volt-rabbit": [
+    { stage: 0, name: "VoltRabbit", nameZh: "VoltRabbit", emoji: "🐰", requiredLevel: 0, newPassive: "2x daily login EXP", newPassiveZh: "2x daily login EXP" },
+    { stage: 1, name: "ThunderHare", nameZh: "ThunderHare", emoji: "⚡", requiredLevel: 10, newPassive: "3x daily login EXP", newPassiveZh: "3x daily login EXP" },
+    { stage: 2, name: "StormRacer", nameZh: "StormRacer", emoji: "🌩️", requiredLevel: 18, newPassive: "5x daily login EXP", newPassiveZh: "5x daily login EXP" },
+  ],
+  "terra-golem": [
+    { stage: 0, name: "TerraGolem", nameZh: "TerraGolem", emoji: "🪨", requiredLevel: 0, newPassive: "+20% defense", newPassiveZh: "+20% defense" },
+    { stage: 1, name: "IronGolem", nameZh: "IronGolem", emoji: "🛡️", requiredLevel: 15, newPassive: "+35% defense", newPassiveZh: "+35% defense" },
+    { stage: 2, name: "MountainTitan", nameZh: "MountainTitan", emoji: "🏔️", requiredLevel: 25, newPassive: "+50% defense", newPassiveZh: "+50% defense" },
+  ],
+  "stellar-jellyfish": [
+    { stage: 0, name: "StellarJelly", nameZh: "StellarJelly", emoji: "🪼", requiredLevel: 0, newPassive: "+15% guild bonus", newPassiveZh: "+15% guild bonus" },
+    { stage: 1, name: "NebulaJelly", nameZh: "NebulaJelly", emoji: "🌌", requiredLevel: 20, newPassive: "+30% guild bonus", newPassiveZh: "+30% guild bonus" },
+    { stage: 2, name: "CosmicEmpress", nameZh: "CosmicEmpress", emoji: "✨", requiredLevel: 30, newPassive: "+50% guild bonus", newPassiveZh: "+50% guild bonus" },
   ],
 };
 
@@ -243,7 +370,7 @@ const BUDDY_EVOLUTIONS: Record<string, BuddyEvolution[]> = {
 export function getEvolutionStage(buddyTypeId: string, level: number): BuddyEvolution {
   const evolutions = BUDDY_EVOLUTIONS[buddyTypeId];
   if (!evolutions) {
-    return { stage: 0, name: "Unknown", nameZh: "未知", emoji: "❓", requiredLevel: 0, newPassive: "", newPassiveZh: "" };
+    return { stage: 0, name: "Unknown", nameZh: "Unknown", emoji: "❓", requiredLevel: 0, newPassive: "", newPassiveZh: "" };
   }
   // Find the highest evolution the buddy qualifies for
   let current = evolutions[0];
@@ -353,13 +480,13 @@ export function summonBuddy(
   }
 
   const bonuses: string[] = [];
-  if (totalUpvotes >= 100) bonuses.push(`点赞加成 (${totalUpvotes})`);
-  if (userLevel >= 10) bonuses.push(`等级加成 (Lv${userLevel})`);
+  if (totalUpvotes >= 100) bonuses.push(`Upvote bonus (${totalUpvotes})`);
+  if (userLevel >= 10) bonuses.push(`Level bonus (Lv${userLevel})`);
 
   return {
     buddy: selected.buddyType,
     isNew: !existingBuddyIds.includes(selected.buddyType.id),
-    bonusApplied: bonuses.length > 0 ? bonuses.join(", ") : "无加成",
+    bonusApplied: bonuses.length > 0 ? bonuses.join(", ") : "No bonus",
   };
 }
 
@@ -377,7 +504,7 @@ export const RARITY_CONFIG: Record<BuddyRarity, {
 }> = {
   common: {
     label: "Common",
-    labelZh: "普通",
+    labelZh: "Common",
     color: "#8888A0",
     bgColor: "bg-zinc-500/10",
     borderColor: "border-zinc-500/30",
@@ -385,7 +512,7 @@ export const RARITY_CONFIG: Record<BuddyRarity, {
   },
   uncommon: {
     label: "Uncommon",
-    labelZh: "稀有",
+    labelZh: "Uncommon",
     color: "#39FF14",
     bgColor: "bg-emerald-500/10",
     borderColor: "border-emerald-500/30",
@@ -393,7 +520,7 @@ export const RARITY_CONFIG: Record<BuddyRarity, {
   },
   rare: {
     label: "Rare",
-    labelZh: "珍贵",
+    labelZh: "Rare",
     color: "#06B6D4",
     bgColor: "bg-cyan-500/10",
     borderColor: "border-cyan-500/30",
@@ -401,7 +528,7 @@ export const RARITY_CONFIG: Record<BuddyRarity, {
   },
   epic: {
     label: "Epic",
-    labelZh: "史诗",
+    labelZh: "Epic",
     color: "#9D00FF",
     bgColor: "bg-violet-500/10",
     borderColor: "border-violet-500/30",
@@ -409,7 +536,7 @@ export const RARITY_CONFIG: Record<BuddyRarity, {
   },
   legendary: {
     label: "Legendary",
-    labelZh: "传说",
+    labelZh: "Legendary",
     color: "#FFD700",
     bgColor: "bg-amber-500/10",
     borderColor: "border-amber-500/30",

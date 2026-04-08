@@ -3,16 +3,16 @@
 // ═══════════════════════════════════════════════════════════════
 // 50-LEVEL CREATOR PROGRESSION SYSTEM
 //
-//   Lv.1-5    见习 (Apprentice)    #888
-//   Lv.6-10   新手 (Novice)       #39FF14
-//   Lv.11-15  初级 (Junior)       #06B6D4
-//   Lv.16-20  中级 (Intermediate) #06B6D4
-//   Lv.21-25  高级 (Advanced)     #9D00FF
-//   Lv.26-30  资深 (Senior)       #9D00FF
-//   Lv.31-35  专家 (Expert)       #FF4500
-//   Lv.36-40  大师 (Master)       #FF4500
-//   Lv.41-45  宗师 (Grandmaster)  #FACC15
-//   Lv.46-50  传说 (Legend)       #FACC15
+//   Lv.1-5    Apprentice    #888
+//   Lv.6-10   Novice        #39FF14
+//   Lv.11-15  Junior        #06B6D4
+//   Lv.16-20  Intermediate  #06B6D4
+//   Lv.21-25  Advanced      #9D00FF
+//   Lv.26-30  Senior        #9D00FF
+//   Lv.31-35  Expert        #FF4500
+//   Lv.36-40  Master        #FF4500
+//   Lv.41-45  Grandmaster   #FACC15
+//   Lv.46-50  Legend         #FACC15
 // ═══════════════════════════════════════════════════════════════
 
 export type CreatorLevel = "Noob" | "Coder" | "Builder" | "Master" | "Legend";
@@ -36,16 +36,16 @@ function xpForLevel(level: number): number {
 }
 
 const TIER_TITLES: { maxLevel: number; tier: CreatorLevel; title: string; titleZh: string; color: string }[] = [
-  { maxLevel: 5, tier: "Noob", title: "Apprentice", titleZh: "\u89C1\u4E60", color: "#888" },
-  { maxLevel: 10, tier: "Noob", title: "Novice", titleZh: "\u65B0\u624B", color: "#39FF14" },
-  { maxLevel: 15, tier: "Coder", title: "Junior", titleZh: "\u521D\u7EA7", color: "#06B6D4" },
-  { maxLevel: 20, tier: "Coder", title: "Intermediate", titleZh: "\u4E2D\u7EA7", color: "#06B6D4" },
-  { maxLevel: 25, tier: "Builder", title: "Advanced", titleZh: "\u9AD8\u7EA7", color: "#9D00FF" },
-  { maxLevel: 30, tier: "Builder", title: "Senior", titleZh: "\u8D44\u6DF1", color: "#9D00FF" },
-  { maxLevel: 35, tier: "Master", title: "Expert", titleZh: "\u4E13\u5BB6", color: "#FF4500" },
-  { maxLevel: 40, tier: "Master", title: "Master", titleZh: "\u5927\u5E08", color: "#FF4500" },
-  { maxLevel: 45, tier: "Legend", title: "Grandmaster", titleZh: "\u5B97\u5E08", color: "#FACC15" },
-  { maxLevel: 50, tier: "Legend", title: "Legend", titleZh: "\u4F20\u8BF4", color: "#FACC15" },
+  { maxLevel: 5, tier: "Noob", title: "Apprentice", titleZh: "Apprentice", color: "#888" },
+  { maxLevel: 10, tier: "Noob", title: "Novice", titleZh: "Novice", color: "#39FF14" },
+  { maxLevel: 15, tier: "Coder", title: "Junior", titleZh: "Junior", color: "#06B6D4" },
+  { maxLevel: 20, tier: "Coder", title: "Intermediate", titleZh: "Intermediate", color: "#06B6D4" },
+  { maxLevel: 25, tier: "Builder", title: "Advanced", titleZh: "Advanced", color: "#9D00FF" },
+  { maxLevel: 30, tier: "Builder", title: "Senior", titleZh: "Senior", color: "#9D00FF" },
+  { maxLevel: 35, tier: "Master", title: "Expert", titleZh: "Expert", color: "#FF4500" },
+  { maxLevel: 40, tier: "Master", title: "Master", titleZh: "Master", color: "#FF4500" },
+  { maxLevel: 45, tier: "Legend", title: "Grandmaster", titleZh: "Grandmaster", color: "#FACC15" },
+  { maxLevel: 50, tier: "Legend", title: "Legend", titleZh: "Legend", color: "#FACC15" },
 ];
 
 export function computeLevelInfo(xp: number): LevelInfo {
@@ -93,7 +93,7 @@ export function LevelBadge({ xp, showProgress = false }: LevelBadgeProps) {
     <span style={{ display: "inline-flex", alignItems: "center", gap: 3, marginLeft: 4, verticalAlign: "middle" }}>
       <span
         className="font-pixel"
-        title={`${info.titleZh} (${info.title}) — ${xp ?? 0} XP`}
+        title={`${info.title} — ${xp ?? 0} XP`}
         style={{
           fontSize: 6,
           color: info.color,
@@ -102,7 +102,7 @@ export function LevelBadge({ xp, showProgress = false }: LevelBadgeProps) {
           letterSpacing: 0.5,
         }}
       >
-        Lv.{info.numericLevel} {info.titleZh}
+        Lv.{info.numericLevel} {info.title}
       </span>
       {showProgress && (
         <span style={{ display: "inline-block", width: 24, height: 4, background: "#1A1A1E", verticalAlign: "middle" }}>

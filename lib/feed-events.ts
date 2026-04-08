@@ -51,7 +51,7 @@ export async function onBattleWon(
   await createAutoPost({
     userId,
     userName,
-    content: `\u2694\uFE0F \u6218\u6597\u80DC\u5229\uFF01\u300C${projectName}\u300D\u51FB\u8D25\u4E86\u300C${opponentName}\u300D\uFF01 #arena #vibecoding`,
+    content: `\u2694\uFE0F Battle victory! "${projectName}" defeated "${opponentName}"! #arena #vibecoding`,
     projectId,
     hashtags: ["arena", "vibecoding"],
   });
@@ -66,7 +66,7 @@ export async function onSeasonRankUp(
   await createAutoPost({
     userId,
     userName,
-    content: `\uD83C\uDFC6 \u5728\u300C${seasonName}\u300D\u8D5B\u5B63\u4E2D\u6392\u540D\u4E0A\u5347\u5230\u7B2C ${rank} \u540D\uFF01 #arena #ranking`,
+    content: `\uD83C\uDFC6 Ranked up to #${rank} in the "${seasonName}" season! #arena #ranking`,
     hashtags: ["arena", "ranking"],
   });
 }
@@ -82,7 +82,7 @@ export async function onBuddyEvolved(
   await createAutoPost({
     userId,
     userName,
-    content: `\u2728 \u6211\u7684 ${buddyName} \u8FDB\u5316\u6210\u4E86 ${evolvedName}\uFF01 #buddy #evolution`,
+    content: `\u2728 My ${buddyName} evolved into ${evolvedName}! #buddy #evolution`,
     hashtags: ["buddy", "evolution"],
   });
 }
@@ -103,7 +103,7 @@ export async function onBuddySummoned(
   await createAutoPost({
     userId,
     userName,
-    content: `${rarityEmoji[rarity] ?? "\u2B50"} \u53EC\u5524\u4E86\u4E00\u53EA ${rarity.toUpperCase()} \u7684 ${buddyName}\uFF01 #buddy #gacha`,
+    content: `${rarityEmoji[rarity] ?? "\u2B50"} Summoned a ${rarity.toUpperCase()} ${buddyName}! #buddy #gacha`,
     hashtags: ["buddy", "gacha"],
   });
 }
@@ -119,7 +119,7 @@ export async function onAgentPublished(
   await createAutoPost({
     userId,
     userName,
-    content: `\uD83E\uDD16 \u53D1\u5E03\u4E86\u65B0 Agent\u300C${agentName}\u300D\uFF01\u6765\u8BD5\u8BD5\u5427 #agent #marketplace`,
+    content: `\uD83E\uDD16 Published new Agent "${agentName}"! Try it out #agent #marketplace`,
     projectId: agentId,
     hashtags: ["agent", "marketplace"],
   });
@@ -137,7 +137,7 @@ export async function onAgentMilestone(
   await createAutoPost({
     userId,
     userName,
-    content: `\uD83D\uDE80 \u300C${agentName}\u300D\u5DF2\u88AB\u8FD0\u884C ${runs.toLocaleString()} \u6B21\uFF01 #agent #milestone`,
+    content: `\uD83D\uDE80 "${agentName}" has been run ${runs.toLocaleString()} times! #agent #milestone`,
     hashtags: ["agent", "milestone"],
   });
 }

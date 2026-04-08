@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
+import { useLang } from "@/lib/i18n";
 import type { FeedPost } from "@/lib/feed";
 import { MentionAutocomplete } from "./mention-autocomplete";
 
@@ -11,6 +12,7 @@ interface PostComposerProps {
 }
 
 export function PostComposer({ onNewPost }: PostComposerProps) {
+  const { t } = useLang();
   const { user } = useAuth();
   const [content, setContent] = useState("");
   const [linkProject, setLinkProject] = useState(false);
@@ -50,7 +52,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "\u53D1\u5E03\u5931\u8D25");
+        throw new Error(data.error || t("feed.postFailed"));
       }
 
       const postData = await res.json();
@@ -82,7 +84,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
       // Notify parent
       onNewPost?.(newPost);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "\u53D1\u5E03\u5931\u8D25";
+      const msg = err instanceof Error ? err.message : t("feed.postFailed");
       setErrorMsg(msg);
       setTimeout(() => setErrorMsg(null), 3000);
     } finally {
@@ -101,9 +103,9 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
             href="/login"
             style={{ color: "#9D00FF", textDecoration: "underline", textUnderlineOffset: 3 }}
           >
-            {"\u767B\u5F55"}
+            {t("feed.login")}
           </Link>
-          {"\u540E\u53D1\u5E03\u52A8\u6001"}
+          {t("feed.loginToPost")}
         </span>
       </div>
     );
@@ -129,7 +131,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
     >
       {/* Terminal header */}
       <div className="font-retro" style={{ fontSize: 14, color: "#39FF14", marginBottom: 10 }}>
-        {">"} {"\u53D1\u5E03\u52A8\u6001"}
+        {">"} {t("feed.publishUpdate")}
       </div>
 
       {/* Textarea with @mention autocomplete */}
@@ -137,7 +139,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
         value={content}
         onChange={setContent}
         onMentionsChange={setMentions}
-        placeholder={"\u5206\u4EAB\u4F60\u7684\u60F3\u6CD5... \u8F93\u5165 @ \u63D0\u53CA\u521B\u4F5C\u8005"}
+        placeholder={t("feed.composePlaceholder")}
         disabled={posting}
         maxLength={MAX_CHARS}
       />
@@ -177,7 +179,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
               textDecoration: linkProject ? "underline" : "none",
             }}
           >
-            {"\uD83D\uDD17 \u94FE\u63A5\u9879\u76EE"}
+            {"\uD83D\uDD17 "}{t("feed.linkProject")}
           </button>
 
           {/* Media toggle */}
@@ -194,7 +196,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
               textDecoration: showMediaInput ? "underline" : "none",
             }}
           >
-            {"\uD83D\uDDBC\uFE0F \u56FE\u7247"}
+            {"\uD83D\uDDBC\uFE0F "}{t("feed.image")}
           </button>
         </div>
 
@@ -225,7 +227,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
               }}
             />
           )}
-          {posting ? "\u53D1\u5E03\u4E2D..." : "\u53D1\u5E03"}
+          {posting ? t("feed.posting") : t("feed.postAction")}
         </button>
       </div>
 
@@ -236,7 +238,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
             type="url"
             value={mediaUrl}
             onChange={(e) => setMediaUrl(e.target.value)}
-            placeholder={"图片/GIF URL..."}
+            placeholder={"Image/GIF URL..."}
             disabled={posting}
             className="font-retro"
             style={{

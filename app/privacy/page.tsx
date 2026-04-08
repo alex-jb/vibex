@@ -1,4 +1,9 @@
+"use client";
+
+import { useLang } from "@/lib/i18n";
+
 export default function PrivacyPage() {
+  const { t } = useLang();
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
       {/* Terminal Header */}
@@ -26,35 +31,35 @@ export default function PrivacyPage() {
       {/* Body */}
       <div className="rpgui-container framed" style={{ padding: 24 }}>
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          数据收集
+          {t("privacy.dataCollection")}
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
-          我们收集的数据包括：账户信息（用户名、邮箱）、项目数据（代码、描述、配置）、使用数据（页面浏览、功能使用频率）。我们不会收集不必要的个人信息。
+          We collect the following data: account information (username, email), project data (code, descriptions, configuration), and usage data (page views, feature usage frequency). We do not collect unnecessary personal information.
         </p>
 
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          数据使用
+          {t("privacy.dataUsage")}
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
-          收集的数据用于：提供和改进平台服务、生成排行榜和统计数据、优化 AI 功能体验、发送服务相关通知。我们不会将您的数据出售给第三方。
+          Collected data is used to: provide and improve platform services, generate leaderboards and statistics, optimize AI feature experiences, and send service-related notifications. We will never sell your data to third parties.
         </p>
 
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          第三方服务
+          {t("privacy.thirdParty")}
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
-          本平台使用以下第三方服务：Supabase（数据库与身份验证）、Anthropic Claude API（AI 功能）、Vercel（托管与部署）。这些服务各自有独立的隐私政策。
+          This platform uses the following third-party services: Supabase (database and authentication), Anthropic Claude API (AI features), and Vercel (hosting and deployment). Each of these services has its own privacy policy.
         </p>
 
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
-          联系我们
+          {t("privacy.contact")}
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
-          如有隐私相关问题，请通过 GitHub Issues 联系我们，或发送邮件至项目维护者。
+          For privacy-related questions, please contact us via GitHub Issues or email the project maintainer.
         </p>
 
         <p className="font-pixel" style={{ fontSize: 7, color: "#555", marginTop: 32 }}>
-          最后更新：2026-04-06
+          {t("privacy.lastUpdated")}
         </p>
       </div>
     </div>

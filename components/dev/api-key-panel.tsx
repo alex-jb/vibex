@@ -47,7 +47,7 @@ export function ApiKeyPanel() {
           >
             {copiedKey ? "✓" : t("dev.copy")}
           </button>
-          <div title="即将推出">
+          <div title="Coming soon">
             <button
               className="nes-btn is-warning"
               style={{ fontSize: 9, padding: "6px 12px", opacity: 0.5, cursor: "not-allowed" }}

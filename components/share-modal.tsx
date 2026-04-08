@@ -36,8 +36,8 @@ type Platform = "twitter" | "xiaohongshu" | "douyin";
 
 const platforms: { key: Platform; label: string; icon: typeof AtSign }[] = [
   { key: "twitter", label: "Twitter/X", icon: AtSign },
-  { key: "xiaohongshu", label: "\u5C0F\u7EA2\u4E66", icon: Sparkles },
-  { key: "douyin", label: "\u6296\u97F3", icon: MessageSquare },
+  { key: "xiaohongshu", label: "Xiaohongshu", icon: Sparkles },
+  { key: "douyin", label: "Douyin", icon: MessageSquare },
 ];
 
 function generateSocialCopy(
@@ -51,9 +51,9 @@ function generateSocialCopy(
     case "twitter":
       return `Just discovered ${title} on @VibeX \u2014 ${tagline} \uD83D\uDD25\n\nTry it yourself: ${playUrl}\n\n#VibeCoding #AI`;
     case "xiaohongshu":
-      return `\u53D1\u73B0\u4E00\u4E2A\u8D85\u9177\u7684AI\u9879\u76EE\uFF01\u2728\n\n\u3010${title}\u3011\n${tagline}\n\n\u70B9\u51FB\u76F4\u63A5\u4F53\u9A8C\uD83D\uDC49 play.vibex.app/p/${id}\n\n#AI\u521B\u4F5C #VibeCoding #${category}`;
+      return `Found an amazing AI project! \u2728\n\n[${title}]\n${tagline}\n\nTry it now \uD83D\uDC49 play.vibex.app/p/${id}\n\n#AICreation #VibeCoding #${category}`;
     case "douyin":
-      return `\u8FD9\u4E2AAI\u592A\u79BB\u8C31\u4E86\uD83D\uDE02 ${title} \u2014 ${tagline}\n\n\u94FE\u63A5\u5728\u4E3B\u9875 #AI #VibeCoding`;
+      return `This AI is incredible \uD83D\uDE02 ${title} \u2014 ${tagline}\n\nLink in bio #AI #VibeCoding`;
   }
 }
 
@@ -141,7 +141,7 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
       const text = data.text ?? data.summary ?? "";
       setEditedTexts((prev) => ({ ...prev, [platform]: text }));
     } catch {
-      setAiError((prev) => ({ ...prev, [platform]: "AI 生成失败，请重试" }));
+      setAiError((prev) => ({ ...prev, [platform]: "AI generation failed, please try again" }));
     } finally {
       setAiLoading((prev) => ({ ...prev, [platform]: false }));
     }
@@ -348,12 +348,12 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                           {aiLoading[activePlatform] ? (
                             <>
                               <Loader2 className="h-3 w-3 animate-spin" />
-                              <span>生成中...</span>
+                              <span>Generating...</span>
                             </>
                           ) : (
                             <>
                               <Wand2 className="h-3 w-3" />
-                              <span>AI 生成文案</span>
+                              <span>AI Generate Copy</span>
                             </>
                           )}
                         </Button>

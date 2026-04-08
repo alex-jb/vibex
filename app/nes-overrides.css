@@ -24,16 +24,17 @@
   align-items: center !important;
   gap: 0 !important;
 }
-[data-slot="navbar"] nav a {
-  font-size: 8px !important;
+[data-slot="navbar"] nav a,
+[data-slot="navbar"] nav button {
+  font-size: 14px !important;
   padding: 8px 10px !important;
   white-space: nowrap !important;
   display: inline-flex !important;
   flex-direction: column !important;
   align-items: center !important;
 }
-[data-slot="navbar"] .text-lg {
-  font-size: 12px !important;
+[data-slot="navbar"] .text-xl {
+  font-size: 18px !important;
 }
 [data-slot="navbar"] button[class*="bg-gradient"] {
   font-size: 8px !important;

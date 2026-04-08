@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { useLang } from "@/lib/i18n";
 
 interface NewPostsToastProps {
   count: number;
@@ -8,6 +9,7 @@ interface NewPostsToastProps {
 }
 
 export function NewPostsToast({ count, onClick }: NewPostsToastProps) {
+  const { t } = useLang();
   return (
     <AnimatePresence>
       {count > 0 && (
@@ -34,7 +36,7 @@ export function NewPostsToast({ count, onClick }: NewPostsToastProps) {
         >
           <span style={{ fontSize: 12 }}>{"\u2191"}</span>
           <span className="font-pixel" style={{ fontSize: 8 }}>
-            {count}{"\u6761\u65B0\u52A8\u6001"}
+            {count}{t("feed.newPosts")}
           </span>
         </motion.button>
       )}

@@ -94,7 +94,7 @@ function SectionCard({
 /* ─── Main page ───────────────────────────────────────────────────────────── */
 
 export default function SettingsPage() {
-  const { lang, setLang } = useLang();
+  const { lang, setLang, t } = useLang();
 
   const [notifications, setNotifications] = useState({
     likes: true,
@@ -121,9 +121,9 @@ export default function SettingsPage() {
       <div className="space-y-6">
         {/* Language */}
         <FadeIn delay={0.05}>
-          <SectionCard icon={Globe} title="语言偏好">
+          <SectionCard icon={Globe} title={t("settings.langPref")}>
             <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">界面语言</p>
+              <p className="text-sm text-muted-foreground">{t("settings.interfaceLang")}</p>
               <div className="flex gap-2">
                 {(["zh", "en"] as const).map((l) => (
                   <button
@@ -135,7 +135,7 @@ export default function SettingsPage() {
                         : "bg-white/[0.06] text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    {l === "zh" ? "中文" : "English"}
+                    {l === "zh" ? t("settings.chinese") : "English"}
                   </button>
                 ))}
               </div>
@@ -145,25 +145,25 @@ export default function SettingsPage() {
 
         {/* Theme */}
         <FadeIn delay={0.1}>
-          <SectionCard icon={Palette} title="主题">
+          <SectionCard icon={Palette} title={t("settings.theme")}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Monitor className="size-4 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">当前主题：暗色</p>
+                <p className="text-sm text-muted-foreground">{t("settings.currentTheme")}</p>
               </div>
-              <span className="text-xs text-muted-foreground/60">更多主题即将推出</span>
+              <span className="text-xs text-muted-foreground/60">{t("settings.moreThemes")}</span>
             </div>
           </SectionCard>
         </FadeIn>
 
         {/* Notifications */}
         <FadeIn delay={0.15}>
-          <SectionCard icon={Bell} title="通知偏好">
+          <SectionCard icon={Bell} title={t("settings.notifPref")}>
             {[
-              { key: "likes" as const, icon: Heart, label: "点赞通知" },
-              { key: "comments" as const, icon: MessageCircle, label: "评论通知" },
-              { key: "follows" as const, icon: UserPlus, label: "关注通知" },
-              { key: "system" as const, icon: Monitor, label: "系统通知" },
+              { key: "likes" as const, icon: Heart, label: t("settings.upvoteNotif") },
+              { key: "comments" as const, icon: MessageCircle, label: t("settings.commentNotif") },
+              { key: "follows" as const, icon: UserPlus, label: t("settings.followNotif") },
+              { key: "system" as const, icon: Monitor, label: t("settings.systemNotif") },
             ].map(({ key, icon: NIcon, label }) => (
               <div key={key} className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -181,11 +181,11 @@ export default function SettingsPage() {
 
         {/* Account */}
         <FadeIn delay={0.2}>
-          <SectionCard icon={Settings} title="账户">
+          <SectionCard icon={Settings} title={t("settings.account")}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <Mail className="size-4 text-muted-foreground" />
-                <p className="text-sm text-foreground">邮箱</p>
+                <p className="text-sm text-foreground">{t("settings.email")}</p>
               </div>
               <p className="text-sm text-muted-foreground">user@vibex.app</p>
             </div>
@@ -193,15 +193,15 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <Lock className="size-4 text-muted-foreground" />
-                <p className="text-sm text-foreground">修改密码</p>
+                <p className="text-sm text-foreground">{t("settings.changePassword")}</p>
               </div>
-              <div title="即将推出">
+              <div title="Coming soon">
                 <button
                   disabled
                   className="nes-btn is-disabled"
                   style={{ fontSize: 9, padding: "4px 12px" }}
                 >
-                  修改
+                  {t("settings.change")}
                 </button>
               </div>
             </div>
@@ -210,15 +210,15 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <Trash2 className="size-4 text-red-400/60" />
-                  <p className="text-sm text-red-400/80">删除账户</p>
+                  <p className="text-sm text-red-400/80">{t("settings.deleteAccount")}</p>
                 </div>
-                <div title="即将推出">
+                <div title="Coming soon">
                   <button
                     disabled
                     className="nes-btn is-disabled"
                     style={{ fontSize: 9, padding: "4px 12px" }}
                   >
-                    删除
+                    {t("settings.delete")}
                   </button>
                 </div>
               </div>
