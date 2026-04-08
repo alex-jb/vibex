@@ -116,7 +116,7 @@ export function useRealtimeLeaderboard(
   }, [period, limit]);
 
   useEffect(() => {
-    // Initial fetch – called via void to avoid lint warning about setState in effect
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void fetchLeaderboard();
 
     // Subscribe to project score/upvote changes
