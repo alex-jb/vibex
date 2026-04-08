@@ -10,22 +10,17 @@ import {
   ArrowRight,
   Zap,
   Target,
-  Shield,
-  TrendingUp,
   Rocket,
   CheckCircle2,
   Clock,
   AlertTriangle,
-  BarChart3,
   Star,
   Filter,
   Plus,
   Loader2,
-  Send,
 } from "lucide-react";
 import { ideas, categories } from "@/lib/mock-data";
 import type { Idea, IdeaEvaluation, ProjectCategory } from "@/lib/types";
-import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";

@@ -17,11 +17,8 @@ import {
 import { projects } from "@/lib/mock-data";
 import type { LeaderboardEntry, LeaderboardPeriod } from "@/lib/leaderboard";
 import { useRealtimeLeaderboard } from "@/lib/realtime";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ClassIcon } from "@/components/rpg/class-icon";
-import { EvolutionBadge } from "@/components/rpg/evolution-badge";
 import { useLang } from "@/lib/i18n";
 
 /** Map tab names to LeaderboardPeriod */
@@ -95,7 +92,7 @@ function RankChange({ change }: { change: number }) {
 
 function LeaderboardTab({ tab }: { tab: string }) {
   const period = tabToPeriod(tab);
-  const { entries, loading, connected } = useRealtimeLeaderboard(period, 10);
+  const { entries, loading } = useRealtimeLeaderboard(period, 10);
 
   if (loading) {
     return (

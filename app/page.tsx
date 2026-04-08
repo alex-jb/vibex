@@ -13,9 +13,7 @@ import {
   Calendar,
   MapPin,
   ArrowRight,
-  ChevronUp,
   Users,
-  Eye,
 } from "lucide-react";
 import {
   projects,

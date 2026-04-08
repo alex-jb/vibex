@@ -7,8 +7,6 @@ import {
   Sparkles,
   Lightbulb,
   Wand2,
-  Send,
-  ArrowRight,
   CheckCircle2,
   Zap,
   TrendingUp,

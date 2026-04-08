@@ -24,6 +24,7 @@ const avgSuccess =
 
 const dailyRuns = [182, 245, 198, 310, 274, 356, 321]; // last 7 days
 const dayLabelKeys = ["analytics.mon", "analytics.tue", "analytics.wed", "analytics.thu", "analytics.fri", "analytics.sat", "analytics.sun"] as const;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const maxDaily = Math.max(...dailyRuns);
 
 const sortedAgents = [...agents].sort((a, b) => b.runs - a.runs);
@@ -65,6 +66,7 @@ const modelCosts = [
 ];
 
 const dailyCosts = [14.2, 18.6, 16.1, 22.4, 19.8, 24.1, 12.3];
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const maxCost = Math.max(...dailyCosts);
 
 // ── Animations ──────────────────────────────────────────────────────

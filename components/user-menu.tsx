@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogOut, User, Swords, Settings } from "lucide-react";
+import { LogOut, User, Swords } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 
@@ -63,6 +63,7 @@ export function UserMenu() {
         className="flex items-center gap-2 rounded-full p-0.5 transition-all hover:ring-2 hover:ring-violet-500/30"
       >
         {avatar ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={avatar}
             alt={displayName}

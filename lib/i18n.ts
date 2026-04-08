@@ -894,12 +894,16 @@ const LangContext = createContext<LangContextType>({
 export function LangProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
 
-  useEffect(() => {
+  const loadStoredLang = useCallback(() => {
     const stored = localStorage.getItem("vibecode-hunt-lang");
     if (stored === "zh" || stored === "en" || stored === "ja") {
       setLangState(stored);
     }
   }, []);
+
+  useEffect(() => {
+    loadStoredLang();
+  }, [loadStoredLang]);
 
   const setLang = useCallback((newLang: Lang) => {
     setLangState(newLang);

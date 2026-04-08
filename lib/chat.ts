@@ -37,7 +37,7 @@ export function useProjectChat(projectId: string) {
   const { user } = useAuth();
 
   // Fetch initial messages
-  useEffect(() => {
+  const fetchMessages = useCallback(async () => {
     if (!USE_SUPABASE) {
       setMessages(MOCK_MESSAGES.filter(m => m.projectId === projectId));
       setLoading(false);
@@ -45,18 +45,22 @@ export function useProjectChat(projectId: string) {
       return;
     }
 
-    supabase
+    const { data } = await supabase
       .from("chat_messages")
       .select("*")
       .eq("project_id", projectId)
       .order("created_at", { ascending: true })
-      .limit(100)
-      .then(({ data }) => {
-        if (data) {
-          setMessages(data.map(mapMessage));
-        }
-        setLoading(false);
-      });
+      .limit(100);
+    if (data) {
+      setMessages(data.map(mapMessage));
+    }
+    setLoading(false);
+  }, [projectId]);
+
+  useEffect(() => {
+    void fetchMessages();
+
+    if (!USE_SUPABASE) return;
 
     // Subscribe to new messages
     const channel = supabase
@@ -73,7 +77,7 @@ export function useProjectChat(projectId: string) {
       });
 
     return () => { supabase.removeChannel(channel); };
-  }, [projectId]);
+  }, [projectId, fetchMessages]);
 
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim()) return;

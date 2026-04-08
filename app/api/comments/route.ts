@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { validateString, sanitize } from "@/lib/validate";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { createNotification } from "@/lib/db";
+// import { createNotification } from "@/lib/db"; // TODO: wire up notifications
 
 const USE_SUPABASE = !!(
   process.env.NEXT_PUBLIC_SUPABASE_URL &&

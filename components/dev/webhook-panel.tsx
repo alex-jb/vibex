@@ -13,6 +13,7 @@ const WEBHOOK_EVENTS = [
   "idea.submitted",
 ] as const;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EVENT_LABELS: Record<string, string> = {
   "project.created": "Project Created",
   "project.upvoted": "Project Upvoted",

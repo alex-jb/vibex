@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { validateString } from "@/lib/validate";
 import { checkRateLimit } from "@/lib/rate-limit";

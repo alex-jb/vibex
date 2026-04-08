@@ -13,11 +13,9 @@ import {
   CheckCircle2,
   AlertTriangle,
   Lightbulb,
-  Play,
   Star,
   Calendar,
   User,
-  GitFork,
 } from "lucide-react";
 
 import { useLang } from "@/lib/i18n";

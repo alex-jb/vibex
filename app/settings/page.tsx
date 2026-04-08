@@ -15,7 +15,7 @@ import {
   Trash2,
   Settings,
 } from "lucide-react";
-import { useLang, type Lang } from "@/lib/i18n";
+import { useLang } from "@/lib/i18n";
 
 /* ─── Fade-in wrapper ─────────────────────────────────────────────────────── */
 

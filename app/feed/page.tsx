@@ -98,7 +98,7 @@ export default function FeedPage() {
   const [tab, setTab] = useState<FeedTab>("trending");
   const { posts, loading, error, connected, refetch, bufferedPosts, flushBuffered } = useRealtimeFeed(tab);
   const { user } = useAuth();
-  const [visibleCount, setVisibleCount] = useState(10);
+  const [, setVisibleCount] = useState(10);
   const [loadingMore, setLoadingMore] = useState(false);
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [tabSwitching, setTabSwitching] = useState(false);
@@ -122,6 +122,7 @@ export default function FeedPage() {
   const hasMore = localPosts.length > 0 && localPosts.length % 20 === 0;
   const exhausted = !hasMore && localPosts.length > 0;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleReply = useCallback((_postId: string) => {
     // placeholder for reply interaction
   }, []);
@@ -130,6 +131,7 @@ export default function FeedPage() {
     setLocalPosts((prev) => prev.filter((p) => p.id !== postId));
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleNewPost = useCallback((_post: FeedPost) => {
     // Don't optimistically prepend — realtime subscription will deliver the post.
     // This avoids the duplicate post bug where both optimistic add + realtime INSERT

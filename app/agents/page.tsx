@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { agents } from "@/lib/mock-data/agents";
 import type { AgentCategory } from "@/lib/agent-types";
-import { Button } from "@/components/ui/button";
+
 import { Badge } from "@/components/ui/badge";
 import { useLang } from "@/lib/i18n";
 

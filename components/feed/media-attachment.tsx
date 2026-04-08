@@ -55,6 +55,7 @@ export function MediaAttachment({ url, type }: MediaAttachmentProps) {
       )}
 
       {/* Image */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={url}
         alt={type === "gif" ? "GIF attachment" : "Image attachment"}

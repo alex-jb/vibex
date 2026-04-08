@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  User,
   Mail,
   CalendarDays,
   Pencil,
@@ -24,7 +23,7 @@ import { useLang } from "@/lib/i18n";
 import { projects } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { computeUserLevel, EXP_REWARDS, BUDDY_TYPES, RARITY_CONFIG } from "@/lib/buddy-system";
+import { computeUserLevel, BUDDY_TYPES, RARITY_CONFIG } from "@/lib/buddy-system";
 import type { UserBuddy } from "@/lib/buddy-system";
 
 /* ─── Helpers ─────────────────────────────────────────────────────────────── */
@@ -100,6 +99,7 @@ function StatCard({
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useLang();
 
   useEffect(() => {
@@ -178,6 +178,7 @@ export default function ProfilePage() {
           <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
             {/* Avatar */}
             {avatarUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={avatarUrl}
                 alt={displayName}

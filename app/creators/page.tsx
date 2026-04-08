@@ -22,7 +22,7 @@ import { SectionHeader } from "@/components/section-header";
 import { creators, projects, weeklyWinners } from "@/lib/mock-data";
 import { AttributeRadar } from "@/components/rpg/attribute-radar";
 import { ClassIcon } from "@/components/rpg/class-icon";
-import { computeClass, computeAttributes, CLASS_CONFIG } from "@/lib/rpg-utils";
+import { computeClass, computeAttributes } from "@/lib/rpg-utils";
 import { useLang } from "@/lib/i18n";
 import type { HeroAttributes, HeroClass } from "@/lib/types";
 

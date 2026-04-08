@@ -1,4 +1,4 @@
-import type { AgentWorkflow, AgentRun, AgentDefinition } from "./agent-types";
+import type { AgentWorkflow, AgentRun } from "./agent-types";
 import { runAgent } from "./agent-engine";
 import { agents } from "./mock-data/agents";
 

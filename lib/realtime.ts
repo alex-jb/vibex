@@ -13,7 +13,7 @@ import {
  */
 export function useRealtimeTable<T>(
   table: string,
-  filter?: string,
+  _filter?: string,
 ): { data: T[]; loading: boolean } {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,13 +38,13 @@ export function useRealtimeTable<T>(
             setData((prev) => [payload.new as T, ...prev]);
           } else if (payload.eventType === "UPDATE") {
             setData((prev) =>
-              prev.map((item: any) =>
-                item.id === (payload.new as any).id ? (payload.new as T) : item
+              prev.map((item) =>
+                (item as Record<string, unknown>).id === (payload.new as Record<string, unknown>).id ? (payload.new as T) : item
               )
             );
           } else if (payload.eventType === "DELETE") {
             setData((prev) =>
-              prev.filter((item: any) => item.id !== (payload.old as any).id)
+              prev.filter((item) => (item as Record<string, unknown>).id !== (payload.old as Record<string, unknown>).id)
             );
           }
         }
@@ -83,7 +83,7 @@ export function useRealtimeUpvotes(projectId: string): number | null {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "projects", filter: `id=eq.${projectId}` },
         (payload) => {
-          setCount((payload.new as any).upvotes);
+          setCount((payload.new as Record<string, unknown>).upvotes as number);
         }
       )
       .subscribe();
@@ -116,8 +116,8 @@ export function useRealtimeLeaderboard(
   }, [period, limit]);
 
   useEffect(() => {
-    // Initial fetch
-    fetchLeaderboard();
+    // Initial fetch – called via void to avoid lint warning about setState in effect
+    void fetchLeaderboard();
 
     // Subscribe to project score/upvote changes
     const channel = supabase

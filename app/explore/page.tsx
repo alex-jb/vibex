@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, SlidersHorizontal, Sparkles, Filter, LayoutGrid, Swords } from "lucide-react";
+import { Search, SlidersHorizontal, Sparkles, LayoutGrid, Swords } from "lucide-react";
 import { projects, categories } from "@/lib/mock-data";
-import type { ProjectCategory } from "@/lib/types";
 import { ProjectCard } from "@/components/project-card";
 import { HeroCard } from "@/components/rpg/hero-card";
-import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";

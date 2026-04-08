@@ -4,14 +4,14 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useLang } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import { projects } from "@/lib/mock-data";
-import type { Project, BattleResult, BattleRound } from "@/lib/types";
+import type { Project, BattleResult } from "@/lib/types";
 import { simulateBattle, getBattleSummary } from "@/lib/battle-engine";
 import { CLASS_CONFIG, EVOLUTION_CONFIG } from "@/lib/rpg-utils";
 import { SeasonLeaderboard } from "@/components/arena/season-leaderboard";
 import { onBattleWon } from "@/lib/feed-events";
 
 /* ─── Terminal Typewriter Hook ─── */
-function useTypewriter(text: string, speed = 30, trigger = true) {
+function useTypewriter(text: string, speed = 30, trigger = true) { // eslint-disable-line @typescript-eslint/no-unused-vars
   const [displayed, setDisplayed] = useState("");
   const [done, setDone] = useState(false);
 
@@ -218,12 +218,12 @@ export default function ArenaPage() {
   const [challenger, setChallenger] = useState<Project | null>(null);
   const [defender, setDefender] = useState<Project | null>(null);
   const [phase, setPhase] = useState<"select" | "flash" | "battle" | "result">("select");
-  const [result, setResult] = useState<BattleResult | null>(null);
-  const [currentRound, setCurrentRound] = useState(-1);
+  const [, setResult] = useState<BattleResult | null>(null);
+  const [, setCurrentRound] = useState(-1);
   const [battleLog, setBattleLog] = useState<string[]>([]);
   const [showCrit, setShowCrit] = useState(false);
   const [attackingSide, setAttackingSide] = useState<"left" | "right" | null>(null);
-  const [aiNarrative, setAiNarrative] = useState<{intro: string; roundNarratives: string[]; conclusion: string; mvpComment: string} | null>(null);
+  const [, setAiNarrative] = useState<{intro: string; roundNarratives: string[]; conclusion: string; mvpComment: string} | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const { t } = useLang();
 

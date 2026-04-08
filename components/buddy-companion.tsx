@@ -6,7 +6,7 @@ import { X, Minimize2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { BUDDY_TYPES, RARITY_CONFIG, computeUserLevel } from "@/lib/buddy-system";
-import type { BuddyType } from "@/lib/buddy-system";
+
 import { BuddySprite } from "@/components/buddy-sprite";
 
 // Mock data (replace with real data when DB connected)

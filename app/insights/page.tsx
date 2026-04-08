@@ -98,6 +98,7 @@ const statTypes: TrendInsight["type"][] = [
   "emerging",
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const statLabels: Record<TrendInsight["type"], string> = {
   rising: "Rising Categories",
   opportunity: "Opportunity Zones",

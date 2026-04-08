@@ -1,6 +1,5 @@
 import { supabase } from "./supabase";
 import { projects as mockProjects, creators as mockCreators } from "./mock-data";
-import type { Project, Creator } from "./types";
 
 const USE_SUPABASE = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
@@ -53,15 +52,15 @@ export async function getProjectLeaderboard(
     .limit(limit);
 
   if (error || !data) return [];
-  return data.map((p: any, i: number) => ({
+  return data.map((p: Record<string, unknown>, i: number) => ({
     rank: i + 1,
-    projectId: p.id,
-    title: p.title,
-    creatorName: p.creators?.name || "",
-    score: p.score,
-    upvotes: p.upvotes,
-    views: p.views,
-    category: p.category,
+    projectId: p.id as string,
+    title: p.title as string,
+    creatorName: (p.creators as Record<string, unknown> | null)?.name as string || "",
+    score: p.score as number,
+    upvotes: p.upvotes as number,
+    views: p.views as number,
+    category: p.category as string,
     change: 0,
   }));
 }
@@ -101,14 +100,14 @@ export async function getCreatorLeaderboard(limit = 10): Promise<CreatorLeaderbo
     .limit(limit);
 
   if (error || !data) return [];
-  return data.map((c: any, i: number) => ({
+  return data.map((c: Record<string, unknown>, i: number) => ({
     rank: i + 1,
-    creatorId: c.id,
-    name: c.name,
-    projectCount: c.project_count || 0,
-    totalUpvotes: c.total_upvotes || 0,
+    creatorId: c.id as string,
+    name: c.name as string,
+    projectCount: (c.project_count as number) || 0,
+    totalUpvotes: (c.total_upvotes as number) || 0,
     weeklyGrowth: Number(c.weekly_growth) || 0,
-    badges: c.badges || [],
+    badges: (c.badges as string[]) || [],
     change: 0,
   }));
 }

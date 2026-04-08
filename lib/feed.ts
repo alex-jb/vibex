@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "./supabase";
 import { MOCK_POSTS as RAW_MOCK_POSTS } from "./mock-data/feed";
 
@@ -101,7 +101,7 @@ export function useRealtimeFeed(tab: FeedTab) {
     setBufferedPosts([]);
   };
 
-  useEffect(() => {
+  const fetchPosts = useCallback(() => {
     setError(null);
 
     // --- Mock fallback ---
@@ -136,6 +136,12 @@ export function useRealtimeFeed(tab: FeedTab) {
       }
       setLoading(false);
     });
+  }, [tab]);
+
+  useEffect(() => {
+    fetchPosts();
+
+    if (!USE_SUPABASE) return;
 
     // --- Real-time subscription ---
     const channel = supabase
@@ -181,7 +187,7 @@ export function useRealtimeFeed(tab: FeedTab) {
       supabase.removeChannel(channel);
       setConnected(false);
     };
-  }, [tab, fetchKey]);
+  }, [tab, fetchKey, fetchPosts]);
 
   return { posts, loading, error, connected, refetch, bufferedPosts, flushBuffered };
 }

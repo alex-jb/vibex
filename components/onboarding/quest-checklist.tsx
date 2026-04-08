@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { STARTER_QUESTS, getOnboardingState, type Quest } from "@/lib/onboarding";
+import { STARTER_QUESTS, getOnboardingState } from "@/lib/onboarding";
 
 export function QuestChecklist() {
   const [completedIds, setCompletedIds] = useState<string[]>([]);

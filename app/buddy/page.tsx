@@ -11,10 +11,7 @@ import {
   RARITY_CONFIG,
   getEvolutionStage,
   canEvolve,
-  getEvolutions,
-  type BuddyType,
   type SummonResult,
-  type BuddyEvolution,
 } from "@/lib/buddy-system";
 import { BuddyCard } from "@/components/buddy-card";
 import { BuddySprite } from "@/components/buddy-sprite";
@@ -129,6 +126,7 @@ const EXP_TABLE_ROWS: { action: string; key: keyof typeof EXP_REWARDS; icon: str
 
 /* ═══ Main Buddy Page ═══ */
 export default function BuddyPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useLang();
 
   // Mock user state
