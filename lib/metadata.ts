@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 const SITE_NAME = "VibeX";
-const SITE_URL = "https://vibex.app";
+const SITE_URL = "https://vibexforge.com";
 const DEFAULT_OG_IMAGE = "/og-default.png";
 
 export function createMetadata({

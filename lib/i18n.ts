@@ -28,6 +28,7 @@ const translations = {
     "nav.admin": "Admin",
     "nav.discover": "Discover",
     "nav.dojo": "Dojo",
+    "nav.more": "More",
 
     // Discover page
     "discover.badge": "Discover what's next",
@@ -64,6 +65,12 @@ const translations = {
     // Hero section buttons
     "hero.startQuest": "START QUEST",
     "hero.exploreArena": "EXPLORE ARENA",
+
+    // Quick actions
+    "quick.launch": "Launch Project",
+    "quick.discover": "Discover",
+    "quick.dojo": "Enter Dojo",
+    "quick.feed": "Join Feed",
 
     // Community stats
     "stats.questsLaunched": "QUESTS LAUNCHED",
@@ -844,7 +851,8 @@ const translations = {
     "nav.trade": "交易",
     "nav.admin": "管理",
     "nav.discover": "发现",
-    "nav.dojo": "道場",
+    "nav.dojo": "道场",
+    "nav.more": "更多",
 
     // Discover page
     "discover.badge": "发现下一个热门",
@@ -881,6 +889,12 @@ const translations = {
     // Hero section buttons
     "hero.startQuest": "开始冒险",
     "hero.exploreArena": "探索竞技场",
+
+    // Quick actions
+    "quick.launch": "发布项目",
+    "quick.discover": "探索",
+    "quick.dojo": "进入道场",
+    "quick.feed": "加入动态",
 
     // Community stats
     "stats.questsLaunched": "已发布任务",
@@ -2030,6 +2044,7 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
     const stored = localStorage.getItem("vibecode-hunt-lang");
     if (stored === "zh" || stored === "en") {
       setLangState(stored);
+      document.documentElement.lang = stored;
     }
   }, []);
 
@@ -2041,6 +2056,7 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
   const setLang = useCallback((newLang: Lang) => {
     setLangState(newLang);
     localStorage.setItem("vibecode-hunt-lang", newLang);
+    document.documentElement.lang = newLang;
   }, []);
 
   const t = useCallback(

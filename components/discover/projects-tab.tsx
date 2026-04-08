@@ -17,6 +17,7 @@ import {
   Star,
 } from "lucide-react";
 import { useLang } from "@/lib/i18n";
+import { WaterfallGrid } from "@/components/ui/waterfall-grid";
 
 const CATEGORY_I18N: Record<string, string> = {
   "All": "cat.all",
@@ -139,14 +140,11 @@ export function ProjectsTab() {
         </div>
       </div>
 
-      {/* Results Grid */}
+      {/* Results */}
       {filteredProjects.length > 0 ? (
-        <motion.div
-          layout
-          className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
+        <div className="mt-6">
           <AnimatePresence mode="popLayout">
-            {/* Editor's Pick - Featured Card */}
+            {/* Editor's Pick - Featured Card (full width, above waterfall) */}
             {editorsPick && (
               <motion.div
                 key={`pick-${editorsPick.id}`}
@@ -242,14 +240,15 @@ export function ProjectsTab() {
               </motion.div>
             )}
 
-            {/* Rest of projects */}
+          </AnimatePresence>
+
+          {/* Rest of projects — waterfall layout */}
+          <WaterfallGrid className="mt-6">
             {restProjects.map((project) => (
               <motion.div
                 key={project.id}
-                layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
               >
                 {viewMode === "hero" ? (
@@ -261,8 +260,8 @@ export function ProjectsTab() {
                 )}
               </motion.div>
             ))}
-          </AnimatePresence>
-        </motion.div>
+          </WaterfallGrid>
+        </div>
       ) : (
         <motion.div
           initial={{ opacity: 0, y: 20 }}

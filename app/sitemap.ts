@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { projects } from "@/lib/mock-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://vibex.app";
+  const baseUrl = "https://vibexforge.com";
 
   const staticPages = [
     "", "/discover", "/hunt", "/arena", "/ideas",

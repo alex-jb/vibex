@@ -6,11 +6,19 @@ import { useLang } from "@/lib/i18n";
 interface TrendingTag {
   tag: string;
   post_count: number;
+  trending_score?: number;
 }
 
 interface TrendingSidebarProps {
   activeTag?: string;
   onTagClick: (tag: string | null) => void;
+}
+
+function getHeatIndicator(score: number): string {
+  if (score >= 80) return "\uD83D\uDD25\uD83D\uDD25\uD83D\uDD25";
+  if (score >= 50) return "\uD83D\uDD25\uD83D\uDD25";
+  if (score >= 25) return "\uD83D\uDD25";
+  return "";
 }
 
 export function TrendingSidebar({ activeTag, onTagClick }: TrendingSidebarProps) {
@@ -70,30 +78,39 @@ export function TrendingSidebar({ activeTag, onTagClick }: TrendingSidebarProps)
             {"\u2716 "}{t("feed.clearFilter")}
           </button>
         )}
-        {tags.map((t) => (
-          <button
-            key={t.tag}
-            onClick={() => onTagClick(t.tag === activeTag ? null : t.tag)}
-            className="font-pixel"
-            aria-label={`Filter by #${t.tag}`}
-            aria-pressed={t.tag === activeTag}
-            style={{
-              fontSize: 7,
-              color: t.tag === activeTag ? "#FACC15" : "#9D00FF",
-              background: t.tag === activeTag ? "#FACC1515" : "none",
-              border: "none",
-              cursor: "pointer",
-              textAlign: "left",
-              padding: "3px 6px",
-              display: "flex",
-              justifyContent: "space-between",
-              gap: 8,
-            }}
-          >
-            <span>#{t.tag}</span>
-            <span style={{ color: "#555" }}>{t.post_count}</span>
-          </button>
-        ))}
+        {tags.map((tag) => {
+          const heat = getHeatIndicator(tag.trending_score ?? 0);
+          return (
+            <button
+              key={tag.tag}
+              onClick={() => onTagClick(tag.tag === activeTag ? null : tag.tag)}
+              className="font-pixel"
+              aria-label={`Filter by #${tag.tag}`}
+              aria-pressed={tag.tag === activeTag}
+              style={{
+                fontSize: 7,
+                color: tag.tag === activeTag ? "#FACC15" : "#9D00FF",
+                background: tag.tag === activeTag ? "#FACC1515" : "none",
+                border: "none",
+                cursor: "pointer",
+                textAlign: "left",
+                padding: "3px 6px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                #{tag.tag}
+              </span>
+              <span style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
+                {heat && <span style={{ fontSize: 9, lineHeight: 1 }}>{heat}</span>}
+                <span style={{ color: "#555" }}>{tag.post_count}</span>
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

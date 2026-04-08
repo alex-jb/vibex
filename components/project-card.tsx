@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -11,10 +12,12 @@ import {
   Play,
   GitFork,
   Zap,
+  Share2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLang } from "@/lib/i18n";
 import type { Project } from "@/lib/types";
+import { ShareModal } from "@/components/share-modal";
 
 const categoryColors: Record<string, string> = {
   "AI Agent": "bg-blue-500/10 text-blue-400 border-blue-500/20",
@@ -91,6 +94,7 @@ const CATEGORY_I18N: Record<string, string> = {
 
 export function ProjectCard({ project }: { project: Project }) {
   const { t } = useLang();
+  const [shareOpen, setShareOpen] = useState(false);
   const DemoIcon = demoIcons[project.demoType] ?? Monitor;
 
   return (
@@ -99,7 +103,7 @@ export function ProjectCard({ project }: { project: Project }) {
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       <Link href={`/project/${project.id}`} className="group block">
-        <div className="noise-bg relative overflow-hidden rounded-xl border border-white/[0.06] glass-card-strong transition-all duration-300 group-hover:border-white/15 group-hover:shadow-[0_8px_40px_-12px_rgba(139,92,246,0.15)]">
+        <article className="noise-bg relative overflow-hidden rounded-xl border border-white/[0.06] glass-card-strong transition-all duration-300 group-hover:border-white/15 group-hover:shadow-[0_8px_40px_-12px_rgba(139,92,246,0.15)]">
           {/* Thumbnail Area */}
           <div
             className={`relative flex h-44 items-center justify-center bg-gradient-to-br ${getGradient(project.id)} overflow-hidden`}
@@ -188,7 +192,7 @@ export function ProjectCard({ project }: { project: Project }) {
                 </span>
               </div>
 
-              {/* Stats */}
+              {/* Stats + Share */}
               <div className="flex items-center gap-2.5 text-[11px] text-muted-foreground/60">
                 <span className="flex items-center gap-0.5" title="Plays">
                   <Play className="h-2.5 w-2.5" />
@@ -204,11 +208,35 @@ export function ProjectCard({ project }: { project: Project }) {
                     {project.remixCount}
                   </span>
                 )}
+                <button
+                  title="Share"
+                  aria-label={`Share ${project.title}`}
+                  className="flex items-center gap-0.5 text-muted-foreground/60 hover:text-violet-400 transition-colors"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShareOpen(true);
+                  }}
+                >
+                  <Share2 className="h-2.5 w-2.5" />
+                </button>
               </div>
             </div>
           </div>
-        </div>
+        </article>
       </Link>
+
+      <ShareModal
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        project={{
+          id: project.id,
+          title: project.title,
+          tagline: project.tagline,
+          category: project.category,
+          creatorName: project.creatorName,
+        }}
+      />
     </motion.div>
   );
 }

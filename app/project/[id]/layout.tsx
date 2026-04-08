@@ -24,7 +24,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://vibex.app/project/${project.id}`,
+      url: `https://vibexforge.com/project/${project.id}`,
       siteName: "VibeX",
       type: "website",
       images: [

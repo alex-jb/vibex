@@ -50,7 +50,7 @@ export function getRemixChain(projectId: string): Project[] {
 }
 
 export function generateShareContent(project: Project): ShareContent {
-  const playableUrl = `https://play.vibex.app/p/${project.id}`;
+  const playableUrl = `https://vibexforge.com/project/${project.id}`;
 
   return {
     twitter: `Just discovered "${project.title}" on @VibeX — ${project.tagline.toLowerCase()}. This is what AI-native building looks like. Try it yourself: ${playableUrl} #vibecoding #ai`,

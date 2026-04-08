@@ -28,7 +28,7 @@ result = vx.agents.run(
 
 print(result.output)
 # => "Code analysis result: Overall quality is good..."`,
-  curl: `curl -X POST https://vibex.app/api/agents/run \\
+  curl: `curl -X POST https://vibexforge.com/api/agents/run \\
   -H "Authorization: Bearer vx-pk-..." \\
   -H "Content-Type: application/json" \\
   -d '{

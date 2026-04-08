@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useRef } from "react";
+import { use, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import {
@@ -28,6 +28,9 @@ import PlayableDemo from "@/components/playable-demo";
 import { HudBars } from "@/components/rpg/hud-bars";
 import { ExpBar } from "@/components/rpg/exp-bar";
 import { AttributeRadar } from "@/components/rpg/attribute-radar";
+import { ShareModal } from "@/components/share-modal";
+import { GrowthRadar } from "@/components/project/growth-radar";
+import { ForkTree } from "@/components/project/fork-tree";
 import { SkillTree } from "@/components/rpg/skill-tree";
 import { ClassIcon } from "@/components/rpg/class-icon";
 import { EvolutionBadge } from "@/components/rpg/evolution-badge";
@@ -234,6 +237,7 @@ export default function ProjectPage({
   const { id } = use(params);
   const project = projects.find((p) => p.id === id);
   const { t } = useLang();
+  const [shareOpen, setShareOpen] = useState(false);
 
   if (!project) {
     return (
@@ -271,14 +275,16 @@ export default function ProjectPage({
         <div className="pointer-events-none absolute -top-20 right-10 h-56 w-56 rounded-full bg-fuchsia-600/15 blur-[100px] animate-pulse-slow" style={{ animationDelay: "2s" }} />
 
         <div className="relative space-y-5">
-          {/* Back button */}
-          <Link
-            href="/discover"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="size-4" />
-            {t("project.backToExplore")}
-          </Link>
+          {/* Breadcrumb nav */}
+          <nav aria-label="Breadcrumb">
+            <Link
+              href="/discover"
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <ArrowLeft className="size-4" />
+              {t("project.backToExplore")}
+            </Link>
+          </nav>
 
           {/* Badges */}
           <div className="flex flex-wrap items-center gap-2">
@@ -311,7 +317,7 @@ export default function ProjectPage({
             </span>
             <span className="flex items-center gap-1.5">
               <Calendar className="size-3.5" />
-              {project.createdAt}
+              <time dateTime={project.createdAt}>{project.createdAt}</time>
             </span>
             <div className="hidden sm:block h-4 w-px bg-white/10" />
             <span className="flex items-center gap-1.5">
@@ -331,7 +337,7 @@ export default function ProjectPage({
       </motion.div>
 
       {/* ===== Main Grid ===== */}
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
+      <article className="grid grid-cols-1 gap-10 lg:grid-cols-3" itemScope itemType="https://schema.org/SoftwareApplication">
         {/* Left Column */}
         <div className="space-y-10 lg:col-span-2">
           {/* Demo Panel */}
@@ -364,6 +370,9 @@ export default function ProjectPage({
               </span>
             ))}
           </motion.div>
+
+          {/* Fork Tree — Remix Guild */}
+          <ForkTree project={project} allProjects={projects} />
         </div>
 
         {/* Right Column - Sidebar */}
@@ -374,10 +383,15 @@ export default function ProjectPage({
               <ChevronUp className="size-4" />
               {t("project.upvote")}
             </Button>
-            <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5">
+            <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5" onClick={() => setShareOpen(true)}>
               <Share2 className="size-4" />
               {t("project.share")}
             </Button>
+          </motion.div>
+
+          {/* Growth Radar */}
+          <motion.div variants={fadeIn} className="rpgui-container framed" style={{ padding: 16 }}>
+            <GrowthRadar project={project} size={180} />
           </motion.div>
 
           {/* RPG Hero Panel */}
@@ -447,7 +461,7 @@ export default function ProjectPage({
           {/* AI Review Panel */}
           <AIReviewPanel review={project.aiReview} />
         </div>
-      </div>
+      </article>
 
       {/* ===== Comments ===== */}
       <motion.div variants={fadeIn} className="mt-16">
@@ -463,6 +477,19 @@ export default function ProjectPage({
           ))}
         </div>
       </motion.div>
+
+      {/* Share Modal */}
+      <ShareModal
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        project={{
+          id: project.id,
+          title: project.title,
+          tagline: project.tagline,
+          category: project.category,
+          creatorName: project.creatorName,
+        }}
+      />
     </motion.div>
   );
 }

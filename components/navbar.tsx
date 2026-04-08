@@ -47,7 +47,11 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const isCJK = lang === "zh";
+  const navFont: React.CSSProperties = isCJK
+    ? { fontFamily: "var(--font-zpix), monospace", fontSize: 12, letterSpacing: 4, transform: "scale(1.35)", transformOrigin: "center" }
+    : { fontFamily: "var(--font-pixel), monospace", fontSize: 11, letterSpacing: 1, imageRendering: "pixelated" };
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -87,7 +91,7 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className="relative flex flex-col items-center px-2.5 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
-                  style={{ fontFamily: "var(--font-pixel), monospace", fontSize: 11, letterSpacing: 1, imageRendering: "pixelated" as never }}
+                  style={navFont}
                 >
                   {t(item.key)}
                   {isActive && (
@@ -109,9 +113,9 @@ export function Navbar() {
               <button
                 onClick={() => setMoreOpen(!moreOpen)}
                 className="relative flex flex-col items-center px-2.5 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
-                style={{ fontFamily: "var(--font-pixel), monospace", fontSize: 11, letterSpacing: 1, imageRendering: "pixelated" as never }}
+                style={navFont}
               >
-                More
+                {t("nav.more")}
               </button>
               <AnimatePresence>
                 {moreOpen && (
@@ -157,7 +161,7 @@ export function Navbar() {
               <Button
                 size="sm"
                 className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-500 hover:to-fuchsia-500 shadow-lg shadow-violet-500/10 px-3 h-8"
-                style={{ fontFamily: "var(--font-pixel), monospace", fontSize: 10, letterSpacing: 1, imageRendering: "pixelated" as never }}
+                style={isCJK ? { fontFamily: "var(--font-zpix), monospace", fontSize: 12, letterSpacing: 2 } : { fontFamily: "var(--font-pixel), monospace", fontSize: 10, letterSpacing: 1, imageRendering: "pixelated" as never }}
               >
                 <Rocket className="mr-1 h-3 w-3" />
                 {t("nav.launch")}

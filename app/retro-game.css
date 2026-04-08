@@ -357,6 +357,23 @@
   letter-spacing: 0.5px;
 }
 
+/* ─── CJK Font Override (Chinese — Zpix pixel font) ─── */
+:lang(zh) .font-pixel,
+:lang(zh) .font-retro,
+:lang(zh) [style*="font-pixel"],
+:lang(zh) [style*="press-start"] {
+  font-family: var(--font-zpix), "SimSun", monospace !important;
+  letter-spacing: 2px !important;
+}
+:lang(zh) .font-pixel {
+  font-size: 12px !important;
+}
+/* Override the CSS variable itself when in Chinese mode */
+:root:lang(zh) {
+  --font-pixel: var(--font-zpix), monospace;
+  --font-retro: var(--font-zpix), monospace;
+}
+
 /* ─── Neon Glow Utilities ─── */
 .glow-orange { text-shadow: 0 0 10px var(--neon-orange-dim), 0 0 30px var(--neon-orange-dim); }
 .glow-green { text-shadow: 0 0 10px var(--neon-green-dim), 0 0 30px var(--neon-green-dim); }

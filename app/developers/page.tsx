@@ -131,7 +131,7 @@ export default function DevelopersPage() {
                 {
                   id: "curl",
                   label: "cURL",
-                  cmd: 'curl -H "Authorization: Bearer vx-pk-..." https://vibex.app/api/...',
+                  cmd: 'curl -H "Authorization: Bearer vx-pk-..." https://vibexforge.com/api/...',
                   color: "#39FF14",
                 },
               ].map((sdk) => (

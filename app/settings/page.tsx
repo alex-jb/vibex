@@ -187,7 +187,7 @@ export default function SettingsPage() {
                 <Mail className="size-4 text-muted-foreground" />
                 <p className="text-sm text-foreground">{t("settings.email")}</p>
               </div>
-              <p className="text-sm text-muted-foreground">user@vibex.app</p>
+              <p className="text-sm text-muted-foreground">user@vibexforge.com</p>
             </div>
 
             <div className="flex items-center justify-between">

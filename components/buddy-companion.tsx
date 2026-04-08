@@ -160,11 +160,13 @@ export function BuddyCompanion() {
           )}
         </AnimatePresence>
 
-        <button
+        <div
           onClick={() => setState("expanded")}
           onDoubleClick={handlePet}
-          className="relative group"
+          className="relative group cursor-pointer"
           title="Click to expand"
+          role="button"
+          tabIndex={0}
         >
           {/* Hearts animation */}
           {hearts.map((id) => (
@@ -205,7 +207,7 @@ export function BuddyCompanion() {
           >
             <X className="size-2.5 text-white" />
           </button>
-        </button>
+        </div>
       </motion.div>
     );
   }

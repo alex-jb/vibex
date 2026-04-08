@@ -14,7 +14,7 @@ export function LangToggle() {
   return (
     <button
       onClick={() => setLang(nextLang)}
-      className="font-pixel text-[8px] px-2.5 py-1.5 uppercase tracking-wider transition-colors duration-200 hover:text-foreground shrink-0"
+      className="text-[10px] px-2.5 py-1.5 uppercase tracking-wider transition-colors duration-200 hover:text-foreground shrink-0 font-bold"
       style={{
         border: "2px solid var(--border-bolt, #444)",
         color: "var(--neon-cyan, #06B6D4)",

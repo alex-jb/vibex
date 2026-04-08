@@ -8,7 +8,7 @@ import React from "react";
 /** Demo user for showcasing the app without Supabase */
 const DEMO_USER = {
   id: "demo-user-001",
-  email: "trainer@vibex.app",
+  email: "trainer@vibexforge.com",
   user_metadata: {
     full_name: "VibeX Trainer",
     avatar_url: undefined,

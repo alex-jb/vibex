@@ -17,6 +17,10 @@ import {
   MessageSquare,
   Wand2,
   Loader2,
+  Download,
+  Image as ImageIcon,
+  Monitor,
+  Smartphone,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -33,6 +37,9 @@ interface ShareModalProps {
 }
 
 type Platform = "twitter" | "xiaohongshu" | "douyin";
+type CardSize = "square" | "wide";
+
+const SITE_DOMAIN = "vibexforge.com";
 
 const platforms: { key: Platform; label: string; icon: typeof AtSign }[] = [
   { key: "twitter", label: "Twitter/X", icon: AtSign },
@@ -45,13 +52,13 @@ function generateSocialCopy(
   project: ShareModalProps["project"]
 ): string {
   const { id, title, tagline, category } = project;
-  const playUrl = `https://play.vibex.app/p/${id}`;
+  const playUrl = `https://${SITE_DOMAIN}/project/${id}`;
 
   switch (platform) {
     case "twitter":
       return `Just discovered ${title} on @VibeX \u2014 ${tagline} \uD83D\uDD25\n\nTry it yourself: ${playUrl}\n\n#VibeCoding #AI`;
     case "xiaohongshu":
-      return `Found an amazing AI project! \u2728\n\n[${title}]\n${tagline}\n\nTry it now \uD83D\uDC49 play.vibex.app/p/${id}\n\n#AICreation #VibeCoding #${category}`;
+      return `Found an amazing AI project! \u2728\n\n[${title}]\n${tagline}\n\nTry it now \uD83D\uDC49 ${SITE_DOMAIN}/project/${id}\n\n#AICreation #VibeCoding #${category}`;
     case "douyin":
       return `This AI is incredible \uD83D\uDE02 ${title} \u2014 ${tagline}\n\nLink in bio #AI #VibeCoding`;
   }
@@ -107,15 +114,210 @@ function CopyButton({
   );
 }
 
+function ShareCardPreview({
+  projectId,
+  cardSize,
+  onCardSizeChange,
+}: {
+  projectId: string;
+  cardSize: CardSize;
+  onCardSizeChange: (size: CardSize) => void;
+}) {
+  const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+  const cardUrl = `/api/share/card?id=${projectId}&size=${cardSize}`;
+
+  const handleDownload = useCallback(async () => {
+    setDownloading(true);
+    try {
+      const res = await fetch(cardUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `vibex-${projectId}-${cardSize}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } finally {
+      setDownloading(false);
+    }
+  }, [cardUrl, projectId, cardSize]);
+
+  const handleCopyImage = useCallback(async () => {
+    try {
+      const res = await fetch(cardUrl);
+      const blob = await res.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({ [blob.type]: blob }),
+      ]);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch {
+      // Fallback: some browsers don't support clipboard image write
+    }
+  }, [cardUrl]);
+
+  return (
+    <div className="mb-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <ImageIcon className="h-3.5 w-3.5 text-emerald-400" />
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Share Card
+          </span>
+          <Badge
+            variant="secondary"
+            className="text-[9px] bg-gradient-to-r from-emerald-600/20 to-cyan-600/20 text-emerald-300 border-emerald-500/20"
+          >
+            Pixel Art
+          </Badge>
+        </div>
+
+        {/* Size switcher */}
+        <div className="flex gap-1">
+          <button
+            onClick={() => onCardSizeChange("square")}
+            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all ${
+              cardSize === "square"
+                ? "bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white"
+                : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] border border-white/[0.06]"
+            }`}
+          >
+            <Smartphone className="h-2.5 w-2.5" />
+            1080
+          </button>
+          <button
+            onClick={() => onCardSizeChange("wide")}
+            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all ${
+              cardSize === "wide"
+                ? "bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white"
+                : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] border border-white/[0.06]"
+            }`}
+          >
+            <Monitor className="h-2.5 w-2.5" />
+            Wide
+          </button>
+        </div>
+      </div>
+
+      {/* Card preview */}
+      <div className="relative rounded-xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-10">
+            <Loader2 className="h-6 w-6 animate-spin text-violet-400" />
+          </div>
+        )}
+        <img
+          src={cardUrl}
+          alt="Share card preview"
+          className={`w-full ${cardSize === "square" ? "aspect-square" : "aspect-[1200/675]"} object-contain`}
+          onLoad={() => setLoading(false)}
+          onError={() => setLoading(false)}
+        />
+      </div>
+
+      {/* Action buttons */}
+      <div className="mt-3 flex items-center gap-2">
+        <Button
+          variant="secondary"
+          size="sm"
+          className="flex-1 bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white border-0 hover:from-violet-600 hover:to-fuchsia-600 gap-1.5"
+          onClick={handleDownload}
+          disabled={downloading}
+        >
+          {downloading ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <Download className="h-3 w-3" />
+          )}
+          Download Card
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-muted-foreground hover:text-foreground gap-1.5"
+          onClick={handleCopyImage}
+        >
+          {copySuccess ? (
+            <>
+              <Check className="h-3 w-3 text-emerald-400" />
+              <span className="text-emerald-400">Copied!</span>
+            </>
+          ) : (
+            <>
+              <Copy className="h-3 w-3" />
+              Copy Image
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function QRCodeDisplay({ projectId }: { projectId: string }) {
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Dynamically import to avoid SSR issues with qrcode
+    import("qrcode").then((QRCode) => {
+      QRCode.toDataURL(`https://${SITE_DOMAIN}/project/${projectId}`, {
+        errorCorrectionLevel: "M",
+        margin: 2,
+        width: 200,
+        color: {
+          dark: "#FFFFFF",
+          light: "#00000000",
+        },
+      }).then(setQrDataUrl);
+    });
+  }, [projectId]);
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-3">
+        <QrCode className="h-3.5 w-3.5 text-amber-400" />
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          QR Code
+        </span>
+      </div>
+      <div className="flex items-center justify-center rounded-xl bg-white/[0.03] border border-white/[0.06] p-6">
+        {qrDataUrl ? (
+          <div className="flex flex-col items-center gap-3">
+            <img
+              src={qrDataUrl}
+              alt="QR Code"
+              className="w-40 h-40"
+              style={{ imageRendering: "pixelated" }}
+            />
+            <span className="text-xs text-muted-foreground">
+              Scan to view on {SITE_DOMAIN}
+            </span>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-2.5 text-muted-foreground/50">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span className="text-xs">Generating QR...</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
   const [activePlatform, setActivePlatform] = useState<Platform>("twitter");
+  const [cardSize, setCardSize] = useState<CardSize>("square");
   const [editedTexts, setEditedTexts] = useState<Partial<Record<Platform, string>>>({});
   const [aiLoading, setAiLoading] = useState<Partial<Record<Platform, boolean>>>({});
   const [aiError, setAiError] = useState<Partial<Record<Platform, string>>>({});
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const playUrl = `https://play.vibex.app/p/${project.id}`;
-  const embedCode = `<iframe src="https://play.vibex.app/embed/${project.id}" width="100%" height="500" style="border:none;border-radius:12px" />`;
+  const playUrl = `https://${SITE_DOMAIN}/project/${project.id}`;
+  const embedCode = `<iframe src="https://${SITE_DOMAIN}/embed/${project.id}" width="100%" height="500" style="border:none;border-radius:12px" />`;
 
   const handleGenerateAI = useCallback(async (platform: Platform) => {
     setAiLoading((prev) => ({ ...prev, [platform]: true }));
@@ -241,6 +443,15 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
+
+                {/* Share Card Preview — NEW */}
+                <ShareCardPreview
+                  projectId={project.id}
+                  cardSize={cardSize}
+                  onCardSizeChange={setCardSize}
+                />
+
+                <Separator className="my-4 bg-white/[0.06]" />
 
                 {/* Playable Link */}
                 <div className="glass-card-strong rounded-xl p-4 mb-4">
@@ -401,25 +612,8 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
 
                 <Separator className="my-4 bg-white/[0.06]" />
 
-                {/* QR Code Placeholder */}
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <QrCode className="h-3.5 w-3.5 text-amber-400" />
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      QR Code
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-center rounded-xl bg-white/[0.03] border border-white/[0.06] border-dashed p-8">
-                    <div className="flex flex-col items-center gap-2.5 text-muted-foreground/50">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.06]">
-                        <QrCode className="h-8 w-8" />
-                      </div>
-                      <span className="text-xs font-medium">
-                        QR Code Coming Soon
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                {/* QR Code — Real implementation */}
+                <QRCodeDisplay projectId={project.id} />
               </div>
             </div>
           </motion.div>

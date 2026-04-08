@@ -125,10 +125,10 @@ export default function Home() {
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { label: "Launch Project", href: "/launch", icon: Rocket, gradient: "linear-gradient(135deg, #7C3AED, #9D4EDD)" },
-              { label: "Discover", href: "/discover", icon: Compass, gradient: "linear-gradient(135deg, #06B6D4, #22D3EE)" },
-              { label: "Enter Dojo", href: "/dojo", icon: Swords, gradient: "linear-gradient(135deg, #D97706, #F59E0B)" },
-              { label: "Join Feed", href: "/feed", icon: MessageSquare, gradient: "linear-gradient(135deg, #DB2777, #F472B6)" },
+              { label: t("quick.launch"), href: "/launch", icon: Rocket, gradient: "linear-gradient(135deg, #7C3AED, #9D4EDD)" },
+              { label: t("quick.discover"), href: "/discover", icon: Compass, gradient: "linear-gradient(135deg, #06B6D4, #22D3EE)" },
+              { label: t("quick.dojo"), href: "/dojo", icon: Swords, gradient: "linear-gradient(135deg, #D97706, #F59E0B)" },
+              { label: t("quick.feed"), href: "/feed", icon: MessageSquare, gradient: "linear-gradient(135deg, #DB2777, #F472B6)" },
             ].map((action, i) => {
               const Icon = action.icon;
               return (

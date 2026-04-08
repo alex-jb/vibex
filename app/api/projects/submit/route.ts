@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
       creatorName: body.creatorName.trim(),
       demoType: body.demoType ?? "preview",
       demoUrl: body.demoUrl ?? null,
-      url: `https://vibex.app/project/${projectId}`,
+      url: `https://vibexforge.com/project/${projectId}`,
       score: aiReview.compound,
       aiReview,
       createdAt: new Date().toISOString(),

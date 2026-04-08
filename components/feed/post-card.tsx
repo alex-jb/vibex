@@ -96,8 +96,7 @@ export function PostCard({
   }, [confirming, onDelete, post.id]);
 
   return (
-    <motion.div
-      role="article"
+    <motion.article
       aria-label={`Post by ${post.userName}`}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
@@ -253,6 +252,6 @@ export function PostCard({
           </button>
         </div>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }
