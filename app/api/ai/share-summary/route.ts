@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateShareSummary } from "@/lib/ai";
 import { validateString, validateEnum } from "@/lib/validate";
+import { serverLog } from "@/lib/logger";
 
 const VALID_PLATFORMS = ["twitter", "xiaohongshu", "douyin"];
 
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ text: summary });
   } catch (error) {
     const errorId = `err-${Date.now()}`;
-    console.error(`[${errorId}] AI share summary error:`, error instanceof Error ? error.message : error);
+    serverLog.error(errorId, "AI share summary error", error);
     return NextResponse.json(
       { error: "Share summary generation failed", errorId },
       { status: 500 }

@@ -27,6 +27,8 @@ export function BuddyCard({ buddy, owned, active = false, size = "md" }: BuddyCa
   return (
     <motion.div
       whileHover={owned ? { scale: 1.03, y: -3 } : undefined}
+      role="article"
+      aria-label={owned ? `${buddy.name} - ${rarity.labelZh}` : t("buddy.currentBuddy")}
       className="glass-card rounded-xl overflow-hidden"
       style={{
         width: s.card,

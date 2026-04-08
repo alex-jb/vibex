@@ -17,10 +17,12 @@ const TABS: { key: FeedTab; i18nKey: "feed.following" | "feed.trending" | "feed.
 export function FeedTabs({ activeTab, onTabChange }: FeedTabsProps) {
   const { t } = useLang();
   return (
-    <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
+    <div role="tablist" style={{ display: "flex", gap: 6, marginBottom: 16 }}>
       {TABS.map((tab) => (
         <button
           key={tab.key}
+          role="tab"
+          aria-selected={activeTab === tab.key}
           className={`nes-btn${activeTab === tab.key ? " is-primary" : ""}`}
           onClick={() => onTabChange(tab.key)}
           style={{ fontSize: 10, padding: "6px 14px" }}

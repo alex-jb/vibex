@@ -1,19 +1,110 @@
 name: CI
+
 on:
   push:
-    branches: [master]
+    branches: [master, main]
   pull_request:
-    branches: [master]
+    branches: [master, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
 
 jobs:
-  build-and-test:
+  # Fast checks first (parallel)
+  typecheck:
+    name: Type Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - run: npx vitest run
-      - run: npx next build
+      - run: npx tsc --noEmit
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  unit-test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  # Build depends on typecheck + lint passing
+  build:
+    name: Build
+    needs: [typecheck, lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+  # E2E depends on build passing
+  e2e:
+    name: E2E Tests
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run test:e2e
+        env:
+          CI: true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # Environment validation
+  env-check:
+    name: Env Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for required env references
+        run: |
+          echo "Checking for hardcoded secrets..."
+          # Fail if any actual API keys or secrets are committed
+          if grep -rn "sk-ant-\|sk_live_\|SUPABASE_SERVICE_ROLE" --include="*.ts" --include="*.tsx" --include="*.js" --exclude-dir=node_modules .; then
+            echo "ERROR: Potential hardcoded secrets found!"
+            exit 1
+          fi
+          echo "No hardcoded secrets found."
+
+          echo "Listing required env vars referenced in code..."
+          grep -roh "process\.env\.\w\+" --include="*.ts" --include="*.tsx" --exclude-dir=node_modules . | sort -u
+          echo "Done."

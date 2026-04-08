@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { generateLaunchPackage } from "@/lib/ai";
 import { validateString } from "@/lib/validate";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { serverLog } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "unknown";
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
     return NextResponse.json(pkg);
   } catch (error) {
     const errId = `LP-${Date.now()}`;
-    console.error(`[${errId}] Launch package generation failed:`, error);
+    serverLog.error(errId, "Launch package generation failed", error);
     return NextResponse.json(
       { error: "Failed to generate launch package", errorId: errId },
       { status: 500 },

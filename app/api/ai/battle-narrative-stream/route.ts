@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { streamBattleNarrative } from "@/lib/ai";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { serverLog } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "unknown";
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
           controller.close();
         } catch (error) {
           const errorId = `err-${Date.now()}`;
-          console.error(`[${errorId}] AI battle narrative stream error:`, error instanceof Error ? error.message : error);
+          serverLog.error(errorId, "AI battle narrative stream error", error);
           controller.error(error);
         }
       },
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     const errorId = `err-${Date.now()}`;
-    console.error(`[${errorId}] AI battle narrative stream error:`, error instanceof Error ? error.message : error);
+    serverLog.error(errorId, "AI battle narrative stream error", error);
     return NextResponse.json(
       { error: "Battle narrative stream failed", errorId },
       { status: 500 },

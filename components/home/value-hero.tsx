@@ -77,6 +77,7 @@ export function ValueHero() {
           <Link href="/launch">
             <button
               className="nes-btn is-primary"
+              aria-label={t("valuehero.launch")}
               style={{ fontSize: 10, padding: "8px 24px" }}
             >
               {t("valuehero.launch")}
@@ -85,6 +86,7 @@ export function ValueHero() {
           <Link href="/discover">
             <button
               className="nes-btn"
+              aria-label={t("valuehero.explore")}
               style={{ fontSize: 10, padding: "8px 24px" }}
             >
               {t("valuehero.explore")}
@@ -93,6 +95,7 @@ export function ValueHero() {
           <Link href="/insights/growth">
             <button
               className="nes-btn"
+              aria-label={t("valuehero.growth")}
               style={{ fontSize: 10, padding: "8px 24px" }}
             >
               {t("valuehero.growth")}

@@ -145,6 +145,7 @@ function CommentItem({
           <div className="flex items-center gap-4 mt-2">
             <button
               onClick={() => onLike(comment.id)}
+              aria-label={`Like comment by ${comment.user_name}`}
               className="flex items-center gap-1 text-xs text-muted-foreground hover:text-pink-400 transition-colors"
             >
               <Heart className="size-3.5" />
@@ -152,6 +153,7 @@ function CommentItem({
             </button>
             <button
               onClick={() => onReply(comment.id)}
+              aria-label={`Reply to ${comment.user_name}`}
               className="flex items-center gap-1 text-xs text-muted-foreground hover:text-violet-400 transition-colors"
             >
               <Reply className="size-3.5" />
@@ -176,11 +178,13 @@ function CommentItem({
                       if (e.key === "Enter" && replyText.trim()) onSubmitReply();
                     }}
                     placeholder={`Reply to ${comment.user_name}...`}
+                    aria-label={`Reply to ${comment.user_name}`}
                     className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-violet-500/50"
                   />
                   <button
                     onClick={onSubmitReply}
                     disabled={!replyText.trim()}
+                    aria-label="Send reply"
                     className="rounded-lg bg-violet-600/80 px-3 py-2 text-sm text-white hover:bg-violet-500/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
                     <Send className="size-3.5" />
@@ -213,6 +217,7 @@ function CommentItem({
                     </p>
                     <button
                       onClick={() => onLike(reply.id)}
+                      aria-label={`Like reply by ${reply.user_name}`}
                       className="flex items-center gap-1 mt-1 text-[10px] text-muted-foreground hover:text-pink-400 transition-colors"
                     >
                       <Heart className="size-3" />
@@ -346,11 +351,13 @@ export function CommentSection({ projectId }: { projectId: string }) {
                 if (e.key === "Enter" && newComment.trim()) handleSubmit();
               }}
               placeholder={t("comment.placeholder")}
+              aria-label={t("comment.placeholder")}
               className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-violet-500/50 transition-colors"
             />
             <button
               onClick={handleSubmit}
               disabled={!newComment.trim()}
+              aria-label={t("comment.send")}
               className="rounded-lg bg-violet-600/80 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
             >
               <Send className="size-4" />

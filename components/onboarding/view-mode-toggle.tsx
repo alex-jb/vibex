@@ -29,6 +29,7 @@ export function ViewModeToggle() {
       onClick={handleToggle}
       className="font-pixel"
       title={mode === "simple" ? t("viewMode.expert") : t("viewMode.simple")}
+      aria-label={mode === "simple" ? t("viewMode.expert") : t("viewMode.simple")}
       style={{
         fontSize: 7,
         color: mode === "simple" ? "#39FF14" : "#9D00FF",

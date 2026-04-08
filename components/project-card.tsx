@@ -194,7 +194,7 @@ export function ProjectCard({ project }: { project: Project }) {
                   <Play className="h-2.5 w-2.5" />
                   {formatNumber(project.plays ?? 0)}
                 </span>
-                <span className="flex items-center gap-0.5" title="Upvotes">
+                <span className="flex items-center gap-0.5" title="Upvotes" aria-label={`${formatNumber(project.upvotes)} upvotes`}>
                   <ChevronUp className="h-2.5 w-2.5" />
                   {formatNumber(project.upvotes)}
                 </span>

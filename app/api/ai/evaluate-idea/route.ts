@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { evaluateIdea } from "@/lib/ai";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { serverLog } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "unknown";
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
     return NextResponse.json(evaluation);
   } catch (error) {
     const errorId = `err-${Date.now()}`;
-    console.error(`[${errorId}] AI evaluation error:`, error instanceof Error ? error.message : error);
+    serverLog.error(errorId, "AI evaluation error", error);
     return NextResponse.json(
       { error: "AI evaluation failed", errorId },
       { status: 500 }

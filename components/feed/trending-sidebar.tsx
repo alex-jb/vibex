@@ -56,6 +56,7 @@ export function TrendingSidebar({ activeTag, onTagClick }: TrendingSidebarProps)
           <button
             onClick={() => onTagClick(null)}
             className="font-pixel"
+            aria-label={t("feed.clearFilter")}
             style={{
               fontSize: 7,
               color: "#FF4500",
@@ -74,6 +75,8 @@ export function TrendingSidebar({ activeTag, onTagClick }: TrendingSidebarProps)
             key={t.tag}
             onClick={() => onTagClick(t.tag === activeTag ? null : t.tag)}
             className="font-pixel"
+            aria-label={`Filter by #${t.tag}`}
+            aria-pressed={t.tag === activeTag}
             style={{
               fontSize: 7,
               color: t.tag === activeTag ? "#FACC15" : "#9D00FF",

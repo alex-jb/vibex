@@ -453,6 +453,7 @@ export function ChatWidget() {
                         <button
                           type="submit"
                           disabled={!input.trim()}
+                          aria-label="Send message"
                           className="flex items-center justify-center size-9 rounded-lg bg-violet-600 text-white hover:bg-violet-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                         >
                           <Send className="size-4" />

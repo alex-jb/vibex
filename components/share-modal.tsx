@@ -206,6 +206,8 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
             <div
+              role="dialog"
+              aria-label={`Share ${project.title}`}
               className="pointer-events-auto relative w-full max-w-lg noise-bg glass-card-strong rounded-2xl border border-white/10 shadow-[0_24px_80px_-16px_rgba(139,92,246,0.2)] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
@@ -233,6 +235,7 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                     variant="ghost"
                     size="icon-xs"
                     onClick={() => onOpenChange(false)}
+                    aria-label="Close share modal"
                     className="text-muted-foreground hover:text-foreground"
                   >
                     <X className="h-4 w-4" />
@@ -286,6 +289,7 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                         <button
                           key={key}
                           onClick={() => setActivePlatform(key)}
+                          aria-label={`Share on ${label}`}
                           className={`
                             flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200
                             ${

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateProjectReview } from "@/lib/ai";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { serverLog } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "unknown";
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
     return NextResponse.json(review);
   } catch (error) {
     const errorId = `err-${Date.now()}`;
-    console.error(`[${errorId}] AI review error:`, error instanceof Error ? error.message : error);
+    serverLog.error(errorId, "AI review error", error);
     return NextResponse.json(
       { error: "AI review generation failed", errorId },
       { status: 500 }

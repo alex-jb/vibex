@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { analyzeTrend } from "@/lib/ai";
+import { serverLog } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
     return NextResponse.json(trend);
   } catch (error) {
     const errorId = `err-${Date.now()}`;
-    console.error(`[${errorId}] AI trend analysis error:`, error instanceof Error ? error.message : error);
+    serverLog.error(errorId, "AI trend analysis error", error);
     return NextResponse.json(
       { error: "Trend analysis failed", errorId },
       { status: 500 }

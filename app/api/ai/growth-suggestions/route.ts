@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateGrowthSuggestions } from "@/lib/ai";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { serverLog } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "unknown";
@@ -35,7 +36,8 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(suggestions);
   } catch (error) {
-    console.error("Growth suggestions error:", error);
-    return NextResponse.json({ error: "Failed to generate suggestions" }, { status: 500 });
+    const errorId = crypto.randomUUID().slice(0, 8);
+    serverLog.error(errorId, "Growth suggestions error", error);
+    return NextResponse.json({ error: "Failed to generate suggestions", errorId }, { status: 500 });
   }
 }

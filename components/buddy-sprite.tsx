@@ -359,6 +359,8 @@ export function BuddySprite({ buddyTypeId, size = "md", animated = false }: Budd
   if (animated) {
     return (
       <motion.div
+        role="img"
+        aria-label={`${buddyTypeId} buddy sprite`}
         animate={{ y: [0, -6, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         style={{ width: totalPx, height: totalPx, lineHeight: 0 }}
@@ -369,7 +371,7 @@ export function BuddySprite({ buddyTypeId, size = "md", animated = false }: Budd
   }
 
   return (
-    <div style={{ width: totalPx, height: totalPx, lineHeight: 0 }}>
+    <div role="img" aria-label={`${buddyTypeId} buddy sprite`} style={{ width: totalPx, height: totalPx, lineHeight: 0 }}>
       {inner}
     </div>
   );

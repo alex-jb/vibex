@@ -49,13 +49,13 @@ export function CtaSection({ weeklyWinners }: CtaSectionProps) {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/launch">
-                <button className="retro-button retro-button--primary flex items-center gap-2 mx-auto sm:mx-0">
+                <button className="retro-button retro-button--primary flex items-center gap-2 mx-auto sm:mx-0" aria-label={t("cta.beginQuest")}>
                   <Swords size={14} />
                   <span>{t("cta.beginQuest")}</span>
                 </button>
               </Link>
               <Link href="/discover">
-                <button className="retro-button retro-button--danger flex items-center gap-2 mx-auto sm:mx-0">
+                <button className="retro-button retro-button--danger flex items-center gap-2 mx-auto sm:mx-0" aria-label={t("cta.spectate")}>
                   <Eye size={14} />
                   <span>{t("cta.spectate")}</span>
                 </button>

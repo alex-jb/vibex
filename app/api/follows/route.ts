@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { serverLog } from "@/lib/logger";
 
 const SUPABASE_CONFIGURED =
   !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -47,9 +48,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ following, followerCount: followerCount ?? 0 });
   } catch (error) {
-    console.error("Follow status error:", error);
+    const errorId = crypto.randomUUID().slice(0, 8);
+    serverLog.error(errorId, "Follow status error", error);
     return NextResponse.json(
-      { error: "Failed to fetch follow status" },
+      { error: "Failed to fetch follow status", errorId },
       { status: 500 },
     );
   }
@@ -111,9 +113,10 @@ export async function POST(request: Request) {
       followerCount: followerCount ?? 0,
     });
   } catch (error) {
-    console.error("Follow toggle error:", error);
+    const errorId = crypto.randomUUID().slice(0, 8);
+    serverLog.error(errorId, "Follow toggle error", error);
     return NextResponse.json(
-      { error: "Failed to toggle follow" },
+      { error: "Failed to toggle follow", errorId },
       { status: 500 },
     );
   }

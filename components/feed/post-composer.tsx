@@ -170,6 +170,8 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
             onClick={() => setLinkProject(!linkProject)}
             className="font-pixel"
             disabled={posting}
+            aria-label={t("feed.linkProject")}
+            aria-pressed={linkProject}
             style={{
               fontSize: 7,
               color: linkProject ? "#9D00FF" : "#555",
@@ -187,6 +189,8 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
             onClick={() => setShowMediaInput(!showMediaInput)}
             className="font-pixel"
             disabled={posting}
+            aria-label={t("feed.image")}
+            aria-pressed={showMediaInput}
             style={{
               fontSize: 7,
               color: showMediaInput ? "#FACC15" : "#555",
@@ -239,6 +243,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
             value={mediaUrl}
             onChange={(e) => setMediaUrl(e.target.value)}
             placeholder={"Image/GIF URL..."}
+            aria-label="Image or GIF URL"
             disabled={posting}
             className="font-retro"
             style={{

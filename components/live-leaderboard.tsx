@@ -70,6 +70,7 @@ export function LiveLeaderboard({
               <motion.a
                 key={entry.projectId}
                 href={`/project/${entry.projectId}`}
+                aria-label={`#${entry.rank} ${entry.title} by ${entry.creatorName}, score ${entry.score}`}
                 layout
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}

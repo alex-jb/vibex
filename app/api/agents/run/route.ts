@@ -2,6 +2,7 @@ import { runAgent } from "@/lib/agent-engine";
 import { validateString } from "@/lib/validate";
 import { getAgentById } from "@/lib/db";
 import { apiSuccess, apiError } from "@/lib/api-response";
+import { serverLog } from "@/lib/logger";
 
 export async function POST(request: Request) {
   let body: { agentId?: string; input?: string };
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
     return apiSuccess(result);
   } catch (error) {
     const errorId = `err-${Date.now()}`;
-    console.error(`[${errorId}] Agent run error:`, error);
+    serverLog.error(errorId, "Agent run error", error);
     return apiError("Agent execution failed", 500, errorId);
   }
 }
