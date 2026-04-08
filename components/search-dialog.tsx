@@ -187,6 +187,8 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
             transition={{ duration: 0.2 }}
+            role="dialog"
+            aria-label="Search"
             className="fixed left-1/2 top-[15%] z-[101] w-full max-w-lg -translate-x-1/2 rounded-xl border border-white/10 bg-background/80 backdrop-blur-2xl shadow-2xl shadow-violet-500/5"
           >
             {/* Input */}
@@ -197,10 +199,11 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={t("search.placeholder")}
+                aria-label={t("search.placeholder")}
                 className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none"
                 style={{ fontFamily: "var(--font-pixel), monospace", fontSize: 11 }}
               />
-              <button onClick={() => onOpenChange(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => onOpenChange(false)} aria-label="Close search" className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="size-4" />
               </button>
             </div>

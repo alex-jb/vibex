@@ -23,6 +23,7 @@ export function LangToggle() {
         cursor: "pointer",
       }}
       title={lang === "en" ? "Switch to Chinese" : "Switch to English"}
+      aria-label={lang === "en" ? "Switch to Chinese" : "Switch to English"}
     >
       {langLabels[lang]}
     </button>

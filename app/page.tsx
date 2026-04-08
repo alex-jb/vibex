@@ -30,7 +30,10 @@ import { QuestBoard } from "@/components/home/quest-board";
 import { CtaSection } from "@/components/home/cta-section";
 
 /* ─── lazy-loaded below-fold RPG components ─── */
-const ClassIcon = dynamic(() => import("@/components/rpg/class-icon").then(m => ({ default: m.ClassIcon })), { ssr: false });
+const ClassIcon = dynamic(() => import("@/components/rpg/class-icon").then(m => ({ default: m.ClassIcon })), {
+  ssr: false,
+  loading: () => <span className="inline-block w-6 h-6 animate-pulse rounded" style={{ background: "var(--border-metal)" }} />,
+});
 
 /* ─── skeleton fallback for lazy sections ─── */
 function SectionSkeleton() {

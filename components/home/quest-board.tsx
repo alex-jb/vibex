@@ -7,9 +7,18 @@ import dynamic from "next/dynamic";
 import { useLang } from "@/lib/i18n";
 import type { Project } from "@/lib/types";
 
-const HudBars = dynamic(() => import("@/components/rpg/hud-bars").then((m) => ({ default: m.HudBars })), { ssr: false });
-const ClassIcon = dynamic(() => import("@/components/rpg/class-icon").then((m) => ({ default: m.ClassIcon })), { ssr: false });
-const EvolutionBadge = dynamic(() => import("@/components/rpg/evolution-badge").then((m) => ({ default: m.EvolutionBadge })), { ssr: false });
+const HudBars = dynamic(() => import("@/components/rpg/hud-bars").then((m) => ({ default: m.HudBars })), {
+  ssr: false,
+  loading: () => <div className="w-full h-10 animate-pulse rounded" style={{ background: "var(--border-metal)" }} />,
+});
+const ClassIcon = dynamic(() => import("@/components/rpg/class-icon").then((m) => ({ default: m.ClassIcon })), {
+  ssr: false,
+  loading: () => <span className="inline-block w-6 h-6 animate-pulse rounded" style={{ background: "var(--border-metal)" }} />,
+});
+const EvolutionBadge = dynamic(() => import("@/components/rpg/evolution-badge").then((m) => ({ default: m.EvolutionBadge })), {
+  ssr: false,
+  loading: () => <span className="inline-block w-16 h-5 animate-pulse rounded-full" style={{ background: "var(--border-metal)" }} />,
+});
 
 const pixelEase = [0.22, 1, 0.36, 1] as const;
 

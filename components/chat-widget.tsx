@@ -248,6 +248,7 @@ export function ChatWidget() {
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
             onClick={() => { setOpen(true); setMinimized(false); }}
+            aria-label={t("chat.messaging")}
             className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full px-4 py-3 text-white shadow-lg transition-shadow"
             style={{
               background: "linear-gradient(135deg, #7c3aed, #c026d3)",
@@ -292,6 +293,7 @@ export function ChatWidget() {
                 {activeThread && !minimized && (
                   <button
                     onClick={(e) => { e.stopPropagation(); setActiveThread(null); }}
+                    aria-label="Back to thread list"
                     className="text-muted-foreground hover:text-foreground transition-colors mr-1"
                   >
                     <ChevronDown className="size-4 rotate-90" />
@@ -316,12 +318,14 @@ export function ChatWidget() {
                 )}
                 <button
                   onClick={(e) => { e.stopPropagation(); setMinimized((prev) => !prev); }}
+                  aria-label="Minimize chat"
                   className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
                 >
                   <Minus className="size-4" />
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); setOpen(false); setActiveThread(null); setMinimized(false); }}
+                  aria-label="Close chat"
                   className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
                 >
                   <X className="size-4" />
@@ -435,6 +439,7 @@ export function ChatWidget() {
                           value={input}
                           onChange={(e) => setInput(e.target.value)}
                           placeholder={t("chat.placeholder")}
+                          aria-label={t("chat.placeholder")}
                           className="flex-1 bg-white/5 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-violet-500/40"
                           style={{
                             fontFamily: "var(--font-pixel), monospace",
