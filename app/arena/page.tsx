@@ -8,6 +8,7 @@ import type { Project, BattleResult, BattleRound } from "@/lib/types";
 import { simulateBattle, getBattleSummary } from "@/lib/battle-engine";
 import { CLASS_CONFIG, EVOLUTION_CONFIG } from "@/lib/rpg-utils";
 import { SeasonLeaderboard } from "@/components/arena/season-leaderboard";
+import { onBattleWon } from "@/lib/feed-events";
 
 /* ─── Terminal Typewriter Hook ─── */
 function useTypewriter(text: string, speed = 30, trigger = true) {
@@ -238,6 +239,19 @@ export default function ArenaPage() {
     const res = simulateBattle(challenger, defender);
     setResult(res);
     setAiNarrative(null);
+
+    // Post-battle: record outcome + auto-post to feed
+    if (res.winner) {
+      const winner = res.winner === challenger.id ? challenger : defender;
+      const loser = res.winner === challenger.id ? defender : challenger;
+      onBattleWon(
+        winner.creatorId ?? "system",
+        winner.creatorName ?? winner.title,
+        winner.title,
+        loser.title,
+        winner.id,
+      ).catch(() => {});
+    }
     setCurrentRound(-1);
     setBattleLog([
       `[SYSTEM] Battle initiated: ${challenger.title} vs ${defender.title}`,

@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { LangProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/lib/auth";
 import { BuddyCompanion } from "@/components/buddy-companion";
+import { TutorialOverlay } from "@/components/onboarding/tutorial-overlay";
 import "nes.css/css/nes.min.css";
 import "./globals.css";
 import "./retro-game.css";
@@ -72,6 +73,7 @@ export default function RootLayout({
             <main className="flex-1 pt-16">{children}</main>
             <Footer />
             <BuddyCompanion />
+            <TutorialOverlay />
           </LangProvider>
         </AuthProvider>
       </body>
