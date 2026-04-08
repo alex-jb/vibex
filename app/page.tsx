@@ -14,6 +14,10 @@ import {
   MapPin,
   ArrowRight,
   Users,
+  Rocket,
+  Compass,
+  Swords,
+  MessageSquare,
 } from "lucide-react";
 import {
   projects,
@@ -115,6 +119,81 @@ export default function Home() {
 
       {/* VALUE HERO — 3-second value proposition */}
       <ValueHero />
+
+      {/* QUICK ACTIONS BAR */}
+      <section className="py-6">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: "Launch Project", href: "/launch", icon: Rocket, gradient: "linear-gradient(135deg, #7C3AED, #9D4EDD)" },
+              { label: "Discover", href: "/discover", icon: Compass, gradient: "linear-gradient(135deg, #06B6D4, #22D3EE)" },
+              { label: "Enter Dojo", href: "/dojo", icon: Swords, gradient: "linear-gradient(135deg, #D97706, #F59E0B)" },
+              { label: "Join Feed", href: "/feed", icon: MessageSquare, gradient: "linear-gradient(135deg, #DB2777, #F472B6)" },
+            ].map((action, i) => {
+              const Icon = action.icon;
+              return (
+                <motion.div key={action.label} {...staggerChild(i)}>
+                  <Link href={action.href}>
+                    <div
+                      className="retro-card p-3 flex flex-col items-center gap-2 cursor-pointer transition-transform hover:scale-105"
+                      style={{ boxShadow: "3px 3px 0 #000" }}
+                    >
+                      <div
+                        className="w-10 h-10 flex items-center justify-center"
+                        style={{ background: action.gradient, border: "2px solid var(--border-metal)" }}
+                      >
+                        <Icon size={18} color="#fff" />
+                      </div>
+                      <span className="font-pixel text-[7px] uppercase tracking-wider" style={{ color: "#E8E8EC" }}>
+                        {action.label}
+                      </span>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* LIVE ACTIVITY TICKER */}
+      <section className="py-2 overflow-hidden" style={{ background: "rgba(0,0,0,0.6)", borderTop: "1px solid var(--border-metal)", borderBottom: "1px solid var(--border-metal)" }}>
+        <div className="relative">
+          <div
+            className="flex whitespace-nowrap font-pixel text-[8px]"
+            style={{
+              color: "var(--neon-green)",
+              animation: "marquee 30s linear infinite",
+            }}
+          >
+            {[
+              "\uD83D\uDD25 AlphaSignal just reached 10k runs",
+              "\u2694\uFE0F CodeWizard won Arena battle vs PixelMind",
+              "\uD83C\uDFAE New buddy 'NeonSlime' discovered",
+              "\uD83D\uDE80 ProjectX launched with score 94",
+              "\uD83D\uDC51 Mika Tanaka reached Level 50",
+            ].map((msg, i) => (
+              <span key={i} className="mx-8">{msg}</span>
+            ))}
+            {/* duplicate for seamless loop */}
+            {[
+              "\uD83D\uDD25 AlphaSignal just reached 10k runs",
+              "\u2694\uFE0F CodeWizard won Arena battle vs PixelMind",
+              "\uD83C\uDFAE New buddy 'NeonSlime' discovered",
+              "\uD83D\uDE80 ProjectX launched with score 94",
+              "\uD83D\uDC51 Mika Tanaka reached Level 50",
+            ].map((msg, i) => (
+              <span key={`dup-${i}`} className="mx-8">{msg}</span>
+            ))}
+          </div>
+        </div>
+        <style jsx>{`
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+        `}</style>
+      </section>
 
       {/* SECTION 2 -- BOSS ENCOUNTER (Featured Project) */}
       <HeroSection bossProject={bossProject} />
@@ -352,6 +431,87 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* WEEKLY SPOTLIGHT */}
+        {weeklyWinners[0] && (
+          <section className="py-16 lg:py-20">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+              <motion.div {...fadeUp} className="mb-8">
+                <div className="flex items-center gap-3 mb-2">
+                  <Trophy size={16} style={{ color: "var(--neon-yellow)" }} />
+                  <span className="font-pixel text-[10px] uppercase tracking-widest" style={{ color: "var(--neon-yellow)" }}>
+                    Weekly Spotlight
+                  </span>
+                </div>
+                <h2 className="font-pixel text-sm sm:text-base" style={{ color: "#E8E8EC" }}>
+                  This Week&apos;s Champion
+                </h2>
+              </motion.div>
+
+              <motion.div {...fadeUp}>
+                <Link href={`/project/${weeklyWinners[0].projectId}`}>
+                  <div
+                    className="retro-card l-corner p-6 sm:p-8 relative overflow-hidden cursor-pointer transition-transform hover:scale-[1.01]"
+                    style={{
+                      border: "3px solid var(--neon-yellow)",
+                      boxShadow: "0 0 24px rgba(250,204,21,0.25), 4px 4px 0 #000",
+                    }}
+                  >
+                    <div className="l-corner-inner absolute inset-0 pointer-events-none" />
+
+                    {/* Champion badge */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div
+                        className="flex items-center gap-2 px-3 py-1.5 font-pixel text-[7px] uppercase tracking-widest"
+                        style={{
+                          background: "rgba(250,204,21,0.1)",
+                          border: "2px solid var(--neon-yellow)",
+                          color: "var(--neon-yellow)",
+                        }}
+                      >
+                        <Trophy size={12} />
+                        Weekly Champion
+                      </div>
+                      <span className="font-pixel text-[6px] uppercase px-2 py-1" style={{ border: "1px solid var(--neon-orange)", color: "var(--neon-orange)" }}>
+                        {weeklyWinners[0].category}
+                      </span>
+                    </div>
+
+                    {/* Project info */}
+                    <h3
+                      className="font-pixel text-sm sm:text-base mb-2"
+                      style={{ color: "var(--neon-yellow)", textShadow: "0 0 12px rgba(250,204,21,0.3)" }}
+                    >
+                      {weeklyWinners[0].projectTitle}
+                    </h3>
+                    <p className="font-retro text-sm mb-4" style={{ color: "#888" }}>
+                      by {weeklyWinners[0].creatorName}
+                    </p>
+
+                    {/* Score + CTA row */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="font-pixel text-lg sm:text-xl"
+                          style={{ color: "var(--neon-yellow)", textShadow: "0 0 16px rgba(250,204,21,0.4)" }}
+                        >
+                          {weeklyWinners[0].score}
+                        </div>
+                        <span className="font-pixel text-[6px] uppercase" style={{ color: "#666" }}>
+                          Score
+                        </span>
+                      </div>
+                      <div className="retro-button flex items-center gap-2">
+                        <span>View Project</span>
+                        <ArrowRight size={12} />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            </div>
+          </section>
+        )}
 
         {/* SECTION 7 -- COMMUNITY HUD */}
         <section className="py-16 lg:py-20">
