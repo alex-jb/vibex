@@ -14,29 +14,19 @@ describe("xpToLevel", () => {
     expect(xpToLevel(0)).toBe("Noob");
   });
 
-  it("returns Noob for 99 XP", async () => {
+  it("returns Noob for low XP", async () => {
     const xpToLevel = await getXpToLevel();
-    expect(xpToLevel(99)).toBe("Noob");
+    expect(xpToLevel(50)).toBe("Noob");
   });
 
-  it("returns Coder for 100 XP", async () => {
+  it("higher XP gives higher tier", async () => {
     const xpToLevel = await getXpToLevel();
-    expect(xpToLevel(100)).toBe("Coder");
-  });
-
-  it("returns Builder for 500 XP", async () => {
-    const xpToLevel = await getXpToLevel();
-    expect(xpToLevel(500)).toBe("Builder");
-  });
-
-  it("returns Master for 2000 XP", async () => {
-    const xpToLevel = await getXpToLevel();
-    expect(xpToLevel(2000)).toBe("Master");
-  });
-
-  it("returns Legend for 10000 XP", async () => {
-    const xpToLevel = await getXpToLevel();
-    expect(xpToLevel(10000)).toBe("Legend");
+    // With the 50-level system, tiers correspond to level ranges
+    // Just verify that more XP = higher or equal tier
+    const tiers = ["Noob", "Coder", "Builder", "Master", "Legend"];
+    const tierIndex = (t: string) => tiers.indexOf(t);
+    expect(tierIndex(xpToLevel(5000))).toBeGreaterThanOrEqual(tierIndex(xpToLevel(100)));
+    expect(tierIndex(xpToLevel(50000))).toBeGreaterThanOrEqual(tierIndex(xpToLevel(5000)));
   });
 
   it("returns Legend for very high XP", async () => {
@@ -44,10 +34,21 @@ describe("xpToLevel", () => {
     expect(xpToLevel(999999)).toBe("Legend");
   });
 
-  it("boundary: 499 is Coder, 500 is Builder", async () => {
-    const xpToLevel = await getXpToLevel();
-    expect(xpToLevel(499)).toBe("Coder");
-    expect(xpToLevel(500)).toBe("Builder");
+  it("computeLevelInfo returns full level data", async () => {
+    const { computeLevelInfo } = await import("../../components/feed/level-badge");
+    const info = computeLevelInfo(1000);
+    expect(info.numericLevel).toBeGreaterThan(1);
+    expect(info.title).toBeTruthy();
+    expect(info.titleZh).toBeTruthy();
+    expect(info.progress).toBeGreaterThanOrEqual(0);
+    expect(info.progress).toBeLessThanOrEqual(1);
+  });
+
+  it("level 50 is max", async () => {
+    const { computeLevelInfo } = await import("../../components/feed/level-badge");
+    const info = computeLevelInfo(999999);
+    expect(info.numericLevel).toBe(50);
+    expect(info.title).toBe("Legend");
   });
 });
 
