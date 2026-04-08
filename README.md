@@ -1,237 +1,299 @@
-# VibeX -- AI Agent Marketplace & Creator Platform
+<p align="center">
+  <img src="public/og-default.png" width="480" />
+</p>
 
-[English](#what-is-vibex) | [中文](#vibex-是什么)
+<h1 align="center">⚔️ VibeX</h1>
 
-> 16-bit RPG pixel-art platform for AI agents, projects, and creators.
-> Discover, battle, evolve, and deploy AI-native creations.
+<p align="center">
+  <strong>The launch & growth platform for AI-native creators.</strong><br/>
+  <sub>AI 原生创作者的发布与增长平台。</sub>
+</p>
 
-## What is VibeX?
+<p align="center">
+  <a href="https://vibex.app">🌐 Website</a> •
+  <a href="#-getting-started">🚀 Getting Started</a> •
+  <a href="#-features">✨ Features</a> •
+  <a href="#-tech-stack">🛠 Tech Stack</a> •
+  <a href="#-contributing">🤝 Contributing</a>
+</p>
 
-VibeX is an AI-native platform where creators publish AI projects, build and run AI agents, collect pixel buddy pets, and compete on leaderboards. Think ProductHunt meets Pokemon, powered by Claude API.
+<p align="center">
+  <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/github/stars/alex-jb/vibex?style=flat-square&logo=github&color=9D00FF" alt="Stars" /></a>
+  <a href="https://github.com/alex-jb/vibex/commits"><img src="https://img.shields.io/github/commit-activity/m/alex-jb/vibex?style=flat-square&color=39FF14" alt="Commits" /></a>
+  <a href="https://github.com/alex-jb/vibex/issues"><img src="https://img.shields.io/github/issues/alex-jb/vibex?style=flat-square&color=FF4500" alt="Issues" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Source_Available-FACC15?style=flat-square" alt="License" /></a>
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-000?style=flat-square&logo=next.js" alt="Next.js" /></a>
+  <a href="https://supabase.com"><img src="https://img.shields.io/badge/Supabase-Realtime-3ECF8E?style=flat-square&logo=supabase" alt="Supabase" /></a>
+</p>
 
-## Core Systems
-
-### AI Agent Marketplace
-- Browse, run, and fork AI agents
-- Visual Agent Builder (select model, tools, prompts)
-- Multi-agent Workflow orchestration (pipeline editor)
-- 8 built-in tools (web search, code analysis, translation, etc.)
-- Streaming execution logs with real-time step display
-
-### RPG Gamification
-- 5 Hero Classes: Architect, Artisan, Enchanter, Alchemist, Sentinel
-- 6-attribute battle system with critical hits and EXP rewards
-- 4-stage evolution: Spark -> Flame -> Inferno -> Phoenix
-- Skill trees, HUD bars, attribute radar charts
-
-### Buddy Pet System (PixPet-style)
-- 5 pixel art buddies with 3 evolution stages each (15 total forms)
-- Gacha summoning with upvote/level-weighted odds
-- PixPet-style floating companion with stats panel
-- 20 EXP-earning actions (publish +100, battle +25, comment +5, etc.)
-- RPG leveling system with 9 rank titles
-
-### Social Feed
-- Twitter/Xiaohongshu-style timeline with real-time updates
-- Post, like, reply, repost with optimistic UI
-- 3 tabs: Following, Trending, Latest
-- Content truncation, skeleton loading, per-tab empty states
-
-### 7 AI-Powered Features (Claude API)
-- AI Project Review (5-dimension scoring)
-- AI Idea Evaluation (viability, market fit, competition)
-- AI Battle Narrative (RPG-style combat commentary)
-- AI Launch Assistant (streaming feedback)
-- AI Share Summary (Twitter/Xiaohongshu/Douyin optimized)
-- AI Trend Analysis (momentum + signal detection)
-- AI Battle Narrative Streaming
-
-### Developer Platform
-- 23 API endpoints documented with request/response examples
-- Webhook system with HMAC-SHA256 signatures + auto-retry
-- API key management with usage tracking
-- SDK examples (TypeScript, Python, cURL)
-- Rate limit tiers (Free/Pro/Enterprise)
-
-## Pages (29)
-
-| Category | Pages |
-|----------|-------|
-| Core | Home, Explore, Hunt, Arena, Feed |
-| AI | Agents, Agent Builder, Workflows, Analytics |
-| Social | Ideas, Creators, Events, Insights |
-| User | Login, Profile, Settings, Buddy Lab |
-| Platform | Launch, Developers |
-| Legal | About, Terms, Privacy |
-| Detail | Project/[id], Agent/[id], Workflow/[id] |
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript 5 (strict) |
-| UI | React 19 + Tailwind CSS 4 + Framer Motion |
-| Design | NES.css + RPGUI (16-bit pixel aesthetic) |
-| Database | Supabase (PostgreSQL, 24 tables) |
-| Auth | Supabase Auth (GitHub/Google/Email) |
-| AI | Claude API (Haiku 4.5) |
-| Realtime | Supabase Realtime (leaderboards, chat, feed) |
-| Testing | Vitest (17 unit) + Playwright (37 E2E) |
-| CI/CD | GitHub Actions + Vercel |
-| PWA | manifest.json + theme color |
-
-## Getting Started
-
-```bash
-npm install
-cp .env.local.example .env.local
-# Add: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, ANTHROPIC_API_KEY
-npm run dev
-```
-
-### Commands
-
-```bash
-npm run dev          # Development server
-npm run build        # Production build
-npm test             # Unit tests (Vitest)
-npm run test:e2e     # E2E tests (Playwright)
-npm run test:e2e:ui  # E2E with visual UI
-```
-
-## Stats
-
-| Metric | Count |
-|--------|-------|
-| Pages | 29 |
-| API Endpoints | 23 |
-| Database Tables | 24 |
-| Unit Tests | 17 |
-| E2E Tests | 37 |
-| Components | 85+ |
-| i18n Keys | 780+ (EN/ZH/JA) |
-| Buddy Forms | 15 (5 x 3 evolutions) |
-| Agent Tools | 8 built-in |
-| Git Commits | 42 |
-
-## Architecture
-
-```
-app/
-  |- page.tsx            # Homepage (boot sequence + 8 sections)
-  |- feed/               # Social timeline (realtime)
-  |- explore/            # Project browser
-  |- agents/             # Agent marketplace + builder
-  |- workflows/          # Multi-agent pipelines
-  |- arena/              # Battle simulator
-  |- buddy/              # Pet collection + summon
-  |- analytics/          # Usage dashboard
-  |- developers/         # API docs + webhooks
-  |- hunt/               # Live leaderboard
-  +- api/
-      |- feed/           # Post CRUD + likes
-      |- ai/             # 7 AI endpoints
-      |- agents/         # Run + stream
-      |- workflows/      # Execute pipelines
-      |- webhooks/       # CRUD + test + delivery
-      |- comments/       # Threaded comments
-      |- follows/        # Social graph
-      +- notifications/  # Push system
-lib/
-  |- agent-engine.ts     # Agent execution runtime
-  |- workflow-engine.ts  # Multi-agent pipeline
-  |- buddy-system.ts     # Pet + EXP + gacha + evolution
-  |- battle-engine.ts    # RPG combat simulation
-  |- ai.ts               # Claude API integration
-  |- feed.ts             # Realtime feed hook
-  |- chat.ts             # Realtime chat hook
-  |- realtime.ts         # Supabase subscription hooks
-  |- leaderboard.ts      # Live rankings
-  |- webhook-engine.ts   # HMAC delivery + retry
-  +- db.ts               # Data access (Supabase + mock fallback)
-```
-
-## License
-
-Source Available License. See [LICENSE](./LICENSE).
-Free for personal and educational use. Commercial use requires permission.
+<p align="center">
+  <a href="#what-is-vibex">English</a> | <a href="#vibex-是什么">中文</a> | <a href="#vibex-とは">日本語</a>
+</p>
 
 ---
 
-Built by [Orallexa](https://github.com/alex-jb) with vibe coding energy.
+## What is VibeX?
+
+> **Launch your AI product. Get feedback, distribution, and growth — in one platform.**
+
+VibeX is where AI creators publish projects, get AI-powered launch packages, track growth metrics, and compete on leaderboards. It's ProductHunt meets Pokemon, wrapped in a 16-bit RPG pixel art aesthetic and powered by Claude API.
+
+**Not just another AI directory.** VibeX is a growth engine. Upload your project → get a complete launch package (positioning, copy, social threads, investor pitch) → distribute → track → optimize → grow.
+
+<p align="right"><a href="#️-vibex">⬆ Back to top</a></p>
+
+---
+
+## ✨ Features
+
+### 🚀 AI Launch Copilot
+One-click launch package generation. Upload your project, get everything you need to ship:
+- **Positioning** — one-liner, target audience, problem/solution, unique value
+- **Copy** — Product Hunt description, elevator pitch, tagline
+- **Social** — Twitter/X thread (4-5 tweets), LinkedIn post, Reddit post
+- **Distribution** — channel strategy with priority ranking + timing
+- **Investor Pitch** — problem, solution, market, traction, ask
+- **Competitor Analysis** — differentiation from 2-3 competitors
+- **Demo Script** — 30-second video script
+
+### 📊 Project Analytics & Growth
+Track your project's performance and get AI-powered growth suggestions:
+- Views, clicks, shares, upvotes trend charts (pixel-style)
+- Conversion rate tracking
+- AI growth advisor — actionable recommendations with effort estimates
+- Category benchmarks — how you compare to similar projects
+
+### 🎮 RPG Gamification
+Everything is a game. Every action earns XP.
+- **50-level Creator System** — Lv.1 见习 → Lv.50 传说 (10 named ranks)
+- **Post Reactions** — 🔥 Fire, 🎮 Game, 🎨 Art, 🤯 Mind-blown
+- **Arena Battles** — Projects fight with 6-attribute combat, Elo rankings
+- **Buddy Pets** — 5 pixel creatures × 3 evolution stages, gacha summoning
+- **Season Leaderboards** — compete for top rankings each season
+
+### 🤖 AI Agent Marketplace
+Build, share, and run AI agents:
+- Visual Agent Builder (model, tools, prompts)
+- Multi-agent Workflow orchestration
+- 8 built-in tools (web search, code analysis, translation...)
+- Star ratings & reviews from the community
+- Install tracking + version history
+
+### 📱 Social Feed
+Twitter-style engagement loops:
+- Post with 🔥🎮🎨🤯 reactions + media attachments (image/GIF)
+- @Mentions with autocomplete + notifications
+- #Hashtags auto-extraction + trending sidebar
+- Algorithmic feed (HN-style engagement scoring)
+- Real-time "↑ N条新动态" toast notifications
+- Content moderation (report, auto-flag, admin queue)
+
+### 🧠 Growth Intelligence (Data Moat)
+Data that gets more valuable over time:
+- **Creator Graph** — skills, connections, success rate, growth velocity
+- **Product Graph** — success/failure signals across projects
+- **Growth Patterns** — 8 verified patterns (timing, copy, channel, strategy)
+- **Category Benchmarks** — average D1/D7 views, upvotes, conversion rates
+
+### 💬 Platform Infrastructure
+- **DM System** — conversations, messages, read tracking
+- **Admin Panel** — moderation queue + analytics dashboard
+- **User Bans** — ban/unban with reason + expiry
+- **50-level XP** — earn from reactions, posts, battles
+- **Onboarding** — 3-step tutorial + 5 starter quests
+- **HUD Modes** — simple (新手) / full (专家) view toggle
+
+<p align="right"><a href="#️-vibex">⬆ Back to top</a></p>
+
+---
+
+## 📊 Stats
+
+| Metric | Count |
+|--------|-------|
+| 📄 Pages | 64+ |
+| 🔌 API Routes | 35+ |
+| 🗄 DB Migrations | 25 |
+| ✅ Tests | 75 (unit + E2E) |
+| 🧩 Components | 100+ |
+| 🌐 i18n Keys | 780+ (EN/ZH/JA) |
+| 🤖 AI Functions | 9 (Claude API) |
+| 🎮 Buddy Forms | 15 (5 × 3 evolutions) |
+| 📝 Commits | 55+ |
+
+<p align="right"><a href="#️-vibex">⬆ Back to top</a></p>
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | Next.js 16 (App Router, Turbopack) |
+| **Language** | TypeScript 5 (strict) |
+| **UI** | React 19 + Tailwind CSS 4 + Framer Motion |
+| **Design** | NES.css + RPGUI (16-bit pixel aesthetic) |
+| **Database** | Supabase (PostgreSQL, 25 tables, RLS) |
+| **Auth** | Supabase Auth + `@supabase/ssr` (cookie sessions) |
+| **AI** | Claude API (Sonnet for launch packages, Haiku for analysis) |
+| **Realtime** | Supabase Realtime (feed, chat, leaderboards, notifications) |
+| **Testing** | Vitest (75 unit) + Playwright (11 E2E) |
+| **CI/CD** | GitHub Actions (daily devlog, tests) |
+
+<p align="right"><a href="#️-vibex">⬆ Back to top</a></p>
+
+---
+
+## 🚀 Getting Started
+
+```bash
+# Clone
+git clone https://github.com/alex-jb/vibex.git
+cd vibex
+
+# Install
+npm install
+
+# Configure
+cp .env.local.example .env.local
+# Fill in: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, ANTHROPIC_API_KEY
+
+# Run
+npm run dev
+```
+
+> **💡 No Supabase?** The app works in mock mode without a database. All features use built-in demo data.
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Development server (Turbopack) |
+| `npm run build` | Production build |
+| `npm test` | Unit tests (Vitest) |
+| `npx playwright test` | E2E tests |
+
+<p align="right"><a href="#️-vibex">⬆ Back to top</a></p>
+
+---
+
+## 🏗 Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│                  BROWSER                     │
+│  Next.js App Router + React 19              │
+│  NES.css + RPGUI + Framer Motion            │
+├─────────────────────────────────────────────┤
+│              API ROUTES                      │
+│  /api/feed    /api/ai    /api/agents        │
+│  /api/arena   /api/messages  /api/admin     │
+├─────────────────────────────────────────────┤
+│         SUPABASE (PostgreSQL)                │
+│  25 tables + RLS + Realtime + Auth          │
+│  RPC functions (toggle_like, toggle_react)  │
+├─────────────────────────────────────────────┤
+│           CLAUDE API                         │
+│  Launch Copilot + Growth Advisor            │
+│  Project Review + Idea Eval + Trends        │
+└─────────────────────────────────────────────┘
+```
+
+<details>
+<summary>📁 <strong>Directory Structure</strong></summary>
+
+```
+app/
+  ├── feed/              # Social timeline (realtime)
+  ├── explore/           # Project browser
+  ├── agents/            # Agent marketplace + builder
+  ├── arena/             # Battle simulator + leaderboard
+  ├── buddy/             # Pet collection + trade
+  ├── launch/            # Launch Copilot (AI package gen)
+  ├── insights/          # Trend analysis + growth intel
+  ├── messages/          # DM inbox
+  ├── admin/             # Moderation + analytics
+  ├── creators/          # Creator graph
+  └── api/
+      ├── ai/            # 9 AI endpoints (Claude)
+      ├── feed/          # CRUD + reactions + reports
+      ├── agents/        # Run + stream + reviews
+      ├── arena/         # Leaderboard
+      ├── growth/        # Patterns + benchmarks
+      └── messages/      # DM system
+lib/
+  ├── ai.ts              # Claude API (9 functions)
+  ├── feed.ts            # Realtime feed hook
+  ├── buddy-system.ts    # Pet + EXP + gacha
+  ├── battle-engine.ts   # RPG combat
+  ├── data-moat.ts       # Creator/Product/Growth graphs
+  ├── pricing.ts         # Free/Pro tier definitions
+  └── onboarding.ts      # Tutorial + quest system
+```
+</details>
+
+<p align="right"><a href="#️-vibex">⬆ Back to top</a></p>
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! Please read the [DESIGN.md](./DESIGN.md) for the design system spec before building UI.
+
+```bash
+# Run lint
+npx eslint .
+
+# Run tests
+npm test
+
+# Build check
+npm run build
+```
+
+---
+
+## 📄 License
+
+Source Available License. Free for personal and educational use. Commercial use requires permission.
+
+---
+
+<p align="center">
+  Built with ⚡ vibe coding energy by <a href="https://github.com/alex-jb">Orallexa</a>
+</p>
 
 ---
 
 # VibeX 是什么？
 
-> 16-bit RPG 像素风 AI Agent 市场和创作者平台。发现、战斗、进化、部署 AI 原生创作。
+> **发布你的 AI 产品。获得反馈、分发策略和增长 — 一站式平台。**
 
-VibeX 是一个 AI 原生平台，创作者可以发布 AI 项目、构建和运行 AI Agent、收集像素宠物伙伴、在排行榜上竞争。ProductHunt + Pokemon，由 Claude API 驱动。
+VibeX 是 AI 创作者发布项目、获取 AI 驱动的发布包、追踪增长数据、在排行榜竞争的平台。ProductHunt + Pokemon，16-bit RPG 像素风，由 Claude API 驱动。
 
-## 核心系统
+**不只是 AI 产品目录。** VibeX 是增长引擎。上传项目 → 一键生成完整发布包（定位、文案、推文、投资人 Pitch）→ 分发 → 追踪 → 优化 → 增长。
 
-### AI Agent 市场
-- 浏览、运行、复刻 AI Agent
-- 可视化 Agent Builder（选择模型、工具、提示词）
-- 多 Agent 工作流编排（管道编辑器）
-- 8 个内置工具（网页搜索、代码分析、翻译等）
-- 流式执行日志，实时显示步骤
+### 核心功能
 
-### RPG 游戏化
-- 5 种英雄职业：建筑师、工匠、附魔师、炼金师、哨兵
-- 6 属性战斗系统（暴击 + 经验奖励）
-- 4 阶段进化：火花 -> 火焰 -> 地狱火 -> 凤凰
-- 技能树、HUD 条、属性雷达图
+- 🚀 **AI Launch Copilot** — 一键生成发布包（定位/文案/推文/Pitch/竞品分析）
+- 📊 **项目数据追踪** — 浏览量/点赞/分享趋势 + AI 增长建议
+- 🎮 **RPG 游戏化** — 50 级等级系统、Arena 战斗、Buddy 宠物、赛季排行
+- 🤖 **AI Agent 市场** — 构建、分享、运行 Agent + 评分系统
+- 📱 **社交动态** — 反应(🔥🎮🎨🤯)/媒体/Mentions/Hashtags/算法推荐
+- 🧠 **增长情报** — Creator Graph + Product Graph + 已验证增长模式
+- 💬 **私信/管理/封禁** — 完整平台基础设施
 
-### Buddy 宠物系统（PixPet 风格）
-- 5 种像素精灵宠物 x 3 阶进化 = 15 种形态
-- 抽卡召唤（点赞/等级加权概率）
-- PixPet 风格浮动伴侣（属性面板 + 功能按钮）
-- 20 种经验获取行为（发布 +100、战斗 +25、评论 +5 等）
-
-### 社交动态
-- Twitter/小红书风格时间线（实时更新）
-- 发布、点赞、回复、转发（乐观 UI）
-- 3 个标签页：关注/热门/最新
-
-### 7 个 AI 功能（Claude API）
-- AI 项目评审、创意评估、战斗解说
-- AI 发布助手（流式反馈）、分享文案生成
-- AI 趋势分析、战斗叙事流式化
-
-### 开发者平台
-- 23 个 API 端点（完整文档）
-- Webhook 系统（HMAC-SHA256 签名 + 自动重试）
-- API Key 管理 + SDK 示例
-
-## 数据统计
-
-| 指标 | 数量 |
-|------|------|
-| 页面 | 29 |
-| API 端点 | 23 |
-| 数据库表 | 24 |
-| 单元测试 | 17 |
-| E2E 测试 | 37 |
-| 组件 | 85+ |
-| 翻译 Key | 780+ (英/中/日) |
-| Buddy 形态 | 15 |
-| Agent 工具 | 8 |
-
-## 快速开始
+### 快速开始
 
 ```bash
-npm install
-cp .env.local.example .env.local
-# 填入: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, ANTHROPIC_API_KEY
-npm run dev
+git clone https://github.com/alex-jb/vibex.git && cd vibex
+npm install && cp .env.local.example .env.local && npm run dev
 ```
 
-## 许可证
-
-Source Available 许可证。个人和教育用途免费。商业使用需获得许可。
+> 无需 Supabase，应用自带 mock 数据可直接运行。
 
 ---
 
-由 [Orallexa](https://github.com/alex-jb) 以 vibe coding 能量打造。
+<p align="center">
+  由 <a href="https://github.com/alex-jb">Orallexa</a> 以 ⚡ vibe coding 能量打造
+</p>
