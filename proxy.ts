@@ -21,7 +21,10 @@ const AUTH_API_ROUTES = [
   "/api/buddy/interact",
 ];
 
-// Admin-only routes
+// Moderator routes (view moderation queue)
+const MODERATOR_ROUTES = ["/api/admin/moderation"];
+
+// Admin-only routes (full admin panel, analytics, settings)
 const ADMIN_ROUTES = ["/api/admin"];
 
 export async function proxy(request: NextRequest) {
@@ -32,10 +35,11 @@ export async function proxy(request: NextRequest) {
   const needsPageAuth = AUTH_ROUTES.some((r) => pathname.startsWith(r));
   const needsApiAuth =
     AUTH_API_ROUTES.some((r) => pathname.startsWith(r)) && method !== "GET";
-  const needsAdmin = ADMIN_ROUTES.some((r) => pathname.startsWith(r));
+  const needsModerator = MODERATOR_ROUTES.some((r) => pathname.startsWith(r));
+  const needsAdmin = !needsModerator && ADMIN_ROUTES.some((r) => pathname.startsWith(r));
 
   // Nothing to protect — pass through immediately
-  if (!needsPageAuth && !needsApiAuth && !needsAdmin) {
+  if (!needsPageAuth && !needsApiAuth && !needsModerator && !needsAdmin) {
     return NextResponse.next();
   }
 
@@ -69,13 +73,15 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // --- Admin role gate ---
-  if (needsAdmin) {
-    const isAdmin =
-      user.app_metadata?.role === "admin" ||
-      (user.email?.endsWith("@vibex.dev") ?? false);
+  // --- Role gate (moderator / admin) ---
+  if (needsModerator || needsAdmin) {
+    const { data: role } = await supabase.rpc("get_user_role", { uid: user.id });
+    const userRole = role ?? "user";
 
-    if (!isAdmin) {
+    if (needsAdmin && userRole !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+    if (needsModerator && userRole !== "admin" && userRole !== "moderator") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
   }
@@ -100,5 +106,6 @@ export const config = {
     "/api/workflows/run/:path*",
     "/api/buddy/:path*",
     "/api/admin/:path*",
+    "/api/admin/moderation/:path*",
   ],
 };

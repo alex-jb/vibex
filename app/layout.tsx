@@ -4,6 +4,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { LangProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/lib/auth";
+import { AnalyticsProvider } from "@/components/analytics-provider";
 import { BuddyCompanion } from "@/components/buddy-companion";
 import { ChatWidget } from "@/components/chat-widget";
 import { TutorialOverlay } from "@/components/onboarding/tutorial-overlay";
@@ -94,6 +95,7 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <AuthProvider>
+          <AnalyticsProvider>
           <LangProvider>
             <div className="scanline-overlay" aria-hidden="true" />
             <Navbar />
@@ -103,6 +105,7 @@ export default function RootLayout({
             <BuddyCompanion />
             <TutorialOverlay />
           </LangProvider>
+          </AnalyticsProvider>
         </AuthProvider>
       </body>
     </html>

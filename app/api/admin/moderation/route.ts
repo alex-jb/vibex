@@ -1,20 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { createServerSupabase, getAuthUser } from "@/lib/supabase-server";
+import { requireRole } from "@/lib/rbac";
 import { USE_SUPABASE } from "@/lib/mock-adapter";
 
-// Hardcoded admin IDs (replace with a proper admin table in production)
-const ADMIN_IDS = new Set(process.env.ADMIN_USER_IDS?.split(",") ?? []);
-
-async function requireAdmin() {
-  if (!USE_SUPABASE) return { admin: true, userId: "admin" };
-  const user = await getAuthUser();
-  if (!user) return { admin: false, userId: null };
-  if (!ADMIN_IDS.has(user.id)) return { admin: false, userId: user.id };
-  return { admin: true, userId: user.id };
-}
-
 // GET: moderation queue (flagged posts + pending reports)
+// Access: moderator+ (enforced by proxy.ts, double-checked here)
 export async function GET() {
   if (!USE_SUPABASE) {
     return NextResponse.json({
@@ -28,10 +19,8 @@ export async function GET() {
     });
   }
 
-  const { admin } = await requireAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
-  }
+  const auth = await requireRole("moderator");
+  if (auth instanceof Response) return auth;
 
   const [flaggedResult, reportsResult] = await Promise.all([
     supabase
@@ -55,11 +44,11 @@ export async function GET() {
 }
 
 // POST: moderation action (approve, hide, remove, ban user)
+// Access: admin only for ban/unban, moderator+ for approve/hide/remove/dismiss
 export async function POST(request: Request) {
-  const { admin, userId } = await requireAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
-  }
+  const auth = await requireRole("moderator");
+  if (auth instanceof Response) return auth;
+  const { user: authUser, role } = auth;
 
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch {
@@ -115,10 +104,13 @@ export async function POST(request: Request) {
     }
 
     case "ban": {
+      if (role !== "admin") {
+        return NextResponse.json({ error: "Only admins can ban users" }, { status: 403 });
+      }
       if (targetUserId && banReason) {
         await serverSupabase.from("user_bans").insert({
           user_id: targetUserId,
-          banned_by: userId,
+          banned_by: authUser.id,
           reason: banReason,
           expires_at: banDuration ? new Date(Date.now() + banDuration * 3600000).toISOString() : null,
         });
@@ -127,9 +119,12 @@ export async function POST(request: Request) {
     }
 
     case "unban": {
+      if (role !== "admin") {
+        return NextResponse.json({ error: "Only admins can unban users" }, { status: 403 });
+      }
       if (targetUserId) {
         await serverSupabase.from("user_bans")
-          .update({ lifted_at: new Date().toISOString(), lifted_by: userId })
+          .update({ lifted_at: new Date().toISOString(), lifted_by: authUser.id })
           .eq("user_id", targetUserId)
           .is("lifted_at", null);
       }

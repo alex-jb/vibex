@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth";
 import { useLang } from "@/lib/i18n";
+import { trackEvent } from "@/lib/analytics";
 
 export default function LoginPage() {
   const { t } = useLang();
@@ -25,12 +26,15 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
 
+    trackEvent("login_started", { method: "email" });
     const result = await signInWithEmail(email, password);
     setLoading(false);
 
     if (result.error) {
       setError(result.error);
+      trackEvent("login_failed", { method: "email", error: result.error });
     } else {
+      trackEvent("login_completed", { method: "email" });
       router.push("/");
     }
   };

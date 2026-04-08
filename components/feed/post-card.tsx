@@ -9,6 +9,7 @@ import { ReactionBar, type ReactionCounts, type ReactionType } from "./reaction-
 import { MediaAttachment } from "./media-attachment";
 import { LevelBadge, type CreatorLevel } from "./level-badge";
 import { ReportButton } from "./report-button";
+import { trackEvent } from "@/lib/analytics";
 
 /* ─── Helpers ─── */
 
@@ -86,6 +87,7 @@ export function PostCard({
     // Confirmed
     try {
       await fetch(`/api/feed/${post.id}`, { method: "DELETE" });
+      trackEvent("post_deleted", { post_id: post.id });
     } catch {
       // best effort
     }
