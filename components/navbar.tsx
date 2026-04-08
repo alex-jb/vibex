@@ -17,8 +17,15 @@ import { NotificationBell } from "@/components/notification-bell";
 const primaryNavItems = [
   { href: "/", key: "nav.home" as const },
   { href: "/feed", key: "nav.feed" as const },
-  { href: "/explore", key: "nav.explore" as const },
-  { href: "/agents", key: "nav.agents" as const },
+  { href: "/discover", key: "nav.discover" as const },
+  { href: "/creators", key: "nav.creators" as const },
+  { href: "/dojo", key: "nav.dojo" as const },
+  { href: "/analytics", key: "nav.analytics" as const },
+  { href: "/events", key: "nav.events" as const },
+];
+
+// Dojo items (in user menu + mobile menu)
+const dojoNavItems = [
   { href: "/arena", key: "nav.arena" as const },
   { href: "/buddy", key: "nav.buddy" as const },
   { href: "/hunt", key: "nav.hunt" as const },
@@ -27,17 +34,13 @@ const primaryNavItems = [
 
 // Secondary nav items (in "More" dropdown + mobile menu)
 const secondaryNavItems = [
-  { href: "/workflows", key: "nav.workflows" as const },
-  { href: "/analytics", key: "nav.analytics" as const },
-  { href: "/ideas", key: "nav.ideas" as const },
-  { href: "/creators", key: "nav.creators" as const },
-  { href: "/events", key: "nav.events" as const },
   { href: "/insights", key: "nav.insights" as const },
+  { href: "/ideas", key: "nav.ideas" as const },
   { href: "/developers", key: "nav.developers" as const },
 ];
 
 // All items for mobile menu
-const allNavItems = [...primaryNavItems, ...secondaryNavItems];
+const allNavItems = [...primaryNavItems, ...dojoNavItems, ...secondaryNavItems];
 
 export function Navbar() {
   const pathname = usePathname();
@@ -61,13 +64,13 @@ export function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50" data-slot="navbar" role="navigation">
       {/* Main bar */}
       <div className="bg-background/60 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/[0.04]">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+        <div className="mx-auto flex h-14 items-center justify-between px-3 sm:px-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/20">
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/20 border border-violet-400/50">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
-            <span className="text-lg font-bold tracking-wide">
+            <span className="text-sm font-bold tracking-widest font-[var(--font-press-start)] text-white">
               Vibe<span className="text-gradient-subtle">X</span>
             </span>
           </Link>
@@ -83,12 +86,8 @@ export function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={cn(
-                    "relative flex flex-col items-center px-3.5 py-2 text-sm font-medium transition-colors duration-200",
-                    isActive
-                      ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
+                  className="relative flex flex-col items-center px-2.5 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  style={{ fontFamily: "var(--font-pixel), monospace", fontSize: 11, letterSpacing: 1, imageRendering: "pixelated" as never }}
                 >
                   {t(item.key)}
                   {isActive && (
@@ -109,7 +108,8 @@ export function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setMoreOpen(!moreOpen)}
-                className="relative flex flex-col items-center px-3.5 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="relative flex flex-col items-center px-2.5 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
+                style={{ fontFamily: "var(--font-pixel), monospace", fontSize: 11, letterSpacing: 1, imageRendering: "pixelated" as never }}
               >
                 More
               </button>
@@ -131,7 +131,7 @@ export function Navbar() {
                             href={item.href}
                             onClick={() => setMoreOpen(false)}
                             className={cn(
-                              "block px-4 py-2 text-sm transition-colors",
+                              "block px-4 py-2 font-pixel text-[9px] tracking-wide transition-colors",
                               isActive ? "text-foreground bg-white/5" : "text-muted-foreground hover:text-foreground hover:bg-white/5"
                             )}
                           >
@@ -147,18 +147,19 @@ export function Navbar() {
           </nav>
 
           {/* Desktop CTA + Lang Toggle + User */}
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="hidden items-center gap-2 md:flex shrink-0">
             <button onClick={() => setSearchOpen(true)} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
               <Search className="size-4" />
-              <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 text-[10px] text-muted-foreground">⌘K</kbd>
+              <span className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 text-[10px] text-muted-foreground font-sans">⌘K</span>
             </button>
             <LangToggle />
             <Link href="/launch">
               <Button
                 size="sm"
-                className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-xs hover:from-violet-500 hover:to-fuchsia-500 shadow-lg shadow-violet-500/10"
+                className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-500 hover:to-fuchsia-500 shadow-lg shadow-violet-500/10 px-3 h-8"
+                style={{ fontFamily: "var(--font-pixel), monospace", fontSize: 10, letterSpacing: 1, imageRendering: "pixelated" as never }}
               >
-                <Rocket className="mr-1.5 h-3 w-3" />
+                <Rocket className="mr-1 h-3 w-3" />
                 {t("nav.launch")}
               </Button>
             </Link>
@@ -206,10 +207,7 @@ export function Navbar() {
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      "flex items-center rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200",
-                      isActive
-                        ? "text-foreground"
-                        : "text-muted-foreground hover:text-foreground"
+                      "flex items-center rounded-lg px-3 py-2.5 font-pixel text-[10px] tracking-wide text-muted-foreground hover:text-foreground transition-colors duration-200"
                     )}
                   >
                     {t(item.key)}

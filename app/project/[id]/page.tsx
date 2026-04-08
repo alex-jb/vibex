@@ -242,7 +242,7 @@ export default function ProjectPage({
         <p className="text-muted-foreground">
           {t("project.notFoundDesc")}
         </p>
-        <Link href="/explore">
+        <Link href="/discover">
           <Button variant="outline">
             <ArrowLeft className="size-4" />
             {t("project.backToExplore")}
@@ -273,7 +273,7 @@ export default function ProjectPage({
         <div className="relative space-y-5">
           {/* Back button */}
           <Link
-            href="/explore"
+            href="/discover"
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="size-4" />

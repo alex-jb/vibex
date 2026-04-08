@@ -31,7 +31,7 @@ export function Footer() {
               {t("footer.platform")}
             </h4>
             <div className="flex flex-col gap-2.5">
-              <Link href="/explore" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.explore")}</Link>
+              <Link href="/discover" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.explore")}</Link>
               <Link href="/hunt" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.hunt")}</Link>
               <Link href="/ideas" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("footer.ideaLab")}</Link>
               <Link href="/creators" className="text-sm text-muted-foreground/70 hover:text-foreground transition-colors duration-200">{t("nav.creators")}</Link>

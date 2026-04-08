@@ -16,6 +16,7 @@ import { workflows } from "@/lib/mock-data/workflows";
 import { agents } from "@/lib/mock-data/agents";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useLang } from "@/lib/i18n";
 
 type StepStatus = "pending" | "running" | "completed" | "failed";
 
@@ -70,6 +71,7 @@ export default function WorkflowDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const { t } = useLang();
   const { id } = use(params);
   const workflow = workflows.find((w) => w.id === id);
 
@@ -130,7 +132,7 @@ export default function WorkflowDetailPage({
       } catch {
         setStepStates((prev) =>
           prev.map((ss) =>
-            ss.stepId === step.id ? { ...ss, status: "failed", output: "执行失败" } : ss
+            ss.stepId === step.id ? { ...ss, status: "failed", output: "Execution failed" } : ss
           )
         );
         break;
@@ -144,9 +146,9 @@ export default function WorkflowDetailPage({
   if (!workflow) {
     return (
       <div className="min-h-screen pt-24 pb-16 px-4 flex flex-col items-center justify-center gap-4">
-        <p className="text-muted-foreground">工作流未找到</p>
-        <Link href="/workflows">
-          <Button variant="outline"><ArrowLeft className="size-4 mr-1.5" />返回</Button>
+        <p className="text-muted-foreground">{t("workflows.notFound")}</p>
+        <Link href="/discover?tab=workflows">
+          <Button variant="outline"><ArrowLeft className="size-4 mr-1.5" />{t("workflows.back")}</Button>
         </Link>
       </div>
     );
@@ -156,9 +158,9 @@ export default function WorkflowDetailPage({
     <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6">
       <div className="mx-auto max-w-3xl">
         {/* Back */}
-        <Link href="/workflows" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+        <Link href="/discover?tab=workflows" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
           <ArrowLeft className="size-4" />
-          返回工作流
+          {t("workflows.backToWorkflows")}
         </Link>
 
         {/* Header */}
@@ -186,7 +188,7 @@ export default function WorkflowDetailPage({
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="输入工作流的初始内容..."
+            placeholder="Enter initial workflow input..."
             rows={3}
             disabled={running}
             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-violet-500/40 resize-none disabled:opacity-50"
@@ -197,7 +199,7 @@ export default function WorkflowDetailPage({
             className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-500 hover:to-fuchsia-500 disabled:opacity-50"
           >
             {running ? <Loader2 className="size-4 mr-1.5 animate-spin" /> : <Play className="size-4 mr-1.5" />}
-            {running ? "运行中..." : "运行工作流"}
+            {running ? "Running..." : "Run Workflow"}
           </Button>
         </div>
 
@@ -236,13 +238,13 @@ export default function WorkflowDetailPage({
                       </div>
                       {state?.input && (
                         <div className="mt-2 text-xs text-muted-foreground">
-                          <span className="text-zinc-500">输入:</span>{" "}
+                          <span className="text-zinc-500">Input:</span>{" "}
                           <span className="line-clamp-2">{state.input.slice(0, 150)}</span>
                         </div>
                       )}
                       {state?.output && status !== "running" && (
                         <div className="mt-1.5 text-xs text-foreground/80">
-                          <span className="text-zinc-500">输出:</span>{" "}
+                          <span className="text-zinc-500">Output:</span>{" "}
                           <span className="line-clamp-3">{state.output.slice(0, 200)}</span>
                         </div>
                       )}
@@ -282,12 +284,12 @@ export default function WorkflowDetailPage({
             <div>
               <Clock className="size-4 text-violet-400 mx-auto mb-1" />
               <p className="font-pixel text-lg" style={{ fontSize: 12, color: "#9D00FF" }}>{(stats.timeMs / 1000).toFixed(1)}s</p>
-              <p className="text-xs text-muted-foreground">耗时</p>
+              <p className="text-xs text-muted-foreground">{t("workflows.timeElapsed")}</p>
             </div>
             <div>
               <DollarSign className="size-4 text-emerald-400 mx-auto mb-1" />
               <p className="font-pixel text-lg" style={{ fontSize: 12, color: "#39FF14" }}>${stats.cost.toFixed(4)}</p>
-              <p className="text-xs text-muted-foreground">预估费用</p>
+              <p className="text-xs text-muted-foreground">{t("workflows.estCost")}</p>
             </div>
           </motion.div>
         )}

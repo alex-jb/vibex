@@ -5,6 +5,21 @@ import { supabase } from "./supabase";
 import type { User, Session } from "@supabase/supabase-js";
 import React from "react";
 
+/** Demo user for showcasing the app without Supabase */
+const DEMO_USER = {
+  id: "demo-user-001",
+  email: "trainer@vibex.app",
+  user_metadata: {
+    full_name: "VibeX Trainer",
+    avatar_url: undefined,
+  },
+  app_metadata: {},
+  aud: "authenticated",
+  created_at: "2026-01-01T00:00:00Z",
+} as unknown as User;
+
+const DEMO_SESSION_KEY = "vibex-demo-session";
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -13,6 +28,7 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<{ error: string | null }>;
   signUpWithEmail: (email: string, password: string) => Promise<{ error: string | null }>;
+  signInDemo: () => void;
   signOut: () => Promise<void>;
 }
 
@@ -24,6 +40,7 @@ const AuthContext = createContext<AuthContextType>({
   signInWithGoogle: async () => {},
   signInWithEmail: async () => ({ error: null }),
   signUpWithEmail: async () => ({ error: null }),
+  signInDemo: () => {},
   signOut: async () => {},
 });
 
@@ -33,6 +50,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check for demo session first
+    if (typeof window !== "undefined" && sessionStorage.getItem(DEMO_SESSION_KEY)) {
+      setUser(DEMO_USER);
+      setSession({ user: DEMO_USER } as unknown as Session);
+      setLoading(false);
+      return;
+    }
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -50,6 +75,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
 
     return () => subscription.unsubscribe();
+  }, []);
+
+  const signInDemo = useCallback(() => {
+    sessionStorage.setItem(DEMO_SESSION_KEY, "1");
+    setUser(DEMO_USER);
+    setSession({ user: DEMO_USER } as unknown as Session);
   }, []);
 
   const signInWithGitHub = useCallback(async () => {
@@ -81,6 +112,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
+    sessionStorage.removeItem(DEMO_SESSION_KEY);
+    setUser(null);
+    setSession(null);
     await supabase.auth.signOut();
   }, []);
 
@@ -95,6 +129,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signInWithGoogle,
         signInWithEmail,
         signUpWithEmail,
+        signInDemo,
         signOut,
       },
     },

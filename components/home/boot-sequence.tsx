@@ -111,7 +111,7 @@ export function BootSequence({ communityStats }: BootSequenceProps) {
                     <span>{t("hero.startQuest")}</span>
                   </button>
                 </Link>
-                <Link href="/explore">
+                <Link href="/discover">
                   <button className="retro-button flex items-center gap-2">
                     <Eye size={14} />
                     <span>{t("hero.exploreArena")}</span>

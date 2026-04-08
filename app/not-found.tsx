@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useLang } from "@/lib/i18n";
 
 export default function NotFound() {
+  const { t } = useLang();
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center relative overflow-hidden">
       {/* Scanline overlay */}
@@ -51,16 +53,16 @@ export default function NotFound() {
         </pre>
 
         <p className="text-green-300 font-mono text-center mb-6 text-sm">
-          &gt; 你迷路了，训练师。这个页面不存在。
+          &gt; {t("notFound.message")}
         </p>
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/">
-            <button className="nes-btn is-primary w-full">返回首页</button>
+            <button className="nes-btn is-primary w-full">{t("notFound.home")}</button>
           </Link>
-          <Link href="/explore">
-            <button className="nes-btn w-full">探索项目</button>
+          <Link href="/discover">
+            <button className="nes-btn w-full">{t("notFound.explore")}</button>
           </Link>
         </div>
       </div>

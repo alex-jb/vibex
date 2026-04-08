@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { LangProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/lib/auth";
 import { BuddyCompanion } from "@/components/buddy-companion";
+import { ChatWidget } from "@/components/chat-widget";
 import { TutorialOverlay } from "@/components/onboarding/tutorial-overlay";
 import "nes.css/css/nes.min.css";
 import "./globals.css";
@@ -96,8 +97,9 @@ export default function RootLayout({
           <LangProvider>
             <div className="scanline-overlay" aria-hidden="true" />
             <Navbar />
-            <main className="flex-1 pt-16">{children}</main>
+            <main className="flex-1 pt-14">{children}</main>
             <Footer />
+            <ChatWidget />
             <BuddyCompanion />
             <TutorialOverlay />
           </LangProvider>

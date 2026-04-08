@@ -55,7 +55,7 @@ export function QuestBoard({ gridProjects }: QuestBoardProps) {
               {t("quest.heading")}
             </h2>
           </div>
-          <Link href="/explore">
+          <Link href="/discover">
             <button className="retro-button flex items-center gap-2">
               <span>{t("quest.viewAll")}</span>
               <ArrowRight size={12} />

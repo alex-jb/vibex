@@ -1,0 +1,145 @@
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { Swords, Heart, Target, MessageSquare, Lock } from "lucide-react";
+import { useLang } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth";
+
+interface DojoRoom {
+  href: string;
+  icon: typeof Swords;
+  color: string;
+  shadow: string;
+  accent: string;
+  i18nKey: string;
+  descKey: string;
+  requiresAuth?: boolean;
+}
+
+const dojoRooms: DojoRoom[] = [
+  {
+    href: "/arena",
+    icon: Swords,
+    color: "from-amber-500 to-orange-500",
+    shadow: "shadow-amber-500/20",
+    accent: "text-amber-400",
+    i18nKey: "nav.arena",
+    descKey: "dojo.arenaDesc",
+  },
+  {
+    href: "/buddy",
+    icon: Heart,
+    color: "from-pink-500 to-rose-500",
+    shadow: "shadow-pink-500/20",
+    accent: "text-pink-400",
+    i18nKey: "nav.buddy",
+    descKey: "dojo.buddyDesc",
+  },
+  {
+    href: "/hunt",
+    icon: Target,
+    color: "from-emerald-500 to-teal-500",
+    shadow: "shadow-emerald-500/20",
+    accent: "text-emerald-400",
+    i18nKey: "nav.hunt",
+    descKey: "dojo.huntDesc",
+  },
+  {
+    href: "/messages",
+    icon: MessageSquare,
+    color: "from-cyan-500 to-blue-500",
+    shadow: "shadow-cyan-500/20",
+    accent: "text-cyan-400",
+    i18nKey: "nav.messages",
+    descKey: "dojo.messagesDesc",
+    requiresAuth: true,
+  },
+];
+
+export default function DojoPage() {
+  const { t } = useLang();
+  const { user } = useAuth();
+
+  const visibleRooms = dojoRooms.filter(
+    (room) => !room.requiresAuth || user
+  );
+
+  return (
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-16">
+      {/* Background gradient orb */}
+      <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[480px] w-[480px] rounded-full bg-violet-600/8 blur-[120px]" />
+
+      {/* Hero */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative text-center mb-12"
+      >
+        <h1
+          className="font-pixel text-[14px] tracking-widest mb-3"
+          style={{ color: "#39FF14", textShadow: "0 0 12px rgba(57,255,20,0.3)" }}
+        >
+          {"> VIBEX://DOJO"}
+        </h1>
+        <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
+          {t("dojo.title")}{" "}
+          <span className="text-gradient">{t("dojo.titleHighlight")}</span>
+        </h2>
+        <p className="mt-3 text-muted-foreground max-w-lg mx-auto text-sm leading-relaxed">
+          {t("dojo.description")}
+        </p>
+      </motion.div>
+
+      {/* Room Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {visibleRooms.map((room, i) => (
+          <motion.div
+            key={room.href}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 + i * 0.08 }}
+          >
+            <Link href={room.href} className="group block">
+              <div className="glass-card-strong rounded-xl retro-border p-6 transition-all hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/5">
+                <div className={`inline-flex items-center justify-center size-14 rounded-xl bg-gradient-to-br ${room.color} ${room.shadow} shadow-lg mb-4 group-hover:scale-110 transition-transform`}>
+                  <room.icon className="size-7 text-white" />
+                </div>
+                <h3 className={`text-xl font-bold ${room.accent} mb-2`}>
+                  {t(room.i18nKey as Parameters<typeof t>[0])}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {t(room.descKey as Parameters<typeof t>[0])}
+                </p>
+              </div>
+            </Link>
+          </motion.div>
+        ))}
+
+        {/* Login prompt for Messages when not authenticated */}
+        {!user && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 + visibleRooms.length * 0.08 }}
+          >
+            <Link href="/login" className="group block">
+              <div className="glass-card-strong rounded-xl retro-border p-6 transition-all hover:border-violet-500/30 border-dashed border-white/10 opacity-60 hover:opacity-80">
+                <div className="inline-flex items-center justify-center size-14 rounded-xl bg-gradient-to-br from-cyan-500/30 to-blue-500/30 shadow-lg mb-4">
+                  <Lock className="size-7 text-cyan-400/60" />
+                </div>
+                <h3 className="text-xl font-bold text-cyan-400/60 mb-2">
+                  {t("nav.messages")}
+                </h3>
+                <p className="text-sm text-muted-foreground/60 leading-relaxed">
+                  {t("dojo.loginToChat")}
+                </p>
+              </div>
+            </Link>
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -27,42 +27,36 @@ import { useLang } from "@/lib/i18n";
 
 // ── Constants ──────────────────────────────────────────────────
 
-const CATEGORIES: { key: AgentCategory; zh: string }[] = [
-  { key: "coding", zh: "编程" },
-  { key: "research", zh: "研究" },
-  { key: "creative", zh: "创作" },
-  { key: "automation", zh: "自动化" },
-  { key: "assistant", zh: "助手" },
-  { key: "trading", zh: "交易" },
-  { key: "education", zh: "教育" },
+const CATEGORY_KEYS: AgentCategory[] = [
+  "coding", "research", "creative", "automation", "assistant", "trading", "education",
 ];
 
 const MODELS = [
-  { id: "claude-haiku-4-5" as const, label: "Haiku 4.5", sub: "快速 \u00b7 低成本", price: "$1/$5" },
-  { id: "claude-sonnet-4-6" as const, label: "Sonnet 4.6", sub: "均衡 \u00b7 推荐", price: "$3/$15" },
-  { id: "claude-opus-4-6" as const, label: "Opus 4.6", sub: "最强 \u00b7 高成本", price: "$5/$25" },
+  { id: "claude-haiku-4-5" as const, label: "Haiku 4.5", subKey: "builder.fastLow" as const, price: "$1/$5" },
+  { id: "claude-sonnet-4-6" as const, label: "Sonnet 4.6", subKey: "builder.balanced" as const, price: "$3/$15" },
+  { id: "claude-opus-4-6" as const, label: "Opus 4.6", subKey: "builder.powerful" as const, price: "$5/$25" },
 ];
 
 const PROMPT_TEMPLATES: { label: string; prompt: string }[] = [
   {
-    label: "代码审查专家",
+    label: "Code Review Expert",
     prompt:
-      "你是一位资深代码审查专家。分析提交的代码，识别 Bug、安全漏洞、性能问题和最佳实践违规。按严重程度分级并给出可操作的修复建议。",
+      "You are a senior code review expert. Analyze submitted code, identify bugs, security vulnerabilities, performance issues, and best-practice violations. Classify by severity and provide actionable fix suggestions.",
   },
   {
-    label: "研究助手",
+    label: "Research Assistant",
     prompt:
-      "你是一位深度研究助手。针对给定的主题，从多个角度进行分析，交叉验证事实，生成带引用的结构化研究报告。",
+      "You are a deep research assistant. Analyze a given topic from multiple angles, cross-verify facts, and generate a structured research report with citations.",
   },
   {
-    label: "创意写手",
+    label: "Creative Writer",
     prompt:
-      "你是一位专业创意写手。根据用户提供的主题、风格和语调要求，创作高质量的文章、故事或营销文案。注重文字的节奏感和表达力。",
+      "You are a professional creative writer. Based on the user's topic, style, and tone requirements, produce high-quality articles, stories, or marketing copy. Focus on rhythm and expressiveness.",
   },
   {
-    label: "数据分析师",
+    label: "Data Analyst",
     prompt:
-      "你是一位数据分析师。解析用户提供的数据，发现模式和趋势，生成可视化建议和结论。用简洁明了的语言解释复杂的数据洞察。",
+      "You are a data analyst. Parse user-provided data, discover patterns and trends, generate visualization suggestions and conclusions. Explain complex data insights in clear, concise language.",
   },
 ];
 
@@ -127,14 +121,14 @@ export default function AgentBuilderPage() {
       setTestSteps(
         data.steps ?? [{
           id: "error", type: "response" as const,
-          content: `错误: ${data.error ?? "未知错误"}`,
+          content: `${t("agents.error")}: ${data.error ?? t("agents.unknownError")}`,
           tokens: 0, durationMs: 0, timestamp: new Date().toISOString(),
         }],
       );
     } catch {
       setTestSteps([{
         id: "error", type: "response" as const,
-        content: "执行失败，请检查 API 配置",
+        content: t("agents.execFailed"),
         tokens: 0, durationMs: 0, timestamp: new Date().toISOString(),
       }]);
     }
@@ -149,9 +143,9 @@ export default function AgentBuilderPage() {
       <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[480px] w-[480px] rounded-full bg-violet-600/8 blur-[120px]" />
 
       {/* Back link */}
-      <Link href="/agents" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8">
+      <Link href="/discover?tab=agents" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8">
         <ArrowLeft className="size-4" />
-        {zh ? "返回 Agent 市场" : "Back to Marketplace"}
+        {t("agents.backToMarket")}
       </Link>
 
       {/* Title */}
@@ -165,7 +159,7 @@ export default function AgentBuilderPage() {
           </h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          {zh ? "配置你的 AI Agent，设置工具和行为，然后发布到市场。" : "Configure your AI Agent, set up tools and behavior, then publish."}
+          {t("builder.subtitle")}
         </p>
       </motion.div>
 
@@ -174,38 +168,38 @@ export default function AgentBuilderPage() {
         {/* ── LEFT: Builder Form ── */}
         <div className="lg:col-span-3 space-y-6">
 
-          {/* a) 基本信息 */}
+          {/* a) Basic Info */}
           <section className="glass-card-strong rounded-xl p-6 border border-white/[0.06]">
             <h3 className="font-pixel text-[9px] uppercase tracking-widest text-muted-foreground mb-4">
               {t("builder.basicInfo")}
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="text-xs text-muted-foreground mb-1 block">Agent {zh ? "名称" : "Name"}</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Agent {t("builder.name")}</label>
                 <input value={name} onChange={(e) => setName(e.target.value)}
-                  placeholder={zh ? "例如: CodeReviewer Pro" : "e.g. CodeReviewer Pro"}
+                  placeholder={t("builder.namePlaceholder")}
                   className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-violet-500/40" />
               </div>
               <div>
-                <label className="text-xs text-muted-foreground mb-1 block">{zh ? "描述" : "Description"}</label>
+                <label className="text-xs text-muted-foreground mb-1 block">{t("builder.desc")}</label>
                 <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3}
-                  placeholder={zh ? "简要描述 Agent 的功能..." : "Briefly describe what this agent does..."}
+                  placeholder={t("builder.descPlaceholder")}
                   className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-violet-500/40 resize-none" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">{zh ? "分类" : "Category"}</label>
+                  <label className="text-xs text-muted-foreground mb-1 block">{t("builder.category")}</label>
                   <select value={category} onChange={(e) => setCategory(e.target.value as AgentCategory)}
                     className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-violet-500/40">
-                    {CATEGORIES.map((c) => (
-                      <option key={c.key} value={c.key}>{zh ? c.zh : c.key}</option>
+                    {CATEGORY_KEYS.map((key) => (
+                      <option key={key} value={key}>{t(`agents.${key}`)}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">{zh ? "标签" : "Tags"}</label>
+                  <label className="text-xs text-muted-foreground mb-1 block">{t("builder.tags")}</label>
                   <input value={tags} onChange={(e) => setTags(e.target.value)}
-                    placeholder={zh ? "逗号分隔" : "comma separated"}
+                    placeholder={t("builder.tagsSeparator")}
                     className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-violet-500/40" />
                 </div>
               </div>
@@ -214,12 +208,12 @@ export default function AgentBuilderPage() {
                   onClick={() => setIsPublic(!isPublic)}>
                   <div className={`absolute top-0.5 size-4 rounded-full bg-white transition-transform ${isPublic ? "translate-x-5" : "translate-x-0.5"}`} />
                 </div>
-                <span className="text-sm">{zh ? "是否公开" : "Public"}</span>
+                <span className="text-sm">{t("builder.public")}</span>
               </label>
             </div>
           </section>
 
-          {/* b) 模型配置 */}
+          {/* b) Model Config */}
           <section className="glass-card-strong rounded-xl p-6 border border-white/[0.06]">
             <h3 className="font-pixel text-[9px] uppercase tracking-widest text-muted-foreground mb-4">
               {t("builder.modelConfig")}
@@ -236,7 +230,7 @@ export default function AgentBuilderPage() {
                     <Cpu className="size-3.5 text-violet-400" />
                     <span className="text-sm font-semibold">{m.label}</span>
                   </div>
-                  <p className="text-[10px] text-muted-foreground">{m.sub}</p>
+                  <p className="text-[10px] text-muted-foreground">{t(m.subKey)}</p>
                   <p className="text-[10px] text-violet-400 mt-1">{m.price}</p>
                 </button>
               ))}
@@ -273,26 +267,26 @@ export default function AgentBuilderPage() {
                 onChange={(e) => { if (e.target.value) setSystemPrompt(e.target.value); }}
                 value=""
                 className="rounded-lg border border-white/[0.08] bg-white/5 px-2 py-1 text-xs outline-none">
-                <option value="">{zh ? "模板" : "Templates"}</option>
+                <option value="">{t("builder.templates")}</option>
                 {PROMPT_TEMPLATES.map((t) => (
                   <option key={t.label} value={t.prompt}>{t.label}</option>
                 ))}
               </select>
             </div>
             <Textarea value={systemPrompt} onChange={(e) => setSystemPrompt(e.target.value)}
-              rows={8} placeholder={zh ? "定义 Agent 的行为和个性..." : "Define agent behavior and personality..."}
+              rows={8} placeholder={t("builder.promptPlaceholder")}
               className="bg-white/5 border-white/[0.08] mb-2" />
-            <p className="text-right text-[10px] text-muted-foreground">{systemPrompt.length} {zh ? "字符" : "chars"}</p>
+            <p className="text-right text-[10px] text-muted-foreground">{systemPrompt.length} {t("builder.chars")}</p>
           </section>
 
-          {/* d) 工具选择 */}
+          {/* d) Tool Selection */}
           <section className="glass-card-strong rounded-xl p-6 border border-white/[0.06]">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-pixel text-[9px] uppercase tracking-widest text-muted-foreground">
                 {t("builder.tools")}
               </h3>
               <span className="text-xs text-muted-foreground">
-                {zh ? `已选择 ${selectedTools.length}/${BUILTIN_TOOLS.length} 个工具` : `${selectedTools.length}/${BUILTIN_TOOLS.length} selected`}
+                {`${selectedTools.length}/${BUILTIN_TOOLS.length} ${t("builder.selectedTools")}`}
               </span>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -351,7 +345,7 @@ export default function AgentBuilderPage() {
             <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
               <div className="flex items-center justify-between mb-3">
                 <Badge variant="outline" className="border-violet-500/30 bg-violet-500/10 text-violet-400 text-[10px] uppercase tracking-wider">
-                  {zh ? (CATEGORIES.find((c) => c.key === category)?.zh ?? category) : category}
+                  {t(`agents.${category}`)}
                 </Badge>
                 <span className="inline-flex items-center gap-1 rounded-full bg-fuchsia-500/10 px-2 py-0.5 text-[10px] font-medium text-fuchsia-400">
                   <Cpu className="size-2.5" />
@@ -359,10 +353,10 @@ export default function AgentBuilderPage() {
                 </span>
               </div>
               <h4 className="text-lg font-bold text-foreground">
-                {name || (zh ? "未命名 Agent" : "Untitled Agent")}
+                {name || t("builder.untitled")}
               </h4>
               <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground line-clamp-2">
-                {description || (zh ? "暂无描述" : "No description yet")}
+                {description || t("builder.noDesc")}
               </p>
               {selectedTools.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1.5">
@@ -382,7 +376,7 @@ export default function AgentBuilderPage() {
               )}
               <div className="mt-4 flex items-center gap-4 text-[11px] text-muted-foreground">
                 <span className="flex items-center gap-1"><Play className="size-3 text-emerald-400" />0</span>
-                <span className="flex items-center gap-1">--{zh ? " 成功率" : " success"}</span>
+                <span className="flex items-center gap-1">-- {t("builder.success")}</span>
               </div>
             </div>
           </motion.div>
@@ -397,12 +391,12 @@ export default function AgentBuilderPage() {
                     {t("builder.testPanel")}
                   </h3>
                   <Textarea value={testInput} onChange={(e) => setTestInput(e.target.value)}
-                    rows={3} placeholder={zh ? "输入测试请求..." : "Enter test input..."}
+                    rows={3} placeholder={t("builder.testPlaceholder")}
                     className="bg-white/5 border-white/[0.08] mb-3" />
                   <Button onClick={handleTest} disabled={!testInput.trim() || testRunning}
                     className="gap-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white mb-4">
                     {testRunning ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />}
-                    {testRunning ? (zh ? "执行中..." : "Running...") : (zh ? "运行" : "Run")}
+                    {testRunning ? t("agents.running") : t("agents.run")}
                   </Button>
 
                   {(testSteps.length > 0 || testRunning) && (
@@ -432,7 +426,7 @@ export default function AgentBuilderPage() {
                         {testRunning && (
                           <div className="flex items-center gap-2 text-violet-400">
                             <Loader2 className="size-3.5 animate-spin" />
-                            <span className="text-xs">{zh ? "思考中..." : "Thinking..."}</span>
+                            <span className="text-xs">{t("agents.thinking")}</span>
                           </div>
                         )}
                       </div>

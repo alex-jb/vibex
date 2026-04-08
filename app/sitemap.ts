@@ -5,9 +5,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://vibex.app";
 
   const staticPages = [
-    "", "/explore", "/hunt", "/arena", "/ideas",
+    "", "/discover", "/hunt", "/arena", "/ideas",
     "/creators", "/events", "/insights", "/launch", "/login",
-    "/agents", "/workflows", "/analytics", "/developers",
+    "/register", "/analytics", "/developers",
     "/buddy", "/feed", "/profile", "/settings",
     "/about", "/terms", "/privacy",
     // New pages

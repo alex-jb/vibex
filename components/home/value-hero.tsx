@@ -2,13 +2,15 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useLang } from "@/lib/i18n";
 
 /**
  * Value Hero: 3-second value proposition.
  * Shows AFTER boot sequence, BEFORE the rest of the page.
- * Answers: "What is this and why should I care?"
  */
 export function ValueHero() {
+  const { t } = useLang();
+
   return (
     <section
       style={{
@@ -44,9 +46,9 @@ export function ValueHero() {
             letterSpacing: 1,
           }}
         >
-          Launch your AI product.
+          {t("valuehero.headline1")}
           <br />
-          <span style={{ color: "#FACC15" }}>Get growth.</span>
+          <span style={{ color: "#FACC15" }}>{t("valuehero.headline2")}</span>
         </motion.h1>
 
         {/* Subheadline */}
@@ -62,13 +64,7 @@ export function ValueHero() {
             marginBottom: 24,
           }}
         >
-          AI{"\u00A0"}feedback, distribution strategy, growth tracking{" "}
-          — in one platform.
-          <br />
-          <span style={{ color: "#9D00FF" }}>
-            AI{"\u00A0"}{"\u53CD\u9988 + \u5206\u53D1\u7B56\u7565 + \u589E\u957F\u8FFD\u8E2A"}{" "}
-            — {"\u4E00\u7AD9\u5F0F\u5E73\u53F0\u3002"}
-          </span>
+          {t("valuehero.subheadline")}
         </motion.p>
 
         {/* CTA buttons */}
@@ -83,15 +79,15 @@ export function ValueHero() {
               className="nes-btn is-primary"
               style={{ fontSize: 10, padding: "8px 24px" }}
             >
-              {"\uD83D\uDE80 Launch Project"}
+              {t("valuehero.launch")}
             </button>
           </Link>
-          <Link href="/explore">
+          <Link href="/discover">
             <button
               className="nes-btn"
               style={{ fontSize: 10, padding: "8px 24px" }}
             >
-              {"\uD83D\uDD0D Explore"}
+              {t("valuehero.explore")}
             </button>
           </Link>
           <Link href="/insights/growth">
@@ -99,7 +95,7 @@ export function ValueHero() {
               className="nes-btn"
               style={{ fontSize: 10, padding: "8px 24px" }}
             >
-              {"\uD83D\uDCC8 Growth Intel"}
+              {t("valuehero.growth")}
             </button>
           </Link>
         </motion.div>
@@ -117,7 +113,7 @@ export function ValueHero() {
             letterSpacing: 1,
           }}
         >
-          {"\u2B50 AI-NATIVE CREATORS \u2022 50 LEVEL PROGRESSION \u2022 GROWTH ENGINE \u2022 OPEN PLATFORM"}
+          {t("valuehero.social")}
         </motion.div>
       </div>
     </section>

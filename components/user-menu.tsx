@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogOut, User, Swords } from "lucide-react";
+import { LogOut, User, Swords, Target, MessageSquare, Heart } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
+import { useLang } from "@/lib/i18n";
 
 function getInitials(name: string): string {
   return name
@@ -24,6 +25,7 @@ function getDisplayName(user: { email?: string; user_metadata?: Record<string, u
 }
 
 export function UserMenu() {
+  const { t } = useLang();
   const { user, loading, signOut } = useAuth();
   const [open, setOpen] = useState(false);
 
@@ -63,6 +65,7 @@ export function UserMenu() {
         className="flex items-center gap-2 rounded-full p-0.5 transition-all hover:ring-2 hover:ring-violet-500/30"
       >
         {avatar ? (
+          /* External avatar URL from OAuth provider -- next/image requires explicit domain allowlisting */
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={avatar}
@@ -111,16 +114,52 @@ export function UserMenu() {
                   className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
                 >
                   <User className="size-4" />
-                  个人资料
+                  {t("user.profile")}
                 </Link>
+              </div>
+
+              {/* Dojo section */}
+              <div className="border-t border-white/[0.06] pt-1">
+                <div className="px-4 py-1.5">
+                  <span className="font-pixel text-[7px] text-violet-400 uppercase tracking-widest">
+                    {t("user.dojo")}
+                  </span>
+                </div>
                 <Link
                   role="menuitem"
                   href="/arena"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
                 >
-                  <Swords className="size-4" />
-                  战斗记录
+                  <Swords className="size-4 text-amber-400" />
+                  {t("nav.arena")}
+                </Link>
+                <Link
+                  role="menuitem"
+                  href="/buddy"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+                >
+                  <Heart className="size-4 text-pink-400" />
+                  {t("nav.buddy")}
+                </Link>
+                <Link
+                  role="menuitem"
+                  href="/hunt"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+                >
+                  <Target className="size-4 text-emerald-400" />
+                  {t("nav.hunt")}
+                </Link>
+                <Link
+                  role="menuitem"
+                  href="/messages"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+                >
+                  <MessageSquare className="size-4 text-cyan-400" />
+                  {t("nav.messages")}
                 </Link>
               </div>
 
@@ -135,7 +174,7 @@ export function UserMenu() {
                   className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
                 >
                   <LogOut className="size-4" />
-                  退出登录
+                  {t("user.signOut")}
                 </button>
               </div>
             </motion.div>

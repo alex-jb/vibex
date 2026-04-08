@@ -54,7 +54,7 @@ export function CtaSection({ weeklyWinners }: CtaSectionProps) {
                   <span>{t("cta.beginQuest")}</span>
                 </button>
               </Link>
-              <Link href="/explore">
+              <Link href="/discover">
                 <button className="retro-button retro-button--danger flex items-center gap-2 mx-auto sm:mx-0">
                   <Eye size={14} />
                   <span>{t("cta.spectate")}</span>

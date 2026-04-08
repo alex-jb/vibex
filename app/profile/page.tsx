@@ -99,7 +99,6 @@ function StatCard({
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useLang();
 
   useEffect(() => {
@@ -118,13 +117,15 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
-  const displayName =
-    user.user_metadata?.full_name ??
-    user.user_metadata?.name ??
+  const meta = user.user_metadata as Record<string, unknown> | undefined;
+  const displayName = String(
+    meta?.full_name ??
+    meta?.name ??
     user.email?.split("@")[0] ??
-    "Adventurer";
+    "Adventurer"
+  );
   const avatarUrl: string | undefined =
-    user.user_metadata?.avatar_url ?? user.user_metadata?.picture;
+    (meta?.avatar_url as string) ?? (meta?.picture as string) ?? undefined;
   const email = user.email ?? "";
   const joinDate = user.created_at ? formatDate(user.created_at) : "---";
 
@@ -147,27 +148,27 @@ export default function ProfilePage() {
   const expPercent = Math.min(100, (userLevel.currentExp / userLevel.expToNextLevel) * 100);
 
   const stats: { icon: React.ElementType; label: string; value: number; suffix?: string }[] = [
-    { icon: Folder, label: "我的项目", value: myProjects.length },
-    { icon: ThumbsUp, label: "总点赞", value: totalUpvotes },
-    { icon: Swords, label: "战斗次数", value: battleCount },
-    { icon: Users, label: "粉丝数", value: followerCount },
-    { icon: Sparkles, label: "等级", value: userLevel.level, suffix: userLevel.title },
+    { icon: Folder, label: t("profile.myProjects"), value: myProjects.length },
+    { icon: ThumbsUp, label: t("profile.totalUpvotes"), value: totalUpvotes },
+    { icon: Swords, label: t("profile.battleCount"), value: battleCount },
+    { icon: Users, label: t("profile.followers"), value: followerCount },
+    { icon: Sparkles, label: t("profile.level"), value: userLevel.level, suffix: userLevel.title },
   ];
 
   /* Mock battle history */
   const battles = [
-    { opponent: "AgentForge", result: "胜利", won: true },
-    { opponent: "PixelMind", result: "失败", won: false },
-    { opponent: "NeuralCraft", result: "胜利", won: true },
+    { opponent: "AgentForge", result: t("profile.win"), won: true },
+    { opponent: "PixelMind", result: t("profile.lose"), won: false },
+    { opponent: "NeuralCraft", result: t("profile.win"), won: true },
   ];
 
   /* Mock achievements */
   const achievements = [
-    { icon: Star, label: "先驱者", desc: "首批注册用户" },
-    { icon: Swords, label: "第一次战斗", desc: "完成首场竞技" },
-    { icon: Folder, label: "首个项目", desc: "发布第一个项目" },
-    { icon: Trophy, label: "连胜三场", desc: "竞技场三连胜" },
-    { icon: Shield, label: "百赞达人", desc: "单项目超100赞" },
+    { icon: Star, label: t("profile.pioneer"), desc: t("profile.earlyAdopter") },
+    { icon: Swords, label: t("profile.firstBattle"), desc: t("profile.firstBattleDesc") },
+    { icon: Folder, label: t("profile.firstProject"), desc: t("profile.firstProjectDesc") },
+    { icon: Trophy, label: t("profile.winStreak"), desc: t("profile.winStreakDesc") },
+    { icon: Shield, label: t("profile.hundredUpvotes"), desc: t("profile.hundredUpvotesDesc") },
   ];
 
   return (
@@ -178,6 +179,7 @@ export default function ProfilePage() {
           <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
             {/* Avatar */}
             {avatarUrl ? (
+              /* External avatar URL from OAuth provider -- next/image requires explicit domain allowlisting */
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={avatarUrl}
@@ -216,18 +218,18 @@ export default function ProfilePage() {
               </p>
               <p className="mt-1 flex items-center justify-center gap-1.5 text-xs text-white/40 sm:justify-start">
                 <CalendarDays className="h-3.5 w-3.5" />
-                加入于 {joinDate}
+                {t("profile.joinedAt")} {joinDate}
               </p>
             </div>
 
             {/* Edit button */}
             <button
               disabled
-              title="即将推出"
+              title={t("profile.comingSoon")}
               className="flex items-center gap-1.5 rounded-lg border border-white/10 px-4 py-2 text-xs text-white/30 cursor-not-allowed"
             >
               <Pencil className="h-3.5 w-3.5" />
-              编辑资料
+              {t("profile.editProfile")}
             </button>
           </div>
         </div>
@@ -243,7 +245,7 @@ export default function ProfilePage() {
       {/* ── EXP Progress ── */}
       <FadeIn delay={0.45} className="mt-8">
         <div className="rpgui-container framed rounded-xl p-5">
-          <h2 className="font-pixel text-lg text-gradient mb-4">经验进度</h2>
+          <h2 className="font-pixel text-lg text-gradient mb-4">{t("profile.expProgress")}</h2>
           <div className="flex items-center gap-3">
             <div className="level-badge shrink-0">
               <span className="text-violet-400">Lv</span>
@@ -265,7 +267,7 @@ export default function ProfilePage() {
             </div>
           </div>
           <p className="mt-2 font-pixel text-[10px] text-white/40 text-right">
-            累计 {userLevel.totalExp} EXP · 距下一级还需 {userLevel.expToNextLevel - userLevel.currentExp} EXP
+            {t("profile.expTotal")} {userLevel.totalExp} EXP · {t("profile.expNeeded")} {userLevel.expToNextLevel - userLevel.currentExp} EXP {t("profile.expMore")}
           </p>
         </div>
       </FadeIn>
@@ -274,9 +276,9 @@ export default function ProfilePage() {
       <FadeIn delay={0.48} className="mt-8">
         <div className="rpgui-container framed rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-pixel text-lg text-gradient">我的伙伴</h2>
+            <h2 className="font-pixel text-lg text-gradient">{t("profile.myBuddies")}</h2>
             <Link href="/buddy" className="font-pixel text-xs text-violet-400 hover:text-violet-300 transition-colors">
-              查看全部 →
+              {t("profile.viewAll")}
             </Link>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-1">
@@ -304,7 +306,7 @@ export default function ProfilePage() {
                   <p className="font-pixel text-[10px] text-white/50 mt-0.5">Lv.{buddy.level}</p>
                   <p className="text-[9px] mt-0.5" style={{ color: rarity.color }}>{rarity.labelZh}</p>
                   {buddy.isActive && (
-                    <span className="inline-block mt-1 font-pixel text-[9px] text-amber-400">★ 出战中</span>
+                    <span className="inline-block mt-1 font-pixel text-[9px] text-amber-400">{t("buddy.inBattle")}</span>
                   )}
                 </div>
               );
@@ -315,7 +317,7 @@ export default function ProfilePage() {
 
       {/* ── My Projects ── */}
       <FadeIn delay={0.5} className="mt-10">
-        <h2 className="font-pixel text-lg text-gradient mb-4">我的项目</h2>
+        <h2 className="font-pixel text-lg text-gradient mb-4">{t("profile.myProjects")}</h2>
         <div className="space-y-3">
           {myProjects.map((p) => (
             <Link key={p.id} href={`/project/${p.id}`} className="block group">
@@ -347,7 +349,7 @@ export default function ProfilePage() {
 
       {/* ── Battle History ── */}
       <FadeIn delay={0.6} className="mt-10">
-        <h2 className="font-pixel text-lg text-gradient mb-4">最近战斗</h2>
+        <h2 className="font-pixel text-lg text-gradient mb-4">{t("profile.recentBattles")}</h2>
         <div className="glass-card-strong rounded-xl border border-white/[0.08] divide-y divide-white/[0.06]">
           {battles.map((b, i) => (
             <Link key={i} href="/arena" className="flex items-center justify-between px-5 py-3.5 group transition-colors hover:bg-white/[0.02]">
@@ -366,7 +368,7 @@ export default function ProfilePage() {
 
       {/* ── Achievement Badges ── */}
       <FadeIn delay={0.7} className="mt-10 pb-8">
-        <h2 className="font-pixel text-lg text-gradient mb-4">成就徽章</h2>
+        <h2 className="font-pixel text-lg text-gradient mb-4">{t("profile.achievements")}</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
           {achievements.map((a) => (
             <div
