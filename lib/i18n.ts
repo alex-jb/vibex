@@ -29,6 +29,8 @@ const translations = {
     "nav.discover": "Discover",
     "nav.dojo": "Dojo",
     "nav.more": "More",
+    "nav.moreComing": "More Coming",
+    "nav.moreComingHint": "New features dropping soon",
 
     // Discover page
     "discover.badge": "Discover what's next",
@@ -855,6 +857,8 @@ const translations = {
     "nav.discover": "发现",
     "nav.dojo": "道场",
     "nav.more": "更多",
+    "nav.moreComing": "更多功能",
+    "nav.moreComingHint": "新功能即将上线",
 
     // Discover page
     "discover.badge": "发现下一个热门",

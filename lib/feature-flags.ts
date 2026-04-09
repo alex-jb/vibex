@@ -10,19 +10,9 @@
  */
 
 export const FEATURE_FLAGS = {
-  // Shelved: noise features not in the core loop or RPG gamification
-  FEATURE_FEED: false,
-  FEATURE_EVENTS: false,
-  FEATURE_IDEAS: false,
-  FEATURE_AGENTS: false,
-  FEATURE_WORKFLOWS: false,
-  FEATURE_INSIGHTS: false,
-  FEATURE_CREATOR_GRAPH: false,
-  FEATURE_VC: false,
-  FEATURE_DEVELOPERS: false,
-  FEATURE_USER_ANALYTICS: false,
-  FEATURE_MESSAGES: false,
-  FEATURE_CREATOR_DASHBOARD: false,
+  // Shelved features (code preserved, routes blocked)
+  FEATURE_BUDDY: false,  // Pet/gacha system (/buddy, /buddy/trade)
+  FEATURE_EVENTS: false, // Hackathons, salons, demo days (/events)
 } as const;
 
 export type FeatureFlag = keyof typeof FEATURE_FLAGS;
@@ -33,7 +23,7 @@ export type FeatureFlag = keyof typeof FEATURE_FLAGS;
  * Priority: env var override > hardcoded FEATURE_FLAGS value
  *
  * @example
- *   if (!isFeatureEnabled("FEATURE_FEED")) redirect("/");
+ *   if (!isFeatureEnabled("FEATURE_BUDDY")) redirect("/");
  */
 export function isFeatureEnabled(flag: FeatureFlag): boolean {
   const envVar = `NEXT_PUBLIC_${flag}`;

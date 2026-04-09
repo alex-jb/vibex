@@ -27,23 +27,17 @@ const fullNavItems = [
   { href: "/discover", key: "nav.discover" as const },
   { href: "/creators", key: "nav.creators" as const },
   { href: "/dojo", key: "nav.dojo" as const },
+  { href: "/insights", key: "nav.insights" as const },
+  { href: "/ideas", key: "nav.ideas" as const },
   { href: "/analytics", key: "nav.analytics" as const },
-  { href: "/events", key: "nav.events" as const },
+  { href: "/developers", key: "nav.developers" as const },
 ];
 
 // Dojo items (in user menu + mobile menu)
 const dojoNavItems = [
   { href: "/arena", key: "nav.arena" as const },
-  { href: "/buddy", key: "nav.buddy" as const },
   { href: "/hunt", key: "nav.hunt" as const },
   { href: "/messages", key: "nav.messages" as const },
-];
-
-// Secondary nav items (in "More" dropdown + mobile menu)
-const secondaryNavItems = [
-  { href: "/insights", key: "nav.insights" as const },
-  { href: "/ideas", key: "nav.ideas" as const },
-  { href: "/developers", key: "nav.developers" as const },
 ];
 
 export function Navbar() {
@@ -54,7 +48,7 @@ export function Navbar() {
   const { t, lang } = useLang();
   const { user } = useAuth();
   const primaryNavItems = user ? fullNavItems : guestNavItems;
-  const allNavItems = [...primaryNavItems, ...(user ? dojoNavItems : []), ...(user ? secondaryNavItems : [])];
+  const allNavItems = [...primaryNavItems, ...(user ? dojoNavItems : [])];
   const isCJK = lang === "zh";
   const navFont: React.CSSProperties = isCJK
     ? { fontFamily: "var(--font-zpix), monospace", fontSize: 12, letterSpacing: 4, transform: "scale(1.35)", transformOrigin: "center" }
@@ -115,14 +109,14 @@ export function Navbar() {
                 </Link>
               );
             })}
-            {/* More dropdown */}
+            {/* More Coming placeholder — future expansions */}
             <div className="relative">
               <button
                 onClick={() => setMoreOpen(!moreOpen)}
-                className="relative flex flex-col items-center px-2.5 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="relative flex flex-col items-center px-2.5 py-2 text-muted-foreground/60 hover:text-foreground/80 transition-colors duration-200"
                 style={navFont}
               >
-                {t("nav.more")}
+                {t("nav.moreComing")}
               </button>
               <AnimatePresence>
                 {moreOpen && (
@@ -132,24 +126,11 @@ export function Navbar() {
                       initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
-                      className="absolute right-0 top-full mt-1 z-50 w-44 glass-card-strong rounded-xl border border-white/[0.08] py-1 shadow-xl"
+                      className="absolute right-0 top-full mt-1 z-50 w-48 glass-card-strong rounded-xl border border-white/[0.08] py-3 px-4 shadow-xl"
                     >
-                      {secondaryNavItems.map((item) => {
-                        const isActive = pathname.startsWith(item.href);
-                        return (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            onClick={() => setMoreOpen(false)}
-                            className={cn(
-                              "block px-4 py-2 font-pixel text-[9px] tracking-wide transition-colors",
-                              isActive ? "text-foreground bg-white/5" : "text-muted-foreground hover:text-foreground hover:bg-white/5"
-                            )}
-                          >
-                            {t(item.key)}
-                          </Link>
-                        );
-                      })}
+                      <p className="font-pixel text-[9px] tracking-wide text-muted-foreground text-center">
+                        {t("nav.moreComingHint")}
+                      </p>
                     </motion.div>
                   </>
                 )}
