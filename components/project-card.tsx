@@ -108,19 +108,31 @@ export function ProjectCard({ project }: { project: Project }) {
           <div
             className={`relative flex h-44 items-center justify-center bg-gradient-to-br ${getGradient(project.id)} overflow-hidden`}
           >
+            {/* GIF/Image thumbnail if available */}
+            {project.thumbnail && (
+              <img
+                src={project.thumbnail}
+                alt={project.title}
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-100 opacity-90"
+                loading="lazy"
+              />
+            )}
+
             {/* Layered depth gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] via-transparent to-black/20" />
 
             {/* Subtle grid pattern overlay */}
-            <div
-              className="absolute inset-0 opacity-[0.04]"
-              style={{
-                backgroundImage:
-                  "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
-                backgroundSize: "24px 24px",
-              }}
-            />
+            {!project.thumbnail && (
+              <div
+                className="absolute inset-0 opacity-[0.04]"
+                style={{
+                  backgroundImage:
+                    "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
+                  backgroundSize: "24px 24px",
+                }}
+              />
+            )}
 
             {/* Demo type pill in center */}
             <div className="relative z-10 flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3.5 py-1.5 backdrop-blur-md">

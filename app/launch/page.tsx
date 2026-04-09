@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { DemoGenerator } from "@/components/demo/demo-generator";
 import {
   Select,
   SelectContent,
@@ -311,6 +312,15 @@ export default function LaunchPage() {
                   className="bg-white/5 border-white/[0.08] focus-visible:border-violet-500/50 focus-visible:ring-violet-500/20"
                 />
               </FormField>
+
+              {/* Auto Demo Generator */}
+              <DemoGenerator
+                projectId={title.toLowerCase().replace(/\s+/g, "-").slice(0, 20) || undefined}
+                onGenerated={(gifUrl) => {
+                  setThumbnailUrl(gifUrl);
+                  if (!demoLink) setDemoLink(gifUrl);
+                }}
+              />
 
               <FormField label={t("launch.thumbnailUrl")}>
                 <Input
