@@ -19,13 +19,8 @@ import {
   Swords,
   MessageSquare,
 } from "lucide-react";
-import {
-  projects,
-  events,
-  trendInsights,
-  creators,
-  weeklyWinners,
-} from "@/lib/mock-data";
+import { weeklyWinners } from "@/lib/mock-data";
+import { useProjects, useCreators, useEvents, useTrendInsights } from "@/lib/use-data";
 import { useLang } from "@/lib/i18n";
 import { BootSequence } from "@/components/home/boot-sequence";
 import { ValueHero } from "@/components/home/value-hero";
@@ -95,6 +90,10 @@ const trendTypeConfig: Record<
 
 export default function Home() {
   const { t, lang } = useLang();
+  const { data: projects } = useProjects();
+  const { data: creators } = useCreators();
+  const { data: events } = useEvents();
+  const { data: trendInsights } = useTrendInsights();
 
   const communityStats = useMemo(() => [
     { label: t("stats.questsLaunched"), value: "12K+", color: "var(--neon-green)" },

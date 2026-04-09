@@ -39,4 +39,34 @@ test.describe("Project Detail Page", () => {
       await expect(page).toHaveURL("/explore");
     }
   });
+
+  test("has semantic article element with schema.org", async ({ page }) => {
+    await page.goto("/project/1");
+    const article = page.locator("article[itemscope]");
+    await expect(article).toBeVisible({ timeout: 5000 });
+  });
+
+  test("has breadcrumb navigation", async ({ page }) => {
+    await page.goto("/project/1");
+    await expect(page.locator("nav[aria-label='Breadcrumb']")).toBeVisible({ timeout: 5000 });
+  });
+
+  test("has time element with datetime attribute", async ({ page }) => {
+    await page.goto("/project/1");
+    const timeEl = page.locator("time[datetime]");
+    await expect(timeEl.first()).toBeVisible({ timeout: 5000 });
+  });
+
+  test("share modal opens with card preview", async ({ page }) => {
+    await page.goto("/project/1");
+    await page.getByRole("button", { name: /share/i }).first().click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(page.locator("text=Share Card").first()).toBeVisible();
+    await expect(page.locator("text=Download Card").first()).toBeVisible();
+  });
+
+  test("growth radar is visible in sidebar", async ({ page }) => {
+    await page.goto("/project/1");
+    await expect(page.locator("text=Growth Radar").first()).toBeVisible({ timeout: 5000 });
+  });
 });

@@ -74,4 +74,10 @@ test.describe("Navigation", () => {
     await page.goto("/about");
     await expect(page.locator("text=ABOUT")).toBeVisible({ timeout: 5000 });
   });
+
+  test("VC dashboard page loads", async ({ page }) => {
+    await page.goto("/vc/dashboard");
+    await expect(page.locator("text=Investor").first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator("text=Beta").first()).toBeVisible();
+  });
 });

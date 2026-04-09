@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
 interface Conversation {
@@ -65,6 +66,43 @@ export default function MessagesPage() {
       })
       .catch(() => {});
   }, [activeConv]);
+
+  // Realtime: subscribe to new messages in active conversation
+  useEffect(() => {
+    if (!activeConv) return;
+
+    const channel = supabase
+      .channel(`dm-${activeConv}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "direct_messages",
+          filter: `conversation_id=eq.${activeConv}`,
+        },
+        (payload) => {
+          const row = payload.new as Record<string, unknown>;
+          // Avoid duplicating our own messages (already added optimistically)
+          if (row.sender_id === user?.id) return;
+          const newMsg: Message = {
+            id: row.id as string,
+            sender_id: row.sender_id as string,
+            sender_name: (row.sender_name as string) || "User",
+            content: row.content as string,
+            read: false,
+            created_at: row.created_at as string,
+          };
+          setMessages((prev) => [...prev, newMsg]);
+          setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [activeConv, user?.id]);
 
   const handleSend = useCallback(async () => {
     if (!newMessage.trim() || sending || !activeConv) return;

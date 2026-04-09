@@ -106,6 +106,38 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
+// Push notification handler
+self.addEventListener("push", (event) => {
+  const data = event.data ? event.data.json() : {};
+  const title = data.title || "VibeX";
+  const options = {
+    body: data.body || "",
+    icon: "/icon.svg",
+    badge: "/icon.svg",
+    data: { url: data.url || "/" },
+    tag: data.tag || `vibex-push-${Date.now()}`,
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Notification click handler — navigate to the URL
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || "/";
+  event.waitUntil(
+    self.clients.matchAll({ type: "window" }).then((clients) => {
+      // Focus existing window if available
+      for (const client of clients) {
+        if (client.url.includes(url) && "focus" in client) {
+          return client.focus();
+        }
+      }
+      // Otherwise open new window
+      return self.clients.openWindow(url);
+    })
+  );
+});
+
 function offlineHTML() {
   return `<!DOCTYPE html>
 <html lang="en">

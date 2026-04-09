@@ -38,14 +38,14 @@ test.describe("Feed Page", () => {
 
   test("displays mock posts with post cards", async ({ page }) => {
     // In mock mode, 6 posts should render
-    const posts = page.locator("[role='article']");
+    const posts = page.locator("article[aria-label]");
     await expect(posts.first()).toBeVisible({ timeout: 5000 });
     const count = await posts.count();
     expect(count).toBeGreaterThanOrEqual(1);
   });
 
   test("post card shows username and content", async ({ page }) => {
-    const firstPost = page.locator("[role='article']").first();
+    const firstPost = page.locator("article[aria-label]").first();
     await expect(firstPost).toBeVisible({ timeout: 5000 });
     // Should have text content (any of the mock posts)
     const text = await firstPost.textContent();
@@ -54,7 +54,7 @@ test.describe("Feed Page", () => {
   });
 
   test("post card has like and reply buttons", async ({ page }) => {
-    const firstPost = page.locator("[role='article']").first();
+    const firstPost = page.locator("article[aria-label]").first();
     await expect(firstPost).toBeVisible({ timeout: 5000 });
     // Like button with aria-label containing 点赞
     await expect(firstPost.locator("[aria-label*='点赞']")).toBeVisible();
@@ -65,7 +65,7 @@ test.describe("Feed Page", () => {
   // ─── Like Interaction ───
 
   test("clicking like toggles heart style", async ({ page }) => {
-    const firstPost = page.locator("[role='article']").first();
+    const firstPost = page.locator("article[aria-label]").first();
     await expect(firstPost).toBeVisible({ timeout: 5000 });
     const likeBtn = firstPost.locator("[aria-label*='点赞']");
 
@@ -113,7 +113,7 @@ test.describe("Feed Page", () => {
   });
 
   test("post cards have role='article'", async ({ page }) => {
-    const articles = page.locator("[role='article']");
+    const articles = page.locator("article[aria-label]");
     await expect(articles.first()).toBeVisible({ timeout: 5000 });
   });
 });

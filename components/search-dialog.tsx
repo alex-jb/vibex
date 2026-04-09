@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, Folder, User, Lightbulb, Bot, GitBranch } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { projects, creators, ideas } from "@/lib/mock-data";
+import { useProjects, useCreators, useIdeas } from "@/lib/use-data";
 import { agents } from "@/lib/mock-data/agents";
 import { workflows } from "@/lib/mock-data/workflows";
 import { useLang } from "@/lib/i18n";
@@ -41,6 +41,9 @@ interface SearchDialogProps {
 
 export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
   const { t } = useLang();
+  const { data: projects } = useProjects();
+  const { data: creators } = useCreators();
+  const { data: ideas } = useIdeas();
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);

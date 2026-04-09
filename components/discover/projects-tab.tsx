@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, SlidersHorizontal, Sparkles, LayoutGrid, Swords } from "lucide-react";
-import { projects, categories } from "@/lib/mock-data";
+import { categories } from "@/lib/mock-data";
+import { useProjects } from "@/lib/use-data";
 import { ProjectCard } from "@/components/project-card";
 import { HeroCard } from "@/components/rpg/hero-card";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ export function ProjectsTab() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [viewMode, setViewMode] = useState<"card" | "hero">("card");
   const { t } = useLang();
+  const { data: projects } = useProjects();
 
   const filteredProjects = projects.filter((project) => {
     const matchesCategory =
