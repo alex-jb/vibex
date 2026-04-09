@@ -45,9 +45,9 @@ export function Footer() {
             </h4>
             <div className="flex flex-col gap-2.5">
               <Link href="/insights" className="font-pixel text-[9px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("footer.trendsInsights")}</Link>
-              <span className="font-pixel text-[9px] text-muted-foreground/70">{t("footer.apiComingSoon")}</span>
-              <span className="font-pixel text-[9px] text-muted-foreground/70">{t("footer.documentation")}</span>
-              <span className="font-pixel text-[9px] text-muted-foreground/70">{t("footer.changelog")}</span>
+              <span className="font-pixel text-[9px] text-zinc-400">{t("footer.apiComingSoon")}</span>
+              <span className="font-pixel text-[9px] text-zinc-400">{t("footer.documentation")}</span>
+              <span className="font-pixel text-[9px] text-zinc-400">{t("footer.changelog")}</span>
             </div>
           </div>
           <div>
@@ -55,10 +55,10 @@ export function Footer() {
               {t("footer.community")}
             </h4>
             <div className="flex flex-col gap-2.5">
-              <span className="font-pixel text-[9px] text-muted-foreground/70">Discord (Coming Soon)</span>
-              <span className="font-pixel text-[9px] text-muted-foreground/70">Twitter / X</span>
+              <span className="font-pixel text-[9px] text-zinc-400">Discord (Coming Soon)</span>
+              <span className="font-pixel text-[9px] text-zinc-400">Twitter / X</span>
               <a href="https://github.com/alex-jb/vibex" target="_blank" rel="noopener noreferrer" className="font-pixel text-[9px] text-muted-foreground hover:text-foreground transition-colors duration-200">GitHub</a>
-              <span className="font-pixel text-[9px] text-muted-foreground/70">{t("footer.newsletter")} (Coming Soon)</span>
+              <span className="font-pixel text-[9px] text-zinc-400">{t("footer.newsletter")} (Coming Soon)</span>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@ export function Footer() {
           <p className="text-[11px] text-muted-foreground">
             &copy; {new Date().getFullYear()} {t("footer.copyright")}
           </p>
-          <p className="text-[11px] text-muted-foreground/80">
+          <p className="text-[11px] text-zinc-400">
             {t("footer.crafted")}
           </p>
         </div>

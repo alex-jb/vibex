@@ -99,7 +99,7 @@ export function SeasonLeaderboard() {
                   <div className="font-pixel" style={{ fontSize: 8, color }}>
                     {entry.project_name}
                   </div>
-                  <div className="font-pixel" style={{ fontSize: 6, color: "#666" }}>
+                  <div className="font-pixel" style={{ fontSize: 6, color: "#9a9a9a" }}>
                     by {entry.creator_name}
                   </div>
                 </div>

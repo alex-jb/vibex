@@ -100,9 +100,10 @@ export function FighterPanel({
             className="font-pixel"
             style={{
               fontSize: 8,
-              color: "#0D0D0D",
+              color: "#000",
               background: cls.color,
               padding: "2px 6px",
+              fontWeight: "bold",
             }}
           >
             Lv{hero.level}
@@ -114,7 +115,7 @@ export function FighterPanel({
           )}
         </div>
 
-        <span className="font-pixel" style={{ fontSize: 7, color: cls.color }}>
+        <span className="font-pixel" style={{ fontSize: 7, color: cls.color, textShadow: "0 0 4px rgba(0,0,0,0.9)" }}>
           {hero.heroClass} · {evo.label}
         </span>
       </div>

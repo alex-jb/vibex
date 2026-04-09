@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Rocket, Menu, X, Search, ChevronDown } from "lucide-react";
+import { Sparkles, Rocket, Menu, X, Search } from "lucide-react";
 import { SearchDialog } from "@/components/search-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,36 +14,47 @@ import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
 import { useAuth } from "@/lib/auth";
 
-// Guest nav (acquisition funnel — minimal, focused)
+// Guest nav (simplified for new visitors)
 const guestNavItems = [
-  { href: "/discover", key: "nav.discover" as const },
-  { href: "/hunt", key: "nav.hunt" as const },
-];
-
-// Full nav for logged-in users (4 top-level + Dojo dropdown)
-const fullNavItems = [
-  { href: "/", key: "nav.home" as const },
   { href: "/discover", key: "nav.discover" as const },
   { href: "/creators", key: "nav.creators" as const },
 ];
 
-// Dojo dropdown items (RPG gamification bundle for logged-in users)
-const dojoDropdownItems = [
+// Full nav for logged-in users
+const fullNavItems = [
+  { href: "/", key: "nav.home" as const },
+  { href: "/feed", key: "nav.feed" as const },
+  { href: "/discover", key: "nav.discover" as const },
+  { href: "/creators", key: "nav.creators" as const },
   { href: "/dojo", key: "nav.dojo" as const },
-  { href: "/buddy", key: "nav.buddy" as const },
+  { href: "/analytics", key: "nav.analytics" as const },
+  { href: "/events", key: "nav.events" as const },
+];
+
+// Dojo items (in user menu + mobile menu)
+const dojoNavItems = [
   { href: "/arena", key: "nav.arena" as const },
+  { href: "/buddy", key: "nav.buddy" as const },
   { href: "/hunt", key: "nav.hunt" as const },
+  { href: "/messages", key: "nav.messages" as const },
+];
+
+// Secondary nav items (in "More" dropdown + mobile menu)
+const secondaryNavItems = [
+  { href: "/insights", key: "nav.insights" as const },
+  { href: "/ideas", key: "nav.ideas" as const },
+  { href: "/developers", key: "nav.developers" as const },
 ];
 
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [dojoOpen, setDojoOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const { t, lang } = useLang();
   const { user } = useAuth();
   const primaryNavItems = user ? fullNavItems : guestNavItems;
-  const allNavItems = [...primaryNavItems, ...(user ? dojoDropdownItems : [])];
+  const allNavItems = [...primaryNavItems, ...(user ? dojoNavItems : []), ...(user ? secondaryNavItems : [])];
   const isCJK = lang === "zh";
   const navFont: React.CSSProperties = isCJK
     ? { fontFamily: "var(--font-zpix), monospace", fontSize: 12, letterSpacing: 4, transform: "scale(1.35)", transformOrigin: "center" }
@@ -104,57 +115,46 @@ export function Navbar() {
                 </Link>
               );
             })}
-            {/* Dojo dropdown — RPG gamification bundle, logged-in only */}
-            {user && (
-              <div className="relative">
-                <button
-                  onClick={() => setDojoOpen(!dojoOpen)}
-                  className="relative flex flex-col items-center px-2.5 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
-                  style={navFont}
-                >
-                  <span className="flex items-center gap-1">
-                    {t("nav.dojo")}
-                    <ChevronDown className="h-3 w-3" />
-                  </span>
-                  {dojoDropdownItems.some((item) => pathname.startsWith(item.href)) && (
+            {/* More dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setMoreOpen(!moreOpen)}
+                className="relative flex flex-col items-center px-2.5 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
+                style={navFont}
+              >
+                {t("nav.more")}
+              </button>
+              <AnimatePresence>
+                {moreOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setMoreOpen(false)} />
                     <motion.div
-                      layoutId="nav-dot"
-                      className="absolute bottom-0.5 w-1 h-1 rounded-full bg-violet-400"
-                    />
-                  )}
-                </button>
-                <AnimatePresence>
-                  {dojoOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setDojoOpen(false)} />
-                      <motion.div
-                        initial={{ opacity: 0, y: -8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -8 }}
-                        className="absolute right-0 top-full mt-1 z-50 w-44 glass-card-strong rounded-xl border border-white/[0.08] py-1 shadow-xl"
-                      >
-                        {dojoDropdownItems.map((item) => {
-                          const isActive = pathname.startsWith(item.href);
-                          return (
-                            <Link
-                              key={item.href}
-                              href={item.href}
-                              onClick={() => setDojoOpen(false)}
-                              className={cn(
-                                "block px-4 py-2 font-pixel text-[9px] tracking-wide transition-colors",
-                                isActive ? "text-foreground bg-white/5" : "text-muted-foreground hover:text-foreground hover:bg-white/5"
-                              )}
-                            >
-                              {t(item.key)}
-                            </Link>
-                          );
-                        })}
-                      </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      className="absolute right-0 top-full mt-1 z-50 w-44 glass-card-strong rounded-xl border border-white/[0.08] py-1 shadow-xl"
+                    >
+                      {secondaryNavItems.map((item) => {
+                        const isActive = pathname.startsWith(item.href);
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setMoreOpen(false)}
+                            className={cn(
+                              "block px-4 py-2 font-pixel text-[9px] tracking-wide transition-colors",
+                              isActive ? "text-foreground bg-white/5" : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                            )}
+                          >
+                            {t(item.key)}
+                          </Link>
+                        );
+                      })}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
           </nav>
 
           {/* Desktop CTA + Lang Toggle + User */}

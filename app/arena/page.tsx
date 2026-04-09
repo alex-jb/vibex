@@ -190,7 +190,7 @@ export default function ArenaPage() {
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
           <span className="rpgui-icon sword small" style={{ width: 16, height: 16, marginLeft: 4 }} />
         </div>
-        <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>
+        <span className="font-pixel" style={{ fontSize: 8, color: "#9a9a9a", letterSpacing: 2 }}>
           VIBEX://ARENA v2.0
         </span>
         <span className="font-pixel" style={{ fontSize: 7, color: "#333" }}>
@@ -222,12 +222,12 @@ export default function ArenaPage() {
 
         <div style={{ position: "relative", zIndex: 2 }}>
           {/* ─── BOOT SEQUENCE ─── */}
-          <TermLine color="#555" prefix="$" delay={0}>
+          <TermLine color="#9a9a9a" prefix="$" delay={0}>
             vibecode-arena --mode battle
           </TermLine>
           <TermLine color="#39FF14" prefix=">" delay={0.1}>
             <span style={{ color: "#39FF14" }}>{t("arena.battleArena")}</span>
-            <span style={{ color: "#555" }}>{" // "}{t("arena.aiCombat")}</span>
+            <span style={{ color: "#9a9a9a" }}>{" // "}{t("arena.aiCombat")}</span>
           </TermLine>
           <div style={{ height: 16 }} />
 
@@ -288,7 +288,7 @@ export default function ArenaPage() {
                         textAlign: "center",
                       }}
                     >
-                      <span className="font-pixel" style={{ fontSize: 7, color: "#555" }}>
+                      <span className="font-pixel" style={{ fontSize: 7, color: "#9a9a9a" }}>
                         {t("arena.selectBelow")}
                       </span>
                     </div>
@@ -334,7 +334,7 @@ export default function ArenaPage() {
                         textAlign: "center",
                       }}
                     >
-                      <span className="font-pixel" style={{ fontSize: 7, color: "#555" }}>
+                      <span className="font-pixel" style={{ fontSize: 7, color: "#9a9a9a" }}>
                         {t("arena.selectBelow")}
                       </span>
                     </div>

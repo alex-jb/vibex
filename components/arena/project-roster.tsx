@@ -62,7 +62,7 @@ export function ProjectRoster({
             >
               <span
                 className="font-pixel"
-                style={{ fontSize: 7, color: "#0D0D0D", background: cls.color, padding: "1px 4px" }}
+                style={{ fontSize: 7, color: "#000", background: cls.color, padding: "1px 4px", fontWeight: "bold" }}
               >
                 {hero.level}
               </span>

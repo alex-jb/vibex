@@ -259,7 +259,7 @@ export const CLASS_CONFIG: Record<
   Sentinel: {
     label: "Sentinel",
     icon: "Shield",
-    color: "#6366f1",
+    color: "#818cf8",
     description: "Guardians of reliability and utility",
   },
 };
