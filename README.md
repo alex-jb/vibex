@@ -5,122 +5,109 @@
 <h1 align="center">VibeX</h1>
 
 <p align="center">
-  <strong>The launch & growth platform for AI-native creators.</strong><br/>
-  <em>16-bit RPG aesthetic meets AI-powered creator economy</em>
+  <strong>Turn your AI project into a viral, evolving collectible.</strong>
 </p>
 
 <p align="center">
   <a href="https://www.vibexforge.com">Website</a> &bull;
-  <a href="#-getting-started">Getting Started</a> &bull;
-  <a href="#-features">Features</a> &bull;
+  <a href="#-how-it-works">How It Works</a> &bull;
+  <a href="#-core-features">Features</a> &bull;
   <a href="#-tech-stack">Tech Stack</a> &bull;
-  <a href="#-contributing">Contributing</a>
+  <a href="#-getting-started">Getting Started</a>
 </p>
 
 <p align="center">
   <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/github/stars/alex-jb/vibex?style=flat-square&logo=github&color=9D00FF" alt="Stars" /></a>
   <a href="https://github.com/alex-jb/vibex/commits"><img src="https://img.shields.io/github/commit-activity/m/alex-jb/vibex?style=flat-square&color=39FF14" alt="Commits" /></a>
-  <a href="https://github.com/alex-jb/vibex/issues"><img src="https://img.shields.io/github/issues/alex-jb/vibex?style=flat-square&color=FF4500" alt="Issues" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Source_Available-FACC15?style=flat-square" alt="License" /></a>
   <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-000?style=flat-square&logo=next.js" alt="Next.js" /></a>
   <a href="https://supabase.com"><img src="https://img.shields.io/badge/Supabase-Realtime-3ECF8E?style=flat-square&logo=supabase" alt="Supabase" /></a>
 </p>
 
 ---
 
-## What is VibeX?
-
-> **Launch your AI product. Get feedback, distribution, and growth — in one platform.**
-
-VibeX is where AI creators publish projects, get AI-powered launch packages, track growth metrics, and compete on leaderboards. It's ProductHunt meets Pokemon, wrapped in a 16-bit RPG pixel art aesthetic and powered by Claude API.
-
-**Not just another AI directory.** VibeX is a growth engine. Upload your project -> get a complete launch package (positioning, copy, social threads, investor pitch) -> distribute -> track -> optimize -> grow.
+VibeX is a gamified growth platform for AI creators.  
+We transform AI projects into shareable, collectible cards that evolve based on real-world traction.
 
 ---
 
-## Features
+## The Problem
 
-### AI Launch Copilot
-One-click launch package generation. Upload your project, get everything you need to ship:
-- **Positioning** — one-liner, target audience, problem/solution, unique value
-- **Copy** — Product Hunt description, elevator pitch, tagline
-- **Social** — Twitter/X thread, LinkedIn post, Reddit post
-- **Distribution** — channel strategy with priority ranking + timing
-- **Investor Pitch** — problem, solution, market, traction, ask
-- **Competitor Analysis** — differentiation from 2-3 competitors
-- **Demo Script** — 30-second video script
+Building AI products has never been easier.  
+Getting attention has never been harder.
 
-### Project Analytics & Growth
-Track your project's performance and get AI-powered growth suggestions:
-- Views, clicks, shares, upvotes trend charts (pixel-style)
-- Conversion rate tracking
-- AI growth advisor — actionable recommendations with effort estimates
-- Category benchmarks — how you compare to similar projects
+Creators struggle with:
+- No distribution after launch
+- Low visibility — projects disappear in 48 hours
+- No ongoing growth loop
+- Product Hunt is one-shot, not continuous
 
-### RPG Gamification & 6-Stage Evolution
-Everything is a game. Every action earns XP. Every project is a sprite that evolves.
-- **6-Stage Project Evolution** — Seed → Active → Growing → Breakout → Legend → Myth
-- **Auto-triggered by metrics** — plays, upvotes, shares, AI score, VC interest
-- **Evolution animations** — pixel particle burst effects on stage transitions
-- **50-level Creator System** — 10 named ranks from Novice to Legend
-- **Arena Battles** — Projects fight with 6-attribute combat, Elo rankings
-- **Buddy Pets** — 11 pixel creatures x 3 evolution stages, gacha summoning
-- **Buddy-Project Linkage** — project evolution awards creator EXP
+---
 
-### Hero Achievement Cards
-Generate and share beautiful 16-bit RPG share cards:
-- **3 sizes** — 3:4 (Xiaohongshu), 1:1 (Instagram), 16:9 (Twitter/X)
-- **RPG data** — HP/MP/EXP bars, rarity badge, skill tags, AI catchphrase
-- **QR code** — pixel-art QR links directly to project page
-- **One-click download** — share on any social platform
+## The Solution
+
+VibeX turns every AI project into a **living, evolving asset**.
+
+### How it works:
+
+**1. Create** — Upload your AI project
+
+**2. Generate** — Instantly turn it into a collectible Hero Card
+
+**3. Evolve** — Your project levels up based on real traction (views, likes, shares)
+
+**4. Share** — Export a viral card with QR code to bring traffic back
+
+---
+
+## Growth Loop
+
+```
+Create → Card → Share → Traffic → Level Up → Share again
+```
+
+This creates a **built-in distribution engine** for every creator.
+
+---
+
+## Core Features
+
+### AI Project Cards
+Generate beautiful, pixel-style collectible cards with HP/MP/EXP bars, rarity badges, skill tags, and QR codes. Three sizes: 3:4 (Xiaohongshu), 1:1 (Instagram), 16:9 (Twitter/X).
+
+### 6-Stage Evolution System
+Projects evolve automatically based on real metrics:
+
+| Stage | Rarity | Trigger |
+|-------|--------|---------|
+| Seed | Common | Just created |
+| Active | Uncommon | 50+ plays or 40+ score |
+| Growing | Rare | 500+ plays, 50+ upvotes, 1K+ views |
+| Breakout | Epic | 1K+ plays, 100+ upvotes, 70+ originality |
+| Legend | Legendary | 5K+ plays, 500+ upvotes, 85+ score |
+| Myth | Mythic | 10K+ plays, 1K+ upvotes, VC interest |
+
+### Share-to-Grow
+Cards are designed for social platforms with built-in QR codes. Download → Post → Scan → Traffic → Level Up.
 
 ### Auto Demo Generator
-One-click demo generation from any URL:
-- Input project URL → Playwright auto-scrolls → captures key frames → GIF
-- Pure JS pipeline (no FFmpeg) — works on Vercel Serverless
-- Auto-fills project thumbnail for waterfall display
+One-click: input URL → Playwright captures frames → animated GIF cover for your project.
 
-### AI Agent Marketplace
-Build, share, and run AI agents:
-- Visual Agent Builder (model, tools, prompts)
-- Multi-agent Workflow orchestration
-- 8 built-in tools (web search, code analysis, translation...)
-- Star ratings & reviews from the community
-- Install tracking + version history
-
-### Social Feed
-Twitter-style engagement loops:
-- Post with reactions + media attachments (image/GIF)
-- @Mentions with autocomplete + notifications
-- #Hashtags auto-extraction + trending sidebar
-- Algorithmic feed (HN-style engagement scoring)
-- Real-time new post notifications
-- Content moderation (report, auto-flag, admin queue)
-
-### Growth Intelligence
-Data that gets more valuable over time:
-- **Creator Graph** — skills, connections, success rate, growth velocity
-- **Product Graph** — success/failure signals across projects
-- **Growth Patterns** — 8 verified patterns (timing, copy, channel, strategy)
-- **Category Benchmarks** — average D1/D7 views, upvotes, conversion rates
+### Growth Signals
+Track engagement, evolution progress, and unlock higher tiers. Creator Dashboard with trend charts.
 
 ### VC Dashboard
-Investor intelligence for AI project discovery:
-- **Platform Health Radar** — 6-axis chart (growth, retention, AI innovation, market, team, revenue)
-- **Talent Graph** — top creators ranked by success rate
-- **Deal Flow Table** — projects sorted by investor curiosity score
+Investor intelligence: radar charts, talent graph, deal flow table ranked by AI score.
 
-### Platform Infrastructure
-- **DM System** — realtime conversations via Supabase Realtime
-- **PWA** — service worker, offline pixel-art fallback, installable
-- **Push Notifications** — Web Push API for mentions/replies
-- **Image Upload** — avatars + thumbnails via Supabase Storage
-- **Share Tracking** — card downloads, copies, referral visits
-- **Admin Panel** — moderation queue + analytics dashboard
-- **Creator Dashboard** — personal analytics with trend charts
-- **Waterfall Layout** — responsive CSS columns masonry grid
-- **SEO** — semantic HTML, Schema.org, sitemap, OG images
-- **i18n** — English / Chinese / Japanese (720+ keys)
+---
+
+## Why VibeX
+
+| Platform | Limitation |
+|----------|-----------|
+| Product Hunt | One-time launch |
+| GitHub | No discovery |
+| X (Twitter) | High noise |
+| **VibeX** | **Continuous growth loop** |
 
 ---
 
@@ -136,18 +123,12 @@ Investor intelligence for AI project discovery:
 
 ---
 
-## Stats
+## Monetization (Planned)
 
-| Metric | Count |
-|--------|-------|
-| Pages | 35 |
-| API Routes | 43 |
-| DB Tables | 48 |
-| Tests | 247 unit + 33 E2E |
-| Components | 105+ |
-| i18n Keys | 708 (EN/ZH) |
-| AI Endpoints | 9 (Claude API) |
-| Buddy Forms | 15 (5 x 3 evolutions) |
+- Card upgrades (Rare / Epic / Legendary visual skins)
+- Featured placement on discover page
+- Growth insights (AI-powered analytics)
+- Premium Agent marketplace
 
 ---
 
@@ -159,13 +140,11 @@ Investor intelligence for AI project discovery:
 | **Language** | TypeScript 5 (strict) |
 | **UI** | React 19 + Tailwind CSS 4 + Framer Motion |
 | **Design** | NES.css + RPGUI (16-bit pixel aesthetic) |
-| **Database** | Supabase (PostgreSQL, 48 tables, RLS) |
-| **Auth** | Supabase Auth + GitHub OAuth |
-| **AI** | Claude API (launch packages, reviews, growth analysis) |
-| **Realtime** | Supabase Realtime (feed, chat, notifications) |
-| **Testing** | Vitest (247 unit) + Playwright (33 E2E) |
-| **CI/CD** | GitHub Actions + Vercel (auto deploy) |
+| **Database** | Supabase (PostgreSQL, RLS, Realtime) |
+| **Auth** | Supabase Auth (GitHub + Google OAuth) |
+| **AI** | Claude API (launch packages, reviews, growth) |
 | **Monitoring** | Sentry + PostHog |
+| **CI/CD** | GitHub Actions + Vercel |
 
 ---
 
@@ -189,96 +168,27 @@ npm run dev
 
 > **No Supabase?** The app works in mock mode without a database. All features use built-in demo data.
 
-### Commands
+---
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Development server (Turbopack) |
-| `npm run build` | Production build |
-| `npm test` | Unit tests (Vitest) |
-| `npx playwright test` | E2E tests |
+## Vision
+
+To become the **growth layer for AI creators**,  
+where every project is not just launched — but evolves.
 
 ---
 
-## Architecture
+## Status
 
-```
-+---------------------------------------------+
-|                  BROWSER                     |
-|  Next.js App Router + React 19              |
-|  NES.css + RPGUI + Framer Motion            |
-+---------------------------------------------+
-|              API ROUTES                      |
-|  /api/feed    /api/ai    /api/agents        |
-|  /api/arena   /api/messages  /api/admin     |
-+---------------------------------------------+
-|         SUPABASE (PostgreSQL)                |
-|  48 tables + RLS + Realtime + Auth          |
-|  RPC functions (toggle_like, toggle_react)  |
-+---------------------------------------------+
-|           CLAUDE API                         |
-|  Launch Copilot + Growth Advisor            |
-|  Project Review + Idea Eval + Trends        |
-+---------------------------------------------+
-```
-
-<details>
-<summary>Directory Structure</summary>
-
-```
-app/
-  ├── feed/              # Social timeline (realtime)
-  ├── discover/          # Project browser + search
-  ├── dojo/              # Training hub
-  ├── arena/             # Battle simulator + leaderboard
-  ├── buddy/             # Pet collection + trade
-  ├── launch/            # Launch Copilot (AI package gen)
-  ├── insights/          # Trend analysis + growth intel
-  ├── messages/          # DM inbox
-  ├── admin/             # Moderation + analytics
-  ├── creators/          # Creator graph
-  ├── developers/        # API docs + developer portal
-  └── api/
-      ├── ai/            # 9 AI endpoints (Claude)
-      ├── feed/          # CRUD + reactions + reports
-      ├── agents/        # Run + stream + reviews
-      ├── arena/         # Leaderboard
-      ├── growth/        # Patterns + benchmarks
-      └── messages/      # DM system
-lib/
-  ├── ai.ts              # Claude API (9 functions)
-  ├── feed.ts            # Realtime feed hook
-  ├── buddy-system.ts    # Pet + EXP + gacha
-  ├── battle-engine.ts   # RPG combat
-  ├── data-moat.ts       # Creator/Product/Growth graphs
-  └── i18n.ts            # 708 translation keys (EN/ZH)
-```
-</details>
+Early-stage MVP. Actively building the core growth loop.
 
 ---
 
-## Contributing
-
-Contributions welcome! Please read the [DESIGN.md](./DESIGN.md) for the design system spec before building UI.
-
-```bash
-# Run lint
-npx eslint .
-
-# Run tests
-npm test
-
-# Build check
-npm run build
-```
-
----
-
-## License
-
-Source Available License. Free for personal and educational use. Commercial use requires permission.
-
----
+<p align="center">
+  <strong>Create your first evolving project:</strong><br/><br/>
+  <a href="https://www.vibexforge.com/">
+    <img src="https://img.shields.io/badge/Launch_on_VibeX-vibexforge.com-8b5cf6?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9Ijk2IiBmaWxsPSIjOGI1Y2Y2Ii8+PHRleHQgeD0iMjU2IiB5PSIzMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjI4MCIgZmlsbD0id2hpdGUiPlY8L3RleHQ+PC9zdmc+" alt="Launch on VibeX" />
+  </a>
+</p>
 
 <p align="center">
   Built with vibe coding energy by <a href="https://github.com/alex-jb">Orallexa</a>
