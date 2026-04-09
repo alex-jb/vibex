@@ -102,6 +102,30 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SEE HOW IT WORKS — link to /create-card showcase */}
+      <section className="py-8">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center">
+          <Link href="/create-card">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="inline-flex items-center gap-3 px-6 py-3 cursor-pointer transition-all"
+              style={{
+                background: "linear-gradient(135deg, rgba(157,0,255,0.15), rgba(57,255,20,0.08))",
+                border: "2px solid var(--neon-purple)",
+                boxShadow: "4px 4px 0 #000, 0 0 24px rgba(157,0,255,0.2)",
+              }}
+            >
+              <span
+                className="font-pixel text-[9px] tracking-widest"
+                style={{ color: "#E9BDFF" }}
+              >
+                ▶ SEE HOW IT WORKS — CREATE YOUR VIBEX CARD
+              </span>
+            </motion.div>
+          </Link>
+        </div>
+      </section>
+
       {/* BETA BANNER -- replaces fake live activity ticker */}
       <section className="py-3 overflow-hidden" style={{ background: "rgba(0,0,0,0.6)", borderTop: "1px solid var(--border-metal)", borderBottom: "1px solid var(--border-metal)" }}>
         <div className="text-center">
