@@ -1,3 +1,5 @@
+// Public stub — full implementation is proprietary. See LICENSE.
+
 import type { Project, BattleResult, BattleRound, HeroAttributes } from "./types";
 
 const ATTR_ORDER: (keyof HeroAttributes)[] = [
@@ -9,40 +11,7 @@ const ATTR_ORDER: (keyof HeroAttributes)[] = [
   "stability",
 ];
 
-const ATTR_NARRATIVES: Record<keyof HeroAttributes, { win: string; lose: string; crit: string }> = {
-  power: {
-    win: "{winner}'s raw Power overwhelms {loser}!",
-    lose: "{loser} withstands {winner}'s Power assault!",
-    crit: "DEVASTATING BLOW! {winner}'s Power surge obliterates all defenses!",
-  },
-  resilience: {
-    win: "{winner}'s iron Resilience absorbs every hit!",
-    lose: "{loser} outlasts {winner} in endurance!",
-    crit: "UNBREAKABLE! {winner} shrugs off the attack like nothing!",
-  },
-  charisma: {
-    win: "{winner}'s Charisma captivates the audience!",
-    lose: "{loser}'s charm steals the spotlight from {winner}!",
-    crit: "VIRAL MOMENT! {winner}'s Charisma goes supernova!",
-  },
-  wisdom: {
-    win: "{winner}'s Wisdom outmaneuvers {loser}!",
-    lose: "{loser} sees through {winner}'s strategy!",
-    crit: "GALAXY BRAIN! {winner}'s Wisdom transcends all expectations!",
-  },
-  agility: {
-    win: "{winner}'s Agility leaves {loser} in the dust!",
-    lose: "{loser}'s reflexes outpace {winner}!",
-    crit: "SPEED DEMON! {winner} moves at lightspeed!",
-  },
-  stability: {
-    win: "{winner}'s Stability holds firm while {loser} crumbles!",
-    lose: "{loser} proves more reliable than {winner}!",
-    crit: "FORTRESS MODE! {winner}'s Stability is absolute!",
-  },
-};
-
-/** Simulate a full battle between two projects */
+/** Simulate a full battle between two projects (simplified demo version) */
 export function simulateBattle(
   challenger: Project,
   defender: Project
@@ -59,13 +28,10 @@ export function simulateBattle(
     const cVal = challenger.hero!.attributes[attr];
     const dVal = defender.hero!.attributes[attr];
 
-    // Add small randomness (±10%)
-    const cRoll = cVal * (0.9 + Math.random() * 0.2);
-    const dRoll = dVal * (0.9 + Math.random() * 0.2);
-
-    // Critical hit: 15% chance when winning by 20+ points
-    const diff = Math.abs(cRoll - dRoll);
-    const isCritical = diff > 20 && Math.random() < 0.15;
+    // Simple random comparison
+    const cRoll = cVal + Math.random() * 10;
+    const dRoll = dVal + Math.random() * 10;
+    const isCritical = Math.random() < 0.1;
 
     const winner: BattleRound["winner"] =
       Math.abs(cRoll - dRoll) < 3
@@ -74,29 +40,12 @@ export function simulateBattle(
           ? "challenger"
           : "defender";
 
-    const winnerName = winner === "challenger" ? challenger.title : defender.title;
-    const loserName = winner === "challenger" ? defender.title : challenger.title;
-
-    const templates = ATTR_NARRATIVES[attr];
-    let narrative: string;
-    if (winner === "draw") {
-      narrative = `Both sides match evenly in ${attr}! A tense standoff!`;
-    } else if (isCritical) {
-      narrative = templates.crit
-        .replace("{winner}", winnerName)
-        .replace("{loser}", loserName);
-    } else {
-      narrative = templates.win
-        .replace("{winner}", winnerName)
-        .replace("{loser}", loserName);
-    }
-
     return {
       attribute: attr,
       challengerValue: Math.round(cRoll),
       defenderValue: Math.round(dRoll),
       winner,
-      narrative,
+      narrative: `${attr} round: ${winner === "draw" ? "A draw!" : `${winner} wins!`}`,
       isCritical,
     };
   });
@@ -113,10 +62,6 @@ export function simulateBattle(
           ? challenger.id
           : defender.id;
 
-  // EXP rewards
-  const baseExp = 50;
-  const critBonus = rounds.filter((r) => r.isCritical).length * 30;
-
   return {
     id: `battle-${Date.now()}`,
     challengerId: challenger.id,
@@ -124,8 +69,8 @@ export function simulateBattle(
     rounds,
     winner,
     expGained: {
-      challenger: winner === challenger.id ? baseExp + critBonus + 50 : baseExp + critBonus,
-      defender: winner === defender.id ? baseExp + critBonus + 50 : baseExp + critBonus,
+      challenger: winner === challenger.id ? 100 : 50,
+      defender: winner === defender.id ? 100 : 50,
     },
     timestamp: new Date().toISOString(),
   };
@@ -141,13 +86,6 @@ export function getBattleSummary(result: BattleResult, projects: { challenger: P
     result.winner === projects.challenger.id
       ? projects.defender
       : projects.challenger;
-  const winnerExp =
-    result.winner === projects.challenger.id
-      ? result.expGained.challenger
-      : result.expGained.defender;
 
-  const crits = result.rounds.filter((r) => r.isCritical).length;
-  const critText = crits > 0 ? ` ${crits} Critical Hit${crits > 1 ? "s" : ""}!` : "";
-
-  return `Battle over! ${winnerProject.title} defeats ${loserProject.title} and earns ${winnerExp} EXP!${critText}`;
+  return `Battle over! ${winnerProject.title} defeats ${loserProject.title}!`;
 }

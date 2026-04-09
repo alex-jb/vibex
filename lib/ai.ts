@@ -1,7 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
-
-const client = new Anthropic();
-const MODEL = "claude-haiku-4-5"; // Cost-effective for structured generation
+// Public stub — full implementation is proprietary. See LICENSE.
 
 // ═══════════════════════════════════════════════════════════════
 // AI PROJECT REVIEW
@@ -18,44 +15,23 @@ export interface AIReviewResult {
   suggestions: string[];
 }
 
-export async function generateProjectReview(project: {
+export async function generateProjectReview(_project: {
   title: string;
   tagline: string;
   description: string;
   category: string;
   tags: string[];
 }): Promise<AIReviewResult> {
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 2000,
-    system: `You are an expert AI project reviewer for VibeX, a platform for AI-native creations.
-Evaluate projects on these dimensions (0-100 scale):
-- originality: How novel and unique is this idea?
-- clarity: How well-defined and understandable is the project?
-- uxPotential: How good could the user experience be?
-- viralityPotential: How likely is this to spread organically?
-- investorCuriosity: How interesting would this be to investors?
-
-Also provide 2-3 strengths, 2-3 weaknesses, and 2-3 actionable suggestions.
-Respond ONLY with valid JSON matching the exact schema.`,
-    messages: [
-      {
-        role: "user",
-        content: `Review this project:
-Title: ${project.title}
-Tagline: ${project.tagline}
-Description: ${project.description}
-Category: ${project.category}
-Tags: ${project.tags.join(", ")}
-
-Respond with JSON: {"originality":N,"clarity":N,"uxPotential":N,"viralityPotential":N,"investorCuriosity":N,"strengths":["..."],"weaknesses":["..."],"suggestions":["..."]}`,
-      },
-    ],
-  });
-
-  const text = response.content.find((b) => b.type === "text")?.text || "{}";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  return JSON.parse(jsonMatch?.[0] || "{}") as AIReviewResult;
+  return {
+    originality: 75,
+    clarity: 80,
+    uxPotential: 70,
+    viralityPotential: 65,
+    investorCuriosity: 60,
+    strengths: ["Interesting concept", "Clean presentation"],
+    weaknesses: ["Needs more detail", "Market validation pending"],
+    suggestions: ["Add a demo video", "Define target audience more clearly"],
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -72,41 +48,20 @@ export interface AIIdeaEvalResult {
   similarProjects: string[];
 }
 
-export async function evaluateIdea(idea: {
+export async function evaluateIdea(_idea: {
   title: string;
   description: string;
   category: string;
 }): Promise<AIIdeaEvalResult> {
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 2000,
-    system: `You are an AI startup idea evaluator for VibeX.
-Evaluate ideas on:
-- viability (0-100): Can this be built and succeed?
-- marketFit (0-100): Does the market need this?
-- competition: "low" | "moderate" | "high" | "saturated"
-- uniqueness (0-100): How different from existing solutions?
-- difficulty: "easy" | "medium" | "hard" | "expert"
-- suggestions: 2-3 actionable next steps
-- similarProjects: 1-3 names of similar existing projects
-
-Respond ONLY with valid JSON.`,
-    messages: [
-      {
-        role: "user",
-        content: `Evaluate this idea:
-Title: ${idea.title}
-Description: ${idea.description}
-Category: ${idea.category}
-
-Respond with JSON: {"viability":N,"marketFit":N,"competition":"...","uniqueness":N,"difficulty":"...","suggestions":["..."],"similarProjects":["..."]}`,
-      },
-    ],
-  });
-
-  const text = response.content.find((b) => b.type === "text")?.text || "{}";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  return JSON.parse(jsonMatch?.[0] || "{}") as AIIdeaEvalResult;
+  return {
+    viability: 70,
+    marketFit: 65,
+    competition: "moderate",
+    uniqueness: 60,
+    difficulty: "medium",
+    suggestions: ["Validate with early users", "Build an MVP first"],
+    similarProjects: ["ExampleProject"],
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -126,35 +81,14 @@ export async function generateBattleNarrative(battle: {
   rounds: { attribute: string; challengerValue: number; defenderValue: number; winner: string; isCritical: boolean }[];
   winner: string;
 }): Promise<AIBattleNarrative> {
-  const roundSummary = battle.rounds
-    .map((r, i) => `Round ${i + 1}: ${r.attribute} - Challenger ${r.challengerValue} vs Defender ${r.defenderValue} (${r.winner} wins${r.isCritical ? ", CRITICAL HIT" : ""})`)
-    .join("\n");
-
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 1500,
-    system: `You are a dramatic RPG battle announcer for VibeX's AI project arena.
-Generate exciting, pixel-game-style commentary for battles between AI projects.
-Use gaming terminology, dramatic flair, and RPG references.
-Keep each narrative 1-2 sentences. Be fun and energetic.
-Respond ONLY with valid JSON.`,
-    messages: [
-      {
-        role: "user",
-        content: `Generate battle narrative:
-Challenger: ${battle.challengerTitle}
-Defender: ${battle.defenderTitle}
-${roundSummary}
-Overall Winner: ${battle.winner}
-
-Respond with JSON: {"intro":"...","roundNarratives":["one per round"],"conclusion":"...","mvpComment":"..."}`,
-      },
-    ],
-  });
-
-  const text = response.content.find((b) => b.type === "text")?.text || "{}";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  return JSON.parse(jsonMatch?.[0] || "{}") as AIBattleNarrative;
+  return {
+    intro: `${battle.challengerTitle} vs ${battle.defenderTitle} — let the battle begin!`,
+    roundNarratives: battle.rounds.map(
+      (r) => `${r.attribute}: ${r.winner} wins this round!`,
+    ),
+    conclusion: `${battle.winner} claims victory!`,
+    mvpComment: "An impressive showing from both sides.",
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -167,36 +101,17 @@ export async function* streamBattleNarrative(battle: {
   rounds: { attribute: string; challengerValue: number; defenderValue: number; winner: string; isCritical: boolean }[];
   winner: string;
 }): AsyncGenerator<string> {
-  const roundSummary = battle.rounds
-    .map((r, i) => `Round ${i + 1}: ${r.attribute} - Challenger ${r.challengerValue} vs Defender ${r.defenderValue} (${r.winner} wins${r.isCritical ? ", CRITICAL HIT" : ""})`)
-    .join("\n");
-
-  const stream = client.messages.stream({
-    model: MODEL,
-    max_tokens: 1500,
-    system: `You are a dramatic RPG battle announcer for VibeX's AI project arena.
-Generate exciting, pixel-game-style commentary for battles between AI projects.
-Use gaming terminology, dramatic flair, and RPG references.
-Keep each narrative 1-2 sentences. Be fun and energetic.
-Respond ONLY with valid JSON.`,
-    messages: [
-      {
-        role: "user",
-        content: `Generate battle narrative:
-Challenger: ${battle.challengerTitle}
-Defender: ${battle.defenderTitle}
-${roundSummary}
-Overall Winner: ${battle.winner}
-
-Respond with JSON: {"intro":"...","roundNarratives":["one per round"],"conclusion":"...","mvpComment":"..."}`,
-      },
-    ],
+  const narrative = JSON.stringify({
+    intro: `${battle.challengerTitle} vs ${battle.defenderTitle} — battle commences!`,
+    roundNarratives: battle.rounds.map(
+      (r) => `${r.attribute}: ${r.winner} wins!`,
+    ),
+    conclusion: `${battle.winner} is victorious!`,
+    mvpComment: "Great battle!",
   });
-
-  for await (const event of stream) {
-    if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-      yield event.delta.text;
-    }
+  // Simulate streaming by yielding chunks
+  for (let i = 0; i < narrative.length; i += 20) {
+    yield narrative.slice(i, i + 20);
   }
 }
 
@@ -204,35 +119,20 @@ Respond with JSON: {"intro":"...","roundNarratives":["one per round"],"conclusio
 // AI LAUNCH ASSISTANT (streaming)
 // ═══════════════════════════════════════════════════════════════
 
-export async function* streamLaunchAssistant(project: {
+export async function* streamLaunchAssistant(_project: {
   title: string;
   tagline: string;
   description: string;
   category: string;
 }): AsyncGenerator<string> {
-  const stream = client.messages.stream({
-    model: MODEL,
-    max_tokens: 1000,
-    system: `You are an AI launch assistant for VibeX. Help creators improve their project submission.
-Analyze the title, tagline, description, and category. Give concise, actionable feedback.
-Focus on: title impact, tagline hook quality, description completeness, category fit, viral potential.
-Be encouraging but honest. Use short bullet points. Respond in the user's language.`,
-    messages: [
-      {
-        role: "user",
-        content: `Help me improve my launch:
-Title: ${project.title || "(empty)"}
-Tagline: ${project.tagline || "(empty)"}
-Description: ${project.description || "(empty)"}
-Category: ${project.category || "(not selected)"}`,
-      },
-    ],
-  });
-
-  for await (const event of stream) {
-    if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-      yield event.delta.text;
-    }
+  const tips = [
+    "Your project looks promising! ",
+    "Consider adding a demo video. ",
+    "Make sure your tagline is catchy and under 10 words. ",
+    "Target a specific niche for better traction.",
+  ];
+  for (const tip of tips) {
+    yield tip;
   }
 }
 
@@ -244,64 +144,28 @@ export async function generateShareSummary(project: {
   title: string;
   tagline: string;
   category: string;
-}, platform: "twitter" | "xiaohongshu" | "douyin"): Promise<string> {
-  const platformGuides: Record<string, string> = {
-    twitter: "280 chars max, include relevant hashtags, techy/concise tone",
-    xiaohongshu: "Chinese, use emojis, enthusiastic tone, 200 chars, include hashtags like #AI #VibeX",
-    douyin: "Chinese, catchy short text for video caption, 100 chars, trendy tone",
-  };
-
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 300,
-    messages: [
-      {
-        role: "user",
-        content: `Write a ${platform} post for this AI project:
-Title: ${project.title}
-Tagline: ${project.tagline}
-Category: ${project.category}
-
-Guidelines: ${platformGuides[platform]}
-Output ONLY the post text, nothing else.`,
-      },
-    ],
-  });
-
-  return response.content.find((b) => b.type === "text")?.text || "";
+}, _platform: "twitter" | "xiaohongshu" | "douyin"): Promise<string> {
+  return `Check out ${project.title} — ${project.tagline} #AI #VibeX`;
 }
 
 // ═══════════════════════════════════════════════════════════════
 // AI TREND ANALYSIS
 // ═══════════════════════════════════════════════════════════════
 
-export async function analyzeTrend(category: string, projectCount: number): Promise<{
+export async function analyzeTrend(_category: string, _projectCount: number): Promise<{
   type: "rising" | "saturated" | "opportunity" | "emerging";
   signal: "strong" | "moderate" | "early";
   summary: string;
   momentum: number;
   confidence: number;
 }> {
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 500,
-    system: `You are a market trend analyst for AI projects. Analyze the given category and provide trend intelligence.
-Respond ONLY with valid JSON.`,
-    messages: [
-      {
-        role: "user",
-        content: `Analyze this AI project category:
-Category: ${category}
-Number of projects: ${projectCount}
-
-Respond with JSON: {"type":"rising|saturated|opportunity|emerging","signal":"strong|moderate|early","summary":"2-3 sentence analysis","momentum":0-100,"confidence":0-100}`,
-      },
-    ],
-  });
-
-  const text = response.content.find((b) => b.type === "text")?.text || "{}";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  return JSON.parse(jsonMatch?.[0] || "{}");
+  return {
+    type: "rising",
+    signal: "moderate",
+    summary: "This category shows steady growth with room for innovation.",
+    momentum: 65,
+    confidence: 70,
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -351,43 +215,51 @@ export async function generateLaunchPackage(project: {
   tags: string[];
   demoUrl?: string;
 }): Promise<LaunchPackage> {
-  const response = await client.messages.create({
-    model: "claude-sonnet-4-6", // Use stronger model for launch package quality
-    max_tokens: 4000,
-    system: `You are a world-class product marketing expert and launch strategist.
-Generate a complete launch package for an AI product. Be specific, actionable, and compelling.
-Write copy that a founder can directly copy-paste and use.
-
-The launch package must include:
-1. positioning: oneLiner (max 15 words), targetAudience, problemSolved, uniqueValue
-2. copy: title (catchy), tagline (max 10 words), elevatorPitch (3 sentences), productHuntDescription (2 paragraphs)
-3. social: twitterThread (array of 4-5 tweets, first one is the hook), linkedinPost (professional tone), redditTitle (attention-grabbing), redditBody (detailed, authentic, not salesy)
-4. distribution: channels (array of {name, reason, priority}), timing (best day/time to launch), targetCommunities (specific subreddits, Discord servers, Slack groups)
-5. investorPitch: problem, solution, market (TAM/SAM), traction (what to highlight), ask (what you need)
-6. demoScript: 30-second script for a product demo video
-7. competitors: array of {name, difference} — 2-3 competitors and how this product is different
-
-Respond ONLY with valid JSON matching this exact structure.`,
-    messages: [
-      {
-        role: "user",
-        content: `Generate a complete launch package for this AI product:
-
-Title: ${project.title}
-Tagline: ${project.tagline}
-Description: ${project.description}
-Category: ${project.category}
-Tags: ${project.tags.join(", ")}
-${project.demoUrl ? `Demo URL: ${project.demoUrl}` : ""}
-
-Respond with JSON only.`,
-      },
+  return {
+    positioning: {
+      oneLiner: `${project.title} — the next big thing in ${project.category}`,
+      targetAudience: "AI-curious developers and creators",
+      problemSolved: "Helps creators launch AI projects faster",
+      uniqueValue: "Community-driven discovery and feedback",
+    },
+    copy: {
+      title: project.title,
+      tagline: project.tagline,
+      elevatorPitch: `${project.title} is a ${project.category} project that ${project.description.slice(0, 100)}...`,
+      productHuntDescription: `${project.title} helps you ${project.tagline}. Built with AI-native principles.`,
+    },
+    social: {
+      twitterThread: [
+        `Launching ${project.title} today!`,
+        `Here's what it does: ${project.tagline}`,
+        "Built this in public, feedback welcome!",
+        `Try it out: ${project.demoUrl ?? "link in bio"}`,
+      ],
+      linkedinPost: `Excited to launch ${project.title}. ${project.tagline}`,
+      redditTitle: `I built ${project.title} — ${project.tagline}`,
+      redditBody: `${project.description}\n\nWould love your feedback!`,
+    },
+    distribution: {
+      channels: [
+        { name: "Twitter/X", reason: "Large AI community", priority: "high" },
+        { name: "Reddit", reason: "Authentic discussion", priority: "high" },
+        { name: "Product Hunt", reason: "Launch visibility", priority: "medium" },
+      ],
+      timing: "Tuesday morning EST",
+      targetCommunities: ["r/artificial", "r/SideProject"],
+    },
+    investorPitch: {
+      problem: "AI creators lack a dedicated platform for discovery",
+      solution: project.description.slice(0, 200),
+      market: "$10B+ AI tools market",
+      traction: "Early stage — building community",
+      ask: "Feedback and early users",
+    },
+    demoScript: `Hi, I'm showing ${project.title}. ${project.tagline}. Let me walk you through the key features.`,
+    competitors: [
+      { name: "Product Hunt", difference: "We focus exclusively on AI projects" },
     ],
-  });
-
-  const text = response.content.find((b) => b.type === "text")?.text || "{}";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  return JSON.parse(jsonMatch?.[0] || "{}") as LaunchPackage;
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -401,7 +273,7 @@ export interface GrowthSuggestion {
   effort: "5min" | "30min" | "1hr" | "1day";
 }
 
-export async function generateGrowthSuggestions(project: {
+export async function generateGrowthSuggestions(_project: {
   title: string;
   description: string;
   category: string;
@@ -410,31 +282,10 @@ export async function generateGrowthSuggestions(project: {
   comments: number;
   daysSinceLaunch: number;
 }): Promise<GrowthSuggestion[]> {
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 1500,
-    system: `You are an AI growth advisor. Based on a project's metrics, suggest 4-6 specific, actionable growth improvements.
-Each suggestion has: priority (high/medium/low), action (specific step), reason (why it matters), effort (time needed: 5min/30min/1hr/1day).
-Focus on what will have the biggest impact for the least effort.
-Respond ONLY with a JSON array.`,
-    messages: [
-      {
-        role: "user",
-        content: `Suggest growth actions for this project:
-Title: ${project.title}
-Description: ${project.description}
-Category: ${project.category}
-Views: ${project.views}
-Upvotes: ${project.upvotes}
-Comments: ${project.comments}
-Days since launch: ${project.daysSinceLaunch}
-
-Respond with JSON array: [{"priority":"high","action":"...","reason":"...","effort":"30min"}, ...]`,
-      },
-    ],
-  });
-
-  const text = response.content.find((b) => b.type === "text")?.text || "[]";
-  const jsonMatch = text.match(/\[[\s\S]*\]/);
-  return JSON.parse(jsonMatch?.[0] || "[]") as GrowthSuggestion[];
+  return [
+    { priority: "high", action: "Add a GIF preview to your listing", reason: "Increases click-through by ~55%", effort: "30min" },
+    { priority: "high", action: "Share on relevant subreddits", reason: "Drives authentic discussion", effort: "30min" },
+    { priority: "medium", action: "Write a short blog post about your journey", reason: "Builds credibility", effort: "1hr" },
+    { priority: "low", action: "Optimize your tagline for clarity", reason: "First impression matters", effort: "5min" },
+  ];
 }

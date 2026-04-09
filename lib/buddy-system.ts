@@ -1,9 +1,10 @@
+// Public stub — full implementation is proprietary. See LICENSE.
+
 /**
- * VibeX Buddy System — Pokemon-inspired pixel pets
+ * VibeX Buddy System — Pokemon-inspired pixel pets (simplified demo)
  *
  * Users earn EXP through platform actions.
  * At certain levels, they can "summon" (gacha) a buddy.
- * Higher stats = better odds for rare buddies.
  */
 
 // ═══════════════════════════════════════════════════════════════
@@ -52,52 +53,24 @@ export interface UserLevel {
   canSummon: boolean; // Can summon a buddy at this level?
 }
 
-/** EXP required for each level (cumulative) */
-function expForLevel(level: number): number {
-  if (level <= 1) return 0;
-  // RPG curve: each level needs more EXP
-  // L2: 100, L3: 300, L5: 1000, L10: 5000, L15: 12000, L20: 25000
-  return Math.floor(50 * level * level + 50 * level - 100);
-}
-
-/** Level titles (RPG ranks) */
-function getLevelTitle(level: number): string {
-  if (level >= 30) return "Legendary Trainer";
-  if (level >= 25) return "Master Trainer";
-  if (level >= 20) return "Elite Trainer";
-  if (level >= 15) return "Senior Trainer";
-  if (level >= 10) return "Advanced Trainer";
-  if (level >= 7) return "Intermediate Trainer";
-  if (level >= 5) return "Junior Trainer";
-  if (level >= 3) return "Novice Trainer";
-  return "Apprentice";
-}
-
-/** Levels that unlock buddy summon */
-const SUMMON_LEVELS = [3, 5, 8, 10, 13, 15, 18, 20, 25, 30];
-
 export function computeUserLevel(totalExp: number): UserLevel {
-  let level = 1;
-  while (expForLevel(level + 1) <= totalExp) {
-    level++;
-    if (level >= 99) break;
-  }
-
-  const currentLevelExp = expForLevel(level);
-  const nextLevelExp = expForLevel(level + 1);
+  // Simplified level calculation
+  const level = Math.max(1, Math.min(99, Math.floor(Math.sqrt(totalExp / 50))));
+  const currentLevelExp = 50 * level * level;
+  const nextLevelExp = 50 * (level + 1) * (level + 1);
 
   return {
     level,
     currentExp: totalExp - currentLevelExp,
     expToNextLevel: nextLevelExp - currentLevelExp,
     totalExp,
-    title: getLevelTitle(level),
-    canSummon: SUMMON_LEVELS.includes(level),
+    title: level >= 20 ? "Elite Trainer" : level >= 10 ? "Advanced Trainer" : level >= 5 ? "Junior Trainer" : "Apprentice",
+    canSummon: [3, 5, 8, 10, 13, 15, 18, 20, 25, 30].includes(level),
   };
 }
 
 // ═══════════════════════════════════════════════════════════════
-// BUDDY DEFINITIONS (5 initial types)
+// BUDDY DEFINITIONS (5 initial types + Wave 2)
 // ═══════════════════════════════════════════════════════════════
 
 export type BuddyRarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
@@ -313,95 +286,28 @@ export interface BuddyEvolution {
   newPassiveZh: string;
 }
 
-/** Evolution chains for each buddy type */
-const BUDDY_EVOLUTIONS: Record<string, BuddyEvolution[]> = {
-  "pixel-fox": [
-    { stage: 0, name: "PixelFox", nameZh: "PixelFox", emoji: "🦊", requiredLevel: 0, newPassive: "+10% project views", newPassiveZh: "+10% project views" },
-    { stage: 1, name: "InfernoFox", nameZh: "InfernoFox", emoji: "🔥", requiredLevel: 8, newPassive: "+20% project views", newPassiveZh: "+20% project views" },
-    { stage: 2, name: "ThunderFox", nameZh: "ThunderFox", emoji: "⚡", requiredLevel: 15, newPassive: "+35% project views", newPassiveZh: "+35% project views" },
-  ],
-  "neon-slime": [
-    { stage: 0, name: "NeonSlime", nameZh: "NeonSlime", emoji: "🟢", requiredLevel: 0, newPassive: "+5% upvote rate", newPassiveZh: "+5% upvote rate" },
-    { stage: 1, name: "MegaSlime", nameZh: "MegaSlime", emoji: "💚", requiredLevel: 8, newPassive: "+12% upvote rate", newPassiveZh: "+12% upvote rate" },
-    { stage: 2, name: "CrystalSlime", nameZh: "CrystalSlime", emoji: "💎", requiredLevel: 15, newPassive: "+25% upvote rate", newPassiveZh: "+25% upvote rate" },
-  ],
-  "byte-owl": [
-    { stage: 0, name: "ByteOwl", nameZh: "ByteOwl", emoji: "🦉", requiredLevel: 0, newPassive: "+5 AI review score", newPassiveZh: "+5 AI review score" },
-    { stage: 1, name: "MoonOwl", nameZh: "MoonOwl", emoji: "🌙", requiredLevel: 12, newPassive: "+10 AI review score", newPassiveZh: "+10 AI review score" },
-    { stage: 2, name: "StarOwl", nameZh: "StarOwl", emoji: "🌟", requiredLevel: 20, newPassive: "+20 AI review score", newPassiveZh: "+20 AI review score" },
-  ],
-  "code-dragon": [
-    { stage: 0, name: "CodeDragon", nameZh: "CodeDragon", emoji: "🐉", requiredLevel: 0, newPassive: "+15% battle power", newPassiveZh: "+15% battle power" },
-    { stage: 1, name: "FlameDragon", nameZh: "FlameDragon", emoji: "🔥", requiredLevel: 15, newPassive: "+30% battle power", newPassiveZh: "+30% battle power" },
-    { stage: 2, name: "SwordDragon", nameZh: "SwordDragon", emoji: "⚔️", requiredLevel: 25, newPassive: "+50% battle power", newPassiveZh: "+50% battle power" },
-  ],
-  "crystal-phoenix": [
-    { stage: 0, name: "CrystalPhoenix", nameZh: "CrystalPhoenix", emoji: "🔥", requiredLevel: 0, newPassive: "+25% EXP gain", newPassiveZh: "+25% EXP gain" },
-    { stage: 1, name: "PrismPhoenix", nameZh: "PrismPhoenix", emoji: "🌈", requiredLevel: 20, newPassive: "+40% EXP gain", newPassiveZh: "+40% EXP gain" },
-    { stage: 2, name: "EternalPhoenix", nameZh: "EternalPhoenix", emoji: "👑", requiredLevel: 30, newPassive: "+60% EXP gain", newPassiveZh: "+60% EXP gain" },
-  ],
-  "aqua-turtle": [
-    { stage: 0, name: "AquaTurtle", nameZh: "AquaTurtle", emoji: "🐢", requiredLevel: 0, newPassive: "-10% battle cooldown", newPassiveZh: "-10% battle cooldown" },
-    { stage: 1, name: "TidalTurtle", nameZh: "TidalTurtle", emoji: "🌊", requiredLevel: 8, newPassive: "-20% battle cooldown", newPassiveZh: "-20% battle cooldown" },
-    { stage: 2, name: "OceanKing", nameZh: "OceanKing", emoji: "🔱", requiredLevel: 15, newPassive: "-35% battle cooldown", newPassiveZh: "-35% battle cooldown" },
-  ],
-  "frost-cat": [
-    { stage: 0, name: "FrostCat", nameZh: "FrostCat", emoji: "🐱", requiredLevel: 0, newPassive: "+8% ranking score", newPassiveZh: "+8% ranking score" },
-    { stage: 1, name: "BlizzardCat", nameZh: "BlizzardCat", emoji: "❄️", requiredLevel: 10, newPassive: "+18% ranking score", newPassiveZh: "+18% ranking score" },
-    { stage: 2, name: "AbsoluteZero", nameZh: "AbsoluteZero", emoji: "🧊", requiredLevel: 20, newPassive: "+30% ranking score", newPassiveZh: "+30% ranking score" },
-  ],
-  "shadow-bat": [
-    { stage: 0, name: "ShadowBat", nameZh: "ShadowBat", emoji: "🦇", requiredLevel: 0, newPassive: "Steal 5% buff", newPassiveZh: "Steal 5% buff" },
-    { stage: 1, name: "NightWing", nameZh: "NightWing", emoji: "🌑", requiredLevel: 12, newPassive: "Steal 12% buff", newPassiveZh: "Steal 12% buff" },
-    { stage: 2, name: "VoidLord", nameZh: "VoidLord", emoji: "🕳️", requiredLevel: 22, newPassive: "Steal 25% buff", newPassiveZh: "Steal 25% buff" },
-  ],
-  "volt-rabbit": [
-    { stage: 0, name: "VoltRabbit", nameZh: "VoltRabbit", emoji: "🐰", requiredLevel: 0, newPassive: "2x daily login EXP", newPassiveZh: "2x daily login EXP" },
-    { stage: 1, name: "ThunderHare", nameZh: "ThunderHare", emoji: "⚡", requiredLevel: 10, newPassive: "3x daily login EXP", newPassiveZh: "3x daily login EXP" },
-    { stage: 2, name: "StormRacer", nameZh: "StormRacer", emoji: "🌩️", requiredLevel: 18, newPassive: "5x daily login EXP", newPassiveZh: "5x daily login EXP" },
-  ],
-  "terra-golem": [
-    { stage: 0, name: "TerraGolem", nameZh: "TerraGolem", emoji: "🪨", requiredLevel: 0, newPassive: "+20% defense", newPassiveZh: "+20% defense" },
-    { stage: 1, name: "IronGolem", nameZh: "IronGolem", emoji: "🛡️", requiredLevel: 15, newPassive: "+35% defense", newPassiveZh: "+35% defense" },
-    { stage: 2, name: "MountainTitan", nameZh: "MountainTitan", emoji: "🏔️", requiredLevel: 25, newPassive: "+50% defense", newPassiveZh: "+50% defense" },
-  ],
-  "stellar-jellyfish": [
-    { stage: 0, name: "StellarJelly", nameZh: "StellarJelly", emoji: "🪼", requiredLevel: 0, newPassive: "+15% guild bonus", newPassiveZh: "+15% guild bonus" },
-    { stage: 1, name: "NebulaJelly", nameZh: "NebulaJelly", emoji: "🌌", requiredLevel: 20, newPassive: "+30% guild bonus", newPassiveZh: "+30% guild bonus" },
-    { stage: 2, name: "CosmicEmpress", nameZh: "CosmicEmpress", emoji: "✨", requiredLevel: 30, newPassive: "+50% guild bonus", newPassiveZh: "+50% guild bonus" },
-  ],
-};
-
-/** Get the current evolution stage for a buddy at a given level */
-export function getEvolutionStage(buddyTypeId: string, level: number): BuddyEvolution {
-  const evolutions = BUDDY_EVOLUTIONS[buddyTypeId];
-  if (!evolutions) {
-    return { stage: 0, name: "Unknown", nameZh: "Unknown", emoji: "❓", requiredLevel: 0, newPassive: "", newPassiveZh: "" };
-  }
-  // Find the highest evolution the buddy qualifies for
-  let current = evolutions[0];
-  for (const evo of evolutions) {
-    if (level >= evo.requiredLevel) {
-      current = evo;
-    }
-  }
-  return current;
+/** Get the current evolution stage for a buddy at a given level (simplified) */
+export function getEvolutionStage(buddyTypeId: string, _level: number): BuddyEvolution {
+  const buddy = BUDDY_TYPES.find((b) => b.id === buddyTypeId);
+  return {
+    stage: 0,
+    name: buddy?.name ?? "Unknown",
+    nameZh: buddy?.nameZh ?? "Unknown",
+    emoji: buddy?.emoji ?? "❓",
+    requiredLevel: 0,
+    newPassive: buddy?.passive ?? "",
+    newPassiveZh: buddy?.passiveZh ?? "",
+  };
 }
 
-/** Check if a buddy can evolve at its current level (i.e. there's a higher stage it hasn't reached yet) */
-export function canEvolve(buddyTypeId: string, currentLevel: number): boolean {
-  const evolutions = BUDDY_EVOLUTIONS[buddyTypeId];
-  if (!evolutions) return false;
-
-  const currentStage = getEvolutionStage(buddyTypeId, currentLevel);
-  // Check if there's a next stage that exactly matches currentLevel
-  const nextStage = evolutions.find((evo) => evo.stage === currentStage.stage + 1);
-  return nextStage !== undefined && currentLevel >= nextStage.requiredLevel;
+/** Check if a buddy can evolve at its current level (stub: always false) */
+export function canEvolve(_buddyTypeId: string, _currentLevel: number): boolean {
+  return false;
 }
 
-/** Get all evolutions for a buddy type */
+/** Get all evolutions for a buddy type (stub: returns base stage only) */
 export function getEvolutions(buddyTypeId: string): BuddyEvolution[] {
-  return BUDDY_EVOLUTIONS[buddyTypeId] ?? [];
+  return [getEvolutionStage(buddyTypeId, 0)];
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -430,40 +336,20 @@ export interface SummonResult {
 }
 
 /**
- * Calculate summon weights based on user stats.
- * Higher upvotes/level = better odds for rare buddies.
+ * Calculate summon weights (simplified: base weights only).
  */
 export function calculateSummonWeights(
   userLevel: number,
-  totalUpvotes: number,
-  existingBuddyIds: string[],
+  _totalUpvotes: number,
+  _existingBuddyIds: string[],
 ): { buddyType: BuddyType; weight: number }[] {
   return BUDDY_TYPES
-    .filter((b) => userLevel >= b.minLevel) // Only summon buddies you qualify for
-    .map((b) => {
-      let weight = b.baseWeight;
-
-      // Upvote bonus: every 100 upvotes adds +2 weight to rare+ buddies
-      if (b.rarity === "rare" || b.rarity === "epic" || b.rarity === "legendary") {
-        weight += Math.floor(totalUpvotes / 100) * 2;
-      }
-
-      // Level bonus: every 5 levels adds +3 to uncommon+ buddies
-      if (b.rarity !== "common") {
-        weight += Math.floor(userLevel / 5) * 3;
-      }
-
-      // Pity system: if you don't have this buddy yet, +5 weight
-      if (!existingBuddyIds.includes(b.id)) {
-        weight += 5;
-      }
-
-      return { buddyType: b, weight };
-    });
+    .filter((b) => userLevel >= b.minLevel)
+    .map((b) => ({ buddyType: b, weight: b.baseWeight }));
 }
 
 /**
- * Perform a summon (gacha roll).
+ * Perform a summon (simplified gacha roll).
  */
 export function summonBuddy(
   userLevel: number,
@@ -473,7 +359,6 @@ export function summonBuddy(
   const weights = calculateSummonWeights(userLevel, totalUpvotes, existingBuddyIds);
   const totalWeight = weights.reduce((sum, w) => sum + w.weight, 0);
 
-  // Weighted random selection
   let roll = Math.random() * totalWeight;
   let selected = weights[0];
 
@@ -485,14 +370,10 @@ export function summonBuddy(
     }
   }
 
-  const bonuses: string[] = [];
-  if (totalUpvotes >= 100) bonuses.push(`Upvote bonus (${totalUpvotes})`);
-  if (userLevel >= 10) bonuses.push(`Level bonus (Lv${userLevel})`);
-
   return {
     buddy: selected.buddyType,
     isNew: !existingBuddyIds.includes(selected.buddyType.id),
-    bonusApplied: bonuses.length > 0 ? bonuses.join(", ") : "No bonus",
+    bonusApplied: "No bonus",
   };
 }
 
