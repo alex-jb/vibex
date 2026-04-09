@@ -109,10 +109,10 @@ describe("EXP_REWARDS", () => {
     expect(EXP_REWARDS.publishProject).toBeGreaterThan(EXP_REWARDS.publishDemo);
   });
 
-  it("firstProject is the largest single reward", () => {
+  it("evolveToMyth is the largest single reward", () => {
     const values = Object.values(EXP_REWARDS);
     const max = Math.max(...values);
-    expect(EXP_REWARDS.firstProject).toBe(max);
+    expect(EXP_REWARDS.evolveToMyth).toBe(max);
   });
 
   it("all rewards are positive integers", () => {

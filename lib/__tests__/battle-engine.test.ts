@@ -54,7 +54,7 @@ function makeMockProject(overrides: Partial<Project> = {}): Project {
         stability: 75,
       },
       skillTree: [],
-      evolutionStage: "Flame",
+      evolutionStage: "Active",
       evolutionPoints: 3,
       hp: 100,
       maxHp: 100,

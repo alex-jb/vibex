@@ -165,36 +165,53 @@ describe("computeCurrentExp", () => {
 // ─── computeEvolutionStage ────────────────────────────────────────────────────
 
 describe("computeEvolutionStage", () => {
-  it("level 1 → Spark", () => {
-    expect(computeEvolutionStage(1)).toBe("Spark");
+  it("new project with no activity → Seed", () => {
+    const project = makeProject({ plays: 0, upvotes: 0, views: 0, shares: 0, score: 0 });
+    expect(computeEvolutionStage(project)).toBe("Seed");
   });
 
-  it("level 5 → Spark (boundary)", () => {
-    expect(computeEvolutionStage(5)).toBe("Spark");
+  it("project with plays >= 50 → Active", () => {
+    const project = makeProject({ plays: 50, upvotes: 0, views: 0, shares: 0, score: 0 });
+    expect(computeEvolutionStage(project)).toBe("Active");
   });
 
-  it("level 6 → Flame", () => {
-    expect(computeEvolutionStage(6)).toBe("Flame");
+  it("project with score >= 40 but few plays → Active", () => {
+    const project = makeProject({ plays: 0, upvotes: 0, views: 0, shares: 0, score: 40 });
+    expect(computeEvolutionStage(project)).toBe("Active");
   });
 
-  it("level 15 → Flame (boundary)", () => {
-    expect(computeEvolutionStage(15)).toBe("Flame");
+  it("project meeting Growing thresholds → Growing", () => {
+    const project = makeProject({ plays: 500, upvotes: 50, views: 1000, shares: 0, score: 0 });
+    expect(computeEvolutionStage(project)).toBe("Growing");
   });
 
-  it("level 16 → Inferno", () => {
-    expect(computeEvolutionStage(16)).toBe("Inferno");
+  it("project meeting Breakout thresholds → Breakout", () => {
+    const project = makeProject({
+      plays: 1000,
+      upvotes: 100,
+      shares: 50,
+      views: 0,
+      score: 0,
+      aiReview: { originality: 70, clarity: 75, uxPotential: 70, viralityPotential: 60, investorCuriosity: 65, strengths: [], weaknesses: [], suggestions: [] },
+    });
+    expect(computeEvolutionStage(project)).toBe("Breakout");
   });
 
-  it("level 30 → Inferno (boundary)", () => {
-    expect(computeEvolutionStage(30)).toBe("Inferno");
+  it("project meeting Legend thresholds → Legend", () => {
+    const project = makeProject({ plays: 5000, upvotes: 500, shares: 200, views: 0, score: 85 });
+    expect(computeEvolutionStage(project)).toBe("Legend");
   });
 
-  it("level 31 → Phoenix", () => {
-    expect(computeEvolutionStage(31)).toBe("Phoenix");
-  });
-
-  it("level 50 → Phoenix (max)", () => {
-    expect(computeEvolutionStage(50)).toBe("Phoenix");
+  it("project meeting Myth thresholds → Myth", () => {
+    const project = makeProject({
+      plays: 10000,
+      upvotes: 1000,
+      shares: 200,
+      views: 0,
+      score: 90,
+      aiReview: { originality: 80, clarity: 75, uxPotential: 70, viralityPotential: 60, investorCuriosity: 80, strengths: [], weaknesses: [], suggestions: [] },
+    });
+    expect(computeEvolutionStage(project)).toBe("Myth");
   });
 });
 
@@ -396,21 +413,24 @@ describe("CLASS_CONFIG", () => {
 // ─── EVOLUTION_CONFIG ─────────────────────────────────────────────────────────
 
 describe("EVOLUTION_CONFIG", () => {
-  it("has entries for Spark, Flame, Inferno, Phoenix", () => {
-    expect(EVOLUTION_CONFIG["Spark"]).toBeDefined();
-    expect(EVOLUTION_CONFIG["Flame"]).toBeDefined();
-    expect(EVOLUTION_CONFIG["Inferno"]).toBeDefined();
-    expect(EVOLUTION_CONFIG["Phoenix"]).toBeDefined();
+  it("has entries for Seed, Active, Growing, Breakout, Legend, Myth", () => {
+    expect(EVOLUTION_CONFIG["Seed"]).toBeDefined();
+    expect(EVOLUTION_CONFIG["Active"]).toBeDefined();
+    expect(EVOLUTION_CONFIG["Growing"]).toBeDefined();
+    expect(EVOLUTION_CONFIG["Breakout"]).toBeDefined();
+    expect(EVOLUTION_CONFIG["Legend"]).toBeDefined();
+    expect(EVOLUTION_CONFIG["Myth"]).toBeDefined();
   });
 
-  it("minLevel increases with each stage", () => {
-    expect(EVOLUTION_CONFIG["Flame"].minLevel).toBeGreaterThan(EVOLUTION_CONFIG["Spark"].minLevel);
-    expect(EVOLUTION_CONFIG["Inferno"].minLevel).toBeGreaterThan(EVOLUTION_CONFIG["Flame"].minLevel);
-    expect(EVOLUTION_CONFIG["Phoenix"].minLevel).toBeGreaterThan(EVOLUTION_CONFIG["Inferno"].minLevel);
-  });
-
-  it("Spark minLevel is 1", () => {
-    expect(EVOLUTION_CONFIG["Spark"].minLevel).toBe(1);
+  it("each entry has label, icon, cssClass, color", () => {
+    const stages = ["Seed", "Active", "Growing", "Breakout", "Legend", "Myth"] as const;
+    for (const stage of stages) {
+      const cfg = EVOLUTION_CONFIG[stage];
+      expect(typeof cfg.label).toBe("string");
+      expect(typeof cfg.icon).toBe("string");
+      expect(typeof cfg.cssClass).toBe("string");
+      expect(typeof cfg.color).toBe("string");
+    }
   });
 });
 
