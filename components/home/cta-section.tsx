@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Swords, Eye } from "lucide-react";
 import { useLang } from "@/lib/i18n";
-import type { WeeklyWinner } from "@/lib/types";
 
 const pixelEase = [0.22, 1, 0.36, 1] as const;
 
@@ -15,11 +14,7 @@ const fadeUp = {
   transition: { duration: 0.5, ease: pixelEase },
 };
 
-interface CtaSectionProps {
-  weeklyWinners: WeeklyWinner[];
-}
-
-export function CtaSection({ weeklyWinners }: CtaSectionProps) {
+export function CtaSection() {
   const { t } = useLang();
 
   return (
@@ -62,18 +57,6 @@ export function CtaSection({ weeklyWinners }: CtaSectionProps) {
               </Link>
             </div>
 
-            {weeklyWinners.length > 0 && (
-              <div className="mt-10 pt-6 font-pixel text-[7px]" style={{ borderTop: "2px solid var(--border-metal)" }}>
-                <span style={{ color: "#555" }}>{t("cta.lastWeekChampion")}</span>
-                <span style={{ color: "var(--neon-yellow)" }}>{weeklyWinners[0].projectTitle}</span>
-                <span style={{ color: "#555" }}>{t("cta.by")}</span>
-                <span style={{ color: "var(--neon-green)" }}>{weeklyWinners[0].creatorName}</span>
-                <span style={{ color: "#555" }}>
-                  {t("cta.score")}
-                  {weeklyWinners[0].score})
-                </span>
-              </div>
-            )}
           </div>
         </motion.div>
       </div>

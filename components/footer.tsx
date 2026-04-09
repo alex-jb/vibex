@@ -55,10 +55,10 @@ export function Footer() {
               {t("footer.community")}
             </h4>
             <div className="flex flex-col gap-2.5">
-              <span className="font-pixel text-[9px] text-muted-foreground/30">Discord</span>
+              <span className="font-pixel text-[9px] text-muted-foreground/30">Discord (Coming Soon)</span>
               <span className="font-pixel text-[9px] text-muted-foreground/30">Twitter / X</span>
-              <span className="font-pixel text-[9px] text-muted-foreground/30">GitHub</span>
-              <span className="font-pixel text-[9px] text-muted-foreground/30">{t("footer.newsletter")}</span>
+              <a href="https://github.com/alex-jb/vibex" target="_blank" rel="noopener noreferrer" className="font-pixel text-[9px] text-muted-foreground/70 hover:text-foreground transition-colors duration-200">GitHub</a>
+              <span className="font-pixel text-[9px] text-muted-foreground/30">{t("footer.newsletter")} (Coming Soon)</span>
             </div>
           </div>
         </div>
