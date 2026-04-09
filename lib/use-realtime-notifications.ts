@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import { supabase } from "./supabase";
 import { useAuth } from "./auth";
 
@@ -23,7 +23,7 @@ type NotificationHandler = (notification: RealtimeNotification) => void;
 export function useRealtimeNotifications(onNotification: NotificationHandler) {
   const { user } = useAuth();
   const handlerRef = useRef(onNotification);
-  handlerRef.current = onNotification;
+  useEffect(() => { handlerRef.current = onNotification; });
 
   useEffect(() => {
     if (!user) return;
@@ -64,8 +64,7 @@ export function useRealtimeNotifications(onNotification: NotificationHandler) {
  */
 export function useUnreadCount(): { count: number; refresh: () => void } {
   const { user } = useAuth();
-  const countRef = useRef(0);
-  const setCount = useCallback((n: number) => { countRef.current = n; }, []);
+  const [count, setCount] = useState(0);
 
   const refresh = useCallback(async () => {
     if (!user) return;
@@ -78,11 +77,12 @@ export function useUnreadCount(): { count: number; refresh: () => void } {
     } catch {
       // ignore
     }
-  }, [user, setCount]);
+  }, [user]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refresh();
   }, [refresh]);
 
-  return { count: countRef.current, refresh };
+  return { count, refresh };
 }

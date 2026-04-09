@@ -37,7 +37,7 @@ interface ShareModalProps {
 }
 
 type Platform = "twitter" | "xiaohongshu" | "douyin";
-type CardSize = "square" | "wide";
+type CardSize = "hero" | "square" | "wide";
 
 const SITE_DOMAIN = "vibexforge.com";
 
@@ -178,28 +178,24 @@ function ShareCardPreview({
 
         {/* Size switcher */}
         <div className="flex gap-1">
-          <button
-            onClick={() => onCardSizeChange("square")}
-            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all ${
-              cardSize === "square"
-                ? "bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white"
-                : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] border border-white/[0.06]"
-            }`}
-          >
-            <Smartphone className="h-2.5 w-2.5" />
-            1080
-          </button>
-          <button
-            onClick={() => onCardSizeChange("wide")}
-            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all ${
-              cardSize === "wide"
-                ? "bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white"
-                : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] border border-white/[0.06]"
-            }`}
-          >
-            <Monitor className="h-2.5 w-2.5" />
-            Wide
-          </button>
+          {([
+            { key: "hero" as const, icon: Smartphone, label: "3:4" },
+            { key: "square" as const, icon: Smartphone, label: "1:1" },
+            { key: "wide" as const, icon: Monitor, label: "16:9" },
+          ]).map(({ key, icon: Icon, label }) => (
+            <button
+              key={key}
+              onClick={() => onCardSizeChange(key)}
+              className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all ${
+                cardSize === key
+                  ? "bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white"
+                  : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] border border-white/[0.06]"
+              }`}
+            >
+              <Icon className="h-2.5 w-2.5" />
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -213,7 +209,7 @@ function ShareCardPreview({
         <img
           src={cardUrl}
           alt="Share card preview"
-          className={`w-full ${cardSize === "square" ? "aspect-square" : "aspect-[1200/675]"} object-contain`}
+          className={`w-full ${cardSize === "hero" ? "aspect-[3/4]" : cardSize === "square" ? "aspect-square" : "aspect-[16/9]"} object-contain`}
           onLoad={() => setLoading(false)}
           onError={() => setLoading(false)}
         />
@@ -310,7 +306,7 @@ function QRCodeDisplay({ projectId }: { projectId: string }) {
 
 export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
   const [activePlatform, setActivePlatform] = useState<Platform>("twitter");
-  const [cardSize, setCardSize] = useState<CardSize>("square");
+  const [cardSize, setCardSize] = useState<CardSize>("hero");
   const [editedTexts, setEditedTexts] = useState<Partial<Record<Platform, string>>>({});
   const [aiLoading, setAiLoading] = useState<Partial<Record<Platform, boolean>>>({});
   const [aiError, setAiError] = useState<Partial<Record<Platform, string>>>({});
