@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import {
   TrendingUp,
   TrendingDown,
@@ -12,14 +13,27 @@ import {
   ArrowUp,
   Signal,
   Activity,
+  LineChart,
 } from "lucide-react";
 import { useTrendInsights } from "@/lib/use-data";
 import type { TrendInsight } from "@/lib/types";
 import { SectionHeader } from "@/components/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AnalyticsTab } from "@/components/insights/analytics-tab";
 import { useLang } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/i18n";
+
+type InsightTab = "trends" | "analytics";
+
+const insightTabs: {
+  key: InsightTab;
+  i18nKey: string;
+  icon: typeof Activity;
+}[] = [
+  { key: "trends", i18nKey: "insights.tabTrends", icon: Activity },
+  { key: "analytics", i18nKey: "insights.tabAnalytics", icon: LineChart },
+];
 
 const typeConfig: Record<
   TrendInsight["type"],
@@ -284,9 +298,22 @@ function TrendCard({
   );
 }
 
-export default function InsightsPage() {
+function InsightsContent() {
   const { t } = useLang();
   const { data: trendInsights } = useTrendInsights();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const rawTab = searchParams.get("tab");
+  const activeTab: InsightTab = rawTab === "analytics" ? "analytics" : "trends";
+
+  function setTab(newTab: InsightTab) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", newTab);
+    router.replace(`${pathname}?${params.toString()}`);
+  }
+
   return (
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16">
       {/* Background gradient orbs */}
@@ -317,6 +344,70 @@ export default function InsightsPage() {
         </div>
       </motion.div>
 
+      {/* Tab Switcher */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="relative flex gap-3 mt-8 mb-4 justify-center flex-wrap"
+      >
+        {insightTabs.map((tab) => {
+          const isActive = activeTab === tab.key;
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setTab(tab.key)}
+              className="glass-card-strong relative flex items-center gap-2 px-5 py-3 rounded-lg transition-all duration-200"
+              style={{
+                fontFamily: "var(--font-pixel), monospace",
+                fontSize: 11,
+                background: isActive
+                  ? "rgba(139,92,246,0.15)"
+                  : "rgba(30,30,40,0.6)",
+                border: isActive
+                  ? "1px solid rgba(139,92,246,0.4)"
+                  : "1px solid rgba(255,255,255,0.06)",
+                color: isActive ? "#c4b5fd" : "rgba(255,255,255,0.5)",
+                boxShadow: isActive
+                  ? "0 4px 20px rgba(139,92,246,0.15), inset 0 -2px 0 rgba(139,92,246,0.6)"
+                  : "none",
+                cursor: "pointer",
+              }}
+            >
+              <Icon
+                className="size-4"
+                style={{
+                  color: isActive ? "#a78bfa" : "rgba(255,255,255,0.4)",
+                }}
+              />
+              <span>{t(tab.i18nKey as TranslationKey)}</span>
+            </button>
+          );
+        })}
+      </motion.div>
+
+      <AnimatePresence mode="wait">
+        {activeTab === "analytics" && (
+          <motion.div
+            key="analytics"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25 }}
+            className="relative"
+          >
+            <AnalyticsTab />
+          </motion.div>
+        )}
+        {activeTab === "trends" && (
+          <motion.div
+            key="trends"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25 }}
+          >
       {/* Overview Stats */}
       <section className="relative mt-14">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -402,6 +493,17 @@ export default function InsightsPage() {
           </div>
         </motion.div>
       </section>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
+
+export default function InsightsPage() {
+  return (
+    <Suspense>
+      <InsightsContent />
+    </Suspense>
   );
 }

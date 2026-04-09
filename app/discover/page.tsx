@@ -3,13 +3,14 @@
 import { Suspense, useState } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Compass, Folder, Bot, GitBranch, Search } from "lucide-react";
+import { Compass, Folder, Bot, GitBranch, Search, MessageCircle } from "lucide-react";
 import { ProjectsTab } from "@/components/discover/projects-tab";
 import { AgentsTab } from "@/components/discover/agents-tab";
 import { WorkflowsTab } from "@/components/discover/workflows-tab";
+import { FeedTab } from "@/components/discover/feed-tab";
 import { useLang } from "@/lib/i18n";
 
-type Tab = "projects" | "agents" | "workflows";
+type Tab = "projects" | "agents" | "workflows" | "feed";
 
 const tabs: {
   key: Tab;
@@ -20,6 +21,7 @@ const tabs: {
   { key: "projects", i18nKey: "discover.tabProjects", icon: Folder, count: 12 },
   { key: "agents", i18nKey: "discover.tabAgents", icon: Bot, count: 8 },
   { key: "workflows", i18nKey: "discover.tabWorkflows", icon: GitBranch, count: 5 },
+  { key: "feed", i18nKey: "discover.tabFeed", icon: MessageCircle, count: 0 },
 ];
 
 function DiscoverContent() {
@@ -31,7 +33,9 @@ function DiscoverContent() {
 
   const rawTab = searchParams.get("tab");
   const activeTab: Tab =
-    rawTab === "agents" || rawTab === "workflows" ? rawTab : "projects";
+    rawTab === "agents" || rawTab === "workflows" || rawTab === "feed"
+      ? rawTab
+      : "projects";
 
   function setTab(newTab: Tab) {
     const params = new URLSearchParams(searchParams.toString());
@@ -178,20 +182,22 @@ function DiscoverContent() {
                 }}
               />
               <span>{t(tab.i18nKey as Parameters<typeof t>[0])}</span>
-              <span
-                className="ml-1 inline-flex items-center justify-center rounded-full text-[9px] leading-none"
-                style={{
-                  fontFamily: "var(--font-pixel), monospace",
-                  background: isActive
-                    ? "rgba(139,92,246,0.3)"
-                    : "rgba(255,255,255,0.08)",
-                  color: isActive ? "#c4b5fd" : "rgba(255,255,255,0.4)",
-                  padding: "3px 7px",
-                  minWidth: 20,
-                }}
-              >
-                {tab.count}
-              </span>
+              {tab.count > 0 && (
+                <span
+                  className="ml-1 inline-flex items-center justify-center rounded-full text-[9px] leading-none"
+                  style={{
+                    fontFamily: "var(--font-pixel), monospace",
+                    background: isActive
+                      ? "rgba(139,92,246,0.3)"
+                      : "rgba(255,255,255,0.08)",
+                    color: isActive ? "#c4b5fd" : "rgba(255,255,255,0.4)",
+                    padding: "3px 7px",
+                    minWidth: 20,
+                  }}
+                >
+                  {tab.count}
+                </span>
+              )}
             </button>
           );
         })}
@@ -231,6 +237,17 @@ function DiscoverContent() {
               transition={{ duration: 0.25 }}
             >
               <WorkflowsTab />
+            </motion.div>
+          )}
+          {activeTab === "feed" && (
+            <motion.div
+              key="feed"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25 }}
+            >
+              <FeedTab />
             </motion.div>
           )}
         </AnimatePresence>

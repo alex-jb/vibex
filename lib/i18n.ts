@@ -40,6 +40,7 @@ const translations = {
     "discover.tabProjects": "Projects",
     "discover.tabAgents": "Agents",
     "discover.tabWorkflows": "Workflows",
+    "discover.tabFeed": "Feed",
 
     // Dojo page
     "dojo.title": "The",
@@ -266,6 +267,9 @@ const translations = {
     "insights.title": "Trend",
     "insights.titleHighlight": "Intelligence",
     "insights.description": "AI-analyzed trends across the vibe coding ecosystem. Spot rising categories, saturated markets, and emerging opportunities.",
+    "insights.tabTrends": "Trends",
+    "insights.tabAnalytics": "Analytics",
+    "insights.analyticsDisclaimer": "Agent performance metrics (for developers)",
     "insights.rising": "Rising",
     "insights.saturated": "Saturated",
     "insights.opportunity": "Opportunity",
@@ -868,6 +872,7 @@ const translations = {
     "discover.tabProjects": "项目",
     "discover.tabAgents": "智能体",
     "discover.tabWorkflows": "工作流",
+    "discover.tabFeed": "动态",
 
     // Dojo page
     "dojo.title": "",
@@ -1094,6 +1099,9 @@ const translations = {
     "insights.title": "趋势",
     "insights.titleHighlight": "情报",
     "insights.description": "AI 分析 vibe coding 生态系统中的趋势。发现上升赛道、饱和市场和新兴机会。",
+    "insights.tabTrends": "趋势",
+    "insights.tabAnalytics": "分析",
+    "insights.analyticsDisclaimer": "Agent 性能指标（开发者视角）",
     "insights.rising": "上升中",
     "insights.saturated": "已饱和",
     "insights.opportunity": "机会",

@@ -15,15 +15,14 @@ import { NotificationBell } from "@/components/notification-bell";
 import { useAuth } from "@/lib/auth";
 
 // Primary nav items — same for guests and logged-in users
+// Feed merged into Discover (as tab), Analytics merged into Insights (as tab)
 const fullNavItems = [
   { href: "/", key: "nav.home" as const },
-  { href: "/feed", key: "nav.feed" as const },
   { href: "/discover", key: "nav.discover" as const },
   { href: "/creators", key: "nav.creators" as const },
   { href: "/dojo", key: "nav.dojo" as const },
   { href: "/insights", key: "nav.insights" as const },
   { href: "/ideas", key: "nav.ideas" as const },
-  { href: "/analytics", key: "nav.analytics" as const },
   { href: "/developers", key: "nav.developers" as const },
 ];
 
@@ -41,7 +40,6 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
   const { t, lang } = useLang();
   const { user } = useAuth();
   const primaryNavItems = user ? fullNavItems : guestNavItems;
@@ -106,33 +104,6 @@ export function Navbar() {
                 </Link>
               );
             })}
-            {/* More Coming placeholder — future expansions */}
-            <div className="relative">
-              <button
-                onClick={() => setMoreOpen(!moreOpen)}
-                className="relative flex flex-col items-center px-2.5 py-2 text-muted-foreground/60 hover:text-foreground/80 transition-colors duration-200"
-                style={navFont}
-              >
-                {t("nav.moreComing")}
-              </button>
-              <AnimatePresence>
-                {moreOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setMoreOpen(false)} />
-                    <motion.div
-                      initial={{ opacity: 0, y: -8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      className="absolute right-0 top-full mt-1 z-50 w-48 glass-card-strong rounded-xl border border-white/[0.08] py-3 px-4 shadow-xl"
-                    >
-                      <p className="font-pixel text-[9px] tracking-wide text-muted-foreground text-center">
-                        {t("nav.moreComingHint")}
-                      </p>
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
           </nav>
 
           {/* Desktop CTA + Lang Toggle + User */}
