@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { completeTutorial, getOnboardingState } from "@/lib/onboarding";
+import { useAuth } from "@/lib/auth";
 
 interface TutorialStep {
   emoji: string;
@@ -31,14 +32,17 @@ const STEPS: TutorialStep[] = [
 export function TutorialOverlay() {
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
+  const { user } = useAuth();
 
   useEffect(() => {
+    // Only show tutorial for logged-in users, not first-time visitors
+    if (!user) return;
     const state = getOnboardingState();
     if (!state.tutorialCompleted && state.firstVisit) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
     }
-  }, []);
+  }, [user]);
 
   const handleNext = useCallback(() => {
     if (step < STEPS.length - 1) {

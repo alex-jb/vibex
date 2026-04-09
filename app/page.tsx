@@ -95,11 +95,7 @@ export default function Home() {
   const { data: events } = useEvents();
   const { data: trendInsights } = useTrendInsights();
 
-  const communityStats = useMemo(() => [
-    { label: t("stats.questsLaunched"), value: "12K+", color: "var(--neon-green)" },
-    { label: t("stats.activeHeroes"), value: "8K+", color: "var(--neon-cyan)" },
-    { label: t("stats.guildActions"), value: "500K+", color: "var(--neon-purple)" },
-  ], [t]);
+  const communityStats = useMemo(() => [] as { label: string; value: string; color: string }[], []);
 
   const bossProject = projects.filter((p) => p.featured)[0];
   const gridProjects = projects.slice(0, 6);

@@ -12,9 +12,16 @@ import { useLang } from "@/lib/i18n";
 import { LangToggle } from "@/components/lang-toggle";
 import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
+import { useAuth } from "@/lib/auth";
 
-// Primary nav items (always visible)
-const primaryNavItems = [
+// Guest nav (simplified for new visitors)
+const guestNavItems = [
+  { href: "/discover", key: "nav.discover" as const },
+  { href: "/creators", key: "nav.creators" as const },
+];
+
+// Full nav for logged-in users
+const fullNavItems = [
   { href: "/", key: "nav.home" as const },
   { href: "/feed", key: "nav.feed" as const },
   { href: "/discover", key: "nav.discover" as const },
@@ -39,15 +46,15 @@ const secondaryNavItems = [
   { href: "/developers", key: "nav.developers" as const },
 ];
 
-// All items for mobile menu
-const allNavItems = [...primaryNavItems, ...dojoNavItems, ...secondaryNavItems];
-
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const { t, lang } = useLang();
+  const { user } = useAuth();
+  const primaryNavItems = user ? fullNavItems : guestNavItems;
+  const allNavItems = [...primaryNavItems, ...(user ? dojoNavItems : []), ...(user ? secondaryNavItems : [])];
   const isCJK = lang === "zh";
   const navFont: React.CSSProperties = isCJK
     ? { fontFamily: "var(--font-zpix), monospace", fontSize: 12, letterSpacing: 4, transform: "scale(1.35)", transformOrigin: "center" }
