@@ -9,11 +9,18 @@
 </p>
 
 <p align="center">
+  <a href="https://www.vibexforge.com"><img src="https://img.shields.io/badge/▶_Try_Live-vibexforge.com-8b5cf6?style=for-the-badge" alt="Try Live" /></a>
+  <a href="#-quick-start"><img src="https://img.shields.io/badge/⚡_Quick_Start-30_seconds-39FF14?style=for-the-badge" alt="Quick Start" /></a>
+  <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/badge/⭐_Star_Us-GitHub-FACC15?style=for-the-badge" alt="Star Us" /></a>
+</p>
+
+<p align="center">
   <a href="https://www.vibexforge.com">Website</a> &bull;
   <a href="#-how-it-works">How It Works</a> &bull;
   <a href="#-core-features">Features</a> &bull;
-  <a href="#-tech-stack">Tech Stack</a> &bull;
-  <a href="#-getting-started">Getting Started</a>
+  <a href="#-architecture">Architecture</a> &bull;
+  <a href="#-quick-start">Quick Start</a> &bull;
+  <a href="./CONTRIBUTING.md">Contributing</a>
 </p>
 
 <p align="center">
@@ -148,25 +155,86 @@ Investor intelligence: radar charts, talent graph, deal flow table ranked by AI 
 
 ---
 
-## Getting Started
+## Quick Start
+
+**Runs in 30 seconds with zero config.** No API keys, no database, no sign-up.
 
 ```bash
-# Clone
 git clone https://github.com/alex-jb/vibex.git
 cd vibex
-
-# Install
 npm install
-
-# Configure
-cp .env.local.example .env.local
-# Fill in: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, ANTHROPIC_API_KEY
-
-# Run
 npm run dev
 ```
 
-> **No Supabase?** The app works in mock mode without a database. All features use built-in demo data.
+Open http://localhost:3000 — the app runs in **mock mode** with built-in demo data.
+
+<details>
+<summary><strong>Want real data? Configure Supabase + Claude (optional)</strong></summary>
+
+```bash
+cp .env.local.example .env.local
+# Fill in: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, ANTHROPIC_API_KEY
+npm run dev
+```
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup details.
+
+</details>
+
+---
+
+## Architecture
+
+```
+vibex/
+├── app/                   # Next.js 16 App Router
+│   ├── feed/              # Social timeline (realtime)
+│   ├── discover/          # Project browser
+│   ├── dojo/              # Training hub
+│   ├── arena/             # Battle simulator
+│   ├── launch/            # AI Launch Copilot
+│   ├── vc/                # VC dashboard
+│   └── api/               # 43 API routes
+├── components/            # 105+ React components
+│   ├── rpg/               # Pixel UI (hero card, battle HUD, skill tree)
+│   ├── feed/              # Social (posts, reactions, mentions)
+│   ├── home/              # Landing page sections
+│   └── vc/                # Investor dashboard
+├── lib/
+│   ├── ai.ts              # Claude API integration
+│   ├── battle-engine.ts   # 6-attribute combat
+│   ├── buddy-system.ts    # Pet + gacha system
+│   ├── data-moat.ts       # Growth intelligence
+│   └── i18n.ts            # 708 translation keys (EN/ZH)
+├── supabase/migrations/   # Schema (48 tables)
+└── .private/              # Proprietary core (not in repo)
+```
+
+**Data flow:** Browser → Next.js API routes → Supabase (PostgreSQL + Realtime) + Claude API → Response.
+
+---
+
+## License & Source Model
+
+VibeX is **source-available**, not fully open source. Here's what that means:
+
+### Public (this repo)
+- All UI, components, pages, API routes
+- Public stubs of core logic (compile + run with demo behavior)
+- Schema overview
+
+### Private (not in this repo)
+- Claude AI prompt templates (the secret sauce)
+- Battle engine combat math
+- Gacha/evolution probability tuning
+- Growth intelligence algorithms
+- Full migration history with RLS policies
+
+**You can:** fork, study, learn from, and contribute to the public parts. Run it locally. Build on top of it for personal/educational use.
+
+**You can't:** use it commercially without permission. See [LICENSE](./LICENSE).
+
+Want to contribute? See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ---
 
@@ -179,16 +247,22 @@ where every project is not just launched — but evolves.
 
 ## Status
 
-Early-stage MVP. Actively building the core growth loop.
+Early-stage MVP. Actively building the core growth loop. Join the beta at [vibexforge.com](https://www.vibexforge.com).
 
 ---
 
+## Support the Project
+
+If VibeX inspires you or helps you ship your AI project:
+
 <p align="center">
-  <strong>Create your first evolving project:</strong><br/><br/>
-  <a href="https://www.vibexforge.com/">
-    <img src="https://img.shields.io/badge/Launch_on_VibeX-vibexforge.com-8b5cf6?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9Ijk2IiBmaWxsPSIjOGI1Y2Y2Ii8+PHRleHQgeD0iMjU2IiB5PSIzMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjI4MCIgZmlsbD0id2hpdGUiPlY8L3RleHQ+PC9zdmc+" alt="Launch on VibeX" />
-  </a>
+  <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/badge/⭐_Star_this_repo-It_takes_1_second-FACC15?style=for-the-badge" alt="Star" /></a>
+  <a href="https://www.vibexforge.com/"><img src="https://img.shields.io/badge/Launch_Your_AI_Project-vibexforge.com-8b5cf6?style=for-the-badge" alt="Launch" /></a>
 </p>
+
+Stars help other AI creators discover VibeX. It's the single most impactful thing you can do if you like this.
+
+---
 
 <p align="center">
   Built with vibe coding energy by <a href="https://github.com/alex-jb">Orallexa</a>
