@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Swords, Eye } from "lucide-react";
 import Link from "next/link";
 import { TypewriterText } from "@/components/rpg/typewriter-text";
 import { useLang } from "@/lib/i18n";
+
+const BOOT_SEEN_KEY = "vibex-boot-seen";
+const MOBILE_BREAKPOINT = 768;
 
 interface BootSequenceProps {
   communityStats: ReadonlyArray<{ label: string; value: string; color: string }>;
@@ -15,6 +18,18 @@ export function BootSequence({ communityStats }: BootSequenceProps) {
   const [bootComplete, setBootComplete] = useState(false);
   const [bootLine, setBootLine] = useState(0);
   const { t } = useLang();
+
+  // Skip boot animation on mobile or repeat desktop visits — critical for LCP
+  useEffect(() => {
+    const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+    const hasSeenBoot = localStorage.getItem(BOOT_SEEN_KEY) === "1";
+    if (isMobile || hasSeenBoot) {
+      setBootComplete(true);
+    } else {
+      // Mark as seen for next visit
+      localStorage.setItem(BOOT_SEEN_KEY, "1");
+    }
+  }, []);
 
   const bootLines = useMemo(
     () => [t("boot.0"), t("boot.1"), t("boot.2"), t("boot.3"), t("boot.4"), t("boot.5"), t("boot.6")],
@@ -86,7 +101,7 @@ export function BootSequence({ communityStats }: BootSequenceProps) {
                     ) : (
                       <TypewriterText
                         text={line}
-                        speed={line === "" ? 10 : 25}
+                        speed={line === "" ? 5 : 15}
                         className={i === bootLines.length - 1 ? "!text-[var(--neon-yellow)]" : "!text-[var(--neon-green)]"}
                         onComplete={handleBootLineComplete}
                         showCursor={i === bootLine}

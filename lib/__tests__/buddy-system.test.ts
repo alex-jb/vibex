@@ -172,10 +172,11 @@ describe("computeUserLevel", () => {
     expect(result.title).toBe("Apprentice");
   });
 
-  it("returns Legendary Trainer at very high EXP", () => {
+  // Stub uses simplified titles ("Apprentice" → "Elite Trainer")
+  it("returns a non-empty title at very high EXP", () => {
     const result = computeUserLevel(999999);
-    expect(result.title).toBe("Legendary Trainer");
-    expect(result.level).toBeGreaterThanOrEqual(30);
+    expect(result.title).toBeTruthy();
+    expect(result.level).toBeGreaterThanOrEqual(10);
   });
 
   it("canSummon is true at summon levels (3, 5, 10, etc.)", () => {
@@ -201,36 +202,11 @@ describe("computeUserLevel", () => {
 });
 
 // ─── Evolution system ─────────────────────────────────────────────────────────
-
-describe("getEvolutionStage", () => {
+// Public stub returns base stage only (stage 0). Full multi-stage evolution
+// logic is in the proprietary .private/buddy-system.ts.
+describe.skip("getEvolutionStage (proprietary — skipped in public stub)", () => {
   it("returns stage 0 at level 0 for pixel-fox", () => {
     const evo = getEvolutionStage("pixel-fox", 0);
-    expect(evo.stage).toBe(0);
-    expect(evo.name).toBe("PixelFox");
-  });
-
-  it("returns stage 1 when buddy meets stage 1 requirement", () => {
-    // pixel-fox stage 1 requires level 8
-    const evo = getEvolutionStage("pixel-fox", 8);
-    expect(evo.stage).toBe(1);
-    expect(evo.name).toBe("InfernoFox");
-  });
-
-  it("returns stage 2 at final evolution level", () => {
-    // pixel-fox stage 2 requires level 15
-    const evo = getEvolutionStage("pixel-fox", 20);
-    expect(evo.stage).toBe(2);
-    expect(evo.name).toBe("ThunderFox");
-  });
-
-  it("stays at highest achieved stage (no downgrade)", () => {
-    const evo14 = getEvolutionStage("pixel-fox", 14);
-    expect(evo14.stage).toBe(1); // stage 1 (level 8), but not yet 15 for stage 2
-  });
-
-  it("returns unknown for invalid buddy type", () => {
-    const evo = getEvolutionStage("nonexistent-buddy", 10);
-    expect(evo.name).toBe("Unknown");
     expect(evo.stage).toBe(0);
   });
 });
@@ -257,24 +233,11 @@ describe("canEvolve", () => {
   });
 });
 
-describe("getEvolutions", () => {
-  it("returns an array of 3 stages for pixel-fox", () => {
+// Public stub returns base stage only. Multi-stage evolutions are proprietary.
+describe.skip("getEvolutions (proprietary — skipped in public stub)", () => {
+  it("returns an array of stages", () => {
     const evos = getEvolutions("pixel-fox");
-    expect(evos).toHaveLength(3);
-    expect(evos[0].stage).toBe(0);
-    expect(evos[1].stage).toBe(1);
-    expect(evos[2].stage).toBe(2);
-  });
-
-  it("returns empty array for unknown buddy type", () => {
-    expect(getEvolutions("made-up")).toEqual([]);
-  });
-
-  it("each evolution has a higher requiredLevel than the previous", () => {
-    const evos = getEvolutions("code-dragon");
-    for (let i = 1; i < evos.length; i++) {
-      expect(evos[i].requiredLevel).toBeGreaterThan(evos[i - 1].requiredLevel);
-    }
+    expect(evos.length).toBeGreaterThan(0);
   });
 });
 
@@ -294,21 +257,9 @@ describe("calculateSummonWeights", () => {
     expect(fox).toBeDefined();
   });
 
-  it("upvotes boost weight of rare/epic/legendary buddies", () => {
-    const low = calculateSummonWeights(10, 0, []);
-    const high = calculateSummonWeights(10, 500, []);
-    const rareLow = low.find((w) => w.buddyType.rarity === "rare")!;
-    const rareHigh = high.find((w) => w.buddyType.id === rareLow.buddyType.id)!;
-    expect(rareHigh.weight).toBeGreaterThan(rareLow.weight);
-  });
-
-  it("pity system adds +5 weight for buddies not yet owned", () => {
-    const withPity = calculateSummonWeights(3, 0, []);
-    const withoutPity = calculateSummonWeights(3, 0, ["pixel-fox"]);
-    const foxWithPity = withPity.find((w) => w.buddyType.id === "pixel-fox")!;
-    const foxWithout = withoutPity.find((w) => w.buddyType.id === "pixel-fox")!;
-    expect(foxWithPity.weight).toBe(foxWithout.weight + 5);
-  });
+  // Proprietary weighting lives in .private/ — stub has flat weights
+  it.skip("upvotes boost weight (proprietary)", () => {});
+  it.skip("pity system adds +5 weight (proprietary)", () => {});
 
   it("returns empty array when user level is too low for all buddies", () => {
     // All buddies require at least level 3; level 1 yields nothing
@@ -353,15 +304,9 @@ describe("summonBuddy", () => {
     expect(result.bonusApplied).toBe("No bonus");
   });
 
-  it("bonusApplied mentions upvote bonus when >= 100 upvotes", () => {
-    const result = summonBuddy(3, 150, []);
-    expect(result.bonusApplied).toContain("Upvote bonus");
-  });
-
-  it("bonusApplied mentions level bonus when level >= 10", () => {
-    const result = summonBuddy(10, 0, []);
-    expect(result.bonusApplied).toContain("Level bonus");
-  });
+  // Proprietary bonus system lives in .private/
+  it.skip("bonusApplied mentions upvote bonus when >= 100 upvotes (proprietary)", () => {});
+  it.skip("bonusApplied mentions level bonus when level >= 10 (proprietary)", () => {});
 
   it("returns a valid SummonResult shape", () => {
     const result = summonBuddy(5, 50, []);

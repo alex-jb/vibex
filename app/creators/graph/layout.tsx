@@ -3,13 +3,14 @@ import { isFeatureEnabled } from "@/lib/feature-flags";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata = createMetadata({
-  title: "Trend Intelligence",
-  description: "AI-analyzed trends across the vibe coding ecosystem. Spot rising categories, saturated markets, and emerging opportunities.",
-  path: "/insights",
+  title: "Creator Graph",
+  description:
+    "Explore the social graph of creators shaping the vibe coding ecosystem.",
+  path: "/creators/graph",
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  if (!isFeatureEnabled("FEATURE_INSIGHTS")) {
+  if (!isFeatureEnabled("FEATURE_CREATOR_GRAPH")) {
     redirect("/");
   }
   return children;

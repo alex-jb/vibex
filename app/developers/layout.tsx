@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { isFeatureEnabled } from "@/lib/feature-flags";
 
 export const metadata: Metadata = {
   title: "Developer Platform | VibeX",
@@ -11,5 +13,8 @@ export default function DevelopersLayout({
 }: {
   children: React.ReactNode;
 }) {
+  if (!isFeatureEnabled("FEATURE_DEVELOPERS")) {
+    redirect("/");
+  }
   return children;
 }
