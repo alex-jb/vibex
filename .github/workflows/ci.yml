@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [master, main]
 
+permissions:
+  contents: read
+  checks: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -49,19 +53,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - run: npm test -- --reporter=junit --outputFile=test-results/unit-results.xml
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: unit-test-results
-          path: test-results/
-          retention-days: 14
-      - uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: Unit Test Results
-          path: test-results/unit-results.xml
-          reporter: java-junit
+      - run: npm test
 
   # Build depends on typecheck + lint passing
   build:
@@ -94,10 +86,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - uses: actions/download-artifact@v4
-        with:
-          name: next-build
-          path: .next/
+      - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
         env:
@@ -110,12 +99,6 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 14
-      - uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: E2E Test Results
-          path: test-results/e2e-results.xml
-          reporter: java-junit
 
   # Environment validation
   env-check:
