@@ -31,6 +31,12 @@ export const EXP_REWARDS = {
   firstProject: 200,      // First project (one-time)
   firstBattle: 100,       // First battle (one-time)
   firstBuddy: 50,         // First Buddy (one-time)
+  // Project evolution rewards
+  evolveToActive: 25,     // Project reaches Active stage
+  evolveToGrowing: 50,    // Project reaches Growing stage
+  evolveToBreakout: 100,  // Project reaches Breakout stage
+  evolveToLegend: 200,    // Project reaches Legend stage
+  evolveToMyth: 500,      // Project reaches Myth stage
 } as const;
 
 // ═══════════════════════════════════════════════════════════════

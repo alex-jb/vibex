@@ -18,6 +18,7 @@ import { PodiumCard } from "@/components/creators/creator-card";
 import { CreatorDetailPanel } from "@/components/creators/creator-detail";
 import { RankingsTable } from "@/components/creators/rankings-table";
 import { formatNumber, getCreatorClass, getCreatorAttributes } from "@/components/creators/creator-helpers";
+import { EvolutionBadge } from "@/components/rpg/evolution-badge";
 
 // --- Animations ---
 const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } };
@@ -117,17 +118,27 @@ export default function CreatorsPage() {
                 const accent = i === 1 ? "gold" : i === 0 ? "silver" : "bronze";
                 const elevated = i === 1;
                 const heroClass = getCreatorClass(creator.id, projects);
+                const bestProject = projects
+                  .filter((p) => p.creatorId === creator.id)
+                  .sort((a, b) => b.score - a.score)[0];
+                const bestStage = bestProject?.hero?.evolutionStage;
                 return (
-                  <PodiumCard
-                    key={creator.id}
-                    creator={creator}
-                    accent={accent}
-                    delay={0.2 + i * 0.05}
-                    elevated={elevated}
-                    heroClass={heroClass}
-                    isSelected={selectedCreator === creator.id}
-                    onSelect={() => setSelectedCreator(selectedCreator === creator.id ? null : creator.id)}
-                  />
+                  <div key={creator.id} className="relative">
+                    {bestStage && (
+                      <div className="absolute -top-2 right-2 z-10">
+                        <EvolutionBadge stage={bestStage} size="sm" />
+                      </div>
+                    )}
+                    <PodiumCard
+                      creator={creator}
+                      accent={accent}
+                      delay={0.2 + i * 0.05}
+                      elevated={elevated}
+                      heroClass={heroClass}
+                      isSelected={selectedCreator === creator.id}
+                      onSelect={() => setSelectedCreator(selectedCreator === creator.id ? null : creator.id)}
+                    />
+                  </div>
                 );
               })}
             </div>
