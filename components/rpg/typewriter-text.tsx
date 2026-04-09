@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 interface TypewriterTextProps {
@@ -20,6 +20,14 @@ export function TypewriterText({
 }: TypewriterTextProps) {
   const [displayed, setDisplayed] = useState("");
   const [done, setDone] = useState(false);
+  // Hold the onComplete callback in a ref so changing its identity doesn't
+  // restart the interval (was causing the boot sequence to freeze mid-line
+  // when the parent re-rendered).
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     setDisplayed("");
@@ -31,11 +39,13 @@ export function TypewriterText({
       if (i >= text.length) {
         clearInterval(timer);
         setDone(true);
-        onComplete?.();
+        onCompleteRef.current?.();
       }
     }, speed);
     return () => clearInterval(timer);
-  }, [text, speed, onComplete]);
+    // Intentionally exclude onComplete — held in ref above
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, speed]);
 
   return (
     <motion.span

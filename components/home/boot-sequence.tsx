@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Swords, Eye } from "lucide-react";
 import Link from "next/link";
@@ -28,6 +28,15 @@ export function BootSequence({ communityStats }: BootSequenceProps) {
       setBootComplete(true);
     }
   }, [bootLine, bootLines.length]);
+
+  // Safety fallback: if boot doesn't complete in 8 seconds, force-complete it.
+  // Prevents the page from getting stuck on the terminal animation if anything
+  // goes wrong with the typewriter (e.g., slow JS execution, interrupted effects).
+  useEffect(() => {
+    if (bootComplete) return;
+    const timeout = setTimeout(() => setBootComplete(true), 8000);
+    return () => clearTimeout(timeout);
+  }, [bootComplete]);
 
   return (
     <section className="relative min-h-[90vh] flex items-center py-16 lg:py-24">
