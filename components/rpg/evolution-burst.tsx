@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { EvolutionStage } from "@/lib/types";
 import { SPRITE_STAGES } from "@/lib/sprite-config";
@@ -66,8 +66,16 @@ function ExpandRing({ color, delay }: { color: string; delay: number }) {
 export function EvolutionBurst({ stage, onComplete, className = "" }: EvolutionBurstProps) {
   const [visible, setVisible] = useState(false);
 
+  const particleCount = stage === "Myth" ? 24 : stage === "Legend" ? 18 : 12;
+  const particles = useMemo(() => Array.from({ length: particleCount }, (_, i) => ({
+    angle: (360 / particleCount) * i + ((i * 7 + 3) % 15),
+    distance: 60 + ((i * 13 + 7) % 40),
+    delay: ((i * 11 + 5) % 30) / 100,
+  })), [particleCount]);
+
   useEffect(() => {
     if (stage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
       const timer = setTimeout(() => {
         setVisible(false);
@@ -80,12 +88,6 @@ export function EvolutionBurst({ stage, onComplete, className = "" }: EvolutionB
   if (!stage) return null;
 
   const config = SPRITE_STAGES[stage];
-  const particleCount = stage === "Myth" ? 24 : stage === "Legend" ? 18 : 12;
-  const particles = Array.from({ length: particleCount }, (_, i) => ({
-    angle: (360 / particleCount) * i + Math.random() * 15,
-    distance: 60 + Math.random() * 40,
-    delay: Math.random() * 0.3,
-  }));
 
   return (
     <AnimatePresence>
@@ -182,9 +184,10 @@ export function useEvolutionDetector(currentStage: EvolutionStage | undefined) {
 
   useEffect(() => {
     if (prevStage && currentStage && prevStage !== currentStage) {
-      // Stage changed — trigger burst
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBurstStage(currentStage);
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrevStage(currentStage);
   }, [currentStage, prevStage]);
 
