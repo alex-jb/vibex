@@ -17,7 +17,7 @@ import { useAuth } from "@/lib/auth";
 // Primary nav items — same for guests and logged-in users
 // Feed merged into Discover (as tab), Analytics merged into Insights (as tab)
 const fullNavItems = [
-  { href: "/", key: "nav.home" as const },
+  { href: "/home", key: "nav.home" as const },
   { href: "/discover", key: "nav.discover" as const },
   { href: "/creators", key: "nav.creators" as const },
   { href: "/dojo", key: "nav.dojo" as const },

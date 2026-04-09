@@ -114,10 +114,10 @@ export function BootSequence({ communityStats }: BootSequenceProps) {
                 transition={{ duration: 0.4, delay: 0.3 }}
                 className="mt-8 flex flex-col sm:flex-row gap-4"
               >
-                <Link href="/launch">
+                <Link href="/home">
                   <button className="retro-button retro-button--primary flex items-center gap-2">
                     <Swords size={14} />
-                    <span>{t("hero.startQuest")}</span>
+                    <span>LAUNCH VIBEX &gt;&gt;</span>
                   </button>
                 </Link>
                 <Link href="/discover">
