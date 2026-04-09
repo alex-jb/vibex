@@ -10,6 +10,7 @@ import { BuddyCompanion } from "@/components/buddy-companion";
 import { ChatWidget } from "@/components/chat-widget";
 import { TutorialOverlay } from "@/components/onboarding/tutorial-overlay";
 import { ServiceWorkerRegister } from "@/components/sw-register";
+import { NotificationToastProvider } from "@/components/notification-toast";
 import "nes.css/css/nes.min.css";
 import "./globals.css";
 import "./retro-game.css";
@@ -123,6 +124,7 @@ export default function RootLayout({
             <ChatWidget />
             <BuddyCompanion />
             <TutorialOverlay />
+            <NotificationToastProvider />
             <ServiceWorkerRegister />
           </LangProvider>
           </AnalyticsProvider>
