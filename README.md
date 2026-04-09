@@ -117,9 +117,9 @@ Investor intelligence: radar charts, talent graph, deal flow table ranked by AI 
 |------|----------|----------------|
 | ![Home](docs/screenshots/01-home.png) | ![Discover](docs/screenshots/03-discover.png) | ![Project](docs/screenshots/04-project.png) |
 
-| Feed | Dojo |
-|------|------|
-| ![Feed](docs/screenshots/05-feed.png) | ![Dojo](docs/screenshots/06-dojo.png) |
+| Feed | Arena | VC Dashboard |
+|------|-------|-------------|
+| ![Feed](docs/screenshots/05-feed.png) | ![Arena](docs/screenshots/07-arena.png) | ![VC](docs/screenshots/08-vc.png) |
 
 ---
 
