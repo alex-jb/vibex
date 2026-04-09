@@ -1,0 +1,190 @@
+import { NextResponse } from "next/server";
+
+/**
+ * Scrape URL metadata for the /launch quick start.
+ * Fetches the target URL, parses basic Open Graph + meta tags, returns
+ * { title, description, image, siteName } for pre-filling the form.
+ *
+ * Intentionally lightweight — no headless browser, just HTML regex parsing.
+ * Timeout: 8s. Returns 400 on invalid URL, 502 on fetch failure.
+ */
+
+interface ScrapedMetadata {
+  title: string;
+  description: string;
+  image: string;
+  siteName: string;
+  url: string;
+}
+
+function extractMetaTag(html: string, pattern: RegExp): string {
+  const match = html.match(pattern);
+  return match?.[1]?.trim() ?? "";
+}
+
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&#x27;/g, "'");
+}
+
+function parseMetadata(html: string, url: string): ScrapedMetadata {
+  // Open Graph tags (preferred)
+  const ogTitle = extractMetaTag(
+    html,
+    /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i,
+  );
+  const ogDescription = extractMetaTag(
+    html,
+    /<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i,
+  );
+  const ogImage = extractMetaTag(
+    html,
+    /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
+  );
+  const ogSiteName = extractMetaTag(
+    html,
+    /<meta[^>]+property=["']og:site_name["'][^>]+content=["']([^"']+)["']/i,
+  );
+
+  // Twitter card fallback
+  const twTitle = extractMetaTag(
+    html,
+    /<meta[^>]+name=["']twitter:title["'][^>]+content=["']([^"']+)["']/i,
+  );
+  const twDescription = extractMetaTag(
+    html,
+    /<meta[^>]+name=["']twitter:description["'][^>]+content=["']([^"']+)["']/i,
+  );
+  const twImage = extractMetaTag(
+    html,
+    /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,
+  );
+
+  // Generic fallback
+  const htmlTitle = extractMetaTag(html, /<title[^>]*>([^<]+)<\/title>/i);
+  const metaDescription = extractMetaTag(
+    html,
+    /<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i,
+  );
+
+  const title = ogTitle || twTitle || htmlTitle || "";
+  const description = ogDescription || twDescription || metaDescription || "";
+  const image = ogImage || twImage || "";
+
+  return {
+    title: decodeEntities(title).slice(0, 100),
+    description: decodeEntities(description).slice(0, 2000),
+    image: image,
+    siteName: decodeEntities(ogSiteName),
+    url,
+  };
+}
+
+export async function POST(request: Request) {
+  let body: { url?: string };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const rawUrl = body.url?.trim();
+  if (!rawUrl) {
+    return NextResponse.json({ error: "Missing url" }, { status: 400 });
+  }
+
+  // Normalize URL — add https:// if missing
+  let normalizedUrl = rawUrl;
+  if (!/^https?:\/\//i.test(normalizedUrl)) {
+    normalizedUrl = `https://${normalizedUrl}`;
+  }
+
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(normalizedUrl);
+  } catch {
+    return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
+  }
+
+  // Reject non-http(s) schemes
+  if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+    return NextResponse.json({ error: "Only http(s) URLs are supported" }, { status: 400 });
+  }
+
+  // Basic SSRF protection — reject internal/private addresses
+  const hostname = parsedUrl.hostname.toLowerCase();
+  if (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "0.0.0.0" ||
+    hostname.endsWith(".local") ||
+    hostname.startsWith("192.168.") ||
+    hostname.startsWith("10.") ||
+    hostname.startsWith("172.")
+  ) {
+    return NextResponse.json({ error: "Internal addresses are not allowed" }, { status: 400 });
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+
+    const response = await fetch(parsedUrl.toString(), {
+      signal: controller.signal,
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; VibeXBot/1.0; +https://www.vibexforge.com)",
+        Accept: "text/html,application/xhtml+xml",
+      },
+      redirect: "follow",
+    });
+
+    clearTimeout(timeout);
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { error: `Failed to fetch URL: ${response.status}` },
+        { status: 502 },
+      );
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("text/html")) {
+      return NextResponse.json(
+        { error: "URL did not return HTML content" },
+        { status: 400 },
+      );
+    }
+
+    // Limit response size to 1MB
+    const html = await response.text();
+    const limitedHtml = html.slice(0, 1_000_000);
+
+    const metadata = parseMetadata(limitedHtml, parsedUrl.toString());
+
+    // Require at least a title — if we got nothing, the scrape failed
+    if (!metadata.title) {
+      return NextResponse.json(
+        { error: "Could not extract title from URL", metadata },
+        { status: 200 },
+      );
+    }
+
+    return NextResponse.json(metadata);
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      return NextResponse.json(
+        { error: "Request timed out after 8s" },
+        { status: 504 },
+      );
+    }
+    return NextResponse.json(
+      { error: "Failed to fetch URL" },
+      { status: 502 },
+    );
+  }
+}

@@ -12,6 +12,8 @@ import {
   TrendingUp,
   AlertCircle,
   Loader2,
+  Link2,
+  ArrowRight,
 } from "lucide-react";
 
 import { useLang } from "@/lib/i18n";
@@ -59,9 +61,52 @@ export default function LaunchPage() {
   const [pkgLoading, setPkgLoading] = useState(false);
   const [pkgError, setPkgError] = useState<string | null>(null);
 
+  // URL Quick Start state
+  const [quickUrl, setQuickUrl] = useState("");
+  const [scrapeLoading, setScrapeLoading] = useState(false);
+  const [scrapeError, setScrapeError] = useState<string | null>(null);
+  const [scrapeSuccess, setScrapeSuccess] = useState(false);
+
   const { t } = useLang();
 
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  const handleQuickScrape = useCallback(async () => {
+    if (scrapeLoading || !quickUrl.trim()) return;
+    setScrapeLoading(true);
+    setScrapeError(null);
+    setScrapeSuccess(false);
+    try {
+      const res = await fetch("/api/scrape", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: quickUrl.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to scrape URL");
+      }
+      if (data.title) setTitle(data.title);
+      if (data.description) {
+        // Use description as both tagline (truncated) and full description
+        const desc = data.description as string;
+        if (desc.length < 120) {
+          setTagline(desc);
+        } else {
+          setTagline(desc.slice(0, 120).trim() + "...");
+        }
+        setDescription(desc);
+      }
+      if (data.image) setThumbnailUrl(data.image);
+      if (data.url) setDemoLink(data.url);
+      if (data.siteName && !creatorName) setCreatorName(data.siteName);
+      setScrapeSuccess(true);
+    } catch (err) {
+      setScrapeError(err instanceof Error ? err.message : "Failed to scrape");
+    } finally {
+      setScrapeLoading(false);
+    }
+  }, [scrapeLoading, quickUrl, creatorName]);
 
   const generatePackage = useCallback(async () => {
     if (pkgLoading || !title.trim() || !description.trim()) return;
@@ -209,6 +254,89 @@ export default function LaunchPage() {
         <p className="mt-3 text-muted-foreground max-w-md mx-auto text-sm leading-relaxed">
           {t("launch.description")}
         </p>
+      </motion.div>
+
+      {/* URL Quick Start — paste URL, auto-fill form */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="relative mb-12"
+      >
+        <div
+          className="mx-auto max-w-3xl rounded-xl p-6 sm:p-8"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(157,0,255,0.10), rgba(57,255,20,0.05))",
+            border: "2px solid rgba(157,0,255,0.35)",
+            boxShadow: "0 0 40px rgba(157,0,255,0.15)",
+          }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Zap className="h-4 w-4 text-violet-400" />
+            <span
+              className="font-pixel text-[9px] tracking-widest text-violet-300 uppercase"
+            >
+              Quick Start — paste URL, auto-fill everything
+            </span>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                value={quickUrl}
+                onChange={(e) => {
+                  setQuickUrl(e.target.value);
+                  setScrapeError(null);
+                  setScrapeSuccess(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleQuickScrape();
+                  }
+                }}
+                placeholder="https://your-ai-project.com"
+                disabled={scrapeLoading}
+                className="pl-10 bg-white/5 border-white/[0.12] focus-visible:border-violet-500/50 focus-visible:ring-violet-500/20 h-11"
+              />
+            </div>
+            <Button
+              onClick={handleQuickScrape}
+              disabled={scrapeLoading || !quickUrl.trim()}
+              className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white h-11 px-6 shrink-0"
+            >
+              {scrapeLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Scraping...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="mr-2 h-4 w-4" />
+                  Auto-Fill
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </div>
+          {scrapeError && (
+            <div className="mt-3 flex items-center gap-2 text-xs text-red-400">
+              <AlertCircle className="h-3.5 w-3.5" />
+              {scrapeError}
+            </div>
+          )}
+          {scrapeSuccess && (
+            <div className="mt-3 flex items-center gap-2 text-xs text-emerald-400">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Form auto-filled below. Review and click &quot;Generate Launch Package&quot;.
+            </div>
+          )}
+          <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
+            Works with GitHub repos, landing pages, live demos, or any public URL.
+            We extract the title, description, and image from meta tags.
+          </p>
+        </div>
       </motion.div>
 
       {/* Two-column layout */}

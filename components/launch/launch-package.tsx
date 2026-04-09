@@ -22,6 +22,162 @@ function CopyButton({ text, label }: { text: string; label: string }) {
   );
 }
 
+/** Serialize the entire launch package as markdown */
+function packageToMarkdown(pkg: LaunchPackage): string {
+  const lines: string[] = [];
+  lines.push(`# ${pkg.copy.title || "My AI Project"}\n`);
+  if (pkg.copy.tagline) lines.push(`> ${pkg.copy.tagline}\n`);
+  lines.push(`\n## Positioning\n`);
+  lines.push(`**One-liner:** ${pkg.positioning.oneLiner}`);
+  lines.push(`**Target audience:** ${pkg.positioning.targetAudience}`);
+  lines.push(`**Problem solved:** ${pkg.positioning.problemSolved}`);
+  lines.push(`**Unique value:** ${pkg.positioning.uniqueValue}\n`);
+  lines.push(`\n## Launch Copy\n`);
+  lines.push(`**Product Hunt:**\n${pkg.copy.productHuntDescription}\n`);
+  lines.push(`**Elevator pitch:**\n${pkg.copy.elevatorPitch}\n`);
+  lines.push(`\n## Social Media\n`);
+  lines.push(`### Twitter/X Thread\n`);
+  pkg.social.twitterThread.forEach((t, i) => lines.push(`${i + 1}/${pkg.social.twitterThread.length} ${t}\n`));
+  lines.push(`\n### LinkedIn\n${pkg.social.linkedinPost}\n`);
+  lines.push(`\n### Reddit\n**${pkg.social.redditTitle}**\n${pkg.social.redditBody}\n`);
+  lines.push(`\n## Distribution\n`);
+  lines.push(`**Best time:** ${pkg.distribution.timing}\n`);
+  pkg.distribution.channels.forEach((ch) => {
+    lines.push(`- **[${ch.priority.toUpperCase()}]** ${ch.name}: ${ch.reason}`);
+  });
+  if (pkg.distribution.targetCommunities.length > 0) {
+    lines.push(`\n**Target communities:** ${pkg.distribution.targetCommunities.join(", ")}\n`);
+  }
+  lines.push(`\n## Investor Pitch\n`);
+  Object.entries(pkg.investorPitch).forEach(([k, v]) => {
+    lines.push(`**${k.charAt(0).toUpperCase() + k.slice(1)}:** ${v}`);
+  });
+  lines.push(`\n## Demo Script (30s)\n${pkg.demoScript}\n`);
+  if (pkg.competitors.length > 0) {
+    lines.push(`\n## Competitors\n`);
+    pkg.competitors.forEach((c) => lines.push(`- **${c.name}:** ${c.difference}`));
+  }
+  lines.push(`\n---\n_Generated on [VibeX](https://www.vibexforge.com) — turn your AI project into a viral hero card._\n`);
+  return lines.join("\n");
+}
+
+function ShareBar({ pkg }: { pkg: LaunchPackage }) {
+  const [copiedAll, setCopiedAll] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+
+  const markdown = packageToMarkdown(pkg);
+  const shareText = `${pkg.positioning.oneLiner}\n\nBuilt with VibeX — turn your AI project into a viral hero card.\n\nhttps://www.vibexforge.com`;
+  const twitterThread = pkg.social.twitterThread.join("\n\n");
+  const shareTitle = pkg.copy.title || "My AI Project";
+
+  const handleCopyAll = () => {
+    navigator.clipboard.writeText(markdown);
+    setCopiedAll(true);
+    setTimeout(() => setCopiedAll(false), 1500);
+  };
+
+  const handleDownloadMarkdown = () => {
+    const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${shareTitle.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_launch_package.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setDownloaded(true);
+    setTimeout(() => setDownloaded(false), 1500);
+  };
+
+  const xUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(twitterThread || shareText)}`;
+  const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://www.vibexforge.com")}&summary=${encodeURIComponent(pkg.social.linkedinPost || shareText)}`;
+  const redditUrl = `https://reddit.com/submit?title=${encodeURIComponent(pkg.social.redditTitle || shareTitle)}&text=${encodeURIComponent(pkg.social.redditBody || shareText)}`;
+
+  return (
+    <div
+      className="retro-card"
+      style={{
+        padding: 14,
+        marginBottom: 14,
+        background: "linear-gradient(135deg, rgba(157,0,255,0.12), rgba(57,255,20,0.06))",
+        border: "2px solid #9D00FF",
+      }}
+    >
+      <div className="font-pixel" style={{ fontSize: 9, color: "#9D00FF", marginBottom: 10 }}>
+        {"\u{1F680} SHARE & SHIP"}
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <button
+          className="nes-btn is-primary"
+          onClick={handleCopyAll}
+          style={{ fontSize: 8, padding: "6px 10px" }}
+        >
+          {copiedAll ? "\u2714 Copied!" : "\u{1F4CB} Copy All"}
+        </button>
+        <button
+          className="nes-btn is-success"
+          onClick={handleDownloadMarkdown}
+          style={{ fontSize: 8, padding: "6px 10px" }}
+        >
+          {downloaded ? "\u2714 Downloaded" : "\u2B07 Download .md"}
+        </button>
+        <a
+          href={xUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nes-btn"
+          style={{
+            fontSize: 8,
+            padding: "6px 10px",
+            textDecoration: "none",
+            background: "#000",
+            color: "#fff",
+          }}
+        >
+          {"\u{1D54F} Share on X"}
+        </a>
+        <a
+          href={linkedInUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nes-btn"
+          style={{
+            fontSize: 8,
+            padding: "6px 10px",
+            textDecoration: "none",
+            background: "#0A66C2",
+            color: "#fff",
+          }}
+        >
+          {"in Share on LinkedIn"}
+        </a>
+        <a
+          href={redditUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nes-btn"
+          style={{
+            fontSize: 8,
+            padding: "6px 10px",
+            textDecoration: "none",
+            background: "#FF4500",
+            color: "#fff",
+          }}
+        >
+          {"\u{1F47D} Post to Reddit"}
+        </a>
+      </div>
+      <div
+        className="font-retro"
+        style={{ fontSize: 11, color: "#888", marginTop: 8 }}
+      >
+        {"Share your launch package to start the growth loop."}
+      </div>
+    </div>
+  );
+}
+
 function Section({ title, color, children }: { title: string; color: string; children: React.ReactNode }) {
   return (
     <div className="retro-card l-corner" style={{ padding: 14, marginBottom: 12 }}>
@@ -44,6 +200,9 @@ export function LaunchPackageDisplay({ pkg }: LaunchPackageDisplayProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
+      {/* Share bar — close the viral loop */}
+      <ShareBar pkg={pkg} />
+
       {/* Positioning */}
       <Section title={"Product Positioning"} color="#9D00FF">
         <div style={{ marginBottom: 8 }}>
