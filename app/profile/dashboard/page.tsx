@@ -117,13 +117,15 @@ export default function CreatorDashboardPage() {
   }, [myProjects]);
 
   // Simulated weekly trend data (in production, from /api/data/analytics)
-  const weeklyViews = useMemo(() =>
-    Array.from({ length: 7 }, () => Math.floor(Math.random() * stats.totalViews / 5 + 100)),
-  [stats.totalViews]);
+  const weeklyViews = useMemo(() => {
+    const base = stats.totalViews / 5 + 100;
+    return [0.8, 1.1, 0.9, 1.3, 1.0, 0.7, 1.2].map(m => Math.floor(base * m));
+  }, [stats.totalViews]);
 
-  const weeklyUpvotes = useMemo(() =>
-    Array.from({ length: 7 }, () => Math.floor(Math.random() * stats.totalUpvotes / 5 + 10)),
-  [stats.totalUpvotes]);
+  const weeklyUpvotes = useMemo(() => {
+    const base = stats.totalUpvotes / 5 + 10;
+    return [0.9, 1.2, 0.8, 1.1, 1.3, 0.6, 1.0].map(m => Math.floor(base * m));
+  }, [stats.totalUpvotes]);
 
   if (!user) {
     return (

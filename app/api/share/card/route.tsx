@@ -33,10 +33,12 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 const RARITY_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  Phoenix:  { label: "LEGENDARY", color: "#FFD700", bg: "rgba(255,215,0,0.15)" },
-  Inferno:  { label: "EPIC",      color: "#c084fc", bg: "rgba(192,132,252,0.15)" },
-  Flame:    { label: "RARE",      color: NEON_CYAN,  bg: "rgba(6,182,212,0.15)" },
-  Spark:    { label: "COMMON",    color: "#a1a1aa",  bg: "rgba(161,161,170,0.1)" },
+  Myth:     { label: "MYTHIC",    color: "#FF69B4", bg: "rgba(255,105,180,0.15)" },
+  Legend:   { label: "LEGENDARY", color: "#FFD700", bg: "rgba(255,215,0,0.15)" },
+  Breakout: { label: "EPIC",      color: "#c084fc", bg: "rgba(192,132,252,0.15)" },
+  Growing:  { label: "RARE",      color: NEON_CYAN,  bg: "rgba(6,182,212,0.15)" },
+  Active:   { label: "UNCOMMON",  color: NEON_GREEN, bg: "rgba(57,255,20,0.1)" },
+  Seed:     { label: "COMMON",    color: "#a1a1aa",  bg: "rgba(161,161,170,0.1)" },
 };
 
 const CLASS_EMOJI: Record<string, string> = {

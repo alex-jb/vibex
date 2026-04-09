@@ -20,6 +20,8 @@ import { useRealtimeLeaderboard } from "@/lib/realtime";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLang } from "@/lib/i18n";
+import { EvolutionBadge } from "@/components/rpg/evolution-badge";
+import type { EvolutionStage } from "@/lib/types";
 
 /** Map tab names to LeaderboardPeriod */
 function tabToPeriod(tab: string): LeaderboardPeriod {
@@ -290,6 +292,16 @@ function ScoreIndicator({ score }: { score: number }) {
   );
 }
 
+/** Estimate evolution stage from leaderboard entry (simplified — full computation needs all project metrics) */
+function estimateStage(score: number, upvotes: number): EvolutionStage {
+  if (score >= 90 && upvotes >= 1000) return "Myth";
+  if (score >= 85 && upvotes >= 500) return "Legend";
+  if (score >= 70 && upvotes >= 100) return "Breakout";
+  if (upvotes >= 50) return "Growing";
+  if (score >= 40) return "Active";
+  return "Seed";
+}
+
 function RankItem({ entry }: { entry: LeaderboardEntry }) {
   const isTop3 = entry.rank <= 3;
   const isFirst = entry.rank === 1;
@@ -351,13 +363,16 @@ function RankItem({ entry }: { entry: LeaderboardEntry }) {
           </p>
         </div>
 
-        {/* Category badge */}
-        <Badge
-          variant="secondary"
-          className="hidden sm:inline-flex shrink-0 bg-white/5 border-white/10 text-muted-foreground"
-        >
-          {entry.category}
-        </Badge>
+        {/* Evolution + Category badges */}
+        <div className="hidden sm:flex items-center gap-2 shrink-0">
+          <EvolutionBadge stage={estimateStage(entry.score, entry.upvotes)} size="sm" />
+          <Badge
+            variant="secondary"
+            className="bg-white/5 border-white/10 text-muted-foreground"
+          >
+            {entry.category}
+          </Badge>
+        </div>
 
         {/* Score indicator */}
         <div className="hidden sm:flex shrink-0">

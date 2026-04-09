@@ -54,12 +54,21 @@ export function computeCurrentExp(project: Project): number {
   return rawExp % total;
 }
 
-/** Map level to evolution stage */
-export function computeEvolutionStage(level: number): EvolutionStage {
-  if (level <= 5) return "Spark";
-  if (level <= 15) return "Flame";
-  if (level <= 30) return "Inferno";
-  return "Phoenix";
+/**
+ * Compute evolution stage from project metrics (not level-based).
+ * Each stage has specific metric thresholds that auto-trigger evolution.
+ */
+export function computeEvolutionStage(project: Project): EvolutionStage {
+  const { plays, views, upvotes, shares, score } = project;
+  const { originality, investorCuriosity } = project.aiReview;
+
+  // Check stages in reverse order (highest first)
+  if (plays >= 10000 && upvotes >= 1000 && investorCuriosity >= 80 && score >= 90) return "Myth";
+  if (plays >= 5000 && upvotes >= 500 && shares >= 200 && score >= 85) return "Legend";
+  if (plays >= 1000 && upvotes >= 100 && shares >= 50 && originality >= 70) return "Breakout";
+  if (plays >= 500 && upvotes >= 50 && views >= 1000) return "Growing";
+  if (plays >= 50 || score >= 40) return "Active";
+  return "Seed";
 }
 
 /** Clamp a value to 1-100 */
@@ -117,7 +126,7 @@ export function computeHeroStats(project: Project): HeroStats {
     heroClass,
     attributes: computeAttributes(project),
     skillTree: getSkillTree(heroClass, level),
-    evolutionStage: computeEvolutionStage(level),
+    evolutionStage: computeEvolutionStage(project),
     evolutionPoints: Math.floor(project.upvotes * 0.5 + project.plays * 0.2),
     hp,
     maxHp: hp,
@@ -257,12 +266,14 @@ export const CLASS_CONFIG: Record<
 
 export const EVOLUTION_CONFIG: Record<
   EvolutionStage,
-  { label: string; icon: string; cssClass: string; minLevel: number }
+  { label: string; icon: string; cssClass: string; color: string }
 > = {
-  Spark: { label: "Spark", icon: "Zap", cssClass: "evo-spark", minLevel: 1 },
-  Flame: { label: "Flame", icon: "Flame", cssClass: "evo-flame", minLevel: 6 },
-  Inferno: { label: "Inferno", icon: "Bomb", cssClass: "evo-inferno", minLevel: 16 },
-  Phoenix: { label: "Phoenix", icon: "Bird", cssClass: "evo-phoenix", minLevel: 31 },
+  Seed:     { label: "Seed",     icon: "Sprout",     cssClass: "evo-seed",     color: "#a1a1aa" },
+  Active:   { label: "Active",   icon: "Zap",        cssClass: "evo-active",   color: "#39FF14" },
+  Growing:  { label: "Growing",  icon: "TrendingUp",  cssClass: "evo-growing",  color: "#06B6D4" },
+  Breakout: { label: "Breakout", icon: "Flame",      cssClass: "evo-breakout", color: "#8b5cf6" },
+  Legend:   { label: "Legend",   icon: "Crown",      cssClass: "evo-legend",   color: "#FFD700" },
+  Myth:     { label: "Myth",    icon: "Sparkles",   cssClass: "evo-myth",     color: "#FF69B4" },
 };
 
 export const ATTRIBUTE_LABELS: Record<

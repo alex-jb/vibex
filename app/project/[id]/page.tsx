@@ -31,6 +31,7 @@ import { AttributeRadar } from "@/components/rpg/attribute-radar";
 import { ShareModal } from "@/components/share-modal";
 import { GrowthRadar } from "@/components/project/growth-radar";
 import { ForkTree } from "@/components/project/fork-tree";
+import { EvolutionProgress } from "@/components/project/evolution-progress";
 import { SkillTree } from "@/components/rpg/skill-tree";
 import { ClassIcon } from "@/components/rpg/class-icon";
 import { EvolutionBadge } from "@/components/rpg/evolution-badge";
@@ -391,6 +392,11 @@ export default function ProjectPage({
               <Share2 className="size-4" />
               {t("project.share")}
             </Button>
+          </motion.div>
+
+          {/* Evolution Progress */}
+          <motion.div variants={fadeIn} className="rpgui-container framed" style={{ padding: 16 }}>
+            <EvolutionProgress project={project} />
           </motion.div>
 
           {/* Growth Radar */}

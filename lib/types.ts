@@ -182,10 +182,12 @@ export type HeroClass =
   | "Sentinel";   // AI Utility
 
 export type EvolutionStage =
-  | "Spark"       // Level 1-5
-  | "Flame"       // Level 6-15
-  | "Inferno"     // Level 16-30
-  | "Phoenix";    // Level 31+
+  | "Seed"        // Just created — Common
+  | "Active"      // Has demo/basic function — Uncommon
+  | "Growing"     // Has users/feedback — Rare
+  | "Breakout"    // Has traction — Epic
+  | "Legend"      // Hot project — Legendary
+  | "Myth";       // Viral + VC interest — Mythic
 
 export interface HeroAttributes {
   power: number;       // originality + upvotes
