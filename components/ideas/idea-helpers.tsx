@@ -4,6 +4,7 @@ import {
   Rocket,
 } from "lucide-react";
 import type { Idea, IdeaEvaluation } from "@/lib/types";
+import type { TranslationKey } from "@/lib/i18n";
 
 export function difficultyColor(d: IdeaEvaluation["difficulty"]) {
   switch (d) {
@@ -31,7 +32,7 @@ export function competitionColor(c: IdeaEvaluation["competition"]) {
   }
 }
 
-export function statusConfig(s: Idea["status"], t: (key: string) => string) {
+export function statusConfig(s: Idea["status"], t: (key: TranslationKey) => string) {
   switch (s) {
     case "idea":
       return {

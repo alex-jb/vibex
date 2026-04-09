@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MessageSquare, Code2, Monitor, Play, Maximize2, Share2, Eye } from "lucide-react";
 import { useLang } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/i18n";
 import { ChatDemo } from "./chat-demo";
 import { SandboxDemo } from "./sandbox-demo";
 import { PreviewDemo } from "./preview-demo";
@@ -37,7 +38,7 @@ function getDemoIcon(demoType: PlayableDemoProps["demoType"]) {
   }
 }
 
-function getDemoLabel(demoType: PlayableDemoProps["demoType"], t: (key: string) => string) {
+function getDemoLabel(demoType: PlayableDemoProps["demoType"], t: (key: TranslationKey) => string) {
   switch (demoType) {
     case "chat":
       return t("demo.liveChat");

@@ -9,12 +9,13 @@ import { Badge } from "@/components/ui/badge";
 import { AttributeRadar } from "@/components/rpg/attribute-radar";
 import { ClassIcon } from "@/components/rpg/class-icon";
 import { useLang } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/i18n";
 import type { HeroAttributes, HeroClass } from "@/lib/types";
 import type { creators, projects } from "@/lib/mock-data";
 import { formatNumber, getBadgeConfig } from "./creator-helpers";
 import { AvatarCircle } from "./creator-card";
 
-function CreatorBadge({ badge, t }: { badge: string; t: (key: string) => string }) {
+function CreatorBadge({ badge, t }: { badge: string; t: (key: TranslationKey) => string }) {
   const config = getBadgeConfig(t)[badge];
   if (!config) return null;
   return (

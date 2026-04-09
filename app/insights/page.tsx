@@ -19,6 +19,7 @@ import { SectionHeader } from "@/components/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLang } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/i18n";
 
 const typeConfig: Record<
   TrendInsight["type"],
@@ -98,7 +99,7 @@ const statTypes: TrendInsight["type"][] = [
   "emerging",
 ];
 
-function getTypeLabel(type: TrendInsight["type"], t: (key: string) => string): string {
+function getTypeLabel(type: TrendInsight["type"], t: (key: TranslationKey) => string): string {
   const labels: Record<TrendInsight["type"], string> = {
     rising: t("insights.rising"),
     saturated: t("insights.saturated"),
@@ -108,7 +109,7 @@ function getTypeLabel(type: TrendInsight["type"], t: (key: string) => string): s
   return labels[type];
 }
 
-function getSignalLabel(signal: TrendInsight["signal"], t: (key: string) => string): string {
+function getSignalLabel(signal: TrendInsight["signal"], t: (key: TranslationKey) => string): string {
   const labels: Record<TrendInsight["signal"], string> = {
     strong: t("insights.strong"),
     moderate: t("insights.moderate"),
@@ -117,7 +118,7 @@ function getSignalLabel(signal: TrendInsight["signal"], t: (key: string) => stri
   return labels[signal];
 }
 
-function getStatLabel(type: TrendInsight["type"], t: (key: string) => string): string {
+function getStatLabel(type: TrendInsight["type"], t: (key: TranslationKey) => string): string {
   const labels: Record<TrendInsight["type"], string> = {
     rising: t("insights.risingCategories"),
     opportunity: t("insights.opportunityZones"),

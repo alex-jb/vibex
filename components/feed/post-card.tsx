@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import type { FeedPost } from "@/lib/feed";
 import { useLang } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/i18n";
 import { ReactionBar, type ReactionCounts, type ReactionType } from "./reaction-bar";
 import { MediaAttachment } from "./media-attachment";
 import { LevelBadge, type CreatorLevel } from "./level-badge";
@@ -34,7 +35,7 @@ function avatarColor(name: string): string {
   return palette[Math.abs(h) % palette.length];
 }
 
-function relativeTime(dateStr: string, t: (key: string) => string): string {
+function relativeTime(dateStr: string, t: (key: TranslationKey) => string): string {
   const diffMs = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diffMs / 60000);
   const hrs = Math.floor(mins / 60);
@@ -132,7 +133,7 @@ export function PostCard({
             {creatorLevel && <LevelBadge level={creatorLevel} />}
           </span>
           <span className="font-pixel" style={{ fontSize: 7, color: "#555", marginLeft: 8 }}>
-            {relativeTime(post.createdAt, t as (key: string) => string)}
+            {relativeTime(post.createdAt, t)}
           </span>
         </div>
         {/* Delete button for own posts / Report for others */}

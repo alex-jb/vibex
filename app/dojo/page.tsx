@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Swords, Heart, Target, MessageSquare, Lock, Zap, Star, Shield, Users } from "lucide-react";
+import { Swords, Heart, Target, MessageSquare, Lock, Zap, Star, Shield, Users, Share2 } from "lucide-react";
 import { useLang } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
+import { projects } from "@/lib/mock-data";
+import { ShareModal } from "@/components/share-modal";
 
 interface DojoRoom {
   href: string;
@@ -94,8 +97,9 @@ const roomVariants = {
 } as const;
 
 export default function DojoPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { user } = useAuth();
+  const [shareProject, setShareProject] = useState<typeof projects[0] | null>(null);
 
   const visibleRooms = dojoRooms.filter(
     (room) => !room.requiresAuth || user
@@ -270,6 +274,75 @@ export default function DojoPage() {
           )}
         </motion.div>
       </div>
+
+      {/* ═══ Share Hero Card Section ═══ */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
+        className="mt-8"
+      >
+        <div className="rpgui-container framed" style={{ padding: "1.5rem" }}>
+          <div className="flex items-center gap-2 mb-4">
+            <Share2 className="size-4 text-fuchsia-400" />
+            <span
+              className="font-pixel text-[8px] uppercase tracking-widest"
+              style={{ color: "#FACC15", textShadow: "0 0 8px rgba(250,204,21,0.3)" }}
+            >
+              {lang === "zh" ? "分享你的英雄卡片" : "SHARE YOUR HERO CARD"}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4">
+            {lang === "zh"
+              ? "选择一个项目，生成你的 16-bit 英雄成就卡，分享到社交媒体！"
+              : "Pick a project and generate your 16-bit Hero Achievement Card to share on social media!"}
+          </p>
+
+          {/* Project picker grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {projects.slice(0, 6).map((p) => {
+              const emojiMap: Record<string, string> = { Architect: "🏗️", Artisan: "⚒️", Enchanter: "✨", Alchemist: "🧪", Sentinel: "🛡️" };
+              const classEmoji = (p.hero?.heroClass ? emojiMap[p.hero.heroClass] : undefined) ?? "⚔️";
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => setShareProject(p)}
+                  className="group glass-card-strong rounded-lg p-3 text-left transition-all hover:border-violet-500/30 hover:bg-violet-500/5 retro-border"
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-lg">{classEmoji}</span>
+                    <span className="font-pixel text-[7px] text-muted-foreground">
+                      LV.{p.hero?.level || 1}
+                    </span>
+                  </div>
+                  <span className="text-xs font-semibold text-foreground group-hover:text-violet-400 transition-colors line-clamp-1">
+                    {p.title}
+                  </span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[10px] text-muted-foreground/60">{p.creatorName}</span>
+                    <span className="text-[10px] text-amber-400">★{p.score}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Share Modal */}
+      {shareProject && (
+        <ShareModal
+          open={!!shareProject}
+          onOpenChange={(open) => { if (!open) setShareProject(null); }}
+          project={{
+            id: shareProject.id,
+            title: shareProject.title,
+            tagline: shareProject.tagline,
+            category: shareProject.category,
+            creatorName: shareProject.creatorName,
+          }}
+        />
+      )}
     </div>
   );
 }

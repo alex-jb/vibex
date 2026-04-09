@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { ClassIcon } from "@/components/rpg/class-icon";
 import { useLang } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/i18n";
 import type { HeroClass } from "@/lib/types";
 import type { creators } from "@/lib/mock-data";
 import { formatNumber, getBadgeConfig } from "./creator-helpers";
@@ -18,7 +19,7 @@ import { AvatarCircle } from "./creator-card";
 const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } };
 const stagger = { animate: { transition: { staggerChildren: 0.06 } } };
 
-function CreatorBadge({ badge, t }: { badge: string; t: (key: string) => string }) {
+function CreatorBadge({ badge, t }: { badge: string; t: (key: TranslationKey) => string }) {
   const config = getBadgeConfig(t)[badge];
   if (!config) return null;
   return (

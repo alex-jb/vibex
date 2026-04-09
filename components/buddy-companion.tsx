@@ -279,7 +279,7 @@ export function BuddyCompanion() {
         {/* Buddy sprite + Level EXP bar */}
         <div className="relative px-4 py-3 flex flex-col items-center gap-2">
           {/* Hearts */}
-          {hearts.map((id) => (
+          {hearts.map(({ id }) => (
             <motion.span
               key={id}
               initial={{ opacity: 1, y: 0 }}

@@ -12,11 +12,12 @@ import {
 } from "lucide-react";
 import { ClassIcon } from "@/components/rpg/class-icon";
 import { useLang } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/i18n";
 import type { HeroClass } from "@/lib/types";
 import type { creators } from "@/lib/mock-data";
 import { formatNumber, getInitials, getAvatarColor, getBadgeConfig } from "./creator-helpers";
 
-function CreatorBadge({ badge, t }: { badge: string; t: (key: string) => string }) {
+function CreatorBadge({ badge, t }: { badge: string; t: (key: TranslationKey) => string }) {
   const config = getBadgeConfig(t)[badge];
   if (!config) return null;
   return (

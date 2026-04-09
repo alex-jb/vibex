@@ -2023,7 +2023,7 @@ const _ja_removed = {
   };
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
-type TranslationKey = keyof typeof translations.en;
+export type TranslationKey = keyof typeof translations.en;
 
 interface LangContextType {
   lang: Lang;
