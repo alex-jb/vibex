@@ -8,6 +8,7 @@ export function QuestChecklist() {
   const [completedIds, setCompletedIds] = useState<string[]>([]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCompletedIds(getOnboardingState().questsCompleted);
   }, []);
 

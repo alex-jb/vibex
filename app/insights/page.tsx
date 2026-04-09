@@ -98,7 +98,7 @@ const statTypes: TrendInsight["type"][] = [
   "emerging",
 ];
 
-function getTypeLabel(type: TrendInsight["type"], t: (key: any) => string): string {
+function getTypeLabel(type: TrendInsight["type"], t: (key: string) => string): string {
   const labels: Record<TrendInsight["type"], string> = {
     rising: t("insights.rising"),
     saturated: t("insights.saturated"),
@@ -108,7 +108,7 @@ function getTypeLabel(type: TrendInsight["type"], t: (key: any) => string): stri
   return labels[type];
 }
 
-function getSignalLabel(signal: TrendInsight["signal"], t: (key: any) => string): string {
+function getSignalLabel(signal: TrendInsight["signal"], t: (key: string) => string): string {
   const labels: Record<TrendInsight["signal"], string> = {
     strong: t("insights.strong"),
     moderate: t("insights.moderate"),
@@ -117,7 +117,7 @@ function getSignalLabel(signal: TrendInsight["signal"], t: (key: any) => string)
   return labels[signal];
 }
 
-function getStatLabel(type: TrendInsight["type"], t: (key: any) => string): string {
+function getStatLabel(type: TrendInsight["type"], t: (key: string) => string): string {
   const labels: Record<TrendInsight["type"], string> = {
     rising: t("insights.risingCategories"),
     opportunity: t("insights.opportunityZones"),

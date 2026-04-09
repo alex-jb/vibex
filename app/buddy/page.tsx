@@ -20,6 +20,12 @@ import { BuddySprite } from "@/components/buddy-sprite";
 /* ─── Summon levels reference ─── */
 const SUMMON_LEVELS = [3, 5, 8, 10, 13, 15, 18, 20, 25, 30];
 
+/* ─── Pure helper — defined outside component to avoid impure-render lint ─── */
+function daysSince(dateStr: string): number {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+}
+
 /* ─── EXP Rewards Table ─── */
 const EXP_TABLE_ROWS: { actionKey: string; key: keyof typeof EXP_REWARDS; icon: string }[] = [
   { actionKey: "buddy.publishProject", key: "publishProject", icon: "🚀" },
@@ -90,6 +96,18 @@ function StatBar({ label, value, max, color }: { label: string; value: number; m
   );
 }
 
+/* ─── Mock buddy data (module-level so it's stable across renders) ─── */
+const BUDDY_LEVELS: Record<string, number> = {
+  "pixel-fox": 10, "neon-slime": 8, "byte-owl": 5, "code-dragon": 3, "crystal-phoenix": 1,
+};
+const BUDDY_META: Record<string, { obtainedAt: string; energy: number }> = {
+  "pixel-fox": { obtainedAt: "2026-03-01", energy: 85 },
+  "neon-slime": { obtainedAt: "2026-03-15", energy: 62 },
+  "byte-owl": { obtainedAt: "2026-03-20", energy: 90 },
+  "code-dragon": { obtainedAt: "2026-04-01", energy: 45 },
+  "crystal-phoenix": { obtainedAt: "2026-04-05", energy: 100 },
+};
+
 /* ═══ Main Buddy Page ═══ */
 export default function BuddyPage() {
   const { t } = useLang();
@@ -131,33 +149,16 @@ export default function BuddyPage() {
     }, 1000);
   }, [userLevel, totalUpvotes, ownedBuddyIds]);
 
-  // Mock buddy data
-  const buddyLevels: Record<string, number> = {
-    "pixel-fox": 10, "neon-slime": 8, "byte-owl": 5, "code-dragon": 3, "crystal-phoenix": 1,
-  };
-  const buddyMeta: Record<string, { obtainedAt: string; energy: number }> = {
-    "pixel-fox": { obtainedAt: "2026-03-01", energy: 85 },
-    "neon-slime": { obtainedAt: "2026-03-15", energy: 62 },
-    "byte-owl": { obtainedAt: "2026-03-20", energy: 90 },
-    "code-dragon": { obtainedAt: "2026-04-01", energy: 45 },
-    "crystal-phoenix": { obtainedAt: "2026-04-05", energy: 100 },
-  };
-
-  const daysSince = (dateStr: string): number => {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
-  };
-
   const handleEvolve = useCallback((buddyId: string) => {
     setEvolvingId(buddyId);
     setTimeout(() => {
       setBuddyStages((prev) => ({
         ...prev,
-        [buddyId]: (prev[buddyId] ?? getEvolutionStage(buddyId, buddyLevels[buddyId] ?? 1).stage) + 1,
+        [buddyId]: (prev[buddyId] ?? getEvolutionStage(buddyId, BUDDY_LEVELS[buddyId] ?? 1).stage) + 1,
       }));
       setEvolvingId(null);
     }, 1200);
-  }, [buddyLevels]);
+  }, [BUDDY_LEVELS]);
 
   // Pet the buddy — spawn floating hearts
   const handlePet = useCallback(() => {
@@ -187,8 +188,8 @@ export default function BuddyPage() {
     setBuddyMood("happy");
     setBuddyState("excited");
     // Update energy in mock data
-    if (activeBuddyId && buddyMeta[activeBuddyId]) {
-      buddyMeta[activeBuddyId].energy = Math.min(100, buddyMeta[activeBuddyId].energy + 15);
+    if (activeBuddyId && BUDDY_META[activeBuddyId]) {
+      BUDDY_META[activeBuddyId].energy = Math.min(100, BUDDY_META[activeBuddyId].energy + 15);
     }
     setTimeout(() => {
       setFeedFlash(false);
@@ -208,10 +209,10 @@ export default function BuddyPage() {
   }, [buddyState]);
 
   // Compute mood from energy
-  const computedMood = activeBuddyId && buddyMeta[activeBuddyId]
-    ? buddyMeta[activeBuddyId].energy > 70 ? "happy"
-      : buddyMeta[activeBuddyId].energy > 40 ? "neutral"
-      : buddyMeta[activeBuddyId].energy > 15 ? "hungry"
+  const computedMood = activeBuddyId && BUDDY_META[activeBuddyId]
+    ? BUDDY_META[activeBuddyId].energy > 70 ? "happy"
+      : BUDDY_META[activeBuddyId].energy > 40 ? "neutral"
+      : BUDDY_META[activeBuddyId].energy > 15 ? "hungry"
       : "sleepy"
     : "neutral";
 
@@ -233,8 +234,8 @@ export default function BuddyPage() {
 
   const ownedBuddies = BUDDY_TYPES.filter((b) => ownedBuddyIds.includes(b.id));
   const activeBuddy = BUDDY_TYPES.find((b) => b.id === activeBuddyId);
-  const activeEvo = activeBuddy ? getEvolutionStage(activeBuddyId, buddyLevels[activeBuddyId] ?? 1) : null;
-  const activeMeta = activeBuddyId ? buddyMeta[activeBuddyId] : null;
+  const activeEvo = activeBuddy ? getEvolutionStage(activeBuddyId, BUDDY_LEVELS[activeBuddyId] ?? 1) : null;
+  const activeMeta = activeBuddyId ? BUDDY_META[activeBuddyId] : null;
   const activeRarity = activeBuddy ? RARITY_CONFIG[activeBuddy.rarity] : null;
 
   return (
@@ -602,7 +603,7 @@ export default function BuddyPage() {
                   ⚔️ Battle
                 </button>
               </Link>
-              {canEvolve(activeBuddyId, buddyLevels[activeBuddyId] ?? 1) && (
+              {canEvolve(activeBuddyId, BUDDY_LEVELS[activeBuddyId] ?? 1) && (
                 <button
                   className="nes-btn is-error"
                   style={{ fontSize: 11, padding: "6px 16px" }}
@@ -636,7 +637,7 @@ export default function BuddyPage() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {ownedBuddies.map((buddy) => {
-              const level = buddyLevels[buddy.id] ?? 1;
+              const level = BUDDY_LEVELS[buddy.id] ?? 1;
               const evo = getEvolutionStage(buddy.id, level);
               const isEvolving = evolvingId === buddy.id;
 

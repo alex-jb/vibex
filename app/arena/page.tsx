@@ -226,7 +226,7 @@ export default function ArenaPage() {
           </TermLine>
           <TermLine color="#39FF14" prefix=">" delay={0.1}>
             <span style={{ color: "#39FF14" }}>{t("arena.battleArena")}</span>
-            <span style={{ color: "#555" }}> // {t("arena.aiCombat")}</span>
+            <span style={{ color: "#555" }}>{" // "}{t("arena.aiCombat")}</span>
           </TermLine>
           <div style={{ height: 16 }} />
 

@@ -7,13 +7,25 @@
 
 const isDev = process.env.NODE_ENV !== "production";
 
-function getSentry() {
+let _sentryModule: typeof import("@sentry/nextjs") | null = null;
+let _sentryLoaded = false;
+
+async function loadSentry() {
+  if (_sentryLoaded) return _sentryModule;
+  _sentryLoaded = true;
   try {
-    // Dynamic import to avoid build errors if Sentry is not configured
-    return require("@sentry/nextjs") as typeof import("@sentry/nextjs");
+    _sentryModule = await import("@sentry/nextjs");
   } catch {
-    return null;
+    _sentryModule = null;
   }
+  return _sentryModule;
+}
+
+function getSentry() {
+  if (!_sentryLoaded) {
+    loadSentry();
+  }
+  return _sentryModule;
 }
 
 export const serverLog = {

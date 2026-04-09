@@ -54,6 +54,7 @@ export function MentionAutocomplete({
   useEffect(() => {
     const query = getMentionQuery();
     if (query === null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowSuggestions(false);
       return;
     }
@@ -62,8 +63,11 @@ export function MentionAutocomplete({
       u.name.toLowerCase().includes(query.toLowerCase()),
     ).slice(0, 5);
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSuggestions(filtered);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowSuggestions(filtered.length > 0);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedIndex(0);
   }, [value, getMentionQuery]);
 

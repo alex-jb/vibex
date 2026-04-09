@@ -18,7 +18,7 @@ import { AvatarCircle } from "./creator-card";
 const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } };
 const stagger = { animate: { transition: { staggerChildren: 0.06 } } };
 
-function CreatorBadge({ badge, t }: { badge: string; t: (key: any) => string }) {
+function CreatorBadge({ badge, t }: { badge: string; t: (key: string) => string }) {
   const config = getBadgeConfig(t)[badge];
   if (!config) return null;
   return (

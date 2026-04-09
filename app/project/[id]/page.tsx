@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useRef, useState } from "react";
+import { use, useRef, useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import {
@@ -239,6 +239,15 @@ export default function ProjectPage({
   const { t } = useLang();
   const [shareOpen, setShareOpen] = useState(false);
 
+  const relatedProjects = useMemo(() => {
+    if (!project) return [];
+    return projects
+      .filter((p) => p.id !== project.id)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 3);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
   if (!project) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
@@ -255,11 +264,6 @@ export default function ProjectPage({
       </div>
     );
   }
-
-  const relatedProjects = projects
-    .filter((p) => p.id !== project.id)
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 3);
 
   return (
     <motion.div

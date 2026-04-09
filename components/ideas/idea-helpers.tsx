@@ -31,7 +31,7 @@ export function competitionColor(c: IdeaEvaluation["competition"]) {
   }
 }
 
-export function statusConfig(s: Idea["status"], t: (key: any) => string) {
+export function statusConfig(s: Idea["status"], t: (key: string) => string) {
   switch (s) {
     case "idea":
       return {

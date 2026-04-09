@@ -30,7 +30,7 @@ export function getAvatarColor(name: string): string {
   return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
-export function getBadgeConfig(t: (key: any) => string): Record<string, { label: string; className: string }> {
+export function getBadgeConfig(t: (key: string) => string): Record<string, { label: string; className: string }> {
   return {
     "top-creator": { label: t("creators.badgeTopCreator"), className: "bg-gradient-to-r from-violet-600 to-purple-600 text-white border-violet-500/30" },
     trending: { label: t("creators.badgeTrending"), className: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" },

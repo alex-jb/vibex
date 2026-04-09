@@ -14,6 +14,7 @@ export function ViewModeToggle() {
   const [mode, setMode] = useState<"simple" | "full">("simple");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMode(getOnboardingState().viewMode);
   }, []);
 
@@ -51,6 +52,7 @@ export function useViewMode() {
   const [mode, setMode] = useState<"simple" | "full">("simple");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMode(getOnboardingState().viewMode);
     const handler = (e: Event) => setMode((e as CustomEvent).detail);
     window.addEventListener("vibex-viewmode", handler);

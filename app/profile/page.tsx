@@ -115,34 +115,6 @@ export default function ProfilePage() {
   const router = useRouter();
   const { t } = useLang();
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.replace("/login");
-    }
-  }, [loading, user, router]);
-
-  if (loading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="font-pixel text-sm text-white/40 animate-pulse">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!user) return null;
-
-  const meta = user.user_metadata as Record<string, unknown> | undefined;
-  const baseDisplayName = String(
-    meta?.full_name ??
-    meta?.name ??
-    user.email?.split("@")[0] ??
-    "Adventurer"
-  );
-  const baseAvatarUrl: string | undefined =
-    (meta?.avatar_url as string) ?? (meta?.picture as string) ?? undefined;
-  const email = user.email ?? "";
-  const joinDate = user.created_at ? formatDate(user.created_at) : "---";
-
   /* ── Profile overrides from localStorage ── */
   const [overrides, setOverrides] = useState<ProfileOverrides>({});
   const [isEditing, setIsEditing] = useState(false);
@@ -151,6 +123,12 @@ export default function ProfilePage() {
   const [editAvatarPreview, setEditAvatarPreview] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [loading, user, router]);
 
   // Load overrides from localStorage on mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -165,6 +143,18 @@ export default function ProfilePage() {
       // ignore parse errors
     }
   }, []);
+
+  const meta = user?.user_metadata as Record<string, unknown> | undefined;
+  const baseDisplayName = String(
+    meta?.full_name ??
+    meta?.name ??
+    user?.email?.split("@")[0] ??
+    "Adventurer"
+  );
+  const baseAvatarUrl: string | undefined =
+    (meta?.avatar_url as string) ?? (meta?.picture as string) ?? undefined;
+  const email = user?.email ?? "";
+  const joinDate = user?.created_at ? formatDate(user.created_at) : "---";
 
   const displayName = overrides.displayName || baseDisplayName;
   const bio = overrides.bio || "";
@@ -208,6 +198,16 @@ export default function ProfilePage() {
     setSavedFlash(true);
     setTimeout(() => setSavedFlash(false), 2000);
   }, [editName, editBio, editAvatarPreview]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <p className="font-pixel text-sm text-white/40 animate-pulse">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   /* Projects & computed stats */
   const myProjects = projects.slice(0, 3);

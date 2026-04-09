@@ -83,7 +83,7 @@ export function BuddyCompanion() {
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
   const [petCount, setPetCount] = useState(0);
-  const [hearts, setHearts] = useState<number[]>([]);
+  const [hearts, setHearts] = useState<{ id: number; x: number }[]>([]);
 
   // Show random message periodically (must be before conditional returns)
   useEffect(() => {
@@ -113,8 +113,9 @@ export function BuddyCompanion() {
   const handlePet = () => {
     setPetCount((c) => c + 1);
     const id = Date.now();
-    setHearts((h) => [...h, id]);
-    setTimeout(() => setHearts((h) => h.filter((x) => x !== id)), 1000);
+    const x = Math.random() * 20 - 10;
+    setHearts((h) => [...h, { id, x }]);
+    setTimeout(() => setHearts((h) => h.filter((item) => item.id !== id)), 1000);
 
     if (petCount % 3 === 0) {
       setMessage(t("buddy.happy"));
@@ -169,10 +170,10 @@ export function BuddyCompanion() {
           tabIndex={0}
         >
           {/* Hearts animation */}
-          {hearts.map((id) => (
+          {hearts.map(({ id, x }) => (
             <motion.span
               key={id}
-              initial={{ opacity: 1, y: 0, x: Math.random() * 20 - 10 }}
+              initial={{ opacity: 1, y: 0, x }}
               animate={{ opacity: 0, y: -30 }}
               className="absolute -top-2 left-1/2 text-red-400 text-xs pointer-events-none"
             >

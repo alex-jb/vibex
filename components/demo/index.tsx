@@ -37,7 +37,7 @@ function getDemoIcon(demoType: PlayableDemoProps["demoType"]) {
   }
 }
 
-function getDemoLabel(demoType: PlayableDemoProps["demoType"], t: (key: any) => string) {
+function getDemoLabel(demoType: PlayableDemoProps["demoType"], t: (key: string) => string) {
   switch (demoType) {
     case "chat":
       return t("demo.liveChat");

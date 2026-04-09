@@ -197,17 +197,16 @@ export function ChatWidget() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!user) return null;
-
-  const handleSend = (text?: string) => {
+  const handleSend = useCallback((text?: string) => {
     const msgText = (text ?? input).trim();
     if (!msgText || !activeThread) return;
 
+    const now = Date.now();
     const newMsg: ChatMessage = {
-      id: `m-${Date.now()}`,
+      id: `m-${now}`,
       sender: "You",
       text: msgText,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      time: new Date(now).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       isOwn: true,
     };
 
@@ -224,16 +223,18 @@ export function ChatWidget() {
 
     setInput("");
     simulateReply(activeThread);
-  };
+  }, [input, activeThread, simulateReply]);
 
-  const handleOpenThread = (threadId: string) => {
+  const handleOpenThread = useCallback((threadId: string) => {
     setActiveThread(threadId);
     setThreads((prev) =>
       prev.map((th) =>
         th.id === threadId ? { ...th, unread: 0 } : th
       )
     );
-  };
+  }, []);
+
+  if (!user) return null;
 
   const thread = activeThread ? threads.find((th) => th.id === activeThread) : null;
   const threadMessages = activeThread ? messages[activeThread] || [] : [];

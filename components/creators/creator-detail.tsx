@@ -14,7 +14,7 @@ import type { creators, projects } from "@/lib/mock-data";
 import { formatNumber, getBadgeConfig } from "./creator-helpers";
 import { AvatarCircle } from "./creator-card";
 
-function CreatorBadge({ badge, t }: { badge: string; t: (key: any) => string }) {
+function CreatorBadge({ badge, t }: { badge: string; t: (key: string) => string }) {
   const config = getBadgeConfig(t)[badge];
   if (!config) return null;
   return (

@@ -35,6 +35,7 @@ export function TutorialOverlay() {
   useEffect(() => {
     const state = getOnboardingState();
     if (!state.tutorialCompleted && state.firstVisit) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
     }
   }, []);

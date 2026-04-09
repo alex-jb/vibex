@@ -32,8 +32,8 @@ async function createNotification(
 
 export async function onBattleDefeat(
   loserId: string,
-  _loserName: string,
-  _winnerProjectName: string,
+  _loserName?: string,
+  _winnerProjectName?: string,
 ) {
   await createNotification(
     loserId,
@@ -44,9 +44,9 @@ export async function onBattleDefeat(
 
 export async function onRankingChange(
   userId: string,
-  _userName: string,
-  _newRank: number,
-  _direction: "up" | "down",
+  _userName?: string,
+  _newRank?: number,
+  _direction?: "up" | "down",
 ) {
   await createNotification(
     userId,
