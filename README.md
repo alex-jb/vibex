@@ -1,11 +1,12 @@
 <p align="center">
-  <img src="public/og-default.png" width="480" />
+  <img src="docs/demo.gif" width="720" alt="VibeX Demo" />
 </p>
 
 <h1 align="center">VibeX</h1>
 
 <p align="center">
-  <strong>The launch & growth platform for AI-native creators.</strong>
+  <strong>The launch & growth platform for AI-native creators.</strong><br/>
+  <em>16-bit RPG aesthetic meets AI-powered creator economy</em>
 </p>
 
 <p align="center">
@@ -56,13 +57,28 @@ Track your project's performance and get AI-powered growth suggestions:
 - AI growth advisor — actionable recommendations with effort estimates
 - Category benchmarks — how you compare to similar projects
 
-### RPG Gamification
-Everything is a game. Every action earns XP.
+### RPG Gamification & 6-Stage Evolution
+Everything is a game. Every action earns XP. Every project is a sprite that evolves.
+- **6-Stage Project Evolution** — Seed → Active → Growing → Breakout → Legend → Myth
+- **Auto-triggered by metrics** — plays, upvotes, shares, AI score, VC interest
+- **Evolution animations** — pixel particle burst effects on stage transitions
 - **50-level Creator System** — 10 named ranks from Novice to Legend
-- **Post Reactions** — Fire, Game, Art, Mind-blown
 - **Arena Battles** — Projects fight with 6-attribute combat, Elo rankings
-- **Buddy Pets** — 5 pixel creatures x 3 evolution stages, gacha summoning
-- **Season Leaderboards** — compete for top rankings each season
+- **Buddy Pets** — 11 pixel creatures x 3 evolution stages, gacha summoning
+- **Buddy-Project Linkage** — project evolution awards creator EXP
+
+### Hero Achievement Cards
+Generate and share beautiful 16-bit RPG share cards:
+- **3 sizes** — 3:4 (Xiaohongshu), 1:1 (Instagram), 16:9 (Twitter/X)
+- **RPG data** — HP/MP/EXP bars, rarity badge, skill tags, AI catchphrase
+- **QR code** — pixel-art QR links directly to project page
+- **One-click download** — share on any social platform
+
+### Auto Demo Generator
+One-click demo generation from any URL:
+- Input project URL → Playwright auto-scrolls → captures key frames → GIF
+- Pure JS pipeline (no FFmpeg) — works on Vercel Serverless
+- Auto-fills project thumbnail for waterfall display
 
 ### AI Agent Marketplace
 Build, share, and run AI agents:
@@ -88,12 +104,35 @@ Data that gets more valuable over time:
 - **Growth Patterns** — 8 verified patterns (timing, copy, channel, strategy)
 - **Category Benchmarks** — average D1/D7 views, upvotes, conversion rates
 
+### VC Dashboard
+Investor intelligence for AI project discovery:
+- **Platform Health Radar** — 6-axis chart (growth, retention, AI innovation, market, team, revenue)
+- **Talent Graph** — top creators ranked by success rate
+- **Deal Flow Table** — projects sorted by investor curiosity score
+
 ### Platform Infrastructure
-- **DM System** — conversations, messages, read tracking
+- **DM System** — realtime conversations via Supabase Realtime
+- **PWA** — service worker, offline pixel-art fallback, installable
+- **Push Notifications** — Web Push API for mentions/replies
+- **Image Upload** — avatars + thumbnails via Supabase Storage
+- **Share Tracking** — card downloads, copies, referral visits
 - **Admin Panel** — moderation queue + analytics dashboard
-- **User Bans** — ban/unban with reason + expiry
-- **Onboarding** — 3-step tutorial + 5 starter quests
-- **i18n** — English / Chinese (708 keys, full parity)
+- **Creator Dashboard** — personal analytics with trend charts
+- **Waterfall Layout** — responsive CSS columns masonry grid
+- **SEO** — semantic HTML, Schema.org, sitemap, OG images
+- **i18n** — English / Chinese / Japanese (720+ keys)
+
+---
+
+## Screenshots
+
+| Home | Discover | Project Detail |
+|------|----------|----------------|
+| ![Home](docs/screenshots/01-home.png) | ![Discover](docs/screenshots/03-discover.png) | ![Project](docs/screenshots/04-project.png) |
+
+| Feed | Dojo |
+|------|------|
+| ![Feed](docs/screenshots/05-feed.png) | ![Dojo](docs/screenshots/06-dojo.png) |
 
 ---
 
