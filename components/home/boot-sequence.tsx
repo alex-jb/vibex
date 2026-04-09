@@ -24,6 +24,7 @@ export function BootSequence({ communityStats }: BootSequenceProps) {
     const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
     const hasSeenBoot = localStorage.getItem(BOOT_SEEN_KEY) === "1";
     if (isMobile || hasSeenBoot) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBootComplete(true);
     } else {
       // Mark as seen for next visit

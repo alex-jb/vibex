@@ -39,7 +39,7 @@ export default function Home() {
               className="inline-block font-pixel text-[9px] tracking-widest px-3 py-1.5 mb-6"
               style={{
                 border: "2px solid var(--neon-purple)",
-                color: "var(--neon-purple)",
+                color: "#E9BDFF",
                 background: "var(--neon-purple-dim)",
               }}
             >
