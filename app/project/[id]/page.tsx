@@ -32,6 +32,7 @@ import { ShareModal } from "@/components/share-modal";
 import { GrowthRadar } from "@/components/project/growth-radar";
 import { ForkTree } from "@/components/project/fork-tree";
 import { EvolutionProgress } from "@/components/project/evolution-progress";
+import { EvolutionBurst, useEvolutionDetector } from "@/components/rpg/evolution-burst";
 import { SkillTree } from "@/components/rpg/skill-tree";
 import { ClassIcon } from "@/components/rpg/class-icon";
 import { EvolutionBadge } from "@/components/rpg/evolution-badge";
@@ -239,6 +240,7 @@ export default function ProjectPage({
   const project = projects.find((p) => p.id === id);
   const { t } = useLang();
   const [shareOpen, setShareOpen] = useState(false);
+  const { burstStage, clearBurst } = useEvolutionDetector(project?.hero?.evolutionStage);
 
   const relatedProjects = useMemo(() => {
     if (!project) return [];
@@ -500,6 +502,9 @@ export default function ProjectPage({
           creatorName: project.creatorName,
         }}
       />
+
+      {/* Evolution burst animation */}
+      <EvolutionBurst stage={burstStage} onComplete={clearBurst} />
     </motion.div>
   );
 }

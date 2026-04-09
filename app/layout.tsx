@@ -70,9 +70,10 @@ export const metadata: Metadata = {
     description: "Discover, publish, and evolve playable AI-native vibe coding projects.",
   },
   alternates: {
+    canonical: "https://www.vibexforge.com",
     languages: {
-      "en": "https://vibexforge.com",
-      "zh-CN": "https://vibexforge.com",
+      "en": "https://www.vibexforge.com",
+      "zh-CN": "https://www.vibexforge.com",
     },
   },
 };
@@ -88,6 +89,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${pressStart.variable} ${vt323.variable} ${zpix.variable} dark h-full antialiased`}
     >
       <head>
+        <link rel="apple-touch-icon" href="/favicon.ico" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

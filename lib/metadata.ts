@@ -9,11 +9,13 @@ export function createMetadata({
   description,
   path = "",
   image,
+  noIndex = false,
 }: {
   title: string;
   description: string;
   path?: string;
   image?: string;
+  noIndex?: boolean;
 }): Metadata {
   const fullTitle = `${title} | ${SITE_NAME}`;
   const url = `${SITE_URL}${path}`;
@@ -22,6 +24,10 @@ export function createMetadata({
   return {
     title: fullTitle,
     description,
+    alternates: {
+      canonical: `https://www.vibexforge.com${path}`,
+    },
+    ...(noIndex ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       title: fullTitle,
       description,

@@ -4,6 +4,7 @@ export const metadata = createMetadata({
   title: "Register",
   description: "Create your VibeX account. Join the AI-native creator community.",
   path: "/register",
+  noIndex: true,
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
