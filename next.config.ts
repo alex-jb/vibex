@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
       "lucide-react",
       "framer-motion",
       "@base-ui/react",
-      "date-fns",
     ],
   },
   // Enable gzip/brotli compression

@@ -25,7 +25,7 @@ export function createMetadata({
     title: fullTitle,
     description,
     alternates: {
-      canonical: `https://www.vibexforge.com${path}`,
+      canonical: `${SITE_URL}${path}`,
     },
     ...(noIndex ? { robots: { index: false, follow: false } } : {}),
     openGraph: {

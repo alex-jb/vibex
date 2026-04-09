@@ -7,6 +7,11 @@ import { Footer } from "@/components/footer";
 import { LangProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/lib/auth";
 import { AnalyticsProvider } from "@/components/analytics-provider";
+import "nes.css/css/nes.min.css";
+import "./globals.css";
+import "./retro-game.css";
+import "./nes-overrides.css";
+import "./rpgui-dark.css";
 
 // Lazy-load non-critical floating widgets — don't block initial render
 const BuddyCompanion = dynamic(() => import("@/components/buddy-companion").then((m) => ({ default: m.BuddyCompanion })));
@@ -14,11 +19,6 @@ const ChatWidget = dynamic(() => import("@/components/chat-widget").then((m) => 
 const TutorialOverlay = dynamic(() => import("@/components/onboarding/tutorial-overlay").then((m) => ({ default: m.TutorialOverlay })));
 const ServiceWorkerRegister = dynamic(() => import("@/components/sw-register").then((m) => ({ default: m.ServiceWorkerRegister })));
 const NotificationToastProvider = dynamic(() => import("@/components/notification-toast").then((m) => ({ default: m.NotificationToastProvider })));
-import "nes.css/css/nes.min.css";
-import "./globals.css";
-import "./retro-game.css";
-import "./nes-overrides.css";
-import "./rpgui-dark.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,11 +73,7 @@ export const metadata: Metadata = {
     description: "Discover, publish, and evolve playable AI-native vibe coding projects.",
   },
   alternates: {
-    canonical: "https://www.vibexforge.com",
-    languages: {
-      "en": "https://www.vibexforge.com",
-      "zh-CN": "https://www.vibexforge.com",
-    },
+    canonical: "https://vibexforge.com",
   },
 };
 
