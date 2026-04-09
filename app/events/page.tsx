@@ -12,7 +12,7 @@ import {
   ArrowRight,
   ExternalLink,
 } from "lucide-react";
-import { events } from "@/lib/mock-data";
+import { useEvents } from "@/lib/use-data";
 import type { Event } from "@/lib/types";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
@@ -195,6 +195,7 @@ function CompactEventCard({
 
 export default function EventsPage() {
   const { t } = useLang();
+  const { data: events } = useEvents();
   const featuredEvents = events.filter((e) => e.featured);
   const otherEvents = events.filter((e) => !e.featured);
 

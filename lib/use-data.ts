@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { Project, Creator, Idea, Event, TrendInsight } from "./types";
+import type { Project, Creator, Idea, Event, TrendInsight, WeeklyWinner } from "./types";
 import * as mock from "./mock-data";
 
 /**
@@ -52,4 +52,8 @@ export function useEvents() {
 
 export function useTrendInsights() {
   return useData<TrendInsight>("trends", mock.trendInsights);
+}
+
+export function useWeeklyWinners() {
+  return useData<WeeklyWinner>("winners", mock.weeklyWinners);
 }

@@ -13,7 +13,7 @@ import {
   Signal,
   Activity,
 } from "lucide-react";
-import { trendInsights } from "@/lib/mock-data";
+import { useTrendInsights } from "@/lib/use-data";
 import type { TrendInsight } from "@/lib/types";
 import { SectionHeader } from "@/components/section-header";
 import { Badge } from "@/components/ui/badge";
@@ -128,21 +128,22 @@ function getStatLabel(type: TrendInsight["type"], t: (key: TranslationKey) => st
   return labels[type];
 }
 
-function getCountByType(type: TrendInsight["type"]): number {
-  return trendInsights.filter((t) => t.type === type).length;
+function getCountByType(type: TrendInsight["type"], data: TrendInsight[]): number {
+  return data.filter((t) => t.type === type).length;
 }
 
 function StatCard({
   type,
   index,
+  count,
 }: {
   type: TrendInsight["type"];
   index: number;
+  count: number;
 }) {
   const { t } = useLang();
   const config = typeConfig[type];
   const Icon = config.icon;
-  const count = getCountByType(type);
 
   return (
     <motion.div
@@ -285,6 +286,7 @@ function TrendCard({
 
 export default function InsightsPage() {
   const { t } = useLang();
+  const { data: trendInsights } = useTrendInsights();
   return (
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16">
       {/* Background gradient orbs */}
@@ -319,7 +321,7 @@ export default function InsightsPage() {
       <section className="relative mt-14">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {statTypes.map((type, index) => (
-            <StatCard key={type} type={type} index={index} />
+            <StatCard key={type} type={type} index={index} count={getCountByType(type, trendInsights)} />
           ))}
         </div>
       </section>

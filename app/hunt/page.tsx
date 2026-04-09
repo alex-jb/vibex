@@ -14,7 +14,7 @@ import {
   Zap,
 } from "lucide-react";
 
-import { projects } from "@/lib/mock-data";
+import { useProjects } from "@/lib/use-data";
 import type { LeaderboardEntry, LeaderboardPeriod } from "@/lib/leaderboard";
 import { useRealtimeLeaderboard } from "@/lib/realtime";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +45,7 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.35 } },
 };
 
-function getStats() {
+function getStats(projects: { createdAt: string; upvotes: number; creatorName: string }[]) {
   const today = new Date().toISOString().split("T")[0];
   const todayProjects = projects.filter((p) => p.createdAt === today).length;
   const totalUpvotes = projects.reduce((sum, p) => sum + p.upvotes, 0);
@@ -123,7 +123,8 @@ function LeaderboardTab({ tab }: { tab: string }) {
 
 export default function HuntPage() {
   const [activeTab, setActiveTab] = useState("daily");
-  const stats = getStats();
+  const { data: projects } = useProjects();
+  const stats = getStats(projects);
   const { t } = useLang();
   const period = tabToPeriod(activeTab);
   const { connected } = useRealtimeLeaderboard(period, 1);

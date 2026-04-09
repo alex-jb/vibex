@@ -562,6 +562,8 @@ const translations = {
 
     // Profile page
     "profile.myProjects": "My Projects",
+    "profile.creatorDashboard": "Creator Dashboard",
+    "profile.dashboardDesc": "View your analytics, growth trends, and project performance",
     "profile.totalUpvotes": "Total Upvotes",
     "profile.battleCount": "Battles",
     "profile.followers": "Followers",
@@ -1384,6 +1386,8 @@ const translations = {
 
     // Profile page
     "profile.myProjects": "我的项目",
+    "profile.creatorDashboard": "创作者数据面板",
+    "profile.dashboardDesc": "查看你的数据分析、增长趋势和项目表现",
     "profile.totalUpvotes": "总点赞",
     "profile.battleCount": "战斗次数",
     "profile.followers": "粉丝数",
@@ -1791,6 +1795,8 @@ const _ja_removed = {
 
     // Profile page
     "profile.myProjects": "マイプロジェクト",
+    "profile.creatorDashboard": "クリエイターダッシュボード",
+    "profile.dashboardDesc": "分析、成長トレンド、プロジェクトパフォーマンスを確認",
     "profile.totalUpvotes": "総いいね",
     "profile.battleCount": "バトル数",
     "profile.followers": "フォロワー",

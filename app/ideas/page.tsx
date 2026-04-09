@@ -8,7 +8,8 @@ import {
   Rocket,
   Filter,
 } from "lucide-react";
-import { ideas, categories } from "@/lib/mock-data";
+import { categories } from "@/lib/mock-data";
+import { useIdeas } from "@/lib/use-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLang } from "@/lib/i18n";
@@ -21,6 +22,7 @@ import { statusConfig } from "@/components/ideas/idea-helpers";
 
 export default function IdeasPage() {
   const { t } = useLang();
+  const { data: ideas } = useIdeas();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");

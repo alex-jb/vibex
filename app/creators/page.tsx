@@ -12,7 +12,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { SectionHeader } from "@/components/section-header";
-import { creators, projects, weeklyWinners } from "@/lib/mock-data";
+import { useCreators, useProjects, useWeeklyWinners } from "@/lib/use-data";
 import { useLang } from "@/lib/i18n";
 import { PodiumCard } from "@/components/creators/creator-card";
 import { CreatorDetailPanel } from "@/components/creators/creator-detail";
@@ -26,6 +26,9 @@ const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } }
 
 export default function CreatorsPage() {
   const { t } = useLang();
+  const { data: creators } = useCreators();
+  const { data: projects } = useProjects();
+  const { data: weeklyWinners } = useWeeklyWinners();
   const [selectedCreator, setSelectedCreator] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const sortedCreators = [...creators].sort((a, b) => a.rank - b.rank);
@@ -44,8 +47,8 @@ export default function CreatorsPage() {
   const selectedData = selectedCreator
     ? {
         creator: creators.find((c) => c.id === selectedCreator)!,
-        heroClass: getCreatorClass(selectedCreator),
-        attributes: getCreatorAttributes(selectedCreator),
+        heroClass: getCreatorClass(selectedCreator, projects),
+        attributes: getCreatorAttributes(selectedCreator, projects),
         projectList: projects.filter((p) => p.creatorId === selectedCreator),
       }
     : null;
@@ -113,7 +116,7 @@ export default function CreatorsPage() {
                 if (!creator) return null;
                 const accent = i === 1 ? "gold" : i === 0 ? "silver" : "bronze";
                 const elevated = i === 1;
-                const heroClass = getCreatorClass(creator.id);
+                const heroClass = getCreatorClass(creator.id, projects);
                 return (
                   <PodiumCard
                     key={creator.id}
@@ -140,7 +143,7 @@ export default function CreatorsPage() {
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={setCurrentPage}
-              getHeroClass={getCreatorClass}
+              getHeroClass={(id: string) => getCreatorClass(id, projects)}
             />
           </div>
         </div>

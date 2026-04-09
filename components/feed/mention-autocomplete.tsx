@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useCreators } from "@/lib/use-data";
 
 interface MentionUser {
   id: string;
   name: string;
 }
 
-// Mock users for demo mode
+// Fallback mock users
 const MOCK_USERS: MentionUser[] = [
   { id: "u1", name: "PixelMaster" },
   { id: "u2", name: "CodeWizard" },
@@ -34,6 +35,11 @@ export function MentionAutocomplete({
   disabled,
   maxLength = 500,
 }: MentionAutocompleteProps) {
+  const { data: creators } = useCreators();
+  const allUsers: MentionUser[] = [
+    ...creators.map((c) => ({ id: c.id, name: c.name })),
+    ...MOCK_USERS.filter((m) => !creators.some((c) => c.name === m.name)),
+  ];
   const [suggestions, setSuggestions] = useState<MentionUser[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -59,7 +65,7 @@ export function MentionAutocomplete({
       return;
     }
 
-    const filtered = MOCK_USERS.filter((u) =>
+    const filtered = allUsers.filter((u) =>
       u.name.toLowerCase().includes(query.toLowerCase()),
     ).slice(0, 5);
 

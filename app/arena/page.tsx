@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { useLang } from "@/lib/i18n";
 import { motion } from "framer-motion";
-import { projects } from "@/lib/mock-data";
+import { useProjects } from "@/lib/use-data";
 import type { Project, BattleResult } from "@/lib/types";
 import { simulateBattle, getBattleSummary } from "@/lib/battle-engine";
 import { SeasonLeaderboard } from "@/components/arena/season-leaderboard";
@@ -15,6 +15,7 @@ import { TermLine, CriticalHitOverlay, FlashOverlay } from "@/components/arena/b
 
 /* ─── Main Arena Page ─── */
 export default function ArenaPage() {
+  const { data: projects } = useProjects();
   const [challenger, setChallenger] = useState<Project | null>(null);
   const [defender, setDefender] = useState<Project | null>(null);
   const [phase, setPhase] = useState<"select" | "flash" | "battle" | "result">("select");

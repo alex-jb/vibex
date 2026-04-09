@@ -21,6 +21,7 @@ import {
   ChevronUp,
   ArrowUpRight,
   Sparkles,
+  BarChart3,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useLang } from "@/lib/i18n";
@@ -532,8 +533,24 @@ export default function ProfilePage() {
         </div>
       </FadeIn>
 
+      {/* ── Creator Dashboard Link ── */}
+      <FadeIn delay={0.45} className="mt-8">
+        <Link href="/profile/dashboard" className="group block">
+          <div className="rpgui-container framed flex items-center justify-between" style={{ padding: "12px 16px" }}>
+            <div className="flex items-center gap-3">
+              <BarChart3 className="size-5 text-violet-400" />
+              <div>
+                <span className="font-pixel text-[9px] text-violet-400">{t("profile.creatorDashboard")}</span>
+                <p className="text-xs text-muted-foreground">{t("profile.dashboardDesc")}</p>
+              </div>
+            </div>
+            <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-violet-400 transition-colors" />
+          </div>
+        </Link>
+      </FadeIn>
+
       {/* ── My Projects ── */}
-      <FadeIn delay={0.5} className="mt-10">
+      <FadeIn delay={0.5} className="mt-6">
         <h2 className="font-pixel text-lg text-gradient mb-4">{t("profile.myProjects")}</h2>
         <div className="space-y-3">
           {myProjects.map((p) => (

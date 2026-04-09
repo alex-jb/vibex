@@ -1,6 +1,5 @@
-import { projects } from "@/lib/mock-data";
 import { computeClass, computeAttributes } from "@/lib/rpg-utils";
-import type { HeroAttributes, HeroClass } from "@/lib/types";
+import type { HeroAttributes, HeroClass, Project } from "@/lib/types";
 import type { TranslationKey } from "@/lib/i18n";
 
 export function formatNumber(n: number): string {
@@ -43,7 +42,7 @@ export function getBadgeConfig(t: (key: TranslationKey) => string): Record<strin
 }
 
 /** Compute dominant class for a creator from their projects */
-export function getCreatorClass(creatorId: string): HeroClass | null {
+export function getCreatorClass(creatorId: string, projects: Project[]): HeroClass | null {
   const cp = projects.filter((p) => p.creatorId === creatorId);
   if (cp.length === 0) return null;
   const classCounts: Record<HeroClass, number> = { Architect: 0, Artisan: 0, Enchanter: 0, Alchemist: 0, Sentinel: 0 };
@@ -54,7 +53,7 @@ export function getCreatorClass(creatorId: string): HeroClass | null {
 }
 
 /** Get average attributes for a creator */
-export function getCreatorAttributes(creatorId: string): HeroAttributes | null {
+export function getCreatorAttributes(creatorId: string, projects: Project[]): HeroAttributes | null {
   const cp = projects.filter((p) => p.creatorId === creatorId);
   if (cp.length === 0) return null;
   const sum: HeroAttributes = { power: 0, resilience: 0, charisma: 0, wisdom: 0, agility: 0, stability: 0 };
