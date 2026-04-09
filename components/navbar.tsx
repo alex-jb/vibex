@@ -14,13 +14,7 @@ import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
 import { useAuth } from "@/lib/auth";
 
-// Guest nav (simplified for new visitors)
-const guestNavItems = [
-  { href: "/discover", key: "nav.discover" as const },
-  { href: "/creators", key: "nav.creators" as const },
-];
-
-// Full nav for logged-in users
+// Primary nav items — same for guests and logged-in users
 const fullNavItems = [
   { href: "/", key: "nav.home" as const },
   { href: "/feed", key: "nav.feed" as const },
@@ -32,6 +26,9 @@ const fullNavItems = [
   { href: "/analytics", key: "nav.analytics" as const },
   { href: "/developers", key: "nav.developers" as const },
 ];
+
+// Guest nav = same as full nav (all features visible to visitors)
+const guestNavItems = fullNavItems;
 
 // Dojo items (in user menu + mobile menu)
 const dojoNavItems = [
