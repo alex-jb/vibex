@@ -141,6 +141,12 @@ function ShareCardPreview({
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      // Track download event
+      fetch("/api/share/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId, event: "card_download" }),
+      }).catch(() => {});
     } finally {
       setDownloading(false);
     }
@@ -155,6 +161,12 @@ function ShareCardPreview({
       ]);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
+      // Track copy event
+      fetch("/api/share/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId, event: "card_copy" }),
+      }).catch(() => {});
     } catch {
       // Fallback: some browsers don't support clipboard image write
     }
