@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Swords, Heart, Target, MessageSquare, Lock, Zap, Star, Shield, Users, Share2 } from "lucide-react";
+import { Swords, Target, MessageSquare, Lock, Zap, Star, Shield, Users, Share2 } from "lucide-react";
 import { useLang } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 import { projects } from "@/lib/mock-data";
@@ -33,16 +33,6 @@ const dojoRooms: DojoRoom[] = [
     descKey: "dojo.arenaDesc",
   },
   {
-    href: "/buddy",
-    icon: Heart,
-    color: "from-pink-500 to-rose-500",
-    shadow: "shadow-pink-500/20",
-    accent: "text-pink-400",
-    glowColor: "rgba(236,72,153,0.5)",
-    i18nKey: "nav.buddy",
-    descKey: "dojo.buddyDesc",
-  },
-  {
     href: "/hunt",
     icon: Target,
     color: "from-emerald-500 to-teal-500",
@@ -51,6 +41,16 @@ const dojoRooms: DojoRoom[] = [
     glowColor: "rgba(16,185,129,0.5)",
     i18nKey: "nav.hunt",
     descKey: "dojo.huntDesc",
+  },
+  {
+    href: "/feed",
+    icon: MessageSquare,
+    color: "from-fuchsia-500 to-purple-500",
+    shadow: "shadow-fuchsia-500/20",
+    accent: "text-fuchsia-400",
+    glowColor: "rgba(217,70,239,0.5)",
+    i18nKey: "nav.feed",
+    descKey: "dojo.feedDesc",
   },
   {
     href: "/messages",
@@ -68,8 +68,8 @@ const dojoRooms: DojoRoom[] = [
 const trainerStats = [
   { label: "LVL", value: "42", icon: Star, color: "#FFD700" },
   { label: "EXP", value: "8,450", icon: Zap, color: "#39FF14" },
-  { label: "BUDDIES", value: "12", icon: Users, color: "#FF69B4" },
   { label: "WINS", value: "87", icon: Shield, color: "#00BFFF" },
+  { label: "RANK", value: "#12", icon: Users, color: "#FF69B4" },
 ];
 
 const containerVariants = {

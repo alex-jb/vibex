@@ -14,7 +14,6 @@ import "./nes-overrides.css";
 import "./rpgui-dark.css";
 
 // Lazy-load non-critical floating widgets — don't block initial render
-const BuddyCompanion = dynamic(() => import("@/components/buddy-companion").then((m) => ({ default: m.BuddyCompanion })));
 const ChatWidget = dynamic(() => import("@/components/chat-widget").then((m) => ({ default: m.ChatWidget })));
 const TutorialOverlay = dynamic(() => import("@/components/onboarding/tutorial-overlay").then((m) => ({ default: m.TutorialOverlay })));
 const ServiceWorkerRegister = dynamic(() => import("@/components/sw-register").then((m) => ({ default: m.ServiceWorkerRegister })));
@@ -123,7 +122,6 @@ export default function RootLayout({
             <main className="flex-1 pt-14">{children}</main>
             <Footer />
             <ChatWidget />
-            <BuddyCompanion />
             <TutorialOverlay />
             <NotificationToastProvider />
             <ServiceWorkerRegister />

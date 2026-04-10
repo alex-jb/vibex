@@ -49,6 +49,7 @@ const translations = {
     "dojo.arenaDesc": "Challenge other trainers and climb the leaderboard in real-time battles.",
     "dojo.buddyDesc": "Raise and evolve your AI companion. Feed, train, and bond.",
     "dojo.huntDesc": "Discover and upvote the hottest new projects every day.",
+    "dojo.feedDesc": "Share updates, react to posts, and follow what creators are building.",
     "dojo.messagesDesc": "Chat with trainers, share strategies, and build your network.",
     "dojo.loginToChat": "Login to unlock messaging with other trainers.",
 
@@ -881,6 +882,7 @@ const translations = {
     "dojo.arenaDesc": "挑战其他训练师，在实时对战中登顶排行榜。",
     "dojo.buddyDesc": "培养和进化你的 AI 伙伴。喝养、训练、建立羁绊。",
     "dojo.huntDesc": "每天发现并投票支持最火爆的新项目。",
+    "dojo.feedDesc": "分享动态、点赞帖子、关注创作者在做什么。",
     "dojo.messagesDesc": "与训练师聊天，分享策略，拓展人脉。",
     "dojo.loginToChat": "登录后解锁与其他训练师的私信功能。",
 
