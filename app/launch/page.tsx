@@ -543,6 +543,113 @@ export default function LaunchPage() {
         )}
       </AnimatePresence>
 
+      {/* Vibe Templates — Aippy-inspired, one-click starting points */}
+      {!submitted && filledFieldCount === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.08 }}
+          className="mx-auto max-w-3xl mb-8"
+        >
+          <div className="flex items-center gap-2 mb-3 px-1">
+            <Sparkles className="h-4 w-4" style={{ color: "var(--neon-yellow)" }} />
+            <span
+              className="font-pixel uppercase"
+              style={{
+                fontSize: 10,
+                letterSpacing: 2,
+                color: "var(--neon-yellow)",
+                textShadow: "0 0 6px rgba(250,204,21,0.4)",
+              }}
+            >
+              START FROM A VIBE
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+            {[
+              {
+                label: "GAME IDEA",
+                emoji: "🎮",
+                title: "Tiny arcade game",
+                description:
+                  "A simple one-button arcade game you can pick up and play in 30 seconds. Describe the core mechanic, the goal, and what makes it satisfying.",
+                category: "AI Game",
+                tags: "arcade, casual, one-tap",
+              },
+              {
+                label: "AI TOOL",
+                emoji: "🤖",
+                title: "AI utility",
+                description:
+                  "A single-purpose AI tool that solves one annoying problem in under a minute. Describe the input, the output, and why it beats doing it manually.",
+                category: "AI Tool",
+                tags: "ai, utility, productivity",
+              },
+              {
+                label: "VISUAL TOY",
+                emoji: "🎨",
+                title: "Generative visual toy",
+                description:
+                  "An interactive visual experience driven by gestures, motion, or sound. Describe the feedback loop and what makes it mesmerizing.",
+                category: "Experimental",
+                tags: "visual, generative, interactive",
+              },
+              {
+                label: "DASHBOARD",
+                emoji: "📊",
+                title: "Live data dashboard",
+                description:
+                  "A dashboard that surfaces one specific insight that was hard to see before. Describe the data source, the metric, and the decision it unlocks.",
+                category: "AI Utility",
+                tags: "data, dashboard, analytics",
+              },
+              {
+                label: "SHARE MEME",
+                emoji: "📤",
+                title: "Shareable one-liner",
+                description:
+                  "A tiny interactive that generates something worth screenshotting. Describe the trigger, the output, and why people would share it.",
+                category: "Demo",
+                tags: "meme, social, viral",
+              },
+            ].map((tpl) => (
+              <button
+                key={tpl.label}
+                type="button"
+                onClick={() => {
+                  setTitle(tpl.title);
+                  setDescription(tpl.description);
+                  setCategory(tpl.category);
+                  setTags(tpl.tags);
+                }}
+                className="flex flex-col items-center gap-2 px-3 py-3 font-pixel transition-transform hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-500/50"
+                style={{
+                  background: "rgba(0,0,0,0.5)",
+                  border: "2px solid rgba(157,0,255,0.4)",
+                  boxShadow: "3px 3px 0 #000",
+                  color: "#C9B8E8",
+                  minHeight: 80,
+                  cursor: "pointer",
+                }}
+                aria-label={`Start from template: ${tpl.label}`}
+              >
+                <span aria-hidden="true" style={{ fontSize: 22 }}>
+                  {tpl.emoji}
+                </span>
+                <span
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: 1,
+                  }}
+                >
+                  {tpl.label}
+                </span>
+              </button>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
       {/* URL Quick Start — paste URL, auto-fill form */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}

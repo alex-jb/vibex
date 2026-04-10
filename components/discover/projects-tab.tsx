@@ -36,14 +36,74 @@ function formatNumber(n: number): string {
   return n.toString();
 }
 
+/* ─── Vibe taxonomy — Aippy-inspired emotional filters ──────────────────── */
+type Mood =
+  | "HOT"
+  | "LATEST"
+  | "DOPAMINE"
+  | "BRAIN HACK"
+  | "UNHINGED"
+  | "GRIND"
+  | "SEND THIS";
+
+const MOODS: readonly Mood[] = [
+  "HOT",
+  "LATEST",
+  "DOPAMINE",
+  "BRAIN HACK",
+  "UNHINGED",
+  "GRIND",
+  "SEND THIS",
+] as const;
+
+const MOOD_EMOJI: Record<Mood, string> = {
+  HOT: "🔥",
+  LATEST: "✨",
+  DOPAMINE: "💊",
+  "BRAIN HACK": "🧠",
+  UNHINGED: "😵",
+  GRIND: "⛏️",
+  "SEND THIS": "📤",
+};
+
+/**
+ * Deterministic mood derivation from project id.
+ * Uses a simple hash over the id so every project gets a stable mood
+ * without needing a schema change. HOT / LATEST are excluded — they're
+ * dynamic meta-moods handled by sorting.
+ */
+const VIBE_MOODS: Mood[] = ["DOPAMINE", "BRAIN HACK", "UNHINGED", "GRIND", "SEND THIS"];
+function deriveMood(projectId: string): Mood {
+  let hash = 0;
+  for (let i = 0; i < projectId.length; i++) {
+    hash = (hash * 31 + projectId.charCodeAt(i)) | 0;
+  }
+  return VIBE_MOODS[Math.abs(hash) % VIBE_MOODS.length];
+}
+
 export function ProjectsTab() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedMood, setSelectedMood] = useState<Mood>("HOT");
   const [viewMode, setViewMode] = useState<"card" | "hero">("card");
   const { t } = useLang();
   const { data: projects } = useProjects();
 
-  const filteredProjects = projects.filter((project) => {
+  // Mood filter: HOT sorts by score, LATEST by createdAt, others filter by
+  // derived mood. Applied BEFORE category/search so the mood sets the frame.
+  const moodFiltered = (() => {
+    if (selectedMood === "HOT") {
+      return [...projects].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+    }
+    if (selectedMood === "LATEST") {
+      return [...projects].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+    }
+    return projects.filter((p) => deriveMood(p.id) === selectedMood);
+  })();
+
+  const filteredProjects = moodFiltered.filter((project) => {
     const matchesCategory =
       selectedCategory === "All" || project.category === selectedCategory;
     const query = searchQuery.toLowerCase();
@@ -79,12 +139,77 @@ export function ProjectsTab() {
         </div>
       </motion.div>
 
-      {/* Category Pills */}
+      {/* Vibe / Mood Tabs — primary emotional filter, Aippy-inspired */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.15 }}
-        className="mt-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
+        transition={{ duration: 0.4, delay: 0.12 }}
+        className="mt-5"
+      >
+        <div
+          className="flex items-center gap-2 mb-2 px-1"
+          aria-hidden="true"
+        >
+          <span
+            className="font-pixel"
+            style={{
+              fontSize: 10,
+              letterSpacing: 2,
+              color: "var(--neon-purple, #9D00FF)",
+              textShadow: "0 0 6px rgba(157,0,255,0.4)",
+            }}
+          >
+            ▸ PICK A VIBE
+          </span>
+        </div>
+        <div
+          role="tablist"
+          aria-label="Filter projects by vibe"
+          className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          {MOODS.map((mood) => {
+            const active = selectedMood === mood;
+            return (
+              <button
+                key={mood}
+                role="tab"
+                aria-selected={active}
+                onClick={() => setSelectedMood(mood)}
+                className="shrink-0 flex items-center gap-1.5 px-3 py-2 font-pixel transition-transform hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-500/50"
+                style={{
+                  fontSize: 10,
+                  letterSpacing: 1.2,
+                  background: active
+                    ? "linear-gradient(135deg, var(--neon-purple, #9D00FF), #C026D3)"
+                    : "rgba(0,0,0,0.5)",
+                  border: active
+                    ? "2px solid #FFF"
+                    : "2px solid rgba(157,0,255,0.35)",
+                  color: active ? "#FFF" : "#C9B8E8",
+                  boxShadow: active
+                    ? "3px 3px 0 #000, 0 0 16px rgba(157,0,255,0.5)"
+                    : "2px 2px 0 #000",
+                  minHeight: 40,
+                  cursor: "pointer",
+                }}
+              >
+                <span aria-hidden="true" style={{ fontSize: 14 }}>
+                  {MOOD_EMOJI[mood]}
+                </span>
+                {mood}
+              </button>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* Category Pills — secondary filter, narrows the vibe */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.18 }}
+        className="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {categories.map((category) => (
