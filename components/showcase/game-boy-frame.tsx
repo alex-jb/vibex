@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 interface GameBoyFrameProps {
   children: React.ReactNode;
   label?: string;
+  /** Optional CTA button slot — rendered below the A/B buttons inside the right grip */
+  cta?: React.ReactNode;
 }
 
 /**
@@ -12,7 +14,7 @@ interface GameBoyFrameProps {
  * original vertical version, but laid out horizontally with the
  * screen in the middle, D-pad on the left, A/B buttons on the right.
  */
-export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
+export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -20,7 +22,7 @@ export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="relative mx-auto"
       style={{
-        width: "min(94vw, 740px)",
+        width: "min(96vw, 960px)",
       }}
     >
       {/* ─── Main shell — horizontal DMG ─── */}
@@ -273,56 +275,64 @@ export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
             </div>
           </div>
 
-          {/* ═══ RIGHT GRIP: A / B buttons (col 3 on desktop, row 2 col 2 on mobile) ═══ */}
-          <div className="flex items-center justify-center gap-3 order-3 sm:col-start-3" style={{ alignSelf: "center" }}>
-            {/* B button */}
-            <div className="flex flex-col items-center gap-1" style={{ marginTop: 18 }}>
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  background: "radial-gradient(circle at 35% 35%, #C026D3 0%, #7A0C8C 70%, #450552 100%)",
-                  border: "3px solid #2A0030",
-                  boxShadow:
-                    "inset -2px -2px 4px rgba(0,0,0,0.5), 0 3px 0 #2A0030, 0 0 12px rgba(157,0,255,0.4)",
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "var(--font-pixel), monospace",
-                  fontSize: 8,
-                  color: "#3A3B46",
-                  fontWeight: "bold",
-                }}
-              >
-                B
-              </span>
+          {/* ═══ RIGHT GRIP: A / B buttons + optional CTA (col 3 on desktop, row 2 col 2 on mobile) ═══ */}
+          <div
+            className="flex flex-col items-center justify-center gap-4 order-3 sm:col-start-3"
+            style={{ alignSelf: "center" }}
+          >
+            <div className="flex items-center gap-3">
+              {/* B button */}
+              <div className="flex flex-col items-center gap-1" style={{ marginTop: 18 }}>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: "50%",
+                    background: "radial-gradient(circle at 35% 35%, #C026D3 0%, #7A0C8C 70%, #450552 100%)",
+                    border: "3px solid #2A0030",
+                    boxShadow:
+                      "inset -2px -2px 4px rgba(0,0,0,0.5), 0 3px 0 #2A0030, 0 0 12px rgba(157,0,255,0.4)",
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: "var(--font-pixel), monospace",
+                    fontSize: 8,
+                    color: "#3A3B46",
+                    fontWeight: "bold",
+                  }}
+                >
+                  B
+                </span>
+              </div>
+              {/* A button */}
+              <div className="flex flex-col items-center gap-1">
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: "50%",
+                    background: "radial-gradient(circle at 35% 35%, #39FF14 0%, #1B8C0A 70%, #0A4504 100%)",
+                    border: "3px solid #0A2500",
+                    boxShadow:
+                      "inset -2px -2px 4px rgba(0,0,0,0.5), 0 3px 0 #0A2500, 0 0 12px rgba(57,255,20,0.4)",
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: "var(--font-pixel), monospace",
+                    fontSize: 8,
+                    color: "#3A3B46",
+                    fontWeight: "bold",
+                  }}
+                >
+                  A
+                </span>
+              </div>
             </div>
-            {/* A button */}
-            <div className="flex flex-col items-center gap-1">
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  background: "radial-gradient(circle at 35% 35%, #39FF14 0%, #1B8C0A 70%, #0A4504 100%)",
-                  border: "3px solid #0A2500",
-                  boxShadow:
-                    "inset -2px -2px 4px rgba(0,0,0,0.5), 0 3px 0 #0A2500, 0 0 12px rgba(57,255,20,0.4)",
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "var(--font-pixel), monospace",
-                  fontSize: 8,
-                  color: "#3A3B46",
-                  fontWeight: "bold",
-                }}
-              >
-                A
-              </span>
-            </div>
+
+            {/* Optional CTA below A/B buttons */}
+            {cta && <div className="mt-1">{cta}</div>}
           </div>
         </div>
       </div>

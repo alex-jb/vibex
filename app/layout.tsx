@@ -7,6 +7,7 @@ import { Footer } from "@/components/footer";
 import { LangProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/lib/auth";
 import { AnalyticsProvider } from "@/components/analytics-provider";
+import { MainWrapper } from "@/components/main-wrapper";
 import "nes.css/css/nes.min.css";
 import "./globals.css";
 import "./retro-game.css";
@@ -119,7 +120,7 @@ export default function RootLayout({
           <LangProvider>
             <div className="scanline-overlay" aria-hidden="true" />
             <Navbar />
-            <main className="flex-1 pt-14">{children}</main>
+            <MainWrapper>{children}</MainWrapper>
             <Footer />
             <ChatWidget />
             <TutorialOverlay />
