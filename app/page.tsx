@@ -30,6 +30,33 @@ export default function LandingPage() {
       <div className="pointer-events-none absolute top-1/3 right-1/4 h-[400px] w-[400px] rounded-full bg-fuchsia-600/8 blur-[120px]" />
 
       <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col items-center">
+        {/* ═══ HERO TEXT ═══ */}
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: pixelEase }}
+          className="text-center mb-8 sm:mb-10 max-w-3xl"
+        >
+          <h1
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 sm:mb-5"
+            style={{
+              fontFamily: "var(--font-pixel), monospace",
+              color: "#FFF",
+              lineHeight: 1.2,
+              textShadow: "0 0 24px rgba(157,0,255,0.4)",
+            }}
+          >
+            Turn your AI project into a{" "}
+            <span style={{ color: "var(--neon-green)" }}>viral collectible</span>
+          </h1>
+          <p
+            className="text-base sm:text-lg md:text-xl font-retro"
+            style={{ color: "#A0A0A8", maxWidth: "32rem", margin: "0 auto" }}
+          >
+            Generate a card. Share it. Grow your project.
+          </p>
+        </motion.div>
+
         {/* ═══ GAME BOY SHOWCASE ═══ */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
