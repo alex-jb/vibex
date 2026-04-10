@@ -8,17 +8,14 @@ interface GameBoyFrameProps {
 }
 
 /**
- * Nintendo Game Boy (DMG-01) inspired frame, pixel-art styling.
- * Inspired by mGBA emulator's classic DMG rendering.
+ * Horizontal futuristic retro console frame.
+ * Inspired by Game Boy Advance / PSP / handheld arcade terminals.
  *
- * Layout:
- *   - Grey shell with rounded top, flat bottom
- *   - Power LED + "VIBEX BOY" branding strip
- *   - Large recessed screen area (children goes here)
- *   - D-pad (left) + A/B buttons (right)
- *   - Start/Select pill buttons
- *   - Speaker grille (diagonal lines)
- *   - "Nintendo" style logo replaced with "VIBEX"
+ * Layout (left → right):
+ *   [D-pad + tags]   [BIG SCREEN]   [LIKE / OPEN / INVEST buttons]
+ *
+ * Style: sleek black shell with neon purple+cyan underglow,
+ * not the classic gray plastic Game Boy DMG. Futuristic, premium.
  */
 export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
   return (
@@ -28,181 +25,64 @@ export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="relative mx-auto"
       style={{
-        width: "min(92vw, 520px)",
-        // Classic DMG proportions
+        width: "min(94vw, 760px)",
       }}
     >
-      {/* ─── Main shell ─── */}
+      {/* ═══ Underglow halo (sits behind the device) ═══ */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: "10% -8% -25% -8%",
+          background:
+            "radial-gradient(ellipse at center, rgba(157,0,255,0.45) 0%, rgba(217,70,239,0.25) 35%, rgba(6,182,212,0.15) 60%, transparent 80%)",
+          filter: "blur(30px)",
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* ═══ Main shell — horizontal pill with rounded grips ═══ */}
       <div
         style={{
           position: "relative",
-          background: "linear-gradient(180deg, #B8B9C3 0%, #9FA0AA 50%, #8B8C97 100%)",
-          borderTop: "4px solid #D4D5E0",
-          borderLeft: "4px solid #C8C9D4",
-          borderRight: "4px solid #6E6F7A",
-          borderBottom: "4px solid #52535E",
-          borderRadius: "16px 16px 40px 16px",
-          padding: "28px 24px 48px",
+          zIndex: 1,
+          background:
+            "linear-gradient(180deg, #1a1a22 0%, #0d0d14 50%, #050508 100%)",
+          border: "1px solid #2a2a35",
+          borderRadius: "32px",
+          padding: "20px 24px",
           boxShadow:
-            "0 20px 60px rgba(0,0,0,0.6), 0 8px 24px rgba(157,0,255,0.15), inset 0 2px 0 rgba(255,255,255,0.3)",
-          imageRendering: "pixelated",
+            "0 24px 80px rgba(0,0,0,0.7), 0 0 60px rgba(157,0,255,0.25), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -3px 12px rgba(0,0,0,0.6)",
         }}
       >
-        {/* Top branding strip */}
+        {/* Subtle top highlight strip */}
         <div
-          className="flex items-center justify-between mb-4"
+          aria-hidden="true"
           style={{
-            fontFamily: "var(--font-pixel), monospace",
+            position: "absolute",
+            top: 0,
+            left: "20%",
+            right: "20%",
+            height: 1,
+            background:
+              "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)",
+            borderRadius: "0 0 50% 50%",
           }}
-        >
-          <div className="flex items-center gap-2">
-            <div
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: "#FF4500",
-                boxShadow: "0 0 6px #FF4500, inset 0 0 2px #fff",
-                animation: "pulse 2s ease-in-out infinite",
-              }}
-            />
-            <span
-              style={{
-                fontSize: 7,
-                color: "#3A3B46",
-                letterSpacing: 2,
-              }}
-            >
-              BATTERY
-            </span>
-          </div>
-          <div
-            style={{
-              fontSize: 9,
-              color: "#3A3B46",
-              letterSpacing: 3,
-              fontWeight: "bold",
-            }}
-          >
-            VIBEX-BOY
-          </div>
-          <div style={{ width: 60 }} />
-        </div>
+        />
 
-        {/* ─── Screen bezel (dark plastic surround) ─── */}
-        <div
-          style={{
-            background: "#2A2B36",
-            borderRadius: "12px 12px 36px 12px",
-            padding: "20px 22px 28px",
-            boxShadow: "inset 0 4px 12px rgba(0,0,0,0.8), 0 2px 0 rgba(255,255,255,0.2)",
-            border: "2px solid #1A1B24",
-          }}
-        >
-          {/* Screen labels row */}
+        <div className="flex items-stretch gap-4">
+          {/* ═══ LEFT GRIP: D-pad + vertical tags ═══ */}
           <div
-            className="flex items-center justify-between mb-2"
-            style={{
-              fontFamily: "var(--font-pixel), monospace",
-              fontSize: 6,
-              color: "#6A6B76",
-              letterSpacing: 1.5,
-            }}
+            className="flex flex-col items-center justify-between shrink-0"
+            style={{ width: 84, paddingTop: 4, paddingBottom: 4 }}
           >
-            <span>{"\u25C4 DOT MATRIX WITH STEREO SOUND \u25BA"}</span>
-          </div>
-
-          {/* Actual screen (where content lives) */}
-          <div
-            style={{
-              position: "relative",
-              background: "linear-gradient(180deg, #0d1410 0%, #0a1a0e 100%)",
-              border: "3px solid #1a1f18",
-              borderRadius: 4,
-              padding: 14,
-              aspectRatio: "10 / 11",
-              boxShadow:
-                "inset 0 0 20px rgba(57,255,20,0.08), inset 0 2px 8px rgba(0,0,0,0.9)",
-              overflow: "hidden",
-            }}
-          >
-            {/* Scanline overlay on screen */}
-            <div
-              aria-hidden="true"
-              style={{
-                position: "absolute",
-                inset: 0,
-                pointerEvents: "none",
-                background:
-                  "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 3px)",
-                zIndex: 10,
-              }}
-            />
-            {/* Screen glow */}
-            <div
-              aria-hidden="true"
-              style={{
-                position: "absolute",
-                inset: 0,
-                pointerEvents: "none",
-                background:
-                  "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%)",
-                zIndex: 9,
-              }}
-            />
-            {/* Content */}
+            {/* D-Pad */}
             <div
               style={{
                 position: "relative",
-                zIndex: 5,
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {children}
-            </div>
-          </div>
-
-          {/* Bottom screen branding */}
-          <div
-            className="flex items-center justify-between mt-3"
-            style={{
-              fontFamily: "var(--font-pixel), monospace",
-              fontSize: 7,
-              color: "#8B8C97",
-              letterSpacing: 2,
-            }}
-          >
-            <span
-              style={{
-                fontStyle: "italic",
-                fontSize: 10,
-                fontWeight: "bold",
-                color: "#9D00FF",
-                letterSpacing: 1,
-              }}
-            >
-              VibeX
-            </span>
-            <span>GROWTH ENGINE</span>
-          </div>
-        </div>
-
-        {/* ─── Control area below screen ─── */}
-        <div
-          className="mt-6 grid grid-cols-2 gap-4 items-center"
-          style={{ minHeight: 90 }}
-        >
-          {/* Left: D-pad */}
-          <div className="flex items-center justify-center">
-            <div
-              style={{
-                position: "relative",
-                width: 70,
-                height: 70,
+                width: 56,
+                height: 56,
               }}
             >
               {/* Horizontal bar */}
@@ -213,9 +93,10 @@ export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
                   left: 0,
                   right: 0,
                   height: "33%",
-                  background: "linear-gradient(180deg, #3A3B46 0%, #1A1B24 100%)",
-                  border: "2px solid #0a0a0c",
-                  borderRadius: 2,
+                  background: "linear-gradient(180deg, #2a2a35 0%, #0a0a10 100%)",
+                  border: "1px solid #050508",
+                  borderRadius: 4,
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 1px 2px rgba(0,0,0,0.6)",
                 }}
               />
               {/* Vertical bar */}
@@ -226,127 +107,264 @@ export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
                   top: 0,
                   bottom: 0,
                   width: "33%",
-                  background: "linear-gradient(90deg, #3A3B46 0%, #1A1B24 100%)",
-                  border: "2px solid #0a0a0c",
-                  borderRadius: 2,
+                  background: "linear-gradient(90deg, #2a2a35 0%, #0a0a10 100%)",
+                  border: "1px solid #050508",
+                  borderRadius: 4,
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 1px 2px rgba(0,0,0,0.6)",
                 }}
               />
-              {/* Center dot */}
+              {/* Center dot with neon glow */}
               <div
                 style={{
                   position: "absolute",
                   left: "50%",
                   top: "50%",
-                  width: 8,
-                  height: 8,
+                  width: 10,
+                  height: 10,
                   transform: "translate(-50%, -50%)",
-                  background: "#52535E",
+                  background:
+                    "radial-gradient(circle, #c026d3 0%, #7a0c8c 100%)",
                   borderRadius: "50%",
+                  boxShadow: "0 0 6px rgba(192,38,211,0.8)",
                   zIndex: 2,
                 }}
               />
             </div>
-          </div>
 
-          {/* Right: A / B buttons */}
-          <div className="flex items-center justify-center gap-3 relative" style={{ paddingTop: 12 }}>
-            <div className="flex flex-col items-center gap-1">
+            {/* Vertical tag stickers */}
+            <div className="flex flex-col gap-1.5 items-stretch w-full mt-3">
               <div
+                className="font-pixel text-center"
                 style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  background: "radial-gradient(circle at 35% 35%, #C026D3 0%, #7A0C8C 70%, #450552 100%)",
-                  border: "3px solid #2A0030",
-                  boxShadow:
-                    "inset -2px -2px 4px rgba(0,0,0,0.5), 0 3px 0 #2A0030, 0 0 12px rgba(157,0,255,0.4)",
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "var(--font-pixel), monospace",
-                  fontSize: 8,
-                  color: "#3A3B46",
-                  fontWeight: "bold",
-                }}
-              >
-                B
-              </span>
-            </div>
-            <div className="flex flex-col items-center gap-1" style={{ marginTop: -12 }}>
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  background: "radial-gradient(circle at 35% 35%, #39FF14 0%, #1B8C0A 70%, #0A4504 100%)",
-                  border: "3px solid #0A2500",
-                  boxShadow:
-                    "inset -2px -2px 4px rgba(0,0,0,0.5), 0 3px 0 #0A2500, 0 0 12px rgba(57,255,20,0.4)",
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "var(--font-pixel), monospace",
-                  fontSize: 8,
-                  color: "#3A3B46",
-                  fontWeight: "bold",
-                }}
-              >
-                A
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* ─── Start / Select pills ─── */}
-        <div className="flex items-center justify-center gap-4 mt-4">
-          {["SELECT", "START"].map((label) => (
-            <div key={label} className="flex flex-col items-center gap-1">
-              <div
-                style={{
-                  width: 30,
-                  height: 6,
-                  background: "#3A3B46",
-                  borderRadius: 10,
-                  border: "1px solid #0a0a0c",
-                  transform: "rotate(-25deg)",
-                  boxShadow: "inset 0 1px 2px rgba(0,0,0,0.5)",
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "var(--font-pixel), monospace",
                   fontSize: 6,
-                  color: "#3A3B46",
-                  fontWeight: "bold",
                   letterSpacing: 1,
+                  color: "#06b6d4",
+                  background: "rgba(6,182,212,0.08)",
+                  border: "1px solid rgba(6,182,212,0.4)",
+                  padding: "3px 4px",
+                  borderRadius: 2,
                 }}
               >
-                {label}
-              </span>
+                #3 TRENDING
+              </div>
+              <div
+                className="font-pixel text-center"
+                style={{
+                  fontSize: 6,
+                  letterSpacing: 1,
+                  color: "#c084fc",
+                  background: "rgba(192,132,252,0.08)",
+                  border: "1px solid rgba(192,132,252,0.4)",
+                  padding: "3px 4px",
+                  borderRadius: 2,
+                }}
+              >
+                AI · DESIGN
+              </div>
             </div>
-          ))}
+          </div>
+
+          {/* ═══ CENTER: SCREEN ═══ */}
+          <div className="flex-1 min-w-0">
+            {/* Bezel labels (top) */}
+            <div
+              className="flex items-center justify-between mb-1.5 px-1"
+              style={{
+                fontFamily: "var(--font-pixel), monospace",
+                fontSize: 6,
+                color: "#5a5a6a",
+                letterSpacing: 1.2,
+              }}
+            >
+              <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <span
+                  style={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: "50%",
+                    background: "#39FF14",
+                    boxShadow: "0 0 6px #39FF14",
+                  }}
+                />
+                LIVE
+              </span>
+              <span>VIBEX-OS v2.0</span>
+              <span>{"</> RPG"}</span>
+            </div>
+
+            {/* Screen bezel */}
+            <div
+              style={{
+                background: "#000",
+                borderRadius: 8,
+                padding: 4,
+                border: "1px solid #1a1a25",
+                boxShadow:
+                  "inset 0 0 12px rgba(0,0,0,0.9), 0 0 0 2px rgba(157,0,255,0.15), 0 0 24px rgba(157,0,255,0.2)",
+              }}
+            >
+              {/* Actual screen */}
+              <div
+                style={{
+                  position: "relative",
+                  background: "#0a0a14",
+                  border: "1px solid #2a2a35",
+                  borderRadius: 4,
+                  aspectRatio: "16 / 10",
+                  overflow: "hidden",
+                }}
+              >
+                {/* Scanline overlay */}
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    pointerEvents: "none",
+                    background:
+                      "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 3px)",
+                    zIndex: 10,
+                  }}
+                />
+                {/* Vignette */}
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    pointerEvents: "none",
+                    background:
+                      "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%)",
+                    zIndex: 9,
+                  }}
+                />
+                {/* Content slot */}
+                <div
+                  style={{
+                    position: "relative",
+                    zIndex: 5,
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {children}
+                </div>
+              </div>
+            </div>
+
+            {/* Bezel labels (bottom) */}
+            <div
+              className="flex items-center justify-between mt-1.5 px-1"
+              style={{
+                fontFamily: "var(--font-pixel), monospace",
+                fontSize: 6,
+                color: "#5a5a6a",
+                letterSpacing: 1.2,
+              }}
+            >
+              <span>MODE: SHOWCASE</span>
+              <span style={{ color: "#9D00FF" }}>VIBE-X CONSOLE</span>
+              <span>FPS: 60</span>
+            </div>
+          </div>
+
+          {/* ═══ RIGHT GRIP: 3 action buttons ═══ */}
+          <div className="flex flex-col items-stretch justify-center shrink-0 gap-2.5" style={{ width: 86 }}>
+            {[
+              { label: "LIKE", color: "#FF4D8D", glow: "rgba(255,77,141,0.6)" },
+              { label: "OPEN", color: "#06B6D4", glow: "rgba(6,182,212,0.6)" },
+              { label: "INVEST", color: "#FACC15", glow: "rgba(250,204,21,0.6)" },
+            ].map((btn) => (
+              <div
+                key={btn.label}
+                className="flex items-center gap-2"
+                style={{
+                  background: "linear-gradient(180deg, #1a1a25 0%, #0a0a10 100%)",
+                  border: "1px solid #2a2a35",
+                  borderRadius: 6,
+                  padding: "6px 8px",
+                  boxShadow:
+                    "inset 0 1px 0 rgba(255,255,255,0.05), 0 2px 4px rgba(0,0,0,0.5)",
+                }}
+              >
+                <div
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    background: `radial-gradient(circle at 35% 35%, ${btn.color} 0%, ${btn.color}88 60%, ${btn.color}44 100%)`,
+                    boxShadow: `0 0 8px ${btn.glow}, inset -1px -1px 2px rgba(0,0,0,0.5)`,
+                    flexShrink: 0,
+                  }}
+                />
+                <span
+                  className="font-pixel"
+                  style={{
+                    fontSize: 7,
+                    letterSpacing: 1,
+                    color: "#d4d4d8",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {btn.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* ─── Speaker grille (diagonal lines) ─── */}
-        <div
-          className="flex justify-end mt-6"
-          style={{ transform: "rotate(-25deg)" }}
-        >
-          <div className="flex flex-col gap-1">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+        {/* ═══ Bottom info strip — speaker grille + brand ═══ */}
+        <div className="flex items-center justify-between mt-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+          {/* Left: speaker dots */}
+          <div className="flex gap-1">
+            {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
                 style={{
-                  width: 40,
+                  width: 3,
                   height: 3,
-                  background: "#3A3B46",
-                  borderRadius: 2,
-                  boxShadow: "inset 0 1px 1px rgba(0,0,0,0.4)",
+                  borderRadius: "50%",
+                  background: "#2a2a35",
+                  boxShadow: "inset 0 1px 1px rgba(0,0,0,0.6)",
                 }}
               />
             ))}
+          </div>
+
+          {/* Center: brand */}
+          <div
+            className="font-pixel"
+            style={{
+              fontSize: 7,
+              letterSpacing: 3,
+              color: "#9D00FF",
+              textShadow: "0 0 8px rgba(157,0,255,0.5)",
+            }}
+          >
+            ▪ VIBEX CONSOLE ▪
+          </div>
+
+          {/* Right: power indicator */}
+          <div className="flex items-center gap-1.5">
+            <div
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "#FF4500",
+                boxShadow: "0 0 6px #FF4500",
+                animation: "pulse 2s ease-in-out infinite",
+              }}
+            />
+            <span
+              className="font-pixel"
+              style={{ fontSize: 6, color: "#5a5a6a", letterSpacing: 1 }}
+            >
+              PWR
+            </span>
           </div>
         </div>
       </div>

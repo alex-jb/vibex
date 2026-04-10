@@ -102,9 +102,10 @@ export default function LandingPage() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      padding: "10px",
                     }}
                   >
-                    <div style={{ width: "92%", maxWidth: 260 }}>
+                    <div style={{ width: "100%", maxWidth: 340 }}>
                       <ProjectDemoCard project={showcaseProject} />
                     </div>
                   </div>
@@ -120,7 +121,7 @@ export default function LandingPage() {
                       padding: "10px",
                     }}
                   >
-                    <div style={{ width: "92%", maxWidth: 260, height: "92%", maxHeight: 380 }}>
+                    <div style={{ width: "60%", maxWidth: 220, height: "94%", maxHeight: 270 }}>
                       <PetCard project={showcaseProject} />
                     </div>
                   </div>
