@@ -21,6 +21,7 @@ const ChatWidget = dynamic(() => import("@/components/chat-widget").then((m) => 
 const TutorialOverlay = dynamic(() => import("@/components/onboarding/tutorial-overlay").then((m) => ({ default: m.TutorialOverlay })));
 const ServiceWorkerRegister = dynamic(() => import("@/components/sw-register").then((m) => ({ default: m.ServiceWorkerRegister })));
 const NotificationToastProvider = dynamic(() => import("@/components/notification-toast").then((m) => ({ default: m.NotificationToastProvider })));
+const PwaInstallPrompt = dynamic(() => import("@/components/pwa-install-prompt").then((m) => ({ default: m.PwaInstallPrompt })));
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -129,6 +130,7 @@ export default function RootLayout({
               <ChatWidget />
               <TutorialOverlay />
               <NotificationToastProvider />
+              <PwaInstallPrompt />
               <ServiceWorkerRegister />
             </MotionProvider>
           </LangProvider>

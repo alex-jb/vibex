@@ -51,7 +51,7 @@ export function FlipCard({
 
   return (
     <div
-      className={`relative ${className}`}
+      className={`relative group ${className}`}
       style={{
         width,
         height,
@@ -62,7 +62,8 @@ export function FlipCard({
       onMouseLeave={() => setIsPaused(false)}
       onClick={() => setIsFlipped((prev) => !prev)}
       role="button"
-      aria-label="Flip card"
+      aria-label={`Showcase card, currently showing ${isFlipped ? "hero form" : "project form"}. Press Enter or Space to flip.`}
+      aria-pressed={isFlipped}
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -100,6 +101,30 @@ export function FlipCard({
           {back}
         </div>
       </motion.div>
+
+      {/* Flip affordance — visual hint centered inside card bounds, shows on
+          hover/focus. Keyboard users can tab here, see the hint, hit Space.
+          Positioned inside the card so it doesn't clip against the Game Boy
+          screen overflow. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300"
+        style={{
+          bottom: 4,
+          padding: "3px 8px",
+          background: "rgba(0,0,0,0.75)",
+          border: "1px solid rgba(157,0,255,0.6)",
+          fontFamily: "var(--font-pixel), monospace",
+          fontSize: 6,
+          letterSpacing: 1.5,
+          color: "#E9BDFF",
+          textShadow: "0 0 4px rgba(157,0,255,0.6)",
+          whiteSpace: "nowrap",
+          zIndex: 30,
+        }}
+      >
+        ◂ SPACE TO FLIP ▸
+      </div>
     </div>
   );
 }

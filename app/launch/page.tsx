@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Rocket,
   Sparkles,
@@ -67,9 +67,146 @@ export default function LaunchPage() {
   const [scrapeError, setScrapeError] = useState<string | null>(null);
   const [scrapeSuccess, setScrapeSuccess] = useState(false);
 
+  // Autosave / draft restore state
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [draftRestoredToast, setDraftRestoredToast] = useState(false);
+  const hasHydratedRef = useRef(false);
+
   const { t } = useLang();
 
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  /* ─── Autosave: restore draft on mount, save on change ─── */
+  const DRAFT_KEY = "vibex.launchDraft.v1";
+
+  // Hydrate from localStorage once on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) {
+        hasHydratedRef.current = true;
+        return;
+      }
+      const draft = JSON.parse(raw) as {
+        title?: string;
+        tagline?: string;
+        description?: string;
+        category?: string;
+        demoType?: string;
+        demoLink?: string;
+        thumbnailUrl?: string;
+        creatorName?: string;
+        tags?: string;
+      };
+      if (draft.title) setTitle(draft.title);
+      if (draft.tagline) setTagline(draft.tagline);
+      if (draft.description) setDescription(draft.description);
+      if (draft.category) setCategory(draft.category);
+      if (draft.demoType) setDemoType(draft.demoType);
+      if (draft.demoLink) setDemoLink(draft.demoLink);
+      if (draft.thumbnailUrl) setThumbnailUrl(draft.thumbnailUrl);
+      if (draft.creatorName) setCreatorName(draft.creatorName);
+      if (draft.tags) setTags(draft.tags);
+      const hasAnyField =
+        draft.title || draft.tagline || draft.description || draft.category;
+      if (hasAnyField) {
+        setDraftLoaded(true);
+        setDraftRestoredToast(true);
+        setTimeout(() => setDraftRestoredToast(false), 3500);
+      }
+    } catch {
+      // Corrupted draft — ignore and start fresh
+    } finally {
+      hasHydratedRef.current = true;
+    }
+  }, []);
+
+  // Debounced save on any field change
+  useEffect(() => {
+    if (!hasHydratedRef.current) return;
+    if (submitted) return;
+    if (typeof window === "undefined") return;
+
+    const timer = setTimeout(() => {
+      try {
+        localStorage.setItem(
+          DRAFT_KEY,
+          JSON.stringify({
+            title,
+            tagline,
+            description,
+            category,
+            demoType,
+            demoLink,
+            thumbnailUrl,
+            creatorName,
+            tags,
+          }),
+        );
+      } catch {
+        // Storage quota / private mode — swallow silently
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [
+    title,
+    tagline,
+    description,
+    category,
+    demoType,
+    demoLink,
+    thumbnailUrl,
+    creatorName,
+    tags,
+    submitted,
+  ]);
+
+  // Clear draft on successful submit
+  useEffect(() => {
+    if (!submitted) return;
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch {
+      // ignore
+    }
+  }, [submitted]);
+
+  const clearDraft = useCallback(() => {
+    setTitle("");
+    setTagline("");
+    setDescription("");
+    setCategory("");
+    setDemoType("");
+    setDemoLink("");
+    setThumbnailUrl("");
+    setCreatorName("");
+    setTags("");
+    setDraftLoaded(false);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
+  // Completion progress — how many of the 9 fields have content
+  const requiredFields = [
+    title,
+    tagline,
+    description,
+    category,
+    demoType,
+    demoLink,
+    thumbnailUrl,
+    creatorName,
+    tags,
+  ];
+  const filledFieldCount = requiredFields.filter((f) => f.trim().length > 0).length;
+  const completionPct = Math.round((filledFieldCount / requiredFields.length) * 100);
 
   const handleQuickScrape = useCallback(async () => {
     if (scrapeLoading || !quickUrl.trim()) return;
@@ -255,6 +392,138 @@ export default function LaunchPage() {
           {t("launch.description")}
         </p>
       </motion.div>
+
+      {/* Completion progress + draft controls — only visible when form has content */}
+      {filledFieldCount > 0 && !submitted && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mx-auto max-w-3xl mb-6 px-4 py-3"
+          style={{
+            background: "rgba(0,0,0,0.5)",
+            border: "2px solid rgba(157,0,255,0.4)",
+            boxShadow: "3px 3px 0 #000",
+          }}
+        >
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <span
+              className="font-pixel"
+              style={{
+                fontSize: 10,
+                letterSpacing: 1.5,
+                color: "#E9BDFF",
+              }}
+            >
+              ▸ PROGRESS {filledFieldCount}/{requiredFields.length} FIELDS
+            </span>
+            <div className="flex items-center gap-3">
+              <span
+                className="font-pixel"
+                style={{
+                  fontSize: 10,
+                  color:
+                    completionPct >= 100
+                      ? "var(--neon-green)"
+                      : completionPct >= 50
+                      ? "var(--neon-yellow)"
+                      : "#C9B8E8",
+                }}
+              >
+                {completionPct}%
+              </span>
+              {draftLoaded && (
+                <button
+                  type="button"
+                  onClick={clearDraft}
+                  className="font-pixel hover:text-white transition-colors"
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: 1,
+                    color: "#FF4500",
+                    background: "transparent",
+                    border: "1px solid rgba(255,69,0,0.4)",
+                    padding: "4px 8px",
+                    cursor: "pointer",
+                  }}
+                  aria-label="Clear saved draft"
+                >
+                  CLEAR DRAFT
+                </button>
+              )}
+            </div>
+          </div>
+          <div
+            className="h-2"
+            style={{
+              background: "rgba(0,0,0,0.6)",
+              border: "1px solid rgba(157,0,255,0.3)",
+            }}
+          >
+            <motion.div
+              className="h-full"
+              style={{
+                background:
+                  completionPct >= 100
+                    ? "linear-gradient(90deg, var(--neon-green), #22C55E)"
+                    : "linear-gradient(90deg, var(--neon-purple), #C026D3)",
+                boxShadow:
+                  completionPct >= 100
+                    ? "0 0 8px rgba(57,255,20,0.6)"
+                    : "0 0 8px rgba(157,0,255,0.5)",
+              }}
+              initial={{ width: 0 }}
+              animate={{ width: `${completionPct}%` }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            />
+          </div>
+          <span
+            className="font-retro block mt-2"
+            style={{
+              fontSize: 12,
+              color: "#8B7AA0",
+              letterSpacing: 0.3,
+            }}
+          >
+            Draft auto-saves every keystroke. Close the tab and come back anytime.
+          </span>
+        </motion.div>
+      )}
+
+      {/* Draft-restored toast */}
+      <AnimatePresence>
+        {draftRestoredToast && (
+          <motion.div
+            key="draft-toast"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-3"
+            style={{
+              background: "rgba(10,37,21,0.95)",
+              border: "2px solid var(--neon-green)",
+              boxShadow:
+                "4px 4px 0 #000, 0 0 24px rgba(57,255,20,0.4)",
+              backdropFilter: "blur(8px)",
+            }}
+            role="status"
+            aria-live="polite"
+          >
+            <span
+              className="font-pixel"
+              style={{
+                fontSize: 10,
+                letterSpacing: 1.5,
+                color: "var(--neon-green)",
+                textShadow: "0 0 6px rgba(57,255,20,0.6)",
+              }}
+            >
+              ✓ DRAFT RESTORED FROM LAST SESSION
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* URL Quick Start — paste URL, auto-fill form */}
       <motion.div
