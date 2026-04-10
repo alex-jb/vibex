@@ -180,7 +180,7 @@ export function PwaInstallPrompt() {
                     lineHeight: 1.3,
                   }}
                 >
-                  INSTALL VIBEX
+                  LOAD VIBEX ONTO DEVICE
                 </h3>
                 <p
                   id="pwa-install-desc"
@@ -191,7 +191,7 @@ export function PwaInstallPrompt() {
                     lineHeight: 1.4,
                   }}
                 >
-                  Add to your home screen. Launch instantly, no browser chrome.
+                  One tap to launch. No browser. Pure arcade.
                 </p>
               </div>
             </div>

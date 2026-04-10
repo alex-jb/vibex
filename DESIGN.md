@@ -280,6 +280,100 @@ Component: `<MobileBottomNav />`
 
 **Use for:** all app routes on mobile. Complements the desktop navbar.
 
+### 16. Interactive Terminal Demo
+Component: `<InteractiveDemo onIdeaSubmit={setUserIdea} />`
+Lives inside the Game Boy screen on landing. Two modes driven by a
+state machine (`idle` → `typing` → `generating` → `reveal`):
+
+- **AUTO mode** (default): cycles through 5 example prompts. Each cycle
+  is typewriter (55ms/char) → "GENERATING [▓▓▓░░░░░]" (1.4s) → card
+  slides in (0.55s) → hold (3.2s) → fade → next.
+- **USER mode**: click screen → visually-hidden textarea focuses (uses
+  clipPath inset(50%) for iOS compat). User types ≤80 chars, Enter to
+  generate, Escape to reset. Empty submit flashes `⚠ NEED AT LEAST ONE
+  WORD` for 1.6s.
+- **Contextual hints** during reveal: auto mode shows `▸ CLICK TO ENTER
+  YOUR OWN IDEA ◂`, user mode shows `▼ LAUNCH BELOW ▼` pointing at CTA.
+- Deep green-black terminal (`#0a1a0e`), neon green prompt (`#39FF14`),
+  blinking cursor block, pixel font labels at 6-9px (decorative tier).
+- Generated card is a real `ProjectDemoCard` with a minimal mock Project
+  built from the user's input, so visual is consistent with rest of app.
+- Notifies parent via `onIdeaSubmit(idea)` so the LAUNCH button can
+  become context-aware and deep-link to `/launch?seed=<idea>`.
+
+**Use for:** landing page Game Boy showcase ONLY. Do not use the demo
+component anywhere else; it's the star of the show.
+
+### 17. Vibe Mood Tabs
+Seen in: `components/discover/projects-tab.tsx`
+- Primary filter row labeled `▸ PICK A VIBE` above Category pills
+- 7 moods: 🔥 HOT / ✨ LATEST / 💊 DOPAMINE / 🧠 BRAIN HACK / 😵 UNHINGED /
+  ⛏️ GRIND / 📤 SEND THIS
+- HOT sorts by score, LATEST sorts by createdAt, the 5 personality moods
+  derive deterministically from a hash on `project.id` (no schema change)
+- Active state: neon-purple gradient + 3px white border + 0 0 16px glow
+- Inactive state: dark (`rgba(0,0,0,0.5)`) with muted violet border
+- Horizontal scroll on mobile, with `mask-image` linear-gradient fading
+  the edges so users can see the row is truncated
+- `role="tablist"` + `role="tab"` + `aria-selected`, 40px min touch target
+
+**Use for:** /discover primary content filter. Mood replaces traditional
+functional category as the first-layer taxonomy.
+
+### 18. Vibe Template Chips
+Seen in: `app/launch/page.tsx` above URL Quick Start
+- 5 templates: 🎮 GAME IDEA / 🤖 AI TOOL / 🎨 VISUAL TOY / 📊 DASHBOARD /
+  📤 SHARE MEME
+- Only visible when form is empty and unsubmitted (`filledFieldCount === 0`)
+- Click prefills title + 2-3 sentence description scaffolding + category +
+  tags, all in one setState wave (autosave picks it up for free)
+- Grid: 2 col mobile, 3 col tablet, 5 col desktop, 80px min height
+- Dark card with violet border, 22px emoji + 10px pixel label
+- Neon-yellow eyebrow: `START FROM A VIBE`
+
+**Use for:** /launch page onboarding. Replaces the "blank form" problem
+with one-click starting points so users never stare at an empty textarea.
+
+### 19. PWA Install Prompt
+Component: `<PwaInstallPrompt />` (lazy-loaded in `app/layout.tsx`)
+- Listens for `beforeinstallprompt`, defers event, fires 2.5s after 3rd
+  visit (visit count in localStorage)
+- Skips entirely if `display-mode: standalone` (already installed)
+- 7-day cooldown after dismissal (timestamp in localStorage)
+- Listens for `appinstalled` to auto-hide
+- Bottom-right fixed card, purple cartridge style, above mobile bottom nav
+  via `safe-area-inset-bottom + 80px`
+- 36×36 smartphone icon on gradient square, INSTALL (filled) / NOT NOW
+  (outline) buttons
+- Copy: "LOAD VIBEX ONTO DEVICE" + "One tap to launch. No browser. Pure
+  arcade." (product voice, not generic Chrome copy)
+- `role="dialog"` + `aria-labelledby/describedby` + focus-visible ring
+- Spring entrance animation (stiffness 320, damping 26)
+
+**Use for:** layout.tsx only — lazy-loaded, runs once per eligible visitor.
+
+### 20. GBA Handheld Shell
+Component: `<GameBoyFrame cta={<LaunchButton />}>{children}</GameBoyFrame>`
+Upgraded from horizontal DMG to GBA-style layout:
+
+- 4-stop gray gradient shell (`#CDCED8 → #B0B1BB → #8E8F9A → #70717C`)
+  with 3px pixel borders and 4px black offset shadow
+- **L/R shoulder buttons** stick out the top edges — dark gradient
+  rectangles with inset highlights, labeled L and R
+- **D-pad** (left), screen (center), A/B buttons (right) in horizontal row
+- **A/B are on the same baseline now** (no tilt, no marginTop offset)
+- **SELECT/START pills** live directly below the screen, centered —
+  GBA convention, not under the D-pad
+- **LAUNCH CTA** is passed via `cta` prop and renders centered below
+  SELECT/START, PSP HOME button style — the primary action anchor
+- Screen aspect `16 / 10`, 16px scanline overlay, vignette, purple halo
+- Branding: `VIBEX-BOY ADVANCE · TFT LCD · POWER` (updated from DMG era)
+- 4 decorative rivet screws at corners (hidden on <sm)
+- All decorative elements (D-pad, A/B, speaker, branding strips, L/R)
+  marked `aria-hidden="true"`; only children + CTA are accessible
+
+**Use for:** landing page showcase ONLY. Overuse kills the identity.
+
 ---
 
 ## Layout

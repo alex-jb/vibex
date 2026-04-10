@@ -88,6 +88,7 @@ export function InteractiveDemo({ onIdeaSubmit }: InteractiveDemoProps) {
   const [displayText, setDisplayText] = useState("");
   const [revealedTitle, setRevealedTitle] = useState("");
   const [userInput, setUserInput] = useState("");
+  const [validationError, setValidationError] = useState<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const cancelRef = useRef(false);
 
@@ -156,7 +157,14 @@ export function InteractiveDemo({ onIdeaSubmit }: InteractiveDemoProps) {
 
   const handleUserSubmit = useCallback(async () => {
     const trimmed = userInput.trim();
-    if (!trimmed) return;
+    if (!trimmed) {
+      // Empty submit → flash a validation message so the user knows Enter did
+      // something. Auto-clears after 1.6s so the terminal returns to idle.
+      setValidationError("NEED AT LEAST ONE WORD");
+      setTimeout(() => setValidationError(null), 1600);
+      return;
+    }
+    setValidationError(null);
     setPhase("generating");
     onIdeaSubmit?.(trimmed);
     await sleep(1100);
@@ -281,23 +289,27 @@ export function InteractiveDemo({ onIdeaSubmit }: InteractiveDemoProps) {
               </motion.div>
             )}
 
-            {/* Auto-mode click hint (bottom) */}
-            {mode === "auto" && phase === "idle" && (
-              <div
-                className="absolute left-0 right-0 text-center"
+            {/* Validation error (empty submit in user mode) */}
+            {validationError && (
+              <motion.div
+                initial={{ opacity: 0, x: -4 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0 }}
+                className="mt-2"
                 style={{
-                  bottom: 6,
                   fontFamily: "var(--font-pixel), monospace",
-                  fontSize: 6,
-                  letterSpacing: 1.5,
-                  color: "rgba(167,243,208,0.5)",
+                  fontSize: 9,
+                  color: "#FF4500",
+                  letterSpacing: 1,
+                  textShadow: "0 0 6px rgba(255,69,0,0.6)",
                 }}
+                role="alert"
               >
-                ▸ CLICK TO ENTER YOUR OWN IDEA ◂
-              </div>
+                ⚠ {validationError}
+              </motion.div>
             )}
 
-            {/* User-mode escape hint */}
+            {/* User-mode escape hint (only in user mode) */}
             {mode === "user" && (
               <div
                 className="absolute left-0 right-0 text-center"
@@ -331,16 +343,53 @@ export function InteractiveDemo({ onIdeaSubmit }: InteractiveDemoProps) {
             <div style={{ width: "62%", maxWidth: 220, height: "94%", maxHeight: 280 }}>
               <ProjectDemoCard project={mockProject} />
             </div>
+
+            {/* Contextual hints during reveal:
+                - In AUTO mode: invite user to try their own idea
+                - In USER mode: point them at the LAUNCH button below the screen */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.4 }}
+              className="absolute left-0 right-0 text-center"
+              style={{
+                bottom: 2,
+                fontFamily: "var(--font-pixel), monospace",
+                fontSize: 6,
+                letterSpacing: 1.5,
+                color:
+                  mode === "user"
+                    ? "rgba(57,255,20,0.95)"
+                    : "rgba(167,243,208,0.75)",
+                textShadow:
+                  mode === "user"
+                    ? "0 0 6px rgba(57,255,20,0.8)"
+                    : "0 0 4px rgba(157,0,255,0.5)",
+                animation: "pulse 1.4s ease-in-out infinite",
+              }}
+              aria-hidden="true"
+            >
+              {mode === "user"
+                ? "▼ LAUNCH BELOW ▼"
+                : "▸ CLICK TO ENTER YOUR OWN IDEA ◂"}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ═══ HIDDEN INPUT (only in user mode) ═══ */}
+      {/* ═══ HIDDEN INPUT (user mode) ═══
+          Uses the standard visually-hidden pattern instead of
+          opacity-0 + pointer-events-none because iOS Safari won't focus
+          an element with zero pointer events. Still invisible to sighted
+          users and picked up by screen readers. */}
       {mode === "user" && (
         <textarea
           ref={inputRef}
           value={userInput}
-          onChange={(e) => setUserInput(e.target.value.slice(0, 80))}
+          onChange={(e) => {
+            setUserInput(e.target.value.slice(0, 80));
+            if (validationError) setValidationError(null);
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -351,14 +400,21 @@ export function InteractiveDemo({ onIdeaSubmit }: InteractiveDemoProps) {
               resetToAuto();
             }
           }}
-          aria-label="Your idea"
+          aria-label="Your idea — type and press Enter to generate a preview card"
           maxLength={80}
-          className="absolute opacity-0 pointer-events-none"
+          className="absolute"
           style={{
             left: 0,
             top: 0,
-            width: 1,
-            height: 1,
+            width: 2,
+            height: 2,
+            clip: "rect(0 0 0 0)",
+            clipPath: "inset(50%)",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            border: 0,
+            padding: 0,
+            margin: 0,
           }}
         />
       )}

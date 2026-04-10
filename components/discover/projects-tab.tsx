@@ -163,11 +163,22 @@ export function ProjectsTab() {
           </span>
         </div>
         <div
-          role="tablist"
-          aria-label="Filter projects by vibe"
-          className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          className="relative"
+          style={{
+            // Fade edges so users see the tabs are truncated and scrollable.
+            // Pure CSS, no scroll listeners.
+            maskImage:
+              "linear-gradient(90deg, transparent 0, black 16px, black calc(100% - 24px), transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(90deg, transparent 0, black 16px, black calc(100% - 24px), transparent 100%)",
+          }}
         >
+          <div
+            role="tablist"
+            aria-label="Filter projects by vibe"
+            className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide px-1"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
           {MOODS.map((mood) => {
             const active = selectedMood === mood;
             return (
@@ -201,6 +212,7 @@ export function ProjectsTab() {
               </button>
             );
           })}
+          </div>
         </div>
       </motion.div>
 
