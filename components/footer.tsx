@@ -8,8 +8,9 @@ import { useLang } from "@/lib/i18n";
 export function Footer() {
   const { t } = useLang();
   const pathname = usePathname();
-  // Hide footer on the minimal landing page
-  if (pathname === "/") return null;
+  // Hide footer on chrome-less routes (landing + auth flows)
+  const hideChrome = pathname === "/" || pathname === "/login" || pathname === "/register";
+  if (hideChrome) return null;
   return (
     <footer aria-label="Footer navigation" className="relative border-t border-white/[0.04] bg-background" data-slot="footer">
       {/* Top gradient accent line */}

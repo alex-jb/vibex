@@ -14,6 +14,7 @@ import { useLang } from "@/lib/i18n";
 import { ValueHero } from "@/components/home/value-hero";
 import { QuestBoard } from "@/components/home/quest-board";
 import { CtaSection } from "@/components/home/cta-section";
+import { DailyQuestBar } from "@/components/home/daily-quest-bar";
 
 /* ─── skeleton fallback for lazy sections ─── */
 function SectionSkeleton() {
@@ -59,6 +60,9 @@ export default function AppHome() {
       {/* VALUE HERO — 3-second value proposition */}
       <ValueHero />
 
+      {/* DAILY QUEST BAR — retention hook, localStorage, resets at UTC midnight */}
+      <DailyQuestBar />
+
       {/* QUICK ACTIONS BAR */}
       <section className="py-6">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
@@ -95,7 +99,7 @@ export default function AppHome() {
         </div>
       </section>
 
-      {/* SEE HOW IT WORKS — link to landing showcase */}
+      {/* BACK TO SHOWCASE — link to landing Game Boy */}
       <section className="py-8">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center">
           <Link href="/">
@@ -112,7 +116,7 @@ export default function AppHome() {
                 className="font-pixel text-[9px] tracking-widest"
                 style={{ color: "#E9BDFF" }}
               >
-                ▶ SEE HOW IT WORKS — HERO CARD SHOWCASE
+                ◂ BACK TO SHOWCASE — REPLAY THE DEMO
               </span>
             </motion.div>
           </Link>

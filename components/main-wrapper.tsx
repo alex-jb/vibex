@@ -8,15 +8,17 @@ interface MainWrapperProps {
 
 /**
  * Wraps the main content area and conditionally applies the navbar
- * top padding. On the landing page (`/`), the navbar is hidden so we
- * remove the 56px padding to avoid an empty white strip at the top.
+ * top padding. On chrome-less routes (landing + auth flows), the navbar
+ * is hidden so we remove the 56px padding to avoid an empty strip.
  */
+const CHROMELESS_ROUTES = new Set(["/", "/login", "/register"]);
+
 export function MainWrapper({ children }: MainWrapperProps) {
   const pathname = usePathname();
-  const isLanding = pathname === "/";
+  const hideChrome = CHROMELESS_ROUTES.has(pathname);
 
   return (
-    <main className={`flex-1 ${isLanding ? "" : "pt-14"}`}>
+    <main className={`flex-1 ${hideChrome ? "" : "pt-14"}`}>
       {children}
     </main>
   );

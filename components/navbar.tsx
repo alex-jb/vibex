@@ -54,9 +54,10 @@ export function Navbar() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Hide navbar on the minimal landing page (single CTA brand entry point)
+  // Hide navbar on chrome-less routes (landing + auth flows get their own full-bleed canvas)
   // MUST be after all hooks to obey rules of hooks
-  if (pathname === "/") return null;
+  const hideChrome = pathname === "/" || pathname === "/login" || pathname === "/register";
+  if (hideChrome) return null;
 
   const primaryNavItems = user ? fullNavItems : guestNavItems;
   const allNavItems = [...primaryNavItems, ...(user ? dojoNavItems : [])];

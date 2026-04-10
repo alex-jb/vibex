@@ -25,34 +25,70 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
         width: "min(96vw, 960px)",
       }}
     >
-      {/* ─── Main shell — horizontal DMG ─── */}
+      {/* ─── Main shell — horizontal DMG, premium injection-molded finish ─── */}
       <div
         style={{
           position: "relative",
-          background: "linear-gradient(180deg, #B8B9C3 0%, #9FA0AA 50%, #8B8C97 100%)",
-          borderTop: "4px solid #D4D5E0",
-          borderLeft: "4px solid #C8C9D4",
-          borderRight: "4px solid #6E6F7A",
-          borderBottom: "4px solid #52535E",
+          background:
+            "linear-gradient(180deg, #CDCED8 0%, #B0B1BB 35%, #8E8F9A 70%, #70717C 100%)",
+          borderTop: "4px solid #E4E5F0",
+          borderLeft: "4px solid #D0D1DC",
+          borderRight: "4px solid #5E5F6A",
+          borderBottom: "4px solid #42434E",
           borderRadius: "40px 16px 16px 40px",
           padding: "26px 28px",
           boxShadow:
-            "0 20px 60px rgba(0,0,0,0.6), 0 8px 24px rgba(157,0,255,0.15), inset 0 2px 0 rgba(255,255,255,0.3)",
+            "0 24px 72px rgba(0,0,0,0.7), 0 12px 32px rgba(157,0,255,0.2), 0 0 0 1px rgba(0,0,0,0.4), inset 0 3px 0 rgba(255,255,255,0.45), inset 0 -3px 0 rgba(0,0,0,0.25)",
           imageRendering: "pixelated",
         }}
       >
+        {/* Decorative rivet screws at 4 corners */}
+        {[
+          { top: 10, left: 10 },
+          { top: 10, right: 10 },
+          { bottom: 10, left: 10 },
+          { bottom: 10, right: 10 },
+        ].map((pos, i) => (
+          <div
+            key={i}
+            aria-hidden="true"
+            className="pointer-events-none hidden sm:block"
+            style={{
+              position: "absolute",
+              ...pos,
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background:
+                "radial-gradient(circle at 35% 35%, #E8E9F3 0%, #8E8F9A 60%, #42434E 100%)",
+              boxShadow: "inset 0 0 2px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.3)",
+              zIndex: 5,
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "15%",
+                right: "15%",
+                height: 1,
+                background: "rgba(0,0,0,0.5)",
+                transform: "translateY(-0.5px)",
+              }}
+            />
+          </div>
+        ))}
         <div className="grid gap-4 sm:gap-5 grid-cols-2 sm:grid-cols-[auto_1fr_auto] sm:items-stretch">
           {/* ═══ LEFT GRIP: D-pad + Select/Start (col 1 on desktop, row 2 col 1 on mobile) ═══ */}
           <div
-            className="flex flex-row sm:flex-col items-center justify-around sm:justify-between gap-3 sm:gap-0 order-2 sm:order-1"
+            className="flex flex-row sm:flex-col items-center justify-center sm:justify-between gap-4 sm:gap-0 order-2 sm:order-1"
             style={{ paddingTop: 4, paddingBottom: 4 }}
           >
             {/* D-pad */}
             <div
+              className="shrink-0 w-14 h-14 sm:w-[70px] sm:h-[70px]"
               style={{
                 position: "relative",
-                width: 70,
-                height: 70,
               }}
             >
               {/* Horizontal bar */}
@@ -97,8 +133,8 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
               />
             </div>
 
-            {/* Select / Start pills */}
-            <div className="flex flex-row sm:flex-col items-center gap-2 sm:mt-4">
+            {/* Select / Start pills — hidden on mobile to save space */}
+            <div className="hidden sm:flex sm:flex-col items-center gap-2 sm:mt-4">
               {["SELECT", "START"].map((label) => (
                 <div key={label} className="flex flex-col items-center gap-1">
                   <div
@@ -170,12 +206,14 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
             {/* Screen bezel */}
             <div
               style={{
-                background: "#2A2B36",
+                position: "relative",
+                background:
+                  "linear-gradient(180deg, #1F2028 0%, #2A2B36 50%, #1A1B24 100%)",
                 borderRadius: "8px 8px 28px 8px",
                 padding: "16px 20px 22px",
                 boxShadow:
-                  "inset 0 4px 12px rgba(0,0,0,0.8), 0 2px 0 rgba(255,255,255,0.2)",
-                border: "2px solid #1A1B24",
+                  "inset 0 4px 12px rgba(0,0,0,0.85), 0 2px 0 rgba(255,255,255,0.22), 0 0 32px rgba(157,0,255,0.25)",
+                border: "2px solid #0A0B12",
               }}
             >
               {/* Actual screen */}
@@ -275,18 +313,17 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
             </div>
           </div>
 
-          {/* ═══ RIGHT GRIP: A / B buttons + optional CTA (col 3 on desktop, row 2 col 2 on mobile) ═══ */}
+          {/* ═══ RIGHT GRIP: A / B buttons + optional CTA (col 3 on desktop, inline with d-pad on mobile) ═══ */}
           <div
-            className="flex flex-col items-center justify-center gap-4 order-3 sm:col-start-3"
+            className="flex items-center justify-center gap-3 order-3 sm:col-start-3 sm:flex-col sm:gap-4"
             style={{ alignSelf: "center" }}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* B button */}
-              <div className="flex flex-col items-center gap-1" style={{ marginTop: 18 }}>
+              <div className="flex flex-col items-center gap-1 sm:mt-[18px]">
                 <div
+                  className="w-8 h-8 sm:w-11 sm:h-11"
                   style={{
-                    width: 44,
-                    height: 44,
                     borderRadius: "50%",
                     background: "radial-gradient(circle at 35% 35%, #C026D3 0%, #7A0C8C 70%, #450552 100%)",
                     border: "3px solid #2A0030",
@@ -308,9 +345,8 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
               {/* A button */}
               <div className="flex flex-col items-center gap-1">
                 <div
+                  className="w-8 h-8 sm:w-11 sm:h-11"
                   style={{
-                    width: 44,
-                    height: 44,
                     borderRadius: "50%",
                     background: "radial-gradient(circle at 35% 35%, #39FF14 0%, #1B8C0A 70%, #0A4504 100%)",
                     border: "3px solid #0A2500",
@@ -331,8 +367,8 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
               </div>
             </div>
 
-            {/* Optional CTA below A/B buttons */}
-            {cta && <div className="mt-1">{cta}</div>}
+            {/* Optional CTA below A/B buttons (on mobile, shows inline on right side) */}
+            {cta && <div className="sm:mt-1">{cta}</div>}
           </div>
         </div>
       </div>

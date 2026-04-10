@@ -233,3 +233,19 @@
   0%, 100% { opacity: 0.15; }
   50% { opacity: 0.3; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Accessibility — respect prefers-reduced-motion.
+   Strips all CSS animations and transitions for users who opt out.
+   Framer Motion handled separately via MotionConfig in layout.tsx.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

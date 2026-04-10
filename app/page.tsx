@@ -1,13 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Rocket, ArrowRight } from "lucide-react";
 import { projects } from "@/lib/mock-data";
-import { GameBoyFrame } from "@/components/showcase/game-boy-frame";
-import { FlipCard } from "@/components/showcase/flip-card";
-import { ProjectDemoCard } from "@/components/showcase/project-demo-card";
-import { PetCard } from "@/components/showcase/pet-card";
+
+// Lazy-load the showcase — it's heavy (Framer Motion animations, 3 cards, Game Boy
+// SVG) and below the hero text. Splitting it out ~halves the landing initial chunk.
+const GameBoyFrame = dynamic(
+  () => import("@/components/showcase/game-boy-frame").then((m) => ({ default: m.GameBoyFrame })),
+  { ssr: true, loading: () => <div style={{ minHeight: 420 }} /> },
+);
+const FlipCard = dynamic(
+  () => import("@/components/showcase/flip-card").then((m) => ({ default: m.FlipCard })),
+  { ssr: true },
+);
+const ProjectDemoCard = dynamic(
+  () => import("@/components/showcase/project-demo-card").then((m) => ({ default: m.ProjectDemoCard })),
+  { ssr: true },
+);
+const PetCard = dynamic(
+  () => import("@/components/showcase/pet-card").then((m) => ({ default: m.PetCard })),
+  { ssr: true },
+);
 
 const pixelEase = [0.22, 1, 0.36, 1] as const;
 
@@ -20,6 +38,23 @@ const pixelEase = [0.22, 1, 0.36, 1] as const;
 export default function LandingPage() {
   // Pick AgentForge (id "2") — best stats, viral, featured
   const showcaseProject = projects.find((p) => p.id === "2") || projects[0];
+  const router = useRouter();
+
+  // SPACE key launches the app (desktop users can just press space)
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.code === "Space" && e.target === document.body) {
+        e.preventDefault();
+        router.push("/home");
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [router]);
+
+  // Real social proof — derived from mock-data
+  const totalCreators = new Set(projects.map((p) => p.creatorName)).size;
+  const viralThisWeek = projects.filter((p) => p.featured).length;
 
   return (
     <div
@@ -260,24 +295,31 @@ export default function LandingPage() {
           <GameBoyFrame
             cta={
               <Link href="/home">
-                <button
+                <motion.button
                   type="button"
-                  aria-label="Launch VibeX — enter the full app"
-                  className="group flex items-center gap-2 px-5 py-3 font-pixel text-xs tracking-wider transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-500/50"
+                  aria-label="Launch VibeX — enter the full app (or press SPACE)"
+                  className="group flex items-center gap-2 px-6 py-4 font-pixel text-xs tracking-wider transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-500/50"
                   style={{
                     background:
                       "linear-gradient(135deg, var(--neon-purple), #C026D3)",
-                    border: "2px solid #FFF",
-                    boxShadow: "4px 4px 0 #000, 0 0 28px rgba(157,0,255,0.5)",
+                    border: "3px solid #FFF",
                     color: "#FFF",
-                    minHeight: "44px",
+                    minHeight: "52px",
                     cursor: "pointer",
                   }}
+                  animate={{
+                    boxShadow: [
+                      "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
+                      "4px 4px 0 #000, 0 0 40px rgba(157,0,255,0.9)",
+                      "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
+                    ],
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <Rocket className="h-4 w-4" />
+                  <Rocket className="h-5 w-5" />
                   LAUNCH
-                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </motion.button>
               </Link>
             }
           >
@@ -294,7 +336,14 @@ export default function LandingPage() {
                     padding: "10px",
                   }}
                 >
-                  <div style={{ width: "100%", maxWidth: 380 }}>
+                  <div
+                    style={{
+                      width: "62%",
+                      maxWidth: 240,
+                      height: "96%",
+                      maxHeight: 300,
+                    }}
+                  >
                     <ProjectDemoCard project={showcaseProject} />
                   </div>
                 </div>
@@ -312,10 +361,10 @@ export default function LandingPage() {
                 >
                   <div
                     style={{
-                      width: "65%",
+                      width: "62%",
                       maxWidth: 240,
-                      height: "94%",
-                      maxHeight: 290,
+                      height: "96%",
+                      maxHeight: 300,
                     }}
                   >
                     <PetCard project={showcaseProject} />
@@ -326,24 +375,72 @@ export default function LandingPage() {
           </GameBoyFrame>
         </motion.div>
 
-        {/* ─── INSERT COIN HINT ─── */}
+        {/* ─── SOCIAL PROOF + KEYBOARD HINT ─── */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.9 }}
-          className="mt-6 sm:mt-8"
+          className="mt-6 sm:mt-8 flex flex-col items-center gap-3"
         >
+          {/* Social proof bar */}
+          <div
+            className="inline-flex items-center gap-3 px-4 py-2"
+            style={{
+              background: "rgba(0,0,0,0.5)",
+              border: "1px solid rgba(57,255,20,0.3)",
+              boxShadow: "inset 0 0 10px rgba(57,255,20,0.08)",
+            }}
+          >
+            <span
+              aria-hidden="true"
+              className="inline-block"
+              style={{
+                width: 6,
+                height: 6,
+                background: "#39FF14",
+                boxShadow: "0 0 8px #39FF14",
+                animation: "pulse 1.5s ease-in-out infinite",
+              }}
+            />
+            <span
+              className="font-pixel"
+              style={{
+                fontSize: 7,
+                letterSpacing: 1.5,
+                color: "#E8E8EC",
+              }}
+            >
+              <span style={{ color: "var(--neon-green)" }}>{totalCreators.toLocaleString()}</span>{" "}
+              CREATORS SHIPPED
+              {" · "}
+              <span style={{ color: "var(--neon-yellow)" }}>{viralThisWeek}</span>{" "}
+              VIRAL CARDS THIS WEEK
+            </span>
+          </div>
+
+          {/* Keyboard hint */}
           <span
             className="font-pixel text-center block"
             style={{
-              fontSize: 8,
-              letterSpacing: 4,
+              fontSize: 7,
+              letterSpacing: 3,
               color: "rgba(157,0,255,0.7)",
-              textShadow: "0 0 8px rgba(157,0,255,0.4)",
-              animation: "pulse 2s ease-in-out infinite",
+              textShadow: "0 0 6px rgba(157,0,255,0.4)",
             }}
           >
-            ▸ PRESS LAUNCH TO ENTER ◂
+            ▸ PRESS{" "}
+            <kbd
+              className="inline-block px-1.5 py-0.5 mx-0.5"
+              style={{
+                background: "rgba(157,0,255,0.15)",
+                border: "1px solid rgba(157,0,255,0.6)",
+                color: "#E9BDFF",
+                fontSize: 7,
+              }}
+            >
+              SPACE
+            </kbd>{" "}
+            OR CLICK LAUNCH ◂
           </span>
         </motion.div>
       </div>

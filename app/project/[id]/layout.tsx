@@ -17,30 +17,25 @@ export async function generateMetadata({
 
   const title = `${project.title} | VibeX`;
   const description = project.tagline;
+  const url = `https://vibexforge.com/project/${project.id}`;
 
+  // Images are auto-resolved from app/project/[id]/opengraph-image.tsx — don't
+  // pass an explicit `images:` array here or it will override the dynamic one.
   return {
     title,
     description,
+    alternates: { canonical: url },
     openGraph: {
       title,
       description,
-      url: `https://vibexforge.com/project/${project.id}`,
+      url,
       siteName: "VibeX",
       type: "website",
-      images: [
-        {
-          url: project.thumbnail || "/og-default.png",
-          width: 1200,
-          height: 630,
-          alt: project.title,
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [project.thumbnail || "/og-default.png"],
     },
   };
 }

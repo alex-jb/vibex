@@ -8,6 +8,7 @@ import { LangProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/lib/auth";
 import { AnalyticsProvider } from "@/components/analytics-provider";
 import { MainWrapper } from "@/components/main-wrapper";
+import { MotionProvider } from "@/components/motion-provider";
 import "nes.css/css/nes.min.css";
 import "./globals.css";
 import "./retro-game.css";
@@ -118,14 +119,16 @@ export default function RootLayout({
         <AuthProvider>
           <AnalyticsProvider>
           <LangProvider>
-            <div className="scanline-overlay" aria-hidden="true" />
-            <Navbar />
-            <MainWrapper>{children}</MainWrapper>
-            <Footer />
-            <ChatWidget />
-            <TutorialOverlay />
-            <NotificationToastProvider />
-            <ServiceWorkerRegister />
+            <MotionProvider>
+              <div className="scanline-overlay" aria-hidden="true" />
+              <Navbar />
+              <MainWrapper>{children}</MainWrapper>
+              <Footer />
+              <ChatWidget />
+              <TutorialOverlay />
+              <NotificationToastProvider />
+              <ServiceWorkerRegister />
+            </MotionProvider>
           </LangProvider>
           </AnalyticsProvider>
         </AuthProvider>
