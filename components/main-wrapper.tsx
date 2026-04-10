@@ -17,8 +17,14 @@ export function MainWrapper({ children }: MainWrapperProps) {
   const pathname = usePathname();
   const hideChrome = CHROMELESS_ROUTES.has(pathname);
 
+  // Reserve space for:
+  //   - 56px navbar top on non-chromeless routes
+  //   - 64px mobile bottom nav on non-chromeless routes (md+ = 0)
+  //   - safe-area-inset-bottom handled inside MobileBottomNav itself
   return (
-    <main className={`flex-1 ${hideChrome ? "" : "pt-14"}`}>
+    <main
+      className={`flex-1 ${hideChrome ? "" : "pt-14 pb-16 md:pb-0"}`}
+    >
       {children}
     </main>
   );

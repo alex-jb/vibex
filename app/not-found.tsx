@@ -1,71 +1,278 @@
 "use client";
 
 import Link from "next/link";
-import { useLang } from "@/lib/i18n";
+import { motion } from "framer-motion";
+import { Home, Compass } from "lucide-react";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   404 — GAME OVER screen.
+   Uses the same 16-bit arcade language as the landing: Press Start 2P,
+   pixel chromatic shadows, neon palette, corner brackets, scanlines.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const pixelEase = [0.22, 1, 0.36, 1] as const;
 
 export default function NotFound() {
-  const { t } = useLang();
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center relative overflow-hidden">
+    <div
+      className="relative min-h-screen overflow-hidden flex items-center justify-center px-4"
+      style={{ background: "var(--bg-deep)" }}
+    >
       {/* Scanline overlay */}
       <div
-        className="pointer-events-none fixed inset-0 z-50"
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-30"
         style={{
-          background:
-            "repeating-linear-gradient(0deg, rgba(0,255,0,0.03) 0px, rgba(0,255,0,0.03) 1px, transparent 1px, transparent 3px)",
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(157,0,255,0.06) 2px, rgba(157,0,255,0.06) 3px)",
         }}
       />
 
-      <div className="rpgui-container framed" style={{ maxWidth: 540, width: "90%" }}>
-        {/* Terminal header */}
-        <div className="flex items-center gap-2 mb-4 pb-2 border-b border-green-900">
-          <span className="inline-block w-3 h-3 rounded-full bg-red-500" />
-          <span className="inline-block w-3 h-3 rounded-full bg-yellow-500" />
-          <span className="inline-block w-3 h-3 rounded-full bg-green-500" />
-          <span className="ml-2 text-green-400 font-mono text-sm tracking-widest">
-            VIBEX://ERROR 404
-          </span>
-        </div>
+      {/* Pixel grid texture */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(157,0,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(157,0,255,0.4) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+          maskImage:
+            "radial-gradient(ellipse at center, black 30%, transparent 80%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse at center, black 30%, transparent 80%)",
+        }}
+      />
 
-        {/* Glitch title */}
-        <h1
-          className="text-4xl md:text-5xl font-bold text-center mb-6 tracking-wider"
+      {/* Background glow orbs */}
+      <div className="pointer-events-none absolute top-1/4 left-1/4 h-[400px] w-[400px] rounded-full bg-red-600/15 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-1/4 right-1/4 h-[300px] w-[300px] rounded-full bg-violet-600/12 blur-[100px]" />
+
+      {/* Viewport corner brackets */}
+      {(["tl", "tr", "bl", "br"] as const).map((pos) => {
+        const isTop = pos.startsWith("t");
+        const isLeft = pos.endsWith("l");
+        return (
+          <div
+            key={pos}
+            aria-hidden="true"
+            className="pointer-events-none absolute hidden sm:block"
+            style={{
+              [isTop ? "top" : "bottom"]: 16,
+              [isLeft ? "left" : "right"]: 16,
+              width: 28,
+              height: 28,
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                [isTop ? "top" : "bottom"]: 0,
+                [isLeft ? "left" : "right"]: 0,
+                width: 28,
+                height: 3,
+                background: "#FF004D",
+                boxShadow: "0 0 8px rgba(255,0,77,0.6)",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                [isTop ? "top" : "bottom"]: 0,
+                [isLeft ? "left" : "right"]: 0,
+                width: 3,
+                height: 28,
+                background: "#FF004D",
+                boxShadow: "0 0 8px rgba(255,0,77,0.6)",
+              }}
+            />
+          </div>
+        );
+      })}
+
+      {/* Main content */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: pixelEase }}
+        className="relative z-10 max-w-2xl w-full text-center"
+      >
+        {/* Error code eyebrow */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="inline-flex items-center gap-2 mb-6 px-3 py-1.5"
           style={{
-            fontFamily: "Press Start 2P, monospace",
-            color: "#ff004d",
-            textShadow: "2px 2px #00e436, -2px -2px #29adff",
-            animation: "pulse 2s infinite",
+            border: "2px solid #FF004D",
+            background: "rgba(255,0,77,0.08)",
+            boxShadow: "3px 3px 0 #000, 0 0 16px rgba(255,0,77,0.25)",
           }}
         >
-          PAGE NOT FOUND
-        </h1>
+          <span
+            className="inline-block"
+            style={{
+              width: 6,
+              height: 6,
+              background: "#FF004D",
+              boxShadow: "0 0 6px #FF004D",
+              animation: "pulse 1.5s ease-in-out infinite",
+            }}
+          />
+          <span
+            className="font-pixel"
+            style={{
+              fontSize: 8,
+              letterSpacing: 3,
+              color: "#FFB3C5",
+            }}
+          >
+            VIBEX://ERROR_404
+          </span>
+        </motion.div>
 
-        {/* Pixel sad face */}
-        <pre className="text-green-400 text-center text-xs leading-tight mb-6 font-mono">
-{`    ████████
-  ██        ██
-██  ██  ██    ██
-██            ██
-██    ████    ██
-██  ██    ██  ██
-  ██        ██
-    ████████`}
-        </pre>
+        {/* GAME OVER title */}
+        <motion.h1
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: pixelEase }}
+          className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4"
+          style={{
+            fontFamily: "var(--font-pixel), monospace",
+            color: "#FFF",
+            lineHeight: 1.2,
+            textShadow:
+              "3px 3px 0 #FF004D, -2px -2px 0 rgba(6,182,212,0.5), 0 0 36px rgba(255,0,77,0.35)",
+          }}
+        >
+          GAME OVER
+        </motion.h1>
 
-        <p className="text-green-300 font-mono text-center mb-6 text-sm">
-          &gt; {t("notFound.message")}
-        </p>
+        {/* 404 big number */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mb-6"
+          style={{
+            fontFamily: "var(--font-pixel), monospace",
+            fontSize: "min(20vw, 140px)",
+            lineHeight: 1,
+            color: "#FF004D",
+            textShadow:
+              "4px 4px 0 #000, 0 0 40px rgba(255,0,77,0.6), 0 0 80px rgba(255,0,77,0.3)",
+            letterSpacing: -4,
+          }}
+        >
+          404
+        </motion.div>
 
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        {/* Terminal subtitle */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="inline-flex items-center gap-2 px-4 py-2.5 mb-8"
+          style={{
+            background: "rgba(0,0,0,0.5)",
+            border: "1px solid rgba(255,0,77,0.3)",
+            boxShadow: "inset 0 0 12px rgba(255,0,77,0.1)",
+          }}
+        >
+          <span
+            className="font-pixel"
+            style={{
+              fontSize: 9,
+              color: "var(--neon-green)",
+              textShadow: "0 0 6px rgba(57,255,20,0.6)",
+            }}
+          >
+            {">"}
+          </span>
+          <span
+            className="font-retro text-sm sm:text-base"
+            style={{ color: "#E8E8EC", letterSpacing: 0.5 }}
+          >
+            this_level_does_not_exist{" "}
+            <span style={{ color: "#FF004D" }}>×</span>
+          </span>
+          <span
+            aria-hidden="true"
+            className="inline-block"
+            style={{
+              width: 8,
+              height: 14,
+              background: "var(--neon-green)",
+              marginLeft: 2,
+              animation: "pulse 1s steps(2) infinite",
+            }}
+          />
+        </motion.div>
+
+        {/* Action buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="flex flex-col sm:flex-row gap-3 justify-center"
+        >
           <Link href="/">
-            <button className="nes-btn is-primary w-full">{t("notFound.home")}</button>
+            <button
+              type="button"
+              className="group flex items-center justify-center gap-2 px-5 py-3 font-pixel text-xs tracking-wider transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-500/50 w-full sm:w-auto"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--neon-purple), #C026D3)",
+                border: "2px solid #FFF",
+                boxShadow: "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
+                color: "#FFF",
+                minHeight: "48px",
+                cursor: "pointer",
+              }}
+            >
+              <Home className="h-4 w-4" />
+              BACK TO SHOWCASE
+            </button>
           </Link>
-          <Link href="/discover">
-            <button className="nes-btn w-full">{t("notFound.explore")}</button>
+          <Link href="/home">
+            <button
+              type="button"
+              className="group flex items-center justify-center gap-2 px-5 py-3 font-pixel text-xs tracking-wider transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-500/50 w-full sm:w-auto"
+              style={{
+                background: "rgba(0,0,0,0.6)",
+                border: "2px solid var(--neon-green)",
+                boxShadow: "4px 4px 0 #000, 0 0 20px rgba(57,255,20,0.4)",
+                color: "var(--neon-green)",
+                minHeight: "48px",
+                cursor: "pointer",
+              }}
+            >
+              <Compass className="h-4 w-4" />
+              ENTER THE APP
+            </button>
           </Link>
-        </div>
-      </div>
+        </motion.div>
+
+        {/* Insert coin hint */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.9 }}
+          className="mt-10"
+        >
+          <span
+            className="font-pixel"
+            style={{
+              fontSize: 8,
+              letterSpacing: 4,
+              color: "rgba(157,0,255,0.6)",
+              textShadow: "0 0 8px rgba(157,0,255,0.4)",
+              animation: "pulse 2s ease-in-out infinite",
+            }}
+          >
+            ▸ INSERT COIN TO CONTINUE ◂
+          </span>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

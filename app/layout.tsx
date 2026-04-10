@@ -9,6 +9,7 @@ import { AuthProvider } from "@/lib/auth";
 import { AnalyticsProvider } from "@/components/analytics-provider";
 import { MainWrapper } from "@/components/main-wrapper";
 import { MotionProvider } from "@/components/motion-provider";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import "nes.css/css/nes.min.css";
 import "./globals.css";
 import "./retro-game.css";
@@ -124,6 +125,7 @@ export default function RootLayout({
               <Navbar />
               <MainWrapper>{children}</MainWrapper>
               <Footer />
+              <MobileBottomNav />
               <ChatWidget />
               <TutorialOverlay />
               <NotificationToastProvider />
