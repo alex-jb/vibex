@@ -7,7 +7,7 @@ import { projects } from "@/lib/mock-data";
 import { GameBoyFrame } from "@/components/showcase/game-boy-frame";
 import { FlipCard } from "@/components/showcase/flip-card";
 import { ProjectDemoCard } from "@/components/showcase/project-demo-card";
-import { HeroCard } from "@/components/rpg/hero-card";
+import { PetCard } from "@/components/showcase/pet-card";
 
 const pixelEase = [0.22, 1, 0.36, 1] as const;
 
@@ -117,10 +117,11 @@ export default function LandingPage() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      padding: "10px",
                     }}
                   >
-                    <div style={{ width: "92%", maxWidth: 260 }}>
-                      <HeroCard project={showcaseProject} />
+                    <div style={{ width: "92%", maxWidth: 260, height: "92%", maxHeight: 380 }}>
+                      <PetCard project={showcaseProject} />
                     </div>
                   </div>
                 }
