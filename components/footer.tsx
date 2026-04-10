@@ -2,10 +2,14 @@
 
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLang } from "@/lib/i18n";
 
 export function Footer() {
   const { t } = useLang();
+  const pathname = usePathname();
+  // Hide footer on the minimal landing page
+  if (pathname === "/") return null;
   return (
     <footer aria-label="Footer navigation" className="relative border-t border-white/[0.04] bg-background" data-slot="footer">
       {/* Top gradient accent line */}

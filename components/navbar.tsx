@@ -42,6 +42,10 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const { t, lang } = useLang();
   const { user } = useAuth();
+
+  // Hide navbar on the minimal landing page (single CTA brand entry point)
+  if (pathname === "/") return null;
+
   const primaryNavItems = user ? fullNavItems : guestNavItems;
   const allNavItems = [...primaryNavItems, ...(user ? dojoNavItems : [])];
   const isCJK = lang === "zh";

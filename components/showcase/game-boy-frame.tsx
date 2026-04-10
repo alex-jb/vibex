@@ -39,11 +39,11 @@ export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
           imageRendering: "pixelated",
         }}
       >
-        <div className="flex items-center gap-5">
-          {/* ═══ LEFT GRIP: D-pad + Select/Start ═══ */}
+        <div className="grid gap-4 sm:gap-5 grid-cols-2 sm:grid-cols-[auto_1fr_auto] sm:items-stretch">
+          {/* ═══ LEFT GRIP: D-pad + Select/Start (col 1 on desktop, row 2 col 1 on mobile) ═══ */}
           <div
-            className="flex flex-col items-center justify-between shrink-0"
-            style={{ paddingTop: 4, paddingBottom: 4, alignSelf: "stretch" }}
+            className="flex flex-row sm:flex-col items-center justify-around sm:justify-between gap-3 sm:gap-0 order-2 sm:order-1"
+            style={{ paddingTop: 4, paddingBottom: 4 }}
           >
             {/* D-pad */}
             <div
@@ -96,7 +96,7 @@ export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
             </div>
 
             {/* Select / Start pills */}
-            <div className="flex flex-col items-center gap-2 mt-4">
+            <div className="flex flex-row sm:flex-col items-center gap-2 sm:mt-4">
               {["SELECT", "START"].map((label) => (
                 <div key={label} className="flex flex-col items-center gap-1">
                   <div
@@ -126,8 +126,8 @@ export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
             </div>
           </div>
 
-          {/* ═══ CENTER: SCREEN ═══ */}
-          <div className="flex-1 min-w-0">
+          {/* ═══ CENTER: SCREEN — full width on mobile, middle col on desktop ═══ */}
+          <div className="col-span-2 sm:col-span-1 sm:col-start-2 order-1 sm:order-2 min-w-0">
             {/* Top branding strip */}
             <div
               className="flex items-center justify-between mb-3"
@@ -273,8 +273,8 @@ export function GameBoyFrame({ children, label }: GameBoyFrameProps) {
             </div>
           </div>
 
-          {/* ═══ RIGHT GRIP: A / B buttons ═══ */}
-          <div className="flex items-center justify-center shrink-0 gap-3" style={{ alignSelf: "center" }}>
+          {/* ═══ RIGHT GRIP: A / B buttons (col 3 on desktop, row 2 col 2 on mobile) ═══ */}
+          <div className="flex items-center justify-center gap-3 order-3 sm:col-start-3" style={{ alignSelf: "center" }}>
             {/* B button */}
             <div className="flex flex-col items-center gap-1" style={{ marginTop: 18 }}>
               <div
