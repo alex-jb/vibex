@@ -79,10 +79,28 @@ export default function LaunchPage() {
   /* ─── Autosave: restore draft on mount, save on change ─── */
   const DRAFT_KEY = "vibex.launchDraft.v1";
 
-  // Hydrate from localStorage once on mount
+  // Hydrate from localStorage + URL seed param once on mount.
+  // URL seed takes precedence over draft when both are present, because
+  // it means the user just came from landing with a fresh idea.
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
+      // Priority 1 — URL seed param (from landing InteractiveDemo)
+      const params = new URLSearchParams(window.location.search);
+      const seed = params.get("seed");
+      if (seed && seed.trim()) {
+        const seedTrimmed = seed.trim().slice(0, 200);
+        // Use the seed as both a title (truncated) and description starter
+        setTitle(seedTrimmed.slice(0, 60));
+        setDescription(seedTrimmed);
+        // Tell the user we filled the form from their landing idea
+        setDraftRestoredToast(true);
+        setTimeout(() => setDraftRestoredToast(false), 3500);
+        hasHydratedRef.current = true;
+        return;
+      }
+
+      // Priority 2 — localStorage draft
       const raw = localStorage.getItem(DRAFT_KEY);
       if (!raw) {
         hasHydratedRef.current = true;

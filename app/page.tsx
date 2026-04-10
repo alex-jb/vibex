@@ -1,29 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { Rocket, ArrowRight } from "lucide-react";
+import { Rocket, ArrowRight, Sparkles } from "lucide-react";
 import { projects } from "@/lib/mock-data";
 
-// Lazy-load the showcase — it's heavy (Framer Motion animations, 3 cards, Game Boy
-// SVG) and below the hero text. Splitting it out ~halves the landing initial chunk.
+// Lazy-load the showcase — it's heavy (Framer Motion animations, demo state
+// machine, Game Boy SVG) and below the hero text. Splitting it out ~halves
+// the landing initial chunk.
 const GameBoyFrame = dynamic(
   () => import("@/components/showcase/game-boy-frame").then((m) => ({ default: m.GameBoyFrame })),
   { ssr: true, loading: () => <div style={{ minHeight: 420 }} /> },
 );
-const FlipCard = dynamic(
-  () => import("@/components/showcase/flip-card").then((m) => ({ default: m.FlipCard })),
-  { ssr: true },
-);
-const ProjectDemoCard = dynamic(
-  () => import("@/components/showcase/project-demo-card").then((m) => ({ default: m.ProjectDemoCard })),
-  { ssr: true },
-);
-const PetCard = dynamic(
-  () => import("@/components/showcase/pet-card").then((m) => ({ default: m.PetCard })),
+const InteractiveDemo = dynamic(
+  () => import("@/components/showcase/interactive-demo").then((m) => ({ default: m.InteractiveDemo })),
   { ssr: true },
 );
 
@@ -36,9 +29,11 @@ const pixelEase = [0.22, 1, 0.36, 1] as const;
    ═══════════════════════════════════════════════════════════════════════════ */
 
 export default function LandingPage() {
-  // Pick AgentForge (id "2") — best stats, viral, featured
-  const showcaseProject = projects.find((p) => p.id === "2") || projects[0];
   const router = useRouter();
+
+  // User's idea from InteractiveDemo (empty = auto-demo, non-empty = user typed)
+  // Makes the LAUNCH button context-aware and lets the demo deep-link to /launch.
+  const [userIdea, setUserIdea] = useState<string>("");
 
   // SPACE key launches the app (desktop users can just press space)
   useEffect(() => {
@@ -298,84 +293,57 @@ export default function LandingPage() {
         >
           <GameBoyFrame
             cta={
-              <Link href="/home">
+              <Link
+                href={
+                  userIdea
+                    ? `/launch?seed=${encodeURIComponent(userIdea)}`
+                    : "/home"
+                }
+              >
                 <motion.button
                   type="button"
-                  aria-label="Launch VibeX — enter the full app (or press SPACE)"
+                  aria-label={
+                    userIdea
+                      ? `Launch with your idea: ${userIdea}`
+                      : "Launch VibeX — enter the full app (or press SPACE)"
+                  }
                   className="group flex items-center gap-2 px-6 py-4 font-pixel text-xs tracking-wider transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-500/50"
                   style={{
-                    background:
-                      "linear-gradient(135deg, var(--neon-purple), #C026D3)",
+                    background: userIdea
+                      ? "linear-gradient(135deg, var(--neon-green), #22C55E)"
+                      : "linear-gradient(135deg, var(--neon-purple), #C026D3)",
                     border: "3px solid #FFF",
-                    color: "#FFF",
+                    color: userIdea ? "#0A2500" : "#FFF",
                     minHeight: "52px",
                     cursor: "pointer",
                   }}
                   animate={{
-                    boxShadow: [
-                      "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
-                      "4px 4px 0 #000, 0 0 40px rgba(157,0,255,0.9)",
-                      "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
-                    ],
+                    boxShadow: userIdea
+                      ? [
+                          "4px 4px 0 #000, 0 0 20px rgba(57,255,20,0.6)",
+                          "4px 4px 0 #000, 0 0 40px rgba(57,255,20,1)",
+                          "4px 4px 0 #000, 0 0 20px rgba(57,255,20,0.6)",
+                        ]
+                      : [
+                          "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
+                          "4px 4px 0 #000, 0 0 40px rgba(157,0,255,0.9)",
+                          "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
+                        ],
                   }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    duration: userIdea ? 1.2 : 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                 >
-                  <Rocket className="h-5 w-5" />
-                  LAUNCH
+                  {userIdea ? <Sparkles className="h-5 w-5" /> : <Rocket className="h-5 w-5" />}
+                  {userIdea ? "LAUNCH WITH THIS" : "LAUNCH"}
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </Link>
             }
           >
-            <FlipCard
-              autoFlipInterval={4000}
-              front={
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "10px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "62%",
-                      maxWidth: 240,
-                      height: "96%",
-                      maxHeight: 300,
-                    }}
-                  >
-                    <ProjectDemoCard project={showcaseProject} />
-                  </div>
-                </div>
-              }
-              back={
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "10px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "62%",
-                      maxWidth: 240,
-                      height: "96%",
-                      maxHeight: 300,
-                    }}
-                  >
-                    <PetCard project={showcaseProject} />
-                  </div>
-                </div>
-              }
-            />
+            <InteractiveDemo onIdeaSubmit={setUserIdea} />
           </GameBoyFrame>
         </motion.div>
 
