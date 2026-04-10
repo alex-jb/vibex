@@ -62,7 +62,7 @@ export function MobileBottomNav() {
               href={href}
               aria-label={label}
               aria-current={isActive ? "page" : undefined}
-              className="relative flex flex-col items-center justify-center gap-1 py-2.5 transition-colors"
+              className="relative flex flex-col items-center justify-center gap-1 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-violet-500/60"
               style={{
                 minHeight: 56,
               }}
@@ -118,9 +118,10 @@ export function MobileBottomNav() {
               )}
 
               <span
+                aria-hidden="true"
                 className="font-pixel"
                 style={{
-                  fontSize: 6,
+                  fontSize: 8,
                   letterSpacing: 1,
                   color: isActive ? "#E9BDFF" : "#6B5A80",
                   textShadow: isActive

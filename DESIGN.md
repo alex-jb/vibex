@@ -75,10 +75,11 @@ Wisdom: #FACC15   Agility: #06B6D4      Stability: #6366f1
 ### Pixel Font Sizes
 | Size | Usage |
 |------|-------|
-| 20–24px | Page titles |
-| 14–16px | Section headings |
-| 10–12px | Card names, button text |
-| 8–10px | Badges, small labels |
+| 20–32px | Page titles, hero headlines |
+| 14–16px | Section headings, modal titles |
+| 10–12px | Card names, button text, stat labels |
+| 8–9px | Eyebrow tags, terminal prompts (decorative, short) |
+| 6–7px | Corner brackets, viewport decorations, chrome labels (decorative only) |
 
 ### Retro Font Sizes
 | Size | Usage |
@@ -87,8 +88,18 @@ Wisdom: #FACC15   Agility: #06B6D4      Stability: #6366f1
 | 14px | Stats, info labels |
 | 12px | Secondary text |
 
-### Rule
-**Minimum readable size: 10px pixel font, 12px retro font.** Never go below.
+### Rules
+**Readability floor**: any text the user must **read to act** (quest labels,
+button copy, form inputs, empty state messages, error copy) is **minimum 10px
+pixel / 12px retro**.
+
+**Decorative exception**: cosmetic chrome text (eyebrow tags, terminal prompts
+like `VIBEX://AUTH_V1`, viewport corner labels, card rarity stamps) may use
+**6-9px pixel** when repeated throughout the layout as arcade atmosphere. These
+are NOT required for task completion and must have `aria-hidden="true"` on the
+wrapper when the same information exists elsewhere.
+
+**Hard floor**: never below 6px pixel. Never below 12px retro.
 
 ---
 
@@ -144,7 +155,130 @@ Uses border-image PNGs. Heavy visual weight.
 <button class="nes-btn is-warning">Yellow</button>
 <button class="nes-btn is-error">Red</button>
 ```
-Font: Press Start 2P, 10–14px, uppercase. **Always use for action buttons.**
+Font: Press Start 2P, 10–14px, uppercase. **Use for secondary/tertiary actions**
+inside dialog bodies, tables, and settings. Hero CTAs use Pixel Chromatic Buttons
+(§6) instead — they have stronger identity for conversion-critical surfaces.
+
+### 6. Pixel Chromatic Button (hero CTA)
+```jsx
+<button
+  style={{
+    background: "linear-gradient(135deg, var(--neon-purple), #C026D3)",
+    border: "3px solid #FFF",
+    boxShadow: "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
+    color: "#FFF",
+    minHeight: 48,
+    fontSize: 12,
+    letterSpacing: 2,
+  }}
+/>
+```
+Variants by accent: `neon-purple` (primary/launch), `neon-green` (confirm/retry),
+`neon-orange` (destructive), `amber-gold` (rewarded action, demo mode).
+Always pairs: 3px white border + 4px black offset shadow + neon glow.
+Animated glow via Framer Motion `animate.boxShadow` for top CTAs.
+
+**Use for:** landing LAUNCH, /login sign-in, /register create-account, 404 actions,
+error boundary retry, reward claim, hero upgrade.
+
+### 7. Retro Input (form field)
+```jsx
+<input
+  style={{
+    background: "rgba(0,0,0,0.6)",
+    border: "2px solid rgba(157,0,255,0.4)",
+    boxShadow: "inset 0 2px 4px rgba(0,0,0,0.6)",
+    color: "#E8E8EC",
+    fontSize: 15,
+    minHeight: 44,
+    paddingLeft: 40, // room for leading icon
+  }}
+/>
+```
+Use with a neon-tinted leading icon absolutely positioned at `left: 12px`.
+Focus ring: `focus:ring-2 focus:ring-violet-500/50`.
+Color the border/icon per form context: purple for login, green for register.
+
+**Use for:** auth forms, /launch submission, comment composer, settings inputs.
+
+### 8. Retro Loader
+Component: `<RetroLoader label="LOADING" fullScreen />`
+- 8-dot pixel spinner rotating with staggered 0.12s delays
+- Blinking label below in `var(--neon-green)`
+- Scanline bg overlay when `fullScreen`
+
+**Use for:** every `loading.tsx` route fallback, Suspense boundaries on heavy
+sections, inline buttons during async ops (`fullScreen={false}`).
+
+### 9. Retro Game Boy Frame (showcase)
+Component: `<GameBoyFrame cta={<LaunchButton />}>{children}</GameBoyFrame>`
+- 4-stop gray gradient shell with 3px pixel borders and 4px black offset shadow
+- Horizontal DMG layout: D-pad (left), screen (center), A/B (right)
+- Mobile: 2-col grid (screen row 1, controls row 2)
+- Decorative parts (D-pad, A/B, branding strips, speaker grille) are
+  `aria-hidden="true"`; only children + CTA are accessible
+- `cta` slot below A/B buttons
+
+**Use for:** landing showcase ONLY. Don't use Game Boy anywhere else — it's the
+hero anchor, overexposure kills the identity.
+
+### 10. Flip Card
+Component: `<FlipCard front={...} back={...} autoFlipInterval={4000} />`
+- 3D CSS transform with `preserve-3d` + `backface-visibility: hidden`
+- Auto-flips every 4s, pauses on hover, click/Enter/Space to flip manually
+- Both faces must be the **same dimensions** or card jitters
+
+**Use for:** hero card showcase (project stats front / pet card back).
+
+### 11. Holographic Project Card (front face)
+Component: `<ProjectDemoCard project={...} />`
+- Gold `#FFD700` 3px border + double pinstripe frame
+- Animated holographic foil sweep (linear-gradient, mix-blend-mode: screen)
+- SVG sun-ray burst behind sprite, 5 pulsing sparkles
+- Top strip: `★ CATEGORY ★` + FEATURED crown
+- Pixel scoreboard stats (4 col) with gold dividers
+- Footer: `◆ BY CREATOR ◆` gold engraving
+
+**Use for:** the "after VibeX" side of the hero showcase. Premium collectible feel.
+
+### 12. Tribal Totem Pet Card (back face)
+Component: `<PetCard project={...} />`
+- Class-based palette (Architect=blue dragon, Artisan=orange fox, etc.)
+- Tribal SVG patterns (zigzags + triangles) on 4 edges
+- Creature silhouette with sun-ray halo, floating emoji
+- Parchment scroll title, HP/MP/EXP stat bars
+
+**Use for:** the "pet form" side of the hero showcase. Pokemon x Monster Hunter energy.
+
+### 13. Retro Error Panel
+Seen in: `app/error.tsx`, `app/not-found.tsx`
+- Hazard-stripe top banner (`repeating-linear-gradient` orange/red)
+- Flicker glow animation, stronger scanlines
+- Terminal error message in monospace with `>` prompt
+- 3-button grid: retry (green) / home (purple) / report (orange)
+
+**Use for:** global error boundary, 404, crash screens, unreachable states.
+**Do NOT use for:** form validation errors (use inline red alert box instead).
+
+### 14. Daily Quest Bar
+Component: `<DailyQuestBar />`
+- 3 quests in a row, localStorage UTC-midnight reset
+- First-visit welcome state (dashed green border + WELCOME ADVENTURER)
+- Progress bar per quest, claim triggers `+XP` gold drop animation
+- Compact: purple outer border + corner bracket feel
+
+**Use for:** `/home` retention hook, below QuickActions.
+
+### 15. Mobile Bottom Tab Bar
+Component: `<MobileBottomNav />`
+- Fixed to viewport bottom on <md screens only
+- 5 items max (Material Design cap): HOME / DISCOVER / LAUNCH / FEED / PROFILE
+- LAUNCH is visually lifted (gradient + 3px white border + raised 10px)
+- Active state: top 3px neon bar + filled icon + pixel dot
+- `safe-area-inset-bottom` for notched devices
+- Hidden on chromeless routes (`/`, `/login`, `/register`)
+
+**Use for:** all app routes on mobile. Complements the desktop navbar.
 
 ---
 

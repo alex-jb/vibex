@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Mail, Lock, ArrowLeft, Loader2, Gamepad2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Lock, ArrowLeft, Loader2, Gamepad2, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
@@ -26,6 +26,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,8 +42,17 @@ export default function LoginPage() {
       trackEvent("login_failed", { method: "email", error: result.error });
     } else {
       trackEvent("login_completed", { method: "email" });
-      router.push("/home");
+      // Show "WELCOME BACK" flash before redirecting — feels intentional,
+      // not a silent page swap. 900ms total feels generous but not sluggish.
+      setSuccess(true);
+      setTimeout(() => router.push("/home"), 900);
     }
+  };
+
+  const handleDemo = () => {
+    signInDemo();
+    setSuccess(true);
+    setTimeout(() => router.push("/home"), 900);
   };
 
   return (
@@ -116,6 +126,68 @@ export default function LoginPage() {
           </div>
         );
       })}
+
+      {/* Success flash overlay — plays 900ms before redirect */}
+      <AnimatePresence>
+        {success && (
+          <motion.div
+            key="login-success"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center"
+            style={{
+              background: "rgba(57,255,20,0.12)",
+              backdropFilter: "blur(6px)",
+            }}
+            role="status"
+            aria-live="assertive"
+          >
+            <motion.div
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 320,
+                damping: 18,
+                delay: 0.05,
+              }}
+              className="flex flex-col items-center gap-4 px-8 py-6"
+              style={{
+                background: "linear-gradient(180deg, #081f0f 0%, #0a2515 100%)",
+                border: "3px solid var(--neon-green)",
+                boxShadow:
+                  "0 0 0 1px #000, 0 0 0 5px #0a2515, 0 0 48px rgba(57,255,20,0.7), 0 20px 60px rgba(0,0,0,0.8)",
+              }}
+            >
+              <CheckCircle2
+                className="size-12"
+                style={{
+                  color: "var(--neon-green)",
+                  filter: "drop-shadow(0 0 16px rgba(57,255,20,0.9))",
+                }}
+              />
+              <span
+                className="font-pixel text-center"
+                style={{
+                  fontSize: 14,
+                  letterSpacing: 2,
+                  color: "#FFF",
+                  textShadow:
+                    "2px 2px 0 var(--neon-green), 0 0 20px rgba(57,255,20,0.7)",
+                }}
+              >
+                WELCOME BACK
+                <br />
+                <span style={{ fontSize: 10, color: "#A7F3D0" }}>
+                  ENTERING THE APP...
+                </span>
+              </span>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -220,10 +292,7 @@ export default function LoginPage() {
           {/* Demo player 1 button */}
           <button
             type="button"
-            onClick={() => {
-              signInDemo();
-              router.push("/home");
-            }}
+            onClick={handleDemo}
             className="w-full flex items-center justify-center gap-2 mb-5 px-4 py-3 font-pixel transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-500/50"
             style={{
               background:

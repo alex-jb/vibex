@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Rocket,
   Compass,
@@ -56,6 +56,33 @@ export default function AppHome() {
     <div className="relative min-h-screen overflow-hidden" style={{ background: "var(--bg-deep)" }}>
       {/* Scanline CRT overlay */}
       <div className="scanline-overlay" />
+
+      {/* Boot scanline sweep — plays once on mount, carries the arcade energy
+          from landing into /home so the tonal shift isn't jarring */}
+      <AnimatePresence>
+        <motion.div
+          key="boot-sweep"
+          aria-hidden="true"
+          initial={{ y: "-100%", opacity: 0 }}
+          animate={{ y: "120%", opacity: [0, 0.8, 0.8, 0] }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], times: [0, 0.15, 0.85, 1] }}
+          className="pointer-events-none fixed inset-x-0 top-0 z-[100]"
+          style={{
+            height: 4,
+            background:
+              "linear-gradient(90deg, transparent 0%, var(--neon-purple) 20%, var(--neon-green) 50%, var(--neon-purple) 80%, transparent 100%)",
+            boxShadow: "0 0 24px rgba(157,0,255,0.8), 0 0 48px rgba(57,255,20,0.4)",
+            filter: "blur(1px)",
+          }}
+        />
+      </AnimatePresence>
+
+      {/* Content entrance — subtle scale/fade, fast, not distracting */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.97, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+      >
 
       {/* VALUE HERO — 3-second value proposition */}
       <ValueHero />
@@ -126,7 +153,7 @@ export default function AppHome() {
       {/* BETA BANNER */}
       <section className="py-3 overflow-hidden" style={{ background: "rgba(0,0,0,0.6)", borderTop: "1px solid var(--border-metal)", borderBottom: "1px solid var(--border-metal)" }}>
         <div className="text-center">
-          <span className="font-pixel text-[8px] tracking-widest" style={{ color: "var(--neon-green)" }}>
+          <span className="font-pixel tracking-widest" style={{ fontSize: 10, color: "var(--neon-green)" }}>
             Join the beta &mdash; be among the first creators
           </span>
         </div>
@@ -137,6 +164,7 @@ export default function AppHome() {
         <QuestBoard gridProjects={gridProjects} />
         <CtaSection />
       </Suspense>
+      </motion.div>
     </div>
   );
 }
