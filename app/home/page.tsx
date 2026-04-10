@@ -95,10 +95,10 @@ export default function AppHome() {
         </div>
       </section>
 
-      {/* SEE HOW IT WORKS — link to /create-card showcase */}
+      {/* SEE HOW IT WORKS — link to landing showcase */}
       <section className="py-8">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center">
-          <Link href="/create-card">
+          <Link href="/">
             <motion.div
               whileHover={{ scale: 1.02 }}
               className="inline-flex items-center gap-3 px-6 py-3 cursor-pointer transition-all"
@@ -112,7 +112,7 @@ export default function AppHome() {
                 className="font-pixel text-[9px] tracking-widest"
                 style={{ color: "#E9BDFF" }}
               >
-                ▶ SEE HOW IT WORKS — CREATE YOUR VIBEX CARD
+                ▶ SEE HOW IT WORKS — HERO CARD SHOWCASE
               </span>
             </motion.div>
           </Link>
