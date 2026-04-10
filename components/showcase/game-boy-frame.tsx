@@ -5,14 +5,16 @@ import { motion } from "framer-motion";
 interface GameBoyFrameProps {
   children: React.ReactNode;
   label?: string;
-  /** Optional CTA button slot — rendered below the A/B buttons inside the right grip */
+  /** Optional CTA button slot — rendered centered below the screen (PSP HOME style) */
   cta?: React.ReactNode;
 }
 
 /**
- * Horizontal Game Boy frame — same DMG gray plastic style as the
- * original vertical version, but laid out horizontally with the
- * screen in the middle, D-pad on the left, A/B buttons on the right.
+ * GBA-flavored handheld frame.
+ * Horizontal shell, D-pad left, screen center, A/B right.
+ * SELECT/START live directly below the screen (GBA convention).
+ * LAUNCH CTA sits below SELECT/START, centered like a PSP HOME button.
+ * L/R shoulder buttons stick out the top edges.
  */
 export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
   return (
@@ -23,9 +25,76 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
       className="relative mx-auto"
       style={{
         width: "min(96vw, 960px)",
+        paddingTop: 14, // room for L/R shoulder buttons sticking out the top
       }}
     >
-      {/* ─── Main shell — horizontal DMG, premium injection-molded finish ─── */}
+      {/* ─── L / R shoulder buttons — top edges, decorative ─── */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[5%] sm:left-[6%]"
+        style={{
+          top: 0,
+          width: 72,
+          height: 18,
+          background: "linear-gradient(180deg, #52535E 0%, #3A3B46 50%, #1A1B24 100%)",
+          border: "2px solid #0A0B12",
+          borderTopLeftRadius: 6,
+          borderTopRightRadius: 18,
+          borderBottom: "none",
+          boxShadow:
+            "inset 0 2px 0 rgba(255,255,255,0.2), inset 0 -1px 2px rgba(0,0,0,0.6), 0 -2px 4px rgba(0,0,0,0.3)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-pixel), monospace",
+            fontSize: 8,
+            color: "#D0D1DC",
+            letterSpacing: 2,
+            fontWeight: "bold",
+            textShadow: "1px 1px 0 rgba(0,0,0,0.6)",
+          }}
+        >
+          L
+        </span>
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-[5%] sm:right-[6%]"
+        style={{
+          top: 0,
+          width: 72,
+          height: 18,
+          background: "linear-gradient(180deg, #52535E 0%, #3A3B46 50%, #1A1B24 100%)",
+          border: "2px solid #0A0B12",
+          borderTopLeftRadius: 18,
+          borderTopRightRadius: 6,
+          borderBottom: "none",
+          boxShadow:
+            "inset 0 2px 0 rgba(255,255,255,0.2), inset 0 -1px 2px rgba(0,0,0,0.6), 0 -2px 4px rgba(0,0,0,0.3)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-pixel), monospace",
+            fontSize: 8,
+            color: "#D0D1DC",
+            letterSpacing: 2,
+            fontWeight: "bold",
+            textShadow: "1px 1px 0 rgba(0,0,0,0.6)",
+          }}
+        >
+          R
+        </span>
+      </div>
+
+      {/* ─── Main shell — horizontal GBA, premium injection-molded finish ─── */}
       <div
         style={{
           position: "relative",
@@ -78,14 +147,14 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
             />
           </div>
         ))}
+
         <div className="grid gap-4 sm:gap-5 grid-cols-2 sm:grid-cols-[auto_1fr_auto] sm:items-stretch">
-          {/* ═══ LEFT GRIP: D-pad + Select/Start (decorative) ═══ */}
+          {/* ═══ LEFT GRIP: D-pad only ═══ */}
           <div
             aria-hidden="true"
-            className="flex flex-row sm:flex-col items-center justify-center sm:justify-between gap-4 sm:gap-0 order-2 sm:order-1"
+            className="flex items-center justify-center order-2 sm:order-1"
             style={{ paddingTop: 4, paddingBottom: 4 }}
           >
-            {/* D-pad */}
             <div
               className="shrink-0 w-14 h-14 sm:w-[70px] sm:h-[70px]"
               style={{
@@ -133,39 +202,9 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
                 }}
               />
             </div>
-
-            {/* Select / Start pills — hidden on mobile to save space */}
-            <div className="hidden sm:flex sm:flex-col items-center gap-2 sm:mt-4">
-              {["SELECT", "START"].map((label) => (
-                <div key={label} className="flex flex-col items-center gap-1">
-                  <div
-                    style={{
-                      width: 28,
-                      height: 6,
-                      background: "#3A3B46",
-                      borderRadius: 10,
-                      border: "1px solid #0a0a0c",
-                      transform: "rotate(-25deg)",
-                      boxShadow: "inset 0 1px 2px rgba(0,0,0,0.5)",
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontFamily: "var(--font-pixel), monospace",
-                      fontSize: 5,
-                      color: "#3A3B46",
-                      fontWeight: "bold",
-                      letterSpacing: 1,
-                    }}
-                  >
-                    {label}
-                  </span>
-                </div>
-              ))}
-            </div>
           </div>
 
-          {/* ═══ CENTER: SCREEN — full width on mobile, middle col on desktop ═══ */}
+          {/* ═══ CENTER: SCREEN + SELECT/START + LAUNCH CTA ═══ */}
           <div className="col-span-2 sm:col-span-1 sm:col-start-2 order-1 sm:order-2 min-w-0">
             {/* Top branding strip (decorative) */}
             <div
@@ -186,8 +225,8 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
                     animation: "pulse 2s ease-in-out infinite",
                   }}
                 />
-                <span style={{ fontSize: 6, color: "#3A3B46", letterSpacing: 1.5 }}>
-                  BATTERY
+                <span style={{ fontSize: 7, color: "#3A3B46", letterSpacing: 1.5 }}>
+                  POWER
                 </span>
               </div>
               <div
@@ -198,10 +237,10 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
                   fontWeight: "bold",
                 }}
               >
-                VIBEX-BOY
+                VIBEX-BOY ADVANCE
               </div>
-              <span style={{ fontSize: 6, color: "#3A3B46", letterSpacing: 1.5 }}>
-                {"\u25C4 DOT MATRIX \u25BA"}
+              <span style={{ fontSize: 7, color: "#3A3B46", letterSpacing: 1.5 }}>
+                {"\u25C4 TFT LCD \u25BA"}
               </span>
             </div>
 
@@ -211,8 +250,8 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
                 position: "relative",
                 background:
                   "linear-gradient(180deg, #1F2028 0%, #2A2B36 50%, #1A1B24 100%)",
-                borderRadius: "8px 8px 28px 8px",
-                padding: "16px 20px 22px",
+                borderRadius: 8,
+                padding: "16px 20px",
                 boxShadow:
                   "inset 0 4px 12px rgba(0,0,0,0.85), 0 2px 0 rgba(255,255,255,0.22), 0 0 32px rgba(157,0,255,0.25)",
                 border: "2px solid #0A0B12",
@@ -270,65 +309,90 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
                   {children}
                 </div>
               </div>
+            </div>
 
-              {/* Bottom screen branding (decorative) */}
-              <div
-                aria-hidden="true"
-                className="flex items-center justify-between mt-3"
+            {/* Bottom screen branding (decorative) */}
+            <div
+              aria-hidden="true"
+              className="flex items-center justify-between mt-2"
+              style={{
+                fontFamily: "var(--font-pixel), monospace",
+                fontSize: 7,
+                color: "#8B8C97",
+                letterSpacing: 2,
+                paddingInline: 4,
+              }}
+            >
+              <span
                 style={{
-                  fontFamily: "var(--font-pixel), monospace",
-                  fontSize: 7,
-                  color: "#8B8C97",
-                  letterSpacing: 2,
+                  fontStyle: "italic",
+                  fontSize: 10,
+                  fontWeight: "bold",
+                  color: "#9D00FF",
+                  letterSpacing: 1,
                 }}
               >
-                <span
-                  style={{
-                    fontStyle: "italic",
-                    fontSize: 10,
-                    fontWeight: "bold",
-                    color: "#9D00FF",
-                    letterSpacing: 1,
-                  }}
-                >
-                  VibeX
-                </span>
-                <span>GROWTH ENGINE</span>
-              </div>
+                VibeX
+              </span>
+              <span>GROWTH ENGINE</span>
             </div>
 
-            {/* Speaker grille — diagonal lines, decorative */}
-            <div aria-hidden="true" className="flex justify-end mt-3" style={{ transform: "rotate(-25deg)" }}>
-              <div className="flex flex-col gap-1">
-                {[1, 2, 3, 4].map((i) => (
+            {/* ═══ SELECT / START — centered below screen, GBA convention ═══ */}
+            <div
+              aria-hidden="true"
+              className="flex items-center justify-center gap-6 mt-4"
+            >
+              {["SELECT", "START"].map((pillLabel) => (
+                <div key={pillLabel} className="flex flex-col items-center gap-1">
                   <div
-                    key={i}
                     style={{
-                      width: 36,
-                      height: 3,
-                      background: "#3A3B46",
-                      borderRadius: 2,
-                      boxShadow: "inset 0 1px 1px rgba(0,0,0,0.4)",
+                      width: 34,
+                      height: 7,
+                      background: "linear-gradient(180deg, #3A3B46 0%, #1A1B24 100%)",
+                      borderRadius: 10,
+                      border: "1px solid #0a0a0c",
+                      boxShadow:
+                        "inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.2)",
                     }}
                   />
-                ))}
-              </div>
+                  <span
+                    style={{
+                      fontFamily: "var(--font-pixel), monospace",
+                      fontSize: 6,
+                      color: "#3A3B46",
+                      fontWeight: "bold",
+                      letterSpacing: 1,
+                    }}
+                  >
+                    {pillLabel}
+                  </span>
+                </div>
+              ))}
             </div>
+
+            {/* ═══ LAUNCH CTA — PSP HOME style, centered below SELECT/START ═══ */}
+            {cta && (
+              <div className="flex items-center justify-center mt-4">
+                {cta}
+              </div>
+            )}
           </div>
 
-          {/* ═══ RIGHT GRIP: A / B buttons + optional CTA (col 3 on desktop, inline with d-pad on mobile) ═══ */}
+          {/* ═══ RIGHT GRIP: A / B buttons, horizontal ═══ */}
           <div
-            className="flex items-center justify-center gap-3 order-3 sm:col-start-3 sm:flex-col sm:gap-4"
+            aria-hidden="true"
+            className="flex items-center justify-center order-3 sm:col-start-3"
             style={{ alignSelf: "center" }}
           >
-            <div aria-hidden="true" className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* B button */}
-              <div className="flex flex-col items-center gap-1 sm:mt-[18px]">
+              <div className="flex flex-col items-center gap-1">
                 <div
                   className="w-8 h-8 sm:w-11 sm:h-11"
                   style={{
                     borderRadius: "50%",
-                    background: "radial-gradient(circle at 35% 35%, #C026D3 0%, #7A0C8C 70%, #450552 100%)",
+                    background:
+                      "radial-gradient(circle at 35% 35%, #C026D3 0%, #7A0C8C 70%, #450552 100%)",
                     border: "3px solid #2A0030",
                     boxShadow:
                       "inset -2px -2px 4px rgba(0,0,0,0.5), 0 3px 0 #2A0030, 0 0 12px rgba(157,0,255,0.4)",
@@ -351,7 +415,8 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
                   className="w-8 h-8 sm:w-11 sm:h-11"
                   style={{
                     borderRadius: "50%",
-                    background: "radial-gradient(circle at 35% 35%, #39FF14 0%, #1B8C0A 70%, #0A4504 100%)",
+                    background:
+                      "radial-gradient(circle at 35% 35%, #39FF14 0%, #1B8C0A 70%, #0A4504 100%)",
                     border: "3px solid #0A2500",
                     boxShadow:
                       "inset -2px -2px 4px rgba(0,0,0,0.5), 0 3px 0 #0A2500, 0 0 12px rgba(57,255,20,0.4)",
@@ -369,9 +434,6 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
                 </span>
               </div>
             </div>
-
-            {/* Optional CTA below A/B buttons (on mobile, shows inline on right side) */}
-            {cta && <div className="sm:mt-1">{cta}</div>}
           </div>
         </div>
       </div>
@@ -380,7 +442,7 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
       {label && (
         <div
           className="text-center mt-4 font-pixel"
-          style={{ fontSize: 9, color: "#888", letterSpacing: 2 }}
+          style={{ fontSize: 10, color: "#888", letterSpacing: 2 }}
         >
           {label}
         </div>
