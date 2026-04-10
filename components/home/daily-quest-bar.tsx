@@ -112,6 +112,9 @@ export function DailyQuestBar() {
 
   const totalClaimed = Object.values(progress.claimed).filter(Boolean).length;
   const allDone = totalClaimed === QUESTS.length;
+  // First-visit detection: no counts + no claims = user has never touched a quest
+  const totalCounts = Object.values(progress.counts).reduce((sum, n) => sum + n, 0);
+  const isFirstVisit = totalCounts === 0 && totalClaimed === 0;
 
   return (
     <section className="py-4" aria-label="Daily quests">
@@ -135,7 +138,7 @@ export function DailyQuestBar() {
               <span
                 className="font-pixel"
                 style={{
-                  fontSize: 9,
+                  fontSize: 10,
                   letterSpacing: 2,
                   color: "#FFD700",
                   textShadow: "1px 1px 0 #000",
@@ -147,7 +150,7 @@ export function DailyQuestBar() {
             <span
               className="font-pixel"
               style={{
-                fontSize: 7,
+                fontSize: 10,
                 letterSpacing: 1,
                 color: allDone ? "var(--neon-green)" : "#C9B8E8",
               }}
@@ -155,6 +158,39 @@ export function DailyQuestBar() {
               {totalClaimed} / {QUESTS.length} DONE
             </span>
           </div>
+
+          {/* First-visit welcome — shown only until user touches any quest */}
+          {isFirstVisit && (
+            <div
+              className="px-3 py-2"
+              style={{
+                background: "rgba(57,255,20,0.08)",
+                border: "1px dashed rgba(57,255,20,0.4)",
+              }}
+            >
+              <span
+                className="font-pixel block"
+                style={{
+                  fontSize: 10,
+                  letterSpacing: 1.5,
+                  color: "var(--neon-green)",
+                  textShadow: "0 0 6px rgba(57,255,20,0.4)",
+                }}
+              >
+                ▸ WELCOME, ADVENTURER
+              </span>
+              <span
+                className="font-retro block mt-1"
+                style={{
+                  fontSize: 13,
+                  color: "#C9B8E8",
+                  lineHeight: 1.4,
+                }}
+              >
+                Complete your first quest to earn XP and unlock your creator profile.
+              </span>
+            </div>
+          )}
 
           {/* Quests grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -184,7 +220,7 @@ export function DailyQuestBar() {
                     <span
                       className="font-pixel truncate"
                       style={{
-                        fontSize: 7,
+                        fontSize: 10,
                         color: claimed ? "var(--neon-green)" : "#E8E8EC",
                         letterSpacing: 0.5,
                       }}
@@ -195,10 +231,10 @@ export function DailyQuestBar() {
                       <Check className="h-3 w-3 shrink-0" style={{ color: "var(--neon-green)" }} />
                     ) : (
                       <div className="flex items-center gap-0.5 shrink-0">
-                        <Star className="h-2.5 w-2.5" style={{ color: "var(--neon-yellow)" }} />
+                        <Star className="h-3 w-3" style={{ color: "var(--neon-yellow)" }} />
                         <span
                           className="font-pixel"
-                          style={{ fontSize: 6, color: "var(--neon-yellow)" }}
+                          style={{ fontSize: 10, color: "var(--neon-yellow)" }}
                         >
                           {quest.xp}
                         </span>
@@ -227,7 +263,7 @@ export function DailyQuestBar() {
                   </div>
                   <span
                     className="font-pixel block mt-1"
-                    style={{ fontSize: 6, color: "#888" }}
+                    style={{ fontSize: 10, color: "#888" }}
                   >
                     {count} / {quest.target}
                     {complete && !claimed && (

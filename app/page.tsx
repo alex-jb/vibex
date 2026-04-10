@@ -52,9 +52,13 @@ export default function LandingPage() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [router]);
 
-  // Real social proof — derived from mock-data
+  // Real social proof — derived from mock-data.
+  // Gate: only show the bar when numbers are impressive enough. Showing
+  // "2 CREATORS SHIPPED" is worse than showing nothing — once real DB data
+  // lands these thresholds become trivially met.
   const totalCreators = new Set(projects.map((p) => p.creatorName)).size;
   const viralThisWeek = projects.filter((p) => p.featured).length;
+  const showSocialProof = totalCreators >= 10;
 
   return (
     <div
@@ -382,41 +386,43 @@ export default function LandingPage() {
           transition={{ duration: 0.6, delay: 0.9 }}
           className="mt-6 sm:mt-8 flex flex-col items-center gap-3"
         >
-          {/* Social proof bar */}
-          <div
-            className="inline-flex items-center gap-3 px-4 py-2"
-            style={{
-              background: "rgba(0,0,0,0.5)",
-              border: "1px solid rgba(57,255,20,0.3)",
-              boxShadow: "inset 0 0 10px rgba(57,255,20,0.08)",
-            }}
-          >
-            <span
-              aria-hidden="true"
-              className="inline-block"
+          {/* Social proof bar — only when numbers are credible */}
+          {showSocialProof && (
+            <div
+              className="inline-flex items-center gap-3 px-4 py-2"
               style={{
-                width: 6,
-                height: 6,
-                background: "#39FF14",
-                boxShadow: "0 0 8px #39FF14",
-                animation: "pulse 1.5s ease-in-out infinite",
-              }}
-            />
-            <span
-              className="font-pixel"
-              style={{
-                fontSize: 7,
-                letterSpacing: 1.5,
-                color: "#E8E8EC",
+                background: "rgba(0,0,0,0.5)",
+                border: "1px solid rgba(57,255,20,0.3)",
+                boxShadow: "inset 0 0 10px rgba(57,255,20,0.08)",
               }}
             >
-              <span style={{ color: "var(--neon-green)" }}>{totalCreators.toLocaleString()}</span>{" "}
-              CREATORS SHIPPED
-              {" · "}
-              <span style={{ color: "var(--neon-yellow)" }}>{viralThisWeek}</span>{" "}
-              VIRAL CARDS THIS WEEK
-            </span>
-          </div>
+              <span
+                aria-hidden="true"
+                className="inline-block"
+                style={{
+                  width: 6,
+                  height: 6,
+                  background: "#39FF14",
+                  boxShadow: "0 0 8px #39FF14",
+                  animation: "pulse 1.5s ease-in-out infinite",
+                }}
+              />
+              <span
+                className="font-pixel"
+                style={{
+                  fontSize: 10,
+                  letterSpacing: 1.5,
+                  color: "#E8E8EC",
+                }}
+              >
+                <span style={{ color: "var(--neon-green)" }}>{totalCreators.toLocaleString()}</span>{" "}
+                CREATORS SHIPPED
+                {" · "}
+                <span style={{ color: "var(--neon-yellow)" }}>{viralThisWeek}</span>{" "}
+                VIRAL CARDS
+              </span>
+            </div>
+          )}
 
           {/* Keyboard hint */}
           <span

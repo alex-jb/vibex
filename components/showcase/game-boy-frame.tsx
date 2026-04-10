@@ -79,8 +79,9 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
           </div>
         ))}
         <div className="grid gap-4 sm:gap-5 grid-cols-2 sm:grid-cols-[auto_1fr_auto] sm:items-stretch">
-          {/* ═══ LEFT GRIP: D-pad + Select/Start (col 1 on desktop, row 2 col 1 on mobile) ═══ */}
+          {/* ═══ LEFT GRIP: D-pad + Select/Start (decorative) ═══ */}
           <div
+            aria-hidden="true"
             className="flex flex-row sm:flex-col items-center justify-center sm:justify-between gap-4 sm:gap-0 order-2 sm:order-1"
             style={{ paddingTop: 4, paddingBottom: 4 }}
           >
@@ -166,8 +167,9 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
 
           {/* ═══ CENTER: SCREEN — full width on mobile, middle col on desktop ═══ */}
           <div className="col-span-2 sm:col-span-1 sm:col-start-2 order-1 sm:order-2 min-w-0">
-            {/* Top branding strip */}
+            {/* Top branding strip (decorative) */}
             <div
+              aria-hidden="true"
               className="flex items-center justify-between mb-3"
               style={{
                 fontFamily: "var(--font-pixel), monospace",
@@ -269,8 +271,9 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
                 </div>
               </div>
 
-              {/* Bottom screen branding */}
+              {/* Bottom screen branding (decorative) */}
               <div
+                aria-hidden="true"
                 className="flex items-center justify-between mt-3"
                 style={{
                   fontFamily: "var(--font-pixel), monospace",
@@ -294,8 +297,8 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
               </div>
             </div>
 
-            {/* Speaker grille (diagonal lines, below screen) */}
-            <div className="flex justify-end mt-3" style={{ transform: "rotate(-25deg)" }}>
+            {/* Speaker grille — diagonal lines, decorative */}
+            <div aria-hidden="true" className="flex justify-end mt-3" style={{ transform: "rotate(-25deg)" }}>
               <div className="flex flex-col gap-1">
                 {[1, 2, 3, 4].map((i) => (
                   <div
@@ -318,7 +321,7 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
             className="flex items-center justify-center gap-3 order-3 sm:col-start-3 sm:flex-col sm:gap-4"
             style={{ alignSelf: "center" }}
           >
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div aria-hidden="true" className="flex items-center gap-2 sm:gap-3">
               {/* B button */}
               <div className="flex flex-col items-center gap-1 sm:mt-[18px]">
                 <div

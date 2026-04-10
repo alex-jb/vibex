@@ -60,10 +60,7 @@ export default function AppHome() {
       {/* VALUE HERO — 3-second value proposition */}
       <ValueHero />
 
-      {/* DAILY QUEST BAR — retention hook, localStorage, resets at UTC midnight */}
-      <DailyQuestBar />
-
-      {/* QUICK ACTIONS BAR */}
+      {/* QUICK ACTIONS BAR — primary "do something now" entry points, above the fold */}
       <section className="py-6">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -87,7 +84,7 @@ export default function AppHome() {
                       >
                         <Icon size={18} color="#fff" />
                       </div>
-                      <span className="font-pixel text-[7px] uppercase tracking-wider" style={{ color: "#E8E8EC" }}>
+                      <span className="font-pixel text-[10px] uppercase tracking-wider" style={{ color: "#E8E8EC" }}>
                         {action.label}
                       </span>
                     </div>
@@ -98,6 +95,9 @@ export default function AppHome() {
           </div>
         </div>
       </section>
+
+      {/* DAILY QUEST BAR — retention hook, below primary actions, localStorage UTC reset */}
+      <DailyQuestBar />
 
       {/* BACK TO SHOWCASE — link to landing Game Boy */}
       <section className="py-8">
