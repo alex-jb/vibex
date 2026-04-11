@@ -60,8 +60,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: r.priority,
   }));
 
+  // Defensive: encode the id so a future DB-backed project with special
+  // characters (slashes, hashes, unicode) doesn't produce a malformed URL.
   const projectPages: MetadataRoute.Sitemap = projects.map((p) => ({
-    url: `${baseUrl}/project/${p.id}`,
+    url: `${baseUrl}/project/${encodeURIComponent(p.id)}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
     priority: 0.65,

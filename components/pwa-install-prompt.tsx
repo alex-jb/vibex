@@ -28,13 +28,17 @@ export function PwaInstallPrompt() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      const dismissedAt = localStorage.getItem(PROMPT_DISMISSED_KEY);
-      if (dismissedAt) {
-        const daysSinceDismiss = (Date.now() - Number(dismissedAt)) / (1000 * 60 * 60 * 24);
+      const dismissedAtRaw = localStorage.getItem(PROMPT_DISMISSED_KEY);
+      const dismissedAt = Number(dismissedAtRaw);
+      if (dismissedAtRaw && Number.isFinite(dismissedAt)) {
+        const daysSinceDismiss = (Date.now() - dismissedAt) / (1000 * 60 * 60 * 24);
         // Don't re-prompt within 7 days of a dismissal
         if (daysSinceDismiss < 7) return;
       }
-      const visits = Number(localStorage.getItem(VISIT_COUNT_KEY) ?? "0") + 1;
+      // Defensive: guard against NaN poisoning if the value was tampered with.
+      // Without this, one bad value would permanently break the visit counter.
+      const prior = Number(localStorage.getItem(VISIT_COUNT_KEY) ?? "0");
+      const visits = (Number.isFinite(prior) ? prior : 0) + 1;
       localStorage.setItem(VISIT_COUNT_KEY, String(visits));
     } catch {
       // ignore storage errors
@@ -54,7 +58,8 @@ export function PwaInstallPrompt() {
 
       // Only show after N visits
       try {
-        const visits = Number(localStorage.getItem(VISIT_COUNT_KEY) ?? "0");
+        const raw = Number(localStorage.getItem(VISIT_COUNT_KEY) ?? "0");
+        const visits = Number.isFinite(raw) ? raw : 0;
         if (visits >= MIN_VISITS_BEFORE_PROMPT) {
           // Delay to avoid interfering with first paint
           setTimeout(() => setVisible(true), 2500);
