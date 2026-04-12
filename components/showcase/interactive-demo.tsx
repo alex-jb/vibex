@@ -40,11 +40,13 @@ interface InteractiveDemoProps {
 
 function buildMockProject(title: string): Project {
   const trimmed = title.trim() || "Your Idea";
-  const shortTitle =
-    trimmed.length > 40 ? trimmed.slice(0, 37) + "..." : trimmed;
+  // Downstream ProjectDemoCard renders title with CSS `truncate`, which ellipsises
+  // correctly at any width and handles multi-byte graphemes (Chinese, emoji).
+  // Slicing at char 37 here breaks mid-word and mid-grapheme, so we pass the full
+  // string and let CSS truncate visually.
   return {
     id: "demo-preview",
-    title: shortTitle,
+    title: trimmed,
     tagline: "Generated live from your prompt",
     description: trimmed,
     category: "AI Tool",

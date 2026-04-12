@@ -2,14 +2,95 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { useLang } from "@/lib/i18n";
+import { prepare, layout, type PreparedHandle } from "@/lib/pretext";
 
 /**
  * Value Hero: 3-second value proposition.
  * Shows AFTER boot sequence, BEFORE the rest of the page.
+ *
+ * Text layout uses Pretext to measure and size the headline so it reflows
+ * correctly at every width without a hardcoded <br />. Critical for EN/ZH
+ * parity: Press Start 2P renders wider than VT323, and Chinese glyph widths
+ * differ again, so a CSS-only break would misfire on one locale or the other.
  */
 export function ValueHero() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+
+  const headlineRef = useRef<HTMLHeadingElement | null>(null);
+  const subheadRef = useRef<HTMLParagraphElement | null>(null);
+
+  const headline1 = t("valuehero.headline1");
+  const headline2 = t("valuehero.headline2");
+  const subheadText = t("valuehero.subheadline");
+
+  useEffect(() => {
+    const headlineEl = headlineRef.current;
+    const subheadEl = subheadRef.current;
+    if (!headlineEl || !subheadEl) return;
+
+    const fontOf = (el: HTMLElement) => {
+      const cs = getComputedStyle(el);
+      return `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    };
+    const lineHeightOf = (el: HTMLElement) => {
+      const cs = getComputedStyle(el);
+      const lh = parseFloat(cs.lineHeight);
+      return Number.isFinite(lh) ? lh : parseFloat(cs.fontSize) * 1.4;
+    };
+
+    const headlineText = `${headline1} ${headline2}`;
+
+    let headlineHandle: PreparedHandle | null = null;
+    let subheadHandle: PreparedHandle | null = null;
+
+    const reprepare = () => {
+      headlineHandle = prepare(headlineText, fontOf(headlineEl));
+      subheadHandle = prepare(subheadText, fontOf(subheadEl));
+    };
+
+    const relayout = () => {
+      if (!headlineHandle || !subheadHandle) return;
+      const headW = headlineEl.clientWidth;
+      const subW = subheadEl.clientWidth;
+      if (headW > 0) {
+        const { height } = layout(headlineHandle, headW, lineHeightOf(headlineEl));
+        headlineEl.style.height = `${height}px`;
+      }
+      if (subW > 0) {
+        const { height } = layout(subheadHandle, subW, lineHeightOf(subheadEl));
+        subheadEl.style.height = `${height}px`;
+      }
+    };
+
+    let cancelled = false;
+    const boot = async () => {
+      try {
+        await document.fonts.ready;
+      } catch {}
+      if (cancelled) return;
+      reprepare();
+      relayout();
+    };
+    boot();
+
+    const ro = new ResizeObserver(() => relayout());
+    ro.observe(headlineEl);
+    ro.observe(subheadEl);
+
+    const onFontsLoaded = () => {
+      reprepare();
+      relayout();
+    };
+    document.fonts?.addEventListener?.("loadingdone", onFontsLoaded);
+
+    return () => {
+      cancelled = true;
+      ro.disconnect();
+      document.fonts?.removeEventListener?.("loadingdone", onFontsLoaded);
+    };
+  }, [headline1, headline2, subheadText, lang]);
 
   return (
     <section
@@ -32,8 +113,9 @@ export function ValueHero() {
       />
 
       <div style={{ position: "relative", zIndex: 2, maxWidth: 640, margin: "0 auto" }}>
-        {/* Main headline */}
+        {/* Main headline — no hardcoded <br />, Pretext measures and sets height */}
         <motion.h1
+          ref={headlineRef}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
@@ -46,13 +128,13 @@ export function ValueHero() {
             letterSpacing: 1,
           }}
         >
-          {t("valuehero.headline1")}
-          <br />
-          <span style={{ color: "#FACC15" }}>{t("valuehero.headline2")}</span>
+          {headline1}{" "}
+          <span style={{ color: "#FACC15" }}>{headline2}</span>
         </motion.h1>
 
         {/* Subheadline */}
         <motion.p
+          ref={subheadRef}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
@@ -64,7 +146,7 @@ export function ValueHero() {
             marginBottom: 24,
           }}
         >
-          {t("valuehero.subheadline")}
+          {subheadText}
         </motion.p>
 
         {/* CTA buttons */}
