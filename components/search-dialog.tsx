@@ -82,7 +82,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
           type: "creator",
           id: c.id,
           title: c.name,
-          subtitle: c.bio.slice(0, 60),
+          subtitle: c.bio,
           href: `/creators/${c.id}`,
         });
       }
@@ -94,7 +94,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
           type: "idea",
           id: i.id,
           title: i.title,
-          subtitle: i.description.slice(0, 60),
+          subtitle: i.description,
           href: `/ideas/${i.id}`,
         });
       }
@@ -106,7 +106,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
           type: "agent",
           id: a.id,
           title: a.name,
-          subtitle: a.description.slice(0, 60),
+          subtitle: a.description,
           href: `/agents/${a.id}`,
         });
       }
@@ -118,7 +118,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
           type: "workflow",
           id: w.id,
           title: w.name,
-          subtitle: w.description.slice(0, 60),
+          subtitle: w.description,
           href: `/workflows/${w.id}`,
         });
       }
