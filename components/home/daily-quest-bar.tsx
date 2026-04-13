@@ -73,6 +73,12 @@ export function DailyQuestBar() {
   const [xpPop, setXpPop] = useState<number | null>(null);
 
   useEffect(() => {
+    // Hydration-safe localStorage read: server renders default, client
+    // rehydrates on mount. React 19's set-state-in-effect rule prefers
+    // useSyncExternalStore here, but this one-time read is intentional —
+    // the follow-up render is the whole point. Left as a TODO for a
+    // proper subscription-based refactor.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProgress(loadProgress());
     setMounted(true);
   }, []);

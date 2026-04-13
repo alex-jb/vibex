@@ -1,6 +1,11 @@
 declare module "@/lib/pretext" {
-  export interface PreparedHandle {}
-  export interface PreparedSegmentsHandle {}
+  // Opaque handle types — the engine returns private objects that we
+  // only ever pass back in. Branded so TS can't confuse them with each
+  // other or with plain objects, without tripping no-empty-object-type.
+  export type PreparedHandle = { readonly __brand: "PreparedHandle" };
+  export type PreparedSegmentsHandle = {
+    readonly __brand: "PreparedSegmentsHandle";
+  };
   export interface LayoutResult {
     height: number;
     lineCount: number;
