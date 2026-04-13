@@ -133,19 +133,25 @@ export function Navbar() {
             <UserMenu />
           </div>
 
-          {/* Mobile Toggle */}
-          <button
-            aria-label="Toggle mobile menu"
-            aria-expanded={mobileOpen}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground md:hidden transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
-          </button>
+          {/* Mobile right cluster: user menu (LOGIN if guest, avatar if signed in)
+              + notification bell + hamburger. Always visible on mobile so the
+              primary auth CTA is never hidden behind a menu tap. */}
+          <div className="flex items-center gap-1.5 md:hidden">
+            <NotificationBell />
+            <UserMenu />
+            <button
+              aria-label="Toggle mobile menu"
+              aria-expanded={mobileOpen}
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -185,8 +191,6 @@ export function Navbar() {
               })}
               <div className="mt-2 flex items-center gap-3">
                 <LangToggle />
-                <NotificationBell />
-                <UserMenu />
                 <Link href="/launch" onClick={() => setMobileOpen(false)} className="flex-1">
                   <Button className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-sm">
                     <Rocket className="mr-1.5 h-3.5 w-3.5" />

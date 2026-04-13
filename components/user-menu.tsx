@@ -39,7 +39,10 @@ export function UserMenu() {
     return (
       <Link
         href="/login"
-        className="font-pixel text-[8px] px-2.5 py-1.5 uppercase tracking-wider transition-colors duration-200 hover:text-foreground shrink-0"
+        // min-h-11 = 44px mobile touch target floor.
+        // 10px pixel font meets DESIGN.md readability floor for
+        // "text user must read to act" (DESIGN.md Typography > Rules).
+        className="flex items-center justify-center font-pixel text-[10px] min-h-11 px-3.5 uppercase tracking-wider transition-colors duration-200 hover:text-foreground shrink-0 rounded-sm"
         style={{
           border: "2px solid var(--border-bolt, #444)",
           color: "var(--neon-green, #39FF14)",
