@@ -36,12 +36,12 @@ export function Footer() {
               {t("footer.platform")}
             </h4>
             <div className="flex flex-col gap-2.5">
-              <Link href="/discover" className="font-pixel text-[9px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("nav.explore")}</Link>
-              <Link href="/hunt" className="font-pixel text-[9px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("nav.hunt")}</Link>
-              <Link href="/ideas" className="font-pixel text-[9px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("footer.ideaLab")}</Link>
-              <Link href="/creators" className="font-pixel text-[9px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("nav.creators")}</Link>
-              <Link href="/launch" className="font-pixel text-[9px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("nav.launch")}</Link>
-              <Link href="/events" className="font-pixel text-[9px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("nav.events")}</Link>
+              <Link href="/discover" className="flex items-center min-h-11 font-pixel text-[10px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("nav.explore")}</Link>
+              <Link href="/hunt" className="flex items-center min-h-11 font-pixel text-[10px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("nav.hunt")}</Link>
+              <Link href="/ideas" className="flex items-center min-h-11 font-pixel text-[10px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("footer.ideaLab")}</Link>
+              <Link href="/creators" className="flex items-center min-h-11 font-pixel text-[10px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("nav.creators")}</Link>
+              <Link href="/launch" className="flex items-center min-h-11 font-pixel text-[10px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("nav.launch")}</Link>
+              <Link href="/events" className="flex items-center min-h-11 font-pixel text-[10px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("nav.events")}</Link>
             </div>
           </div>
           <div>
@@ -49,10 +49,10 @@ export function Footer() {
               {t("footer.resources")}
             </h4>
             <div className="flex flex-col gap-2.5">
-              <Link href="/insights" className="font-pixel text-[9px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("footer.trendsInsights")}</Link>
-              <span className="font-pixel text-[9px] text-zinc-400">{t("footer.apiComingSoon")}</span>
-              <span className="font-pixel text-[9px] text-zinc-400">{t("footer.documentation")}</span>
-              <span className="font-pixel text-[9px] text-zinc-400">{t("footer.changelog")}</span>
+              <Link href="/insights" className="flex items-center min-h-11 font-pixel text-[10px] text-muted-foreground hover:text-foreground transition-colors duration-200">{t("footer.trendsInsights")}</Link>
+              <span className="flex items-center min-h-11 font-pixel text-[10px] text-zinc-400">{t("footer.apiComingSoon")}</span>
+              <span className="flex items-center min-h-11 font-pixel text-[10px] text-zinc-400">{t("footer.documentation")}</span>
+              <span className="flex items-center min-h-11 font-pixel text-[10px] text-zinc-400">{t("footer.changelog")}</span>
             </div>
           </div>
           <div>
@@ -60,10 +60,10 @@ export function Footer() {
               {t("footer.community")}
             </h4>
             <div className="flex flex-col gap-2.5">
-              <span className="font-pixel text-[9px] text-zinc-400">Discord (Coming Soon)</span>
-              <span className="font-pixel text-[9px] text-zinc-400">Twitter / X</span>
-              <a href="https://github.com/alex-jb/vibex" target="_blank" rel="noopener noreferrer" className="font-pixel text-[9px] text-muted-foreground hover:text-foreground transition-colors duration-200">GitHub</a>
-              <span className="font-pixel text-[9px] text-zinc-400">{t("footer.newsletter")} (Coming Soon)</span>
+              <span className="flex items-center min-h-11 font-pixel text-[10px] text-zinc-400">Discord (Coming Soon)</span>
+              <span className="flex items-center min-h-11 font-pixel text-[10px] text-zinc-400">Twitter / X</span>
+              <a href="https://github.com/alex-jb/vibex" target="_blank" rel="noopener noreferrer" className="flex items-center min-h-11 font-pixel text-[10px] text-muted-foreground hover:text-foreground transition-colors duration-200">GitHub</a>
+              <span className="flex items-center min-h-11 font-pixel text-[10px] text-zinc-400">{t("footer.newsletter")} (Coming Soon)</span>
             </div>
           </div>
         </div>
