@@ -12,7 +12,7 @@ export async function POST(
   const { id: parentId } = await params;
 
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const { allowed } = checkRateLimit(`${ip}:feed-reply`, 10, 60_000);
+  const { allowed } = await checkRateLimit(`${ip}:feed-reply`, 10, 60_000);
   if (!allowed) {
     return NextResponse.json(
       { error: "Rate limit exceeded. Try again later." },

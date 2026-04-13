@@ -6,7 +6,7 @@ import { serverLog } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const { allowed } = checkRateLimit(`${ip}:launch-package`, 3, 60_000);
+  const { allowed } = await checkRateLimit(`${ip}:launch-package`, 3, 60_000);
   if (!allowed) {
     return NextResponse.json(
       { error: "Rate limit exceeded. Try again in a minute." },

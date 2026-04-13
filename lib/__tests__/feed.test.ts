@@ -168,26 +168,7 @@ describe("Post deduplication", () => {
   });
 });
 
-// ─── Rate Limiting Tests ───
-
-describe("Feed rate limiting", () => {
-  // Import inline to avoid module-level side effects
-  it("allows first request", async () => {
-    const { checkRateLimit } = await import("../rate-limit");
-    const key = `test-${Date.now()}`;
-    const result = checkRateLimit(key, 5, 60_000);
-    expect(result.allowed).toBe(true);
-    expect(result.remaining).toBe(4);
-  });
-
-  it("blocks after limit exceeded", async () => {
-    const { checkRateLimit } = await import("../rate-limit");
-    const key = `test-block-${Date.now()}`;
-    for (let i = 0; i < 5; i++) {
-      checkRateLimit(key, 5, 60_000);
-    }
-    const result = checkRateLimit(key, 5, 60_000);
-    expect(result.allowed).toBe(false);
-    expect(result.remaining).toBe(0);
-  });
-});
+// Rate limiting unit tests were removed when checkRateLimit moved
+// from an in-memory Map to a Postgres-backed RPC. Unit-testing it
+// without a real database would only exercise the fail-open path,
+// which isn't meaningful — coverage belongs in E2E against a test DB.

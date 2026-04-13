@@ -51,7 +51,7 @@ export async function PATCH(
   const { id } = await params;
 
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const { allowed } = checkRateLimit(`${ip}:webhooks-patch`, 10, 60_000);
+  const { allowed } = await checkRateLimit(`${ip}:webhooks-patch`, 10, 60_000);
   if (!allowed) {
     return apiError("Rate limit exceeded.", 429);
   }

@@ -75,7 +75,7 @@ export async function GET(request: Request) {
 /* ─── POST: Create a webhook ─── */
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const { allowed } = checkRateLimit(`${ip}:webhooks-post`, 5, 60_000);
+  const { allowed } = await checkRateLimit(`${ip}:webhooks-post`, 5, 60_000);
   if (!allowed) {
     return apiError("Rate limit exceeded. Try again later.", 429);
   }
