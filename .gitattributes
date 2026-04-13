@@ -1,0 +1,23 @@
+# Normalize line endings across platforms.
+# Auto-detect text files and enforce LF on checkout + commit.
+# Prevents CRLF drift when switching between machines/editors.
+* text=auto eol=lf
+
+# Binary files — never munge.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.mp4 binary
+*.mov binary
+*.webm binary
+*.pdf binary
+*.zip binary
+*.tgz binary
+*.gz binary
