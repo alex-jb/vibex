@@ -72,6 +72,10 @@ export default function LaunchPage() {
   const [draftRestoredToast, setDraftRestoredToast] = useState(false);
   const hasHydratedRef = useRef(false);
 
+  // URL Paste Hero — when true, hide the hero and show the full form
+  // (per /design-shotgun 2026-04-13 approved "Launch URL Paste Hero" direction)
+  const [showForm, setShowForm] = useState(false);
+
   const { t } = useLang();
 
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -96,6 +100,8 @@ export default function LaunchPage() {
         // Tell the user we filled the form from their landing idea
         setDraftRestoredToast(true);
         setTimeout(() => setDraftRestoredToast(false), 3500);
+        // Seed means user came in with intent — skip the URL hero
+        setShowForm(true);
         hasHydratedRef.current = true;
         return;
       }
@@ -132,6 +138,8 @@ export default function LaunchPage() {
         setDraftLoaded(true);
         setDraftRestoredToast(true);
         setTimeout(() => setDraftRestoredToast(false), 3500);
+        // Draft exists — skip the URL hero, go straight to the form
+        setShowForm(true);
       }
     } catch {
       // Corrupted draft — ignore and start fresh
@@ -256,6 +264,8 @@ export default function LaunchPage() {
       if (data.url) setDemoLink(data.url);
       if (data.siteName && !creatorName) setCreatorName(data.siteName);
       setScrapeSuccess(true);
+      // After a successful scrape, leave the URL Paste Hero and go to the form
+      setShowForm(true);
     } catch (err) {
       setScrapeError(err instanceof Error ? err.message : "Failed to scrape");
     } finally {
@@ -382,6 +392,297 @@ export default function LaunchPage() {
           : null;
 
   const hasAnySuggestion = titleStatus || taglineStatus || categoryTrend || descriptionStatus;
+
+  // === URL PASTE HERO ===
+  // When nothing is filled and user hasn't submitted, show a full-viewport
+  // URL-first landing. Approved /design-shotgun direction 2026-04-13.
+  // Typing a URL + hitting GO triggers handleQuickScrape, which flips showForm.
+  const showHero = !showForm && filledFieldCount === 0 && !submitted;
+
+  if (showHero) {
+    return (
+      <div
+        className="relative min-h-[calc(100vh-64px)] overflow-hidden flex items-center justify-center"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 45%, rgba(157,0,255,0.2), transparent 55%), radial-gradient(ellipse at 50% 45%, rgba(6,182,212,0.08), transparent 75%), var(--bg-deep)",
+        }}
+      >
+        {/* Floating ambient particles */}
+        {[
+          { top: "30%", left: "22%", color: "#FACC15", delay: 0 },
+          { top: "70%", left: "75%", color: "#06B6D4", delay: 1 },
+          { top: "22%", right: "25%", color: "#EC4899", delay: 2 },
+          { top: "68%", left: "20%", color: "#9D00FF", delay: 0.5 },
+        ].map((p, i) => (
+          <motion.div
+            key={i}
+            aria-hidden="true"
+            className="pointer-events-none fixed hidden md:block"
+            style={{
+              ...(p as Record<string, unknown>),
+              width: 4,
+              height: 4,
+              background: p.color,
+              boxShadow: `0 0 8px ${p.color}`,
+              zIndex: 35,
+            }}
+            animate={{ y: [0, -16, 0], opacity: [0.3, 1, 0.3] }}
+            transition={{
+              duration: 4,
+              delay: p.delay,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="relative z-40 text-center px-6"
+          style={{ width: "min(820px, calc(100vw - 48px))" }}
+        >
+          {/* Portal glow behind */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute"
+            style={{
+              inset: "-120px -80px",
+              background:
+                "radial-gradient(ellipse, rgba(157,0,255,0.35) 0%, rgba(236,72,153,0.15) 35%, transparent 70%)",
+              filter: "blur(40px)",
+              zIndex: -1,
+            }}
+          />
+
+          <div
+            className="mb-5"
+            style={{
+              fontFamily: "var(--font-press-start), monospace",
+              fontSize: 11,
+              color: "var(--neon-green)",
+              letterSpacing: 3,
+              textShadow: "0 0 4px rgba(57,255,20,0.8)",
+            }}
+          >
+            ▸ VIBEXFORGE://LAUNCH_V1 · ZERO CONFIG
+          </div>
+
+          <h1
+            className="mb-3"
+            style={{
+              fontFamily: "var(--font-press-start), monospace",
+              fontSize: 30,
+              color: "var(--text)",
+              letterSpacing: 3,
+              lineHeight: 1.5,
+              textShadow:
+                "0 0 14px rgba(232,232,236,0.35), 0 0 30px rgba(157,0,255,0.3)",
+            }}
+          >
+            PASTE YOUR AI PROJECT.
+            <br />
+            <span
+              style={{
+                color: "var(--neon-yellow)",
+                textShadow: "0 0 14px rgba(250,204,21,0.7)",
+              }}
+            >
+              WE DO THE REST.
+            </span>
+          </h1>
+
+          <p
+            className="mb-10"
+            style={{
+              fontFamily: "var(--font-vt323), monospace",
+              fontSize: 22,
+              color: "var(--muted)",
+            }}
+          >
+            URL in, Hero Card out. 10 seconds. No form, no typing, no friction.
+          </p>
+
+          {/* Mega URL input */}
+          <div className="relative mb-5">
+            <span
+              className="absolute"
+              style={{
+                left: 22,
+                top: "50%",
+                transform: "translateY(-50%)",
+                fontFamily: "var(--font-press-start), monospace",
+                fontSize: 14,
+                color: "var(--neon-green)",
+                textShadow: "0 0 6px rgba(57,255,20,0.9)",
+                zIndex: 2,
+                pointerEvents: "none",
+              }}
+            >
+              ▸
+            </span>
+            <input
+              type="text"
+              value={quickUrl}
+              onChange={(e) => setQuickUrl(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && quickUrl.trim() && !scrapeLoading) {
+                  handleQuickScrape();
+                }
+              }}
+              placeholder="https://   paste a repo, landing page, or demo URL"
+              className="w-full outline-none"
+              style={{
+                background: "rgba(0,0,0,0.75)",
+                border: "3px solid rgba(157,0,255,0.6)",
+                color: "var(--text)",
+                fontFamily: "var(--font-vt323), monospace",
+                fontSize: 22,
+                padding: "26px 90px 26px 60px",
+                letterSpacing: 0.5,
+                boxShadow:
+                  "inset 0 4px 8px rgba(0,0,0,0.7), 0 0 30px rgba(157,0,255,0.25), 0 0 60px rgba(157,0,255,0.15)",
+              }}
+            />
+            <button
+              type="button"
+              onClick={handleQuickScrape}
+              disabled={scrapeLoading || !quickUrl.trim()}
+              aria-label={scrapeLoading ? "Scraping" : "Launch from URL"}
+              className="absolute flex items-center justify-center disabled:opacity-60"
+              style={{
+                right: 10,
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: 56,
+                height: 56,
+                background:
+                  "linear-gradient(135deg, var(--neon-purple), #C026D3)",
+                color: "#FFF",
+                fontFamily: "var(--font-press-start), monospace",
+                fontSize: 18,
+                border: "3px solid #FFF",
+                boxShadow: "3px 3px 0 #000, 0 0 20px rgba(157,0,255,0.7)",
+                cursor: scrapeLoading ? "wait" : "pointer",
+              }}
+            >
+              {scrapeLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                "▶"
+              )}
+            </button>
+          </div>
+
+          {scrapeError && (
+            <div
+              className="mb-4"
+              style={{
+                fontFamily: "var(--font-vt323), monospace",
+                fontSize: 16,
+                color: "var(--neon-orange)",
+              }}
+            >
+              ▸ {scrapeError}
+            </div>
+          )}
+
+          <div
+            className="mb-8"
+            style={{
+              fontFamily: "var(--font-vt323), monospace",
+              fontSize: 17,
+              color: "var(--muted)",
+            }}
+          >
+            ... or{" "}
+            <span
+              style={{
+                display: "inline-block",
+                padding: "4px 10px",
+                border: "1.5px dashed var(--dim, #555)",
+                color: "var(--text)",
+              }}
+            >
+              DRAG &amp; DROP
+            </span>{" "}
+            a repo zip, GIF, or screenshot.
+          </div>
+
+          {/* Benefit chips */}
+          <div className="flex justify-center gap-3 mb-8 flex-wrap">
+            {[
+              { label: "AI-AUTOFILL TITLE + DESCRIPTION", hi: null },
+              { label: "AUTO-DETECT CATEGORY + RARITY", hi: "RARITY" },
+              { label: "FORGE CARD IN 10s", hi: "10s" },
+            ].map((c, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-2"
+                style={{
+                  fontFamily: "var(--font-press-start), monospace",
+                  fontSize: 9,
+                  padding: "10px 14px",
+                  background: "rgba(0,0,0,0.5)",
+                  color: "var(--muted)",
+                  border: "1.5px solid var(--border-metal)",
+                  letterSpacing: 1.5,
+                }}
+              >
+                <span
+                  className="inline-block"
+                  style={{
+                    width: 7,
+                    height: 7,
+                    background: "var(--neon-green)",
+                    boxShadow: "0 0 6px var(--neon-green)",
+                  }}
+                />
+                {c.hi
+                  ? c.label
+                      .split(c.hi)
+                      .flatMap((part, j, arr) =>
+                        j < arr.length - 1
+                          ? [part, <span key={j} style={{ color: "var(--neon-yellow)" }}>{c.hi}</span>]
+                          : [part],
+                      )
+                  : c.label}
+              </div>
+            ))}
+          </div>
+
+          <div
+            style={{
+              fontFamily: "var(--font-vt323), monospace",
+              fontSize: 17,
+              color: "var(--dim, #555)",
+            }}
+          >
+            prefer manual control?{" "}
+            <button
+              type="button"
+              onClick={() => setShowForm(true)}
+              className="cursor-pointer"
+              style={{
+                color: "var(--neon-cyan)",
+                background: "transparent",
+                border: "none",
+                borderBottom: "1.5px dashed rgba(6,182,212,0.4)",
+                padding: 0,
+                paddingBottom: 1,
+                fontFamily: "inherit",
+                fontSize: "inherit",
+              }}
+            >
+              → switch to advanced launch
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-16">
