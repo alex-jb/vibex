@@ -61,25 +61,96 @@ Power: #9D00FF    Resilience: #39FF14    Charisma: #EC4899
 Wisdom: #FACC15   Agility: #06B6D4      Stability: #6366f1
 ```
 
+### Color Restraint Rule (MUST FOLLOW) — "1 primary per screen"
+
+The neon palette has 6 strong colors. Using all 6 on one screen makes it look
+like a casino. **Every screen must pick ONE dominant neon + at most ONE
+supporting accent.** All other elements stay in the dark neutrals.
+
+**Per-screen primary assignments:**
+
+| Route | Primary | Supporting | Why |
+|-------|---------|------------|-----|
+| `/` (landing) | **Purple** `#9D00FF` | Green `#39FF14` (terminal) | Brand wordmark + hero CTA |
+| `/expedition` (discover) | **Yellow** `#FACC15` | Purple (explorer level) | Adventure / treasure / XP |
+| `/launch` (the forge) | **Purple** `#9D00FF` | Cyan `#06B6D4` (success state) | Portal / forge fire |
+| `/feed` | **Cyan** `#06B6D4` | Pink `#EC4899` (likes) | Live stream energy |
+| `/vc` | **Green** `#39FF14` | Yellow (trending) | Data / money / growth |
+| `/arena` | **Orange** `#FF4500` | Pink (crit hits) | Battle / damage |
+| `/dojo` | **Green** `#39FF14` | Purple (evolution) | Training / buddy |
+| `/codex` (new) | **Yellow** `#FACC15` | Rainbow for myth | Badge collection |
+
+**Rarity colors are DATA, not chrome.** The 6 rarity tiers
+(common/uncommon/rare/epic/legendary/myth) only color the Hero Card border +
+rarity stamp + ✦ symbols. **Never** use rarity colors on page-level UI (nav,
+buttons, containers). This rule is what keeps a grid of 12 heroes from looking
+like a rainbow explosion.
+
+---
+
+## Product Voice — Adventure Vocabulary
+
+VibeX is not a product directory. It is a **growth expedition** for AI creators.
+Language matters. Adventure words beat product words everywhere in user-facing
+copy. This table is the canonical rename map — apply it in i18n keys, nav
+labels, page titles, button text, and eyebrow tags.
+
+| Product word | Adventure word | Notes |
+|--------------|----------------|-------|
+| Discover | **EXPEDITION** / The Atlas | Top nav label. Route stays `/discover` but chrome + eyebrow say EXPEDITION |
+| Launch | **THE FORGE** | Route stays `/launch`. Hero chrome says FORGE |
+| Home | **HQ** | Route `/home`. Chrome shows HQ |
+| Profile | **THE CODEX** (new route `/codex`) | Personal badge / hero collection page |
+| Projects | **Heroes** / Cards | UI-layer rename only, DB schema stays `projects` |
+| Users | Creators | (unchanged) |
+| Browse | Scout / Hunt | |
+| Search | Scout | "Scout the atlas..." |
+| Latest | **Fresh sightings** | |
+| Trending | **Hot drops** / On fire | |
+| Featured | **Legendary sightings** | |
+| Level up | **Evolve** | (unchanged — existing evolution system) |
+| Sign up | **Enlist** | Register flow |
+| Log in | Return to base | Can abbreviate to LOG IN on desktop if cramped |
+| Category | Class / Realm | "Agent class", "Cyber City realm" |
+| Stats | **Power level** | |
+| Analytics | **Growth intel** | (already used on landing CTA) |
+| Notification | **Beacon** | |
+| Feed | **The Wire** / Dispatches | |
+| My collection | **My Codex** | |
+
+**Rule:** never mix dialects on one screen. If a page uses "Expedition" in the
+nav, it should NOT use "Discover" in an internal button. Pick one language per
+page and hold it.
+
 ---
 
 ## Typography
 
 ### Font Families
-| Class | Font | Variable | Usage |
-|-------|------|----------|-------|
-| `.font-pixel` | Press Start 2P | `--font-press-start` | Headings, badges, labels, pixel UI |
-| `.font-retro` | VT323 | `--font-vt323` | Body text, dialogs, stats, narrative |
-| `.font-sans` | Geist | `--font-geist-sans` | Modern fallback |
+| Class | Font | Variable | Role | Usage |
+|-------|------|----------|------|-------|
+| `.font-pixel` | Press Start 2P | `--font-press-start` | **Heavy display** | h1/h2, hero CTAs, brand wordmark (≥ 16px only) |
+| `.font-ui` | **Silkscreen** | `--font-silkscreen` | **Small pixel UI** | nav, buttons, labels, card stats, terminal text, eyebrows (8–14px) |
+| `.font-retro` | VT323 | `--font-vt323` | **Retro body** | body text, dialogs, flavor narrative, descriptions |
+| `.font-code` | **Hack** | `--font-hack` | **Programmer mono** | code blocks, terminal output inside cards, API responses |
+| `.font-sans` | Geist | `--font-geist-sans` | **Modern fallback** | rare, forms that need maximum clarity |
 
-### Pixel Font Sizes
-| Size | Usage |
-|------|-------|
-| 20–32px | Page titles, hero headlines |
-| 14–16px | Section headings, modal titles |
-| 10–12px | Card names, button text, stat labels |
-| 8–9px | Eyebrow tags, terminal prompts (decorative, short) |
-| 6–7px | Corner brackets, viewport decorations, chrome labels (decorative only) |
+> **Why Silkscreen joined the stack (2026-04-14):** Press Start 2P is a perfect
+> pixel font at ≥ 16px but gets blurry and hard to read below 12px because every
+> glyph is a single pixel tile. Silkscreen (Google Fonts, free) is a dedicated
+> UI pixel font with per-pixel hinting designed for 8–14px, which is exactly
+> where PS2P fails. **Use Silkscreen everywhere you would have used PS2P at 8–14px.**
+> Reserve PS2P for display sizes where its chunky arcade look is the whole point.
+
+### Pixel Font Sizes (by font)
+
+| Size | Font | Usage |
+|------|------|-------|
+| 20–32px | **Press Start 2P** | Page titles, hero headlines, brand wordmark |
+| 14–16px | **Press Start 2P** | Section headings, modal titles, hero CTAs |
+| 10–13px | **Silkscreen** | Nav links, button text, card names, stat labels, terminal body |
+| 8–9px | **Silkscreen** | Eyebrow tags, terminal prompts, footer copy, pill labels |
+| 6–7px | **Silkscreen** | Corner brackets, chrome labels (decorative only, `aria-hidden`) |
 
 ### Retro Font Sizes
 | Size | Usage |
@@ -91,15 +162,22 @@ Wisdom: #FACC15   Agility: #06B6D4      Stability: #6366f1
 ### Rules
 **Readability floor**: any text the user must **read to act** (quest labels,
 button copy, form inputs, empty state messages, error copy) is **minimum 10px
-pixel / 12px retro**.
+Silkscreen or 12px VT323**. Never use Press Start 2P below 12px.
 
 **Decorative exception**: cosmetic chrome text (eyebrow tags, terminal prompts
 like `VIBEX://AUTH_V1`, viewport corner labels, card rarity stamps) may use
-**6-9px pixel** when repeated throughout the layout as arcade atmosphere. These
-are NOT required for task completion and must have `aria-hidden="true"` on the
-wrapper when the same information exists elsewhere.
+**6-9px Silkscreen** when repeated throughout the layout as arcade atmosphere.
+These are NOT required for task completion and must have `aria-hidden="true"` on
+the wrapper when the same information exists elsewhere.
 
-**Hard floor**: never below 6px pixel. Never below 12px retro.
+**Hard floor**: never below 6px Silkscreen. Never below 12px VT323.
+**Press Start 2P floor**: never below 12px. Below that, use Silkscreen.
+
+**Box-drawing characters (╔╗╚╝═║┼┌┐)**: Press Start 2P and Silkscreen do NOT
+have these glyphs and will fall back to system monospace, rendering ~2× wider
+than expected and breaking tight layouts. Use **Menlo, Monaco, "Courier New",
+monospace** explicitly on any element that renders ASCII box art, or use
+Hack (`var(--font-hack)`) which supports them natively.
 
 ---
 
@@ -511,6 +589,24 @@ Spring:   type: "spring", stiffness: 400, damping: 30  — Bouncy
 | `sprite-bob` | 2s | Gentle bounce (6px) |
 | `typewriter` | 2s | Text reveal with cursor |
 | `holo-rotate` | 4s | Rainbow border rotation |
+
+### Anti-Rules (MUST FOLLOW)
+
+**Never combine `blur(>20px)` + continuous rotation/transform on the same
+element.** GPU re-blurs every frame, causing frame drops on mid-range laptops.
+Symptom observed on landing hero v2 (2026-04-13): conic-gradient backdrop with
+`blur(50px)` + `animate: rotate(360deg)` infinite. Fix: make the blurred element
+static, animate a different element, or use a lower blur value.
+
+**Budget: ≤ 8 continuous animations per viewport at any time.** Entrance
+animations (one-shot) don't count toward the budget. Scanline overlays and
+static decorative layers don't count. But any `repeat: Infinity` does.
+Observed: landing v2 had 14 concurrent animations and felt laggy. v3 dropped
+to ~7 and felt smooth.
+
+**Never animate `box-shadow` continuously.** Box-shadow animation triggers a
+repaint of the element and its container. Use opacity on a separate glow
+element instead.
 
 ---
 
