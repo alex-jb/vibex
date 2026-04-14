@@ -19,8 +19,10 @@ import {
 } from "lucide-react";
 
 import { useLang } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth";
 import { projects } from "@/lib/mock-data";
 import type { Project, AIReview } from "@/lib/types";
+import { FeedbackPanel } from "@/components/launch-feedback/feedback-panel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -239,6 +241,7 @@ export default function ProjectPage({
   const { id } = use(params);
   const project = projects.find((p) => p.id === id);
   const { t } = useLang();
+  const { user } = useAuth();
   const [shareOpen, setShareOpen] = useState(false);
   const { burstStage, clearBurst } = useEvolutionDetector(project?.hero?.evolutionStage);
 
@@ -377,6 +380,13 @@ export default function ProjectPage({
               </span>
             ))}
           </motion.div>
+
+          {/* Launch Feedback Loop — owner-only in Phase 2, logged-in-only in Phase 1 */}
+          {user && (
+            <motion.div variants={fadeIn}>
+              <FeedbackPanel projectId={project.id} />
+            </motion.div>
+          )}
 
           {/* Fork Tree — Remix Guild */}
           <ForkTree project={project} allProjects={projects} />

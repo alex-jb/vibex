@@ -1,5 +1,13 @@
 // Public stub — full implementation is proprietary. See LICENSE.
 
+import type {
+  StructuredReview,
+  FeedbackAction,
+  FeedbackActionType,
+  FeedbackSeverity,
+  FeedbackSuccessMetric,
+} from "./types";
+
 // ═══════════════════════════════════════════════════════════════
 // AI PROJECT REVIEW
 // ═══════════════════════════════════════════════════════════════
@@ -61,6 +69,129 @@ export async function evaluateIdea(_idea: {
     difficulty: "medium",
     suggestions: ["Validate with early users", "Build an MVP first"],
     similarProjects: ["ExampleProject"],
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LAUNCH FEEDBACK LOOP — structured, actionable review
+// See ceo-plans/launch-feedback-loop-20260413.md
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Generate a structured AI review that returns concrete, actionable items
+ * instead of prose bullets. Each item has severity, 2-3 candidate fixes the
+ * creator can apply with one click, and a success metric we'll watch after
+ * apply to compute outcome delta.
+ *
+ * PUBLIC STUB — returns 5 sample actions so the UI works end-to-end without
+ * a real LLM call. Real implementation lives in `.private/lib/ai.ts`.
+ */
+export async function generateStructuredReview(project: {
+  id: string;
+  title: string;
+  tagline: string;
+  description: string;
+  category: string;
+  tags: string[];
+}): Promise<StructuredReview> {
+  const review_id = `stub-${project.id}-${Date.now().toString(36)}`;
+
+  const mk = (
+    idx: number,
+    type: FeedbackActionType,
+    severity: FeedbackSeverity,
+    rationale: string,
+    current_value: string | null,
+    suggested_values: string[],
+    success_metric: FeedbackSuccessMetric,
+  ): FeedbackAction => ({
+    action_id: `${type}-${idx}`,
+    review_id,
+    type,
+    severity,
+    rationale,
+    current_value,
+    suggested_values,
+    success_metric,
+    status: "suggested",
+  });
+
+  const actions: FeedbackAction[] = [
+    mk(
+      1,
+      "tagline_rewrite",
+      "must_fix",
+      "Your tagline is generic and doesn't hint at what makes this different. Pick a rewrite that names a concrete outcome or a surprising angle.",
+      project.tagline,
+      [
+        `The first ${project.category} that actually remembers context across sessions`,
+        `${project.title} — your AI co-pilot for ${project.category.toLowerCase()}, built for creators who ship weekly`,
+        `Skip the boilerplate. ${project.title} takes you from idea to demo in under 5 minutes.`,
+      ],
+      "upvotes",
+    ),
+    mk(
+      1,
+      "demo_add",
+      "must_fix",
+      "No demo means visitors bounce. A 10-second looping GIF of the magic moment is non-negotiable for launch.",
+      null,
+      [
+        "Record a 3-cut screen capture: (1) paste input, (2) hit enter, (3) show output. Export as < 3MB GIF.",
+        "Use a narrated 15s Loom video showing one end-to-end user flow.",
+        "Embed a live sandbox iframe so visitors can try without leaving.",
+      ],
+      "plays",
+    ),
+    mk(
+      1,
+      "audience_narrow",
+      "should_try",
+      "Your description targets 'everyone who uses AI'. Narrow to a specific persona — the wedge is who's most desperate for this today.",
+      project.description.slice(0, 140),
+      [
+        "Solo indie developers shipping AI side-projects weekly",
+        "Product managers at 10-50 person startups running AI experiments",
+        "Technical founders who hate writing launch copy but need to ship",
+      ],
+      "retention",
+    ),
+    mk(
+      1,
+      "cta_revamp",
+      "should_try",
+      "A generic 'Learn More' kills conversion. The CTA should name the next action a user will actually take.",
+      "Learn More",
+      [
+        "Try it with your own prompt →",
+        "See the 60-second demo",
+        "Remix this project in one click",
+      ],
+      "ctr",
+    ),
+    mk(
+      1,
+      "tag_fix",
+      "consider",
+      "Your tags overlap with the category label. Tags should add discovery surface area, not repeat what's already there.",
+      project.tags.join(", "),
+      [
+        "Replace 'AI' with 2-3 concrete technique tags (e.g. 'diffusion', 'rag', 'agents')",
+        "Add a use-case tag ('side-project', 'enterprise', 'creator-tools')",
+        "Add a stage tag ('alpha', 'beta', 'v1-shipped') — filters are how people find things",
+      ],
+      "shares",
+    ),
+  ];
+
+  return {
+    review_id,
+    actions,
+    originality: 75,
+    clarity: 80,
+    ux_potential: 70,
+    virality_potential: 65,
+    investor_curiosity: 60,
   };
 }
 

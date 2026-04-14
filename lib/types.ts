@@ -9,6 +9,75 @@ export interface AIReview {
   suggestions: string[];
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// Launch Feedback Loop — see ceo-plans/launch-feedback-loop-20260413.md
+// ═══════════════════════════════════════════════════════════════════════════
+
+export type FeedbackActionType =
+  | "tagline_rewrite"
+  | "description_rewrite"
+  | "demo_add"
+  | "demo_quality"
+  | "audience_narrow"
+  | "cta_revamp"
+  | "tag_fix"
+  | "category_retarget"
+  | "thumbnail_upgrade"
+  | "pricing_clarify";
+
+export type FeedbackSeverity = "must_fix" | "should_try" | "consider";
+
+export type FeedbackSuccessMetric =
+  | "upvotes"
+  | "plays"
+  | "shares"
+  | "ctr"
+  | "retention"
+  | "remix_count";
+
+export type FeedbackStatus =
+  | "suggested"
+  | "applied"
+  | "skipped"
+  | "rejected"
+  | "expired";
+
+export interface FeedbackOutcomeDelta {
+  metric: FeedbackSuccessMetric;
+  baseline: number;
+  after: number;
+  delta_pct: number;
+  window_hours: number;
+}
+
+export interface FeedbackAction {
+  action_id: string;
+  review_id: string;
+  type: FeedbackActionType;
+  severity: FeedbackSeverity;
+  rationale: string;
+  current_value: string | null;
+  suggested_values: string[];
+  success_metric: FeedbackSuccessMetric;
+  status: FeedbackStatus;
+  applied_value?: string;
+  applied_at?: string;
+  reject_reason?: string;
+  outcome_delta?: FeedbackOutcomeDelta;
+  outcome_at?: string;
+}
+
+export interface StructuredReview {
+  review_id: string;
+  actions: FeedbackAction[];
+  // Legacy score fields — kept for backwards compat with existing AIReview shape.
+  originality: number;
+  clarity: number;
+  ux_potential: number;
+  virality_potential: number;
+  investor_curiosity: number;
+}
+
 export interface BehaviorScore {
   plays: number;
   avgStaySeconds: number;
