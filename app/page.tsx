@@ -1,41 +1,61 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { Rocket, ArrowRight, Sparkles } from "lucide-react";
-import { projects } from "@/lib/mock-data";
 
-// Lazy-load the showcase — it's heavy (Framer Motion animations, demo state
-// machine, Game Boy SVG) and below the hero text. Splitting it out ~halves
-// the landing initial chunk.
-const GameBoyFrame = dynamic(
-  () => import("@/components/showcase/game-boy-frame").then((m) => ({ default: m.GameBoyFrame })),
-  { ssr: true, loading: () => <div style={{ minHeight: 420 }} /> },
-);
-const InteractiveDemo = dynamic(
-  () => import("@/components/showcase/interactive-demo").then((m) => ({ default: m.InteractiveDemo })),
-  { ssr: true },
-);
+/* ═══════════════════════════════════════════════════════════════════════════
+   LANDING PAGE — v7 cinematic "boot sequence" hero.
+   Replaces the earlier GameBoyFrame + InteractiveDemo showcase with a
+   cleaner three-zone composition:
+     • Left column : dark terminal boot log (VIBEXFORGE://BOOT_V1.4.2)
+     • Center stack: landscape hero card + glitch headline + CTAs
+     • Chrome      : status bar top, L-corner brackets, scanline overlay
+   Approved via /design-shotgun on 2026-04-13, iterations v1→v7.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 const pixelEase = [0.22, 1, 0.36, 1] as const;
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   LANDING PAGE — 16-bit arcade marquee + Game Boy showcase + LAUNCH inside.
-   Aesthetic: pixel chromatic shadows, terminal subtitle with cursor,
-   floating pixel particles, decorative viewport corner brackets.
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ─── Boot log content ─── */
+const BOOT_LINES: { text: string; tone?: "accent" | "warn" | "ok" | "ready" }[] = [
+  { text: "$ vibex launch", tone: "accent" },
+  { text: "> connecting growth.layer ... OK", tone: "accent" },
+  { text: "> mounting hero.cards ....... OK", tone: "accent" },
+  { text: "> hydrating evo.engine ...... OK", tone: "accent" },
+  { text: "> calibrating rarity ........ OK", tone: "accent" },
+  { text: "> spawning qr.codes ......... OK", tone: "accent" },
+  { text: "> loading shard.01 ..........", tone: "accent" },
+  { text: "! legacy launches: purging", tone: "warn" },
+  { text: "> 48 tables · 43 routes · 105 cx", tone: "ok" },
+  { text: ">> READY.", tone: "ready" },
+];
+
+const ASCII_LOGO = `  ██╗   ██╗██╗██████╗ ███████╗██╗  ██╗
+  ██║   ██║██║██╔══██╗██╔════╝╚██╗██╔╝
+  ██║   ██║██║██████╔╝█████╗   ╚███╔╝
+  ╚██╗ ██╔╝██║██╔══██╗██╔══╝   ██╔██╗
+   ╚████╔╝ ██║██████╔╝███████╗██╔╝ ██╗
+    ╚═══╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝`;
+
+function toneColor(tone?: "accent" | "warn" | "ok" | "ready"): string {
+  if (tone === "warn") return "var(--neon-yellow)";
+  if (tone === "accent") return "var(--neon-cyan)";
+  if (tone === "ready") return "var(--neon-yellow)";
+  return "var(--neon-green)";
+}
+
+/* ─── Bar data for mini hero card ─── */
+const STATS = [
+  { label: "HP", pct: 88, grad: "linear-gradient(180deg, #4AFF2A, #1E9C00)" },
+  { label: "MP", pct: 67, grad: "linear-gradient(180deg, #22D3EE, #0891B2)" },
+  { label: "XP", pct: 51, grad: "linear-gradient(180deg, #C77DFF, #7B2FBE)" },
+];
 
 export default function LandingPage() {
   const router = useRouter();
 
-  // User's idea from InteractiveDemo (empty = auto-demo, non-empty = user typed)
-  // Makes the LAUNCH button context-aware and lets the demo deep-link to /launch.
-  const [userIdea, setUserIdea] = useState<string>("");
-
-  // SPACE key launches the app (desktop users can just press space)
+  /* SPACE key launches the full app (desktop power user shortcut) */
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.code === "Space" && e.target === document.body) {
@@ -47,76 +67,33 @@ export default function LandingPage() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [router]);
 
-  // Real social proof — derived from mock-data.
-  // Gate: only show the bar when numbers are impressive enough. Showing
-  // "2 CREATORS SHIPPED" is worse than showing nothing — once real DB data
-  // lands these thresholds become trivially met.
-  const totalCreators = new Set(projects.map((p) => p.creatorName)).size;
-  const viralThisWeek = projects.filter((p) => p.featured).length;
-  const showSocialProof = totalCreators >= 10;
-
   return (
     <div
-      className="relative min-h-screen overflow-hidden flex items-center justify-center"
-      style={{ background: "var(--bg-deep)" }}
+      className="relative h-screen w-screen overflow-hidden"
+      style={{
+        background:
+          "radial-gradient(ellipse at 50% 44%, rgba(157,0,255,0.14), transparent 55%), radial-gradient(ellipse at 50% 44%, rgba(57,255,20,0.05), transparent 75%), var(--bg-deep)",
+      }}
     >
-      {/* ═══ ATMOSPHERIC LAYERS ═══ */}
-
-      {/* Pixel grid texture */}
+      {/* ═══ Scanline + vignette overlays ═══ */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        className="pointer-events-none fixed inset-0 z-[100]"
         style={{
-          backgroundImage:
-            "linear-gradient(rgba(157,0,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(157,0,255,0.4) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-          maskImage:
-            "radial-gradient(ellipse at center, black 30%, transparent 80%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse at center, black 30%, transparent 80%)",
+          background:
+            "repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0,0,0,0.22) 2px, rgba(0,0,0,0.22) 4px)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-[99]"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%)",
         }}
       />
 
-      {/* Background orbs */}
-      <div className="pointer-events-none absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full bg-violet-600/12 blur-[140px]" />
-      <div className="pointer-events-none absolute top-1/3 right-1/4 h-[400px] w-[400px] rounded-full bg-fuchsia-600/8 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-0 left-1/3 h-[300px] w-[300px] rounded-full bg-cyan-500/6 blur-[100px]" />
-
-      {/* Floating pixel particles */}
-      {[
-        { left: "8%", top: "18%", delay: 0, color: "#9D00FF" },
-        { left: "12%", top: "62%", delay: 1.5, color: "#39FF14" },
-        { left: "85%", top: "22%", delay: 2.8, color: "#06B6D4" },
-        { left: "92%", top: "70%", delay: 0.6, color: "#EC4899" },
-        { left: "20%", top: "85%", delay: 3.2, color: "#FACC15" },
-        { left: "78%", top: "12%", delay: 1.8, color: "#FF4500" },
-      ].map((p, i) => (
-        <motion.div
-          key={i}
-          aria-hidden="true"
-          className="pointer-events-none absolute hidden md:block"
-          style={{
-            left: p.left,
-            top: p.top,
-            width: 4,
-            height: 4,
-            background: p.color,
-            boxShadow: `0 0 12px ${p.color}, 0 0 4px ${p.color}`,
-          }}
-          animate={{
-            y: [0, -16, 0],
-            opacity: [0.3, 1, 0.3],
-          }}
-          transition={{
-            duration: 3.5,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-
-      {/* Viewport corner brackets — decorative L-shapes */}
+      {/* ═══ L-corner brackets (orange) ═══ */}
       {(["tl", "tr", "bl", "br"] as const).map((pos) => {
         const isTop = pos.startsWith("t");
         const isLeft = pos.endsWith("l");
@@ -124,12 +101,13 @@ export default function LandingPage() {
           <div
             key={pos}
             aria-hidden="true"
-            className="pointer-events-none absolute hidden sm:block"
+            className="pointer-events-none fixed hidden sm:block z-50"
             style={{
-              [isTop ? "top" : "bottom"]: 16,
-              [isLeft ? "left" : "right"]: 16,
+              [isTop ? "top" : "bottom"]: 14,
+              [isLeft ? "left" : "right"]: 14,
               width: 28,
               height: 28,
+              filter: "drop-shadow(0 0 4px rgba(255,69,0,0.5))",
             }}
           >
             <div
@@ -139,8 +117,7 @@ export default function LandingPage() {
                 [isLeft ? "left" : "right"]: 0,
                 width: 28,
                 height: 3,
-                background: "var(--neon-purple)",
-                boxShadow: "0 0 8px rgba(157,0,255,0.6)",
+                background: "var(--neon-orange)",
               }}
             />
             <div
@@ -150,274 +127,576 @@ export default function LandingPage() {
                 [isLeft ? "left" : "right"]: 0,
                 width: 3,
                 height: 28,
-                background: "var(--neon-purple)",
-                boxShadow: "0 0 8px rgba(157,0,255,0.6)",
+                background: "var(--neon-orange)",
               }}
             />
           </div>
         );
       })}
 
-      {/* ═══ MAIN CONTENT ═══ */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col items-center">
-        {/* ─── HERO TEXT ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: pixelEase }}
-          className="text-center mb-8 sm:mb-10 max-w-4xl"
+      {/* ═══ Top status bar ═══ */}
+      <div
+        className="fixed z-[60] flex items-center justify-between"
+        style={{
+          top: 36,
+          left: 56,
+          right: 56,
+          fontFamily: "var(--font-press-start), monospace",
+          fontSize: 11,
+          letterSpacing: 2,
+          color: "var(--muted)",
+        }}
+      >
+        <div
+          style={{
+            color: "var(--neon-purple)",
+            fontSize: 17,
+            textShadow: "0 0 4px rgba(157,0,255,0.9)",
+            letterSpacing: 3,
+          }}
         >
-          {/* Eyebrow tag */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="inline-flex items-center gap-2 mb-5 sm:mb-6 px-3 py-1.5"
-            style={{
-              border: "2px solid var(--neon-purple)",
-              background: "rgba(157,0,255,0.08)",
-              boxShadow: "3px 3px 0 #000, 0 0 16px rgba(157,0,255,0.25)",
-            }}
+          ◆ VIBEX
+        </div>
+        <div className="flex gap-[22px] hidden md:flex">
+          <span>
+            SYS:<span style={{ color: "var(--neon-green)" }}>ONLINE</span>
+          </span>
+          <span>
+            NET:<span style={{ color: "var(--neon-green)" }}>OK</span>
+          </span>
+          <span>
+            SHARD:<span style={{ color: "var(--neon-green)" }}>01</span>
+          </span>
+          <motion.span
+            style={{ color: "var(--neon-green)" }}
+            animate={{ opacity: [1, 0, 1] }}
+            transition={{ duration: 1, repeat: Infinity, times: [0, 0.5, 1] }}
           >
-            <span
-              className="inline-block"
+            ● REC
+          </motion.span>
+        </div>
+      </div>
+
+      {/* ═══ Left terminal column ═══ */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="fixed hidden lg:block z-[60]"
+        style={{
+          top: 96,
+          left: 56,
+          width: 420,
+          fontFamily: "var(--font-press-start), monospace",
+        }}
+      >
+        <motion.pre
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          style={{
+            fontFamily: "var(--font-press-start), monospace",
+            fontSize: 10,
+            color: "var(--neon-purple)",
+            textShadow: "0 0 3px rgba(157,0,255,1)",
+            lineHeight: 1.3,
+            marginBottom: 18,
+            whiteSpace: "pre",
+          }}
+        >
+          {ASCII_LOGO}
+        </motion.pre>
+
+        <div
+          style={{
+            fontSize: 12,
+            lineHeight: 2,
+            color: "var(--neon-green)",
+            textShadow: "0 0 2px rgba(57,255,20,0.9)",
+          }}
+        >
+          {BOOT_LINES.map((line, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -6 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.8 + i * 0.4, ease: "easeOut" }}
               style={{
-                width: 6,
-                height: 6,
-                background: "#39FF14",
-                boxShadow: "0 0 6px #39FF14",
-                animation: "pulse 1.5s ease-in-out infinite",
+                color: toneColor(line.tone),
+                textShadow:
+                  line.tone === "warn"
+                    ? "0 0 2px rgba(250,204,21,0.9)"
+                    : line.tone === "accent"
+                    ? "0 0 2px rgba(6,182,212,0.9)"
+                    : line.tone === "ready"
+                    ? "0 0 3px rgba(250,204,21,1)"
+                    : "0 0 2px rgba(57,255,20,0.9)",
+                fontSize: line.tone === "ready" ? 14 : 12,
+                marginTop: line.tone === "ready" ? 8 : 0,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {line.text}
+              {line.tone === "ready" && (
+                <motion.span
+                  aria-hidden="true"
+                  className="inline-block align-middle"
+                  style={{
+                    width: 10,
+                    height: 14,
+                    background: "var(--neon-green)",
+                    marginLeft: 5,
+                    boxShadow: "0 0 4px var(--neon-green)",
+                  }}
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 0.8, repeat: Infinity, times: [0, 0.5, 1] }}
+                />
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* ═══ Center stack: hero card + headline + CTAs ═══ */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 4.5, ease: pixelEase }}
+        className="fixed z-40 flex flex-col items-center px-4"
+        style={{
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "min(620px, calc(100vw - 64px))",
+        }}
+      >
+        {/* === Landscape hero card === */}
+        <div
+          className="relative mb-7 w-full"
+          style={{ maxWidth: 560 }}
+        >
+          {/* Static radial glow behind */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute"
+            style={{
+              inset: -70,
+              background:
+                "radial-gradient(ellipse, rgba(157,0,255,0.4) 0%, rgba(6,182,212,0.2) 40%, transparent 72%)",
+              filter: "blur(34px)",
+              zIndex: -1,
+            }}
+          />
+
+          <motion.div
+            className="relative overflow-hidden"
+            style={{
+              aspectRatio: "5 / 3",
+              background:
+                "linear-gradient(135deg, rgba(157,0,255,0.16), rgba(6,182,212,0.16)), linear-gradient(180deg, var(--bg-card) 0%, var(--bg-panel) 100%)",
+              border: "4px solid #FFD700",
+              boxShadow:
+                "0 0 50px rgba(255,215,0,0.3), 0 0 100px rgba(157,0,255,0.25), inset 0 0 24px rgba(255,215,0,0.1), 8px 8px 0 #000",
+              padding: "20px 18px 16px",
+              display: "flex",
+              flexDirection: "column",
+            }}
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {/* Double pinstripe frame */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute"
+              style={{
+                inset: 6,
+                border: "1.5px solid rgba(255,215,0,0.55)",
               }}
             />
-            <span
-              className="font-pixel"
-              style={{
-                fontSize: 8,
-                letterSpacing: 3,
-                color: "#E9BDFF",
-              }}
-            >
-              VIBEX // NOW IN BETA
-            </span>
-          </motion.div>
 
-          {/* Title — pixel chromatic shadow */}
-          <h1
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-5 sm:mb-6"
-            style={{
-              fontFamily: "var(--font-pixel), monospace",
-              color: "#FFF",
-              lineHeight: 1.25,
-              textShadow:
-                "3px 3px 0 rgba(157,0,255,0.7), -2px -2px 0 rgba(6,182,212,0.5), 0 0 36px rgba(157,0,255,0.35)",
-            }}
-          >
-            Turn your AI project
-            <br className="hidden sm:inline" />{" "}
-            into a{" "}
-            <span
-              className="relative inline-block"
+            {/* Foil sweep */}
+            <motion.div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
               style={{
-                color: "var(--neon-green)",
-                textShadow:
-                  "3px 3px 0 rgba(0,0,0,0.6), 0 0 32px rgba(57,255,20,0.6)",
+                background:
+                  "linear-gradient(115deg, transparent 20%, rgba(157,0,255,0.28) 35%, rgba(6,182,212,0.28) 50%, rgba(236,72,153,0.28) 65%, transparent 80%)",
+                mixBlendMode: "screen",
+              }}
+              animate={{ x: ["-100%", "100%"] }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
+            />
+
+            {/* Header row */}
+            <div
+              className="flex items-center justify-between mb-2"
+              style={{ zIndex: 2, position: "relative" }}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-press-start), monospace",
+                  fontSize: 8,
+                  color: "#FFD700",
+                  letterSpacing: 2,
+                }}
+              >
+                ◆ BOSS ENCOUNTER ◆
+              </span>
+              <span
+                style={{
+                  fontFamily: "var(--font-press-start), monospace",
+                  fontSize: 9,
+                  padding: "5px 8px",
+                  background:
+                    "linear-gradient(135deg, var(--neon-pink), var(--neon-purple))",
+                  color: "#FFF",
+                  letterSpacing: 1,
+                  border: "1.5px solid #FFD700",
+                  boxShadow:
+                    "2px 2px 0 #000, 0 0 14px rgba(236,72,153,0.85)",
+                }}
+              >
+                LEGENDARY
+              </span>
+            </div>
+
+            {/* Big landscape demo area */}
+            <div
+              className="relative flex-1 overflow-hidden"
+              style={{
+                background:
+                  "radial-gradient(circle at 30% 30%, rgba(6,182,212,0.25), transparent 55%), radial-gradient(circle at 70% 70%, rgba(157,0,255,0.2), transparent 50%), #0A0A0C",
+                border: "2px solid rgba(255,215,0,0.5)",
+                boxShadow: "inset 0 0 24px rgba(0,0,0,0.6)",
+                marginBottom: 10,
+                zIndex: 2,
               }}
             >
-              viral collectible
-              {/* Underline accent */}
-              <span
+              {/* Sun-ray bg (static) */}
+              <div
                 aria-hidden="true"
-                className="absolute left-0 right-0 -bottom-1"
+                className="pointer-events-none absolute inset-0"
                 style={{
-                  height: 4,
                   background:
-                    "linear-gradient(90deg, transparent, var(--neon-green), transparent)",
-                  boxShadow: "0 0 12px rgba(57,255,20,0.7)",
+                    "repeating-conic-gradient(from 0deg at center, rgba(255,215,0,0.06) 0deg 10deg, transparent 10deg 20deg)",
                 }}
               />
-            </span>
-          </h1>
-
-          {/* Subtitle — terminal prompt style */}
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2.5"
-            style={{
-              background: "rgba(0,0,0,0.5)",
-              border: "1px solid rgba(157,0,255,0.3)",
-              boxShadow: "inset 0 0 12px rgba(157,0,255,0.1)",
-            }}
-          >
-            <span
-              className="font-pixel"
-              style={{
-                fontSize: 9,
-                color: "var(--neon-green)",
-                textShadow: "0 0 6px rgba(57,255,20,0.6)",
-              }}
-            >
-              {">"}
-            </span>
-            <span
-              className="font-retro text-sm sm:text-base md:text-lg"
-              style={{
-                color: "#E8E8EC",
-                letterSpacing: 0.5,
-              }}
-            >
-              generate_a_card{" "}
-              <span style={{ color: "var(--neon-purple)" }}>→</span>{" "}
-              share_it{" "}
-              <span style={{ color: "var(--neon-purple)" }}>→</span>{" "}
-              grow_your_project
-            </span>
-            <span
-              aria-hidden="true"
-              className="inline-block"
-              style={{
-                width: 8,
-                height: 14,
-                background: "var(--neon-green)",
-                marginLeft: 2,
-                animation: "pulse 1s steps(2) infinite",
-              }}
-            />
-          </div>
-        </motion.div>
-
-        {/* ─── GAME BOY SHOWCASE ─── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.3, ease: pixelEase }}
-          className="w-full"
-        >
-          <GameBoyFrame
-            cta={
-              <Link
-                href={
-                  userIdea
-                    ? `/launch?seed=${encodeURIComponent(userIdea)}`
-                    : "/home"
-                }
+              {/* CRT scanlines */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    "repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px)",
+                  zIndex: 5,
+                }}
+              />
+              {/* Play button top-left */}
+              <div
+                className="absolute flex items-center justify-center"
+                style={{
+                  top: 12,
+                  left: 12,
+                  width: 22,
+                  height: 22,
+                  border: "2px solid var(--neon-yellow)",
+                  background: "rgba(0,0,0,0.5)",
+                  fontFamily: "var(--font-press-start), monospace",
+                  fontSize: 10,
+                  color: "var(--neon-yellow)",
+                  zIndex: 6,
+                }}
               >
-                <motion.button
-                  type="button"
-                  aria-label={
-                    userIdea
-                      ? `Launch with your idea: ${userIdea}`
-                      : "Launch VibeX — enter the full app (or press SPACE)"
-                  }
-                  className="group flex items-center gap-2 px-6 py-4 font-pixel text-xs tracking-wider transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-500/50"
+                ▶
+              </div>
+              {/* LIVE badge top-right */}
+              <div
+                className="absolute flex items-center gap-1.5"
+                style={{
+                  top: 14,
+                  right: 14,
+                  fontFamily: "var(--font-press-start), monospace",
+                  fontSize: 8,
+                  color: "var(--neon-pink)",
+                  letterSpacing: 1.5,
+                  zIndex: 6,
+                }}
+              >
+                <motion.span
+                  aria-hidden="true"
+                  className="inline-block"
                   style={{
-                    background: userIdea
-                      ? "linear-gradient(135deg, var(--neon-green), #22C55E)"
-                      : "linear-gradient(135deg, var(--neon-purple), #C026D3)",
-                    border: "3px solid #FFF",
-                    color: userIdea ? "#0A2500" : "#FFF",
-                    minHeight: "52px",
-                    cursor: "pointer",
+                    width: 6,
+                    height: 6,
+                    background: "var(--neon-pink)",
+                    boxShadow: "0 0 6px var(--neon-pink)",
                   }}
-                  animate={{
-                    boxShadow: userIdea
-                      ? [
-                          "4px 4px 0 #000, 0 0 20px rgba(57,255,20,0.6)",
-                          "4px 4px 0 #000, 0 0 40px rgba(57,255,20,1)",
-                          "4px 4px 0 #000, 0 0 20px rgba(57,255,20,0.6)",
-                        ]
-                      : [
-                          "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
-                          "4px 4px 0 #000, 0 0 40px rgba(157,0,255,0.9)",
-                          "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
-                        ],
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 1, repeat: Infinity, times: [0, 0.5, 1] }}
+                />
+                LIVE
+              </div>
+
+              {/* 3 ambient sparkles */}
+              {[
+                { top: "28%", left: "18%", color: "var(--neon-yellow)", delay: 0 },
+                { top: "38%", right: "22%", color: "var(--neon-cyan)", delay: 0.7 },
+                { bottom: "30%", left: "38%", color: "var(--neon-pink)", delay: 1.3 },
+              ].map((s, i) => (
+                <motion.div
+                  key={i}
+                  aria-hidden="true"
+                  className="absolute pointer-events-none"
+                  style={{
+                    ...(s as Record<string, unknown>),
+                    width: 5,
+                    height: 5,
+                    background: s.color,
+                    boxShadow: `0 0 8px ${s.color}`,
+                    zIndex: 7,
                   }}
+                  animate={{ opacity: [0, 1, 0], scale: [0.5, 1.3, 0.5] }}
                   transition={{
-                    duration: userIdea ? 1.2 : 2,
+                    duration: 2,
+                    delay: s.delay,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
-                >
-                  {userIdea ? <Sparkles className="h-5 w-5" /> : <Rocket className="h-5 w-5" />}
-                  {userIdea ? "LAUNCH WITH THIS" : "LAUNCH"}
-                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </motion.button>
-              </Link>
-            }
-          >
-            <InteractiveDemo onIdeaSubmit={setUserIdea} />
-          </GameBoyFrame>
-        </motion.div>
+                />
+              ))}
 
-        {/* ─── SOCIAL PROOF + KEYBOARD HINT ─── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.9 }}
-          className="mt-6 sm:mt-8 flex flex-col items-center gap-3"
-        >
-          {/* Social proof bar — only when numbers are credible */}
-          {showSocialProof && (
-            <div
-              className="inline-flex items-center gap-3 px-4 py-2"
-              style={{
-                background: "rgba(0,0,0,0.5)",
-                border: "1px solid rgba(57,255,20,0.3)",
-                boxShadow: "inset 0 0 10px rgba(57,255,20,0.08)",
-              }}
-            >
-              <span
-                aria-hidden="true"
-                className="inline-block"
+              {/* Timeline bottom */}
+              <div
+                className="absolute flex items-center gap-2"
                 style={{
-                  width: 6,
-                  height: 6,
-                  background: "#39FF14",
-                  boxShadow: "0 0 8px #39FF14",
-                  animation: "pulse 1.5s ease-in-out infinite",
-                }}
-              />
-              <span
-                className="font-pixel"
-                style={{
-                  fontSize: 10,
-                  letterSpacing: 1.5,
-                  color: "#E8E8EC",
+                  bottom: 10,
+                  left: 12,
+                  right: 12,
+                  zIndex: 6,
                 }}
               >
-                <span style={{ color: "var(--neon-green)" }}>{totalCreators.toLocaleString()}</span>{" "}
-                CREATORS SHIPPED
-                {" · "}
-                <span style={{ color: "var(--neon-yellow)" }}>{viralThisWeek}</span>{" "}
-                VIRAL CARDS
-              </span>
+                <span
+                  style={{
+                    fontFamily: "var(--font-press-start), monospace",
+                    fontSize: 7,
+                    color: "var(--neon-yellow)",
+                    letterSpacing: 1,
+                  }}
+                >
+                  00:12
+                </span>
+                <div
+                  className="relative flex-1"
+                  style={{
+                    height: 4,
+                    background: "rgba(255,255,255,0.15)",
+                    border: "1px solid rgba(255,215,0,0.4)",
+                  }}
+                >
+                  <div
+                    className="absolute top-0 left-0 h-full"
+                    style={{
+                      width: "28%",
+                      background: "linear-gradient(90deg, var(--neon-yellow), #FFD700)",
+                      boxShadow: "0 0 6px rgba(250,204,21,0.8)",
+                    }}
+                  />
+                </div>
+                <span
+                  style={{
+                    fontFamily: "var(--font-press-start), monospace",
+                    fontSize: 7,
+                    color: "var(--neon-yellow)",
+                    letterSpacing: 1,
+                  }}
+                >
+                  00:42
+                </span>
+              </div>
             </div>
-          )}
 
-          {/* Keyboard hint */}
+            {/* Info strip: name + HP/MP/XP bars */}
+            <div
+              className="flex items-center gap-4"
+              style={{ zIndex: 2, position: "relative" }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-press-start), monospace",
+                  fontSize: 13,
+                  color: "var(--text)",
+                  letterSpacing: 1.5,
+                  textShadow: "0 0 4px rgba(255,215,0,0.9)",
+                  whiteSpace: "nowrap",
+                  paddingRight: 14,
+                  borderRight: "1.5px solid var(--border-metal)",
+                }}
+              >
+                AI HERO
+              </div>
+              <div className="flex-1 grid grid-cols-3 gap-2.5">
+                {STATS.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="flex items-center gap-1.5"
+                    style={{
+                      fontFamily: "var(--font-press-start), monospace",
+                      fontSize: 7,
+                    }}
+                  >
+                    <span style={{ width: 16, color: "var(--text)" }}>
+                      {stat.label}
+                    </span>
+                    <div
+                      className="relative flex-1 overflow-hidden"
+                      style={{
+                        height: 10,
+                        background: "#0A0A0C",
+                        border: "1.5px solid var(--border-metal)",
+                      }}
+                    >
+                      <motion.div
+                        className="absolute top-0 left-0 h-full"
+                        style={{
+                          background: stat.grad,
+                          transformOrigin: "left center",
+                        }}
+                        initial={{ scaleX: 0, width: `${stat.pct}%` }}
+                        animate={{ scaleX: 1 }}
+                        transition={{
+                          duration: 1.2,
+                          delay: 5.2,
+                          ease: pixelEase,
+                        }}
+                      />
+                    </div>
+                    <span
+                      style={{
+                        width: 18,
+                        textAlign: "right",
+                        color: "var(--muted)",
+                      }}
+                    >
+                      {stat.pct}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* === Headline === */}
+        <motion.div
+          initial={{ opacity: 0, x: -6 }}
+          animate={{ opacity: [0, 0.6, 0.8, 1], x: [-6, 4, -2, 0] }}
+          transition={{ duration: 0.5, delay: 5.2, times: [0, 0.33, 0.66, 1] }}
+          className="text-center mb-5"
+          style={{
+            fontFamily: "var(--font-press-start), monospace",
+            fontSize: 26,
+            lineHeight: 1.5,
+            color: "var(--text)",
+            letterSpacing: 2,
+            textShadow:
+              "0 0 6px rgba(232,232,236,0.5), 0 0 20px rgba(157,0,255,0.3)",
+          }}
+        >
+          LAUNCH YOUR AI PROJECT.
+          <br />
           <span
-            className="font-pixel text-center block"
             style={{
-              fontSize: 7,
-              letterSpacing: 3,
-              color: "rgba(157,0,255,0.7)",
-              textShadow: "0 0 6px rgba(157,0,255,0.4)",
+              color: "var(--neon-yellow)",
+              textShadow: "0 0 8px rgba(250,204,21,0.9)",
             }}
           >
-            ▸ PRESS{" "}
-            <kbd
-              className="inline-block px-1.5 py-0.5 mx-0.5"
-              style={{
-                background: "rgba(157,0,255,0.15)",
-                border: "1px solid rgba(157,0,255,0.6)",
-                color: "#E9BDFF",
-                fontSize: 7,
-              }}
-            >
-              SPACE
-            </kbd>{" "}
-            OR CLICK LAUNCH ◂
+            WATCH IT EVOLVE.
           </span>
         </motion.div>
-      </div>
+
+        {/* === CTAs === */}
+        <div className="flex justify-center gap-4">
+          <Link href="/home">
+            <motion.button
+              type="button"
+              className="font-pixel uppercase cursor-pointer"
+              style={{
+                fontSize: 13,
+                padding: "16px 28px",
+                letterSpacing: 2,
+                border: "3px solid #FFF",
+                boxShadow: "5px 5px 0 #000, 0 0 24px rgba(157,0,255,0.6)",
+                color: "#FFF",
+                background:
+                  "linear-gradient(135deg, var(--neon-purple), #C026D3)",
+              }}
+              whileHover={{
+                x: -2,
+                y: -2,
+                boxShadow: "7px 7px 0 #000, 0 0 32px rgba(157,0,255,0.85)",
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 26 }}
+            >
+              ▶ PRESS START
+            </motion.button>
+          </Link>
+          <Link href="/about">
+            <motion.button
+              type="button"
+              className="font-pixel uppercase cursor-pointer"
+              style={{
+                fontSize: 13,
+                padding: "16px 28px",
+                letterSpacing: 2,
+                background: "transparent",
+                border: "3px solid var(--neon-green)",
+                color: "var(--neon-green)",
+                boxShadow: "5px 5px 0 #000",
+              }}
+              whileHover={{
+                x: -2,
+                y: -2,
+                boxShadow: "7px 7px 0 #000, 0 0 20px rgba(57,255,20,0.45)",
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 26 }}
+            >
+              [ ABOUT ]
+            </motion.button>
+          </Link>
+        </div>
+      </motion.div>
+
+      {/* ═══ Keyboard hint bottom (desktop only) ═══ */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 6 }}
+        className="fixed hidden md:block z-[60] text-center"
+        style={{
+          bottom: 34,
+          left: 0,
+          right: 0,
+          fontFamily: "var(--font-press-start), monospace",
+          fontSize: 8,
+          letterSpacing: 3,
+          color: "rgba(157,0,255,0.7)",
+          textShadow: "0 0 6px rgba(157,0,255,0.4)",
+        }}
+      >
+        ▸ PRESS{" "}
+        <kbd
+          className="inline-block px-1.5 py-0.5 mx-0.5"
+          style={{
+            background: "rgba(157,0,255,0.15)",
+            border: "1px solid rgba(157,0,255,0.6)",
+            color: "#E9BDFF",
+            fontSize: 8,
+          }}
+        >
+          SPACE
+        </kbd>{" "}
+        OR CLICK ▶ PRESS START ◂
+      </motion.div>
     </div>
   );
 }
