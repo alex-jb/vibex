@@ -20,14 +20,14 @@ const pixelEase = [0.22, 1, 0.36, 1] as const;
 /* ─── Boot log content ─── */
 const BOOT_LINES: { text: string; tone?: "accent" | "warn" | "ok" | "ready" }[] = [
   { text: "$ vibex launch", tone: "accent" },
-  { text: "> connecting growth.layer ... OK", tone: "accent" },
-  { text: "> mounting hero.cards ....... OK", tone: "accent" },
-  { text: "> hydrating evo.engine ...... OK", tone: "accent" },
-  { text: "> calibrating rarity ........ OK", tone: "accent" },
-  { text: "> spawning qr.codes ......... OK", tone: "accent" },
-  { text: "> loading shard.01 ..........", tone: "accent" },
-  { text: "! legacy launches: purging", tone: "warn" },
-  { text: "> 48 tables · 43 routes · 105 cx", tone: "ok" },
+  { text: "> growth.layer .... OK", tone: "accent" },
+  { text: "> hero.cards ...... OK", tone: "accent" },
+  { text: "> evo.engine ...... OK", tone: "accent" },
+  { text: "> rarity .......... OK", tone: "accent" },
+  { text: "> qr.codes ........ OK", tone: "accent" },
+  { text: "> shard.01 ........", tone: "accent" },
+  { text: "! purging legacy", tone: "warn" },
+  { text: "> 48t 43r 105cx", tone: "ok" },
   { text: ">> READY.", tone: "ready" },
 ];
 
@@ -182,11 +182,13 @@ export default function LandingPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="fixed hidden lg:block z-[60]"
+        className="fixed hidden xl:block z-[60] pointer-events-none"
         style={{
           top: 96,
-          left: 56,
-          width: 420,
+          left: 40,
+          width: 300,
+          maxWidth: 300,
+          overflow: "hidden",
           fontFamily: "var(--font-press-start), monospace",
         }}
       >
@@ -195,12 +197,14 @@ export default function LandingPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.2 }}
           style={{
-            fontFamily: "var(--font-press-start), monospace",
-            fontSize: 10,
+            // Explicit monospace — Press Start 2P lacks box-drawing glyphs
+            // and would fall back to a wider font, breaking width.
+            fontFamily: "Menlo, Monaco, Consolas, 'Courier New', monospace",
+            fontSize: 8,
             color: "var(--neon-purple)",
             textShadow: "0 0 3px rgba(157,0,255,1)",
-            lineHeight: 1.3,
-            marginBottom: 18,
+            lineHeight: 1.1,
+            marginBottom: 16,
             whiteSpace: "pre",
           }}
         >
@@ -209,7 +213,7 @@ export default function LandingPage() {
 
         <div
           style={{
-            fontSize: 12,
+            fontSize: 10,
             lineHeight: 2,
             color: "var(--neon-green)",
             textShadow: "0 0 2px rgba(57,255,20,0.9)",
@@ -231,7 +235,7 @@ export default function LandingPage() {
                     : line.tone === "ready"
                     ? "0 0 3px rgba(250,204,21,1)"
                     : "0 0 2px rgba(57,255,20,0.9)",
-                fontSize: line.tone === "ready" ? 14 : 12,
+                fontSize: line.tone === "ready" ? 12 : 10,
                 marginTop: line.tone === "ready" ? 8 : 0,
                 whiteSpace: "nowrap",
               }}
