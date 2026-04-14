@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import dynamic from "next/dynamic";
-import { Geist, Geist_Mono, Press_Start_2P, VT323 } from "next/font/google";
+import { Geist, Geist_Mono, Press_Start_2P, VT323, Silkscreen } from "next/font/google";
 import localFont from "next/font/local";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -42,6 +42,14 @@ const pressStart = Press_Start_2P({
 const vt323 = VT323({
   weight: "400",
   variable: "--font-vt323",
+  subsets: ["latin"],
+});
+
+// Silkscreen — dedicated UI pixel font for 8–14px sizes where Press Start 2P blurs.
+// Per DESIGN.md 2026-04-14 typography update (codedex-inspired readability pass).
+const silkscreen = Silkscreen({
+  weight: ["400", "700"],
+  variable: "--font-silkscreen",
   subsets: ["latin"],
 });
 
@@ -88,7 +96,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${pressStart.variable} ${vt323.variable} ${zpix.variable} dark h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${pressStart.variable} ${vt323.variable} ${silkscreen.variable} ${zpix.variable} dark h-full antialiased`}
     >
       <head>
         <link rel="apple-touch-icon" href="/favicon.ico" />

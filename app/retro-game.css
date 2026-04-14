@@ -7,6 +7,7 @@
 
 :root {
   --font-pixel: var(--font-press-start), monospace;
+  --font-ui: var(--font-silkscreen), var(--font-press-start), monospace;
   --font-retro: var(--font-vt323), monospace;
   --bg-deep: #0D0D0D;
   --bg-panel: #111114;
@@ -352,16 +353,24 @@
   font-family: var(--font-pixel);
   letter-spacing: 0.5px;
 }
+.font-ui {
+  font-family: var(--font-ui);
+  letter-spacing: 0.3px;
+}
 .font-retro {
   font-family: var(--font-retro);
   letter-spacing: 0.5px;
 }
 
 /* ─── CJK Font Override (Chinese — Zpix pixel font) ─── */
+/* Silkscreen is latin-only, so zh falls back to Zpix like the other pixel classes */
 :lang(zh) .font-pixel,
+:lang(zh) .font-ui,
 :lang(zh) .font-retro,
 :lang(zh) [style*="font-pixel"],
-:lang(zh) [style*="press-start"] {
+:lang(zh) [style*="font-ui"],
+:lang(zh) [style*="press-start"],
+:lang(zh) [style*="silkscreen"] {
   font-family: var(--font-zpix), "SimSun", monospace !important;
   letter-spacing: 2px !important;
 }
@@ -371,6 +380,7 @@
 /* Override the CSS variable itself when in Chinese mode */
 :root:lang(zh) {
   --font-pixel: var(--font-zpix), monospace;
+  --font-ui: var(--font-zpix), monospace;
   --font-retro: var(--font-zpix), monospace;
 }
 
