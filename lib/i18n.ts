@@ -8,8 +8,8 @@ export type Lang = "en" | "zh";
 const translations = {
   en: {
     // Nav items
-    "nav.home": "Home",
-    "nav.feed": "Feed",
+    "nav.home": "HQ",
+    "nav.feed": "The Wire",
     "nav.explore": "Explore",
     "nav.hunt": "Hunt",
     "nav.arena": "Arena",
@@ -22,11 +22,11 @@ const translations = {
     "nav.workflows": "Workflows",
     "nav.analytics": "Analytics",
     "nav.developers": "Developers",
-    "nav.launch": "Launch Project",
+    "nav.launch": "Forge Project",
     "nav.messages": "Messages",
     "nav.trade": "Trade",
     "nav.admin": "Admin",
-    "nav.discover": "Discover",
+    "nav.discover": "Expedition",
     "nav.dojo": "Dojo",
     "nav.more": "More",
     "nav.moreComing": "More Coming",
@@ -841,7 +841,7 @@ const translations = {
   },
   zh: {
     // Nav items
-    "nav.home": "首页",
+    "nav.home": "基地",
     "nav.feed": "动态",
     "nav.explore": "探索",
     "nav.hunt": "狩猎",
@@ -855,11 +855,11 @@ const translations = {
     "nav.workflows": "工作流",
     "nav.analytics": "分析",
     "nav.developers": "开发者",
-    "nav.launch": "发布项目",
+    "nav.launch": "锻造项目",
     "nav.messages": "私信",
     "nav.trade": "交易",
     "nav.admin": "管理",
-    "nav.discover": "发现",
+    "nav.discover": "远征",
     "nav.dojo": "道场",
     "nav.more": "更多",
     "nav.moreComing": "更多功能",
