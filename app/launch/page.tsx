@@ -400,6 +400,12 @@ export default function LaunchPage() {
 
       setSubmitted(true);
 
+      // Invalidate the App Router cache so the next time the user lands
+      // on /home, the JUST LAUNCHED row reflects the new project. Without
+      // this, Next.js serves the cached /home tree and useProjects()
+      // wouldn't refetch on client-side back navigation.
+      router.refresh();
+
       // Redirect into the new project detail page so the user sees the
       // full Launch Feedback Loop payoff. If the row was actually persisted
       // (persisted: true), the /project/[id] route will find it via
