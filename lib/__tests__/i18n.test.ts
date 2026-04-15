@@ -97,6 +97,8 @@ describe("translation key naming conventions", () => {
       "project", "demo", "dev", "agentPage", "builder", "feed", "buddy",
       "settings", "agents", "login", "search", "comment", "notif", "user",
       "notFound", "about", "privacy", "terms", "workflows", "cat", "valuehero",
+      // HQ (/home) hero banner — added 2026-04-15 during i18n migration
+      "hq",
     ]);
     const unknownPrefixes = new Set<string>();
     for (const key of enKeys) {
@@ -168,8 +170,10 @@ describe("en key values spot-check", () => {
   const enValues = parseKeyValues("en");
   const zhValues = parseKeyValues("zh");
 
-  it("nav.home in en is 'Home'", () => {
-    expect(enValues.get("nav.home")).toBe("Home");
+  it("nav.home in en is 'HQ'", () => {
+    // Renamed from "Home" to "HQ" via /design-consultation 2026-04-14
+    // (adventure vocabulary pass — Home→HQ, Feed→The Wire, etc).
+    expect(enValues.get("nav.home")).toBe("HQ");
   });
 
   it("nav.arena in en is 'Arena'", () => {
