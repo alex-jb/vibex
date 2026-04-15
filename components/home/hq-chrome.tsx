@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -129,63 +129,148 @@ export function StatsStrip() {
 }
 
 /* ─── HOT RIGHT NOW tiles ─── */
+
+// Format a createdAt timestamp into a "HH MIN AGO" style short label.
+// Falls back to a date for rows older than 99 hours.
+function formatAgo(createdAt: string): string {
+  const ms = Date.now() - new Date(createdAt).getTime();
+  if (isNaN(ms) || ms < 0) return "JUST NOW";
+  const mins = Math.floor(ms / 60000);
+  if (mins < 1) return "JUST NOW";
+  if (mins < 60) return `${mins} MIN`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} HR`;
+  const days = Math.floor(hrs / 24);
+  return `${days}D`;
+}
+
+// Format large numbers compactly — 1234 → "1.2K", 12345 → "12K".
+function formatMetric(n: number): string {
+  if (n >= 10000) return `${Math.round(n / 1000)}K`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K`;
+  return String(n);
+}
+
 export function HotRightNow() {
-  const tiles = [
-    {
-      tag: "🔥 HOT",
-      tagColor: "var(--neon-orange)",
-      name: "AgentCraft",
-      meta: (
-        <>
-          AI SCORE{" "}
-          <b style={{ color: "var(--neon-yellow)", fontWeight: "normal" }}>97</b>{" "}
-          · +234 plays/hr
-        </>
-      ),
-    },
-    {
-      tag: "✦ NEW DROP",
-      tagColor: "var(--neon-green)",
-      name: "MoodAlchemy",
-      meta: (
-        <>
-          LAUNCHED{" "}
-          <b style={{ color: "var(--neon-yellow)", fontWeight: "normal" }}>
-            28 MIN
-          </b>{" "}
-          AGO · 12 saves
-        </>
-      ),
-    },
-    {
-      tag: "★ LEGENDARY",
-      tagColor: "var(--neon-yellow)",
-      name: "LoopMaster",
-      meta: (
-        <>
-          HIT LEGEND ·{" "}
-          <b style={{ color: "var(--neon-yellow)", fontWeight: "normal" }}>
-            2.1K
-          </b>{" "}
-          plays
-        </>
-      ),
-    },
-    {
-      tag: "↑ RISING",
-      tagColor: "var(--neon-cyan)",
-      name: "VibeTranslate",
-      meta: (
-        <>
-          RANK{" "}
-          <b style={{ color: "var(--neon-yellow)", fontWeight: "normal" }}>
-            ↑47
-          </b>{" "}
-          · 412 plays today
-        </>
-      ),
-    },
-  ];
+  const { data: projects } = useProjects();
+
+  const tiles = useMemo(() => {
+    if (projects.length === 0) return [];
+    const byScore = [...projects].sort((a, b) => b.score - a.score);
+    const byDate = [...projects].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+    const byPlays = [...projects].sort((a, b) => (b.plays ?? 0) - (a.plays ?? 0));
+
+    // HOT: top score
+    const hot = byScore[0];
+    // NEW DROP: most recently created
+    const newDrop = byDate[0];
+    // LEGENDARY: first project with score >= 90 (the "legendary" threshold
+    // from evolution-stages). Falls back to 2nd top score if none qualify.
+    const legendary = byScore.find((p) => p.score >= 90) ?? byScore[1];
+    // RISING: top by plays, excluding HOT so we don't duplicate.
+    const rising =
+      byPlays.find((p) => p.id !== hot?.id) ?? byPlays[1] ?? byScore[2];
+
+    // De-dupe: if any two slots pick the same project, swap in the next
+    // best alternative so all 4 tiles show different heroes.
+    const picked = new Set<string>();
+    const uniqueFromSorted = (sorted: typeof projects) =>
+      sorted.find((p) => !picked.has(p.id));
+
+    const h = hot;
+    if (h) picked.add(h.id);
+    const n = picked.has(newDrop?.id ?? "")
+      ? uniqueFromSorted(byDate)
+      : newDrop;
+    if (n) picked.add(n.id);
+    const l = picked.has(legendary?.id ?? "")
+      ? uniqueFromSorted(byScore)
+      : legendary;
+    if (l) picked.add(l.id);
+    const r = picked.has(rising?.id ?? "")
+      ? uniqueFromSorted(byPlays)
+      : rising;
+
+    const tileList: Array<{
+      id: string;
+      tag: string;
+      tagColor: string;
+      name: string;
+      meta: ReactNode;
+    }> = [];
+
+    if (h) {
+      tileList.push({
+        id: h.id,
+        tag: "🔥 HOT",
+        tagColor: "var(--neon-orange)",
+        name: h.title,
+        meta: (
+          <>
+            AI SCORE{" "}
+            <b style={{ color: "var(--neon-yellow)", fontWeight: "normal" }}>
+              {h.score}
+            </b>{" "}
+            · {formatMetric(h.plays ?? 0)} plays
+          </>
+        ),
+      });
+    }
+    if (n) {
+      tileList.push({
+        id: n.id,
+        tag: "✦ NEW DROP",
+        tagColor: "var(--neon-green)",
+        name: n.title,
+        meta: (
+          <>
+            LAUNCHED{" "}
+            <b style={{ color: "var(--neon-yellow)", fontWeight: "normal" }}>
+              {formatAgo(n.createdAt)}
+            </b>{" "}
+            AGO · {formatMetric(n.upvotes ?? 0)} upvotes
+          </>
+        ),
+      });
+    }
+    if (l) {
+      tileList.push({
+        id: l.id,
+        tag: "★ LEGENDARY",
+        tagColor: "var(--neon-yellow)",
+        name: l.title,
+        meta: (
+          <>
+            SCORE{" "}
+            <b style={{ color: "var(--neon-yellow)", fontWeight: "normal" }}>
+              {l.score}
+            </b>{" "}
+            · {formatMetric(l.plays ?? 0)} plays
+          </>
+        ),
+      });
+    }
+    if (r) {
+      tileList.push({
+        id: r.id,
+        tag: "↑ RISING",
+        tagColor: "var(--neon-cyan)",
+        name: r.title,
+        meta: (
+          <>
+            <b style={{ color: "var(--neon-yellow)", fontWeight: "normal" }}>
+              {formatMetric(r.plays ?? 0)}
+            </b>{" "}
+            plays · {formatMetric(r.shares ?? 0)} shares
+          </>
+        ),
+      });
+    }
+    return tileList;
+  }, [projects]);
 
   return (
     <div
@@ -229,57 +314,58 @@ export function HotRightNow() {
       </div>
       <div className="grid gap-3.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {tiles.map((t) => (
-          <motion.div
-            key={t.name}
-            className="relative cursor-pointer"
-            style={{
-              background: "var(--bg-card)",
-              border: "2px solid var(--border-bolt)",
-              padding: "12px 14px",
-            }}
-            whileHover={{
-              x: -2,
-              y: -2,
-              borderColor: "rgba(255,255,255,0.18)",
-            }}
-          >
-            <span
-              className="absolute font-ui"
+          <Link key={t.id} href={`/project/${encodeURIComponent(t.id)}`}>
+            <motion.div
+              className="relative cursor-pointer"
               style={{
-                top: -9,
-                left: 10,
-                fontSize: 8,
-                padding: "3px 7px",
-                background: "var(--bg-deep)",
-                letterSpacing: 1.5,
-                border: "1px solid currentColor",
-                color: t.tagColor,
+                background: "var(--bg-card)",
+                border: "2px solid var(--border-bolt)",
+                padding: "12px 14px",
+              }}
+              whileHover={{
+                x: -2,
+                y: -2,
+                borderColor: "rgba(255,255,255,0.18)",
               }}
             >
-              {t.tag}
-            </span>
-            <div
-              className="font-pixel mt-2 mb-2"
-              style={{
-                fontSize: 11,
-                color: "var(--text)",
-                letterSpacing: 1,
-                textShadow: "0 0 6px rgba(232,232,236,0.25)",
-              }}
-            >
-              {t.name}
-            </div>
-            <div
-              className="font-ui"
-              style={{
-                fontSize: 8,
-                color: "var(--text-muted)",
-                letterSpacing: 1,
-              }}
-            >
-              {t.meta}
-            </div>
-          </motion.div>
+              <span
+                className="absolute font-ui"
+                style={{
+                  top: -9,
+                  left: 10,
+                  fontSize: 8,
+                  padding: "3px 7px",
+                  background: "var(--bg-deep)",
+                  letterSpacing: 1.5,
+                  border: "1px solid currentColor",
+                  color: t.tagColor,
+                }}
+              >
+                {t.tag}
+              </span>
+              <div
+                className="font-pixel mt-2 mb-2"
+                style={{
+                  fontSize: 11,
+                  color: "var(--text)",
+                  letterSpacing: 1,
+                  textShadow: "0 0 6px rgba(232,232,236,0.25)",
+                }}
+              >
+                {t.name}
+              </div>
+              <div
+                className="font-ui"
+                style={{
+                  fontSize: 8,
+                  color: "var(--text-muted)",
+                  letterSpacing: 1,
+                }}
+              >
+                {t.meta}
+              </div>
+            </motion.div>
+          </Link>
         ))}
       </div>
     </div>
