@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    HQ Feature Sections — 5 variants showcasing VibeX's unique capabilities.
@@ -238,12 +239,12 @@ function AiReviewShot() {
 /* ─── Shot 2: Evolution timeline ─── */
 function EvolutionShot() {
   const stages = [
-    { label: "SEED", state: "done" },
-    { label: "ACTIVE", state: "done" },
-    { label: "GROWING", state: "done" },
-    { label: "BREAKOUT", state: "active" },
-    { label: "LEGEND", state: "" },
-    { label: "MYTH", state: "" },
+    { label: "SEED", icon: "/generated/evo-1-seed.png", state: "done" },
+    { label: "ACTIVE", icon: "/generated/evo-2-active.png", state: "done" },
+    { label: "GROWING", icon: "/generated/evo-3-growing.png", state: "done" },
+    { label: "BREAKOUT", icon: "/generated/evo-4-breakout.png", state: "active" },
+    { label: "LEGEND", icon: "/generated/evo-5-legend.png", state: "" },
+    { label: "MYTH", icon: "/generated/evo-6-myth.png", state: "" },
   ];
   return (
     <div className="flex flex-col gap-3.5">
@@ -253,54 +254,68 @@ function EvolutionShot() {
       >
         ▸ VIBEX://EVOLUTION · VIBETRANSLATE
       </div>
-      <div className="flex items-center gap-1.5">
-        {stages.map((s, i) => (
-          <>
-            <div
-              key={s.label}
-              className="flex-1 text-center font-ui"
-              style={{
-                fontSize: 8,
-                letterSpacing: 1,
-                padding: "8px 2px",
-                border: "1px solid var(--border-wire)",
-                color:
-                  s.state === "active"
+      <div className="flex items-center gap-1">
+        {stages.map((s, i) => {
+          const isActive = s.state === "active";
+          const isDone = s.state === "done";
+          return (
+            <div key={s.label} className="flex items-center gap-1 flex-1">
+              <div
+                className="flex-1 flex flex-col items-center gap-1 font-ui"
+                style={{
+                  fontSize: 7,
+                  letterSpacing: 1,
+                  padding: "6px 2px 5px",
+                  border: "1px solid var(--border-wire)",
+                  color: isActive
                     ? "var(--neon-yellow)"
-                    : s.state === "done"
-                    ? "var(--neon-green)"
-                    : "var(--text-muted)",
-                borderColor:
-                  s.state === "active"
+                    : isDone
+                      ? "var(--neon-green)"
+                      : "var(--text-muted)",
+                  borderColor: isActive
                     ? "var(--neon-yellow)"
-                    : s.state === "done"
-                    ? "var(--neon-green)"
-                    : "var(--border-wire)",
-                background:
-                  s.state === "active"
+                    : isDone
+                      ? "var(--neon-green)"
+                      : "var(--border-wire)",
+                  background: isActive
                     ? "rgba(250,204,21,0.08)"
                     : "rgba(0,0,0,0.4)",
-                boxShadow:
-                  s.state === "active"
+                  boxShadow: isActive
                     ? "0 0 12px rgba(250,204,21,0.45)"
-                    : s.state === "done"
-                    ? "0 0 8px rgba(57,255,20,0.35)"
-                    : "none",
-              }}
-            >
-              {s.label}
-            </div>
-            {i < stages.length - 1 && (
-              <div
-                key={`arrow-${i}`}
-                className="font-pixel"
-                style={{ fontSize: 10, color: "var(--text-dim)" }}
+                    : isDone
+                      ? "0 0 8px rgba(57,255,20,0.35)"
+                      : "none",
+                }}
               >
-                ▶
+                <Image
+                  src={s.icon}
+                  alt=""
+                  width={28}
+                  height={28}
+                  aria-hidden="true"
+                  style={{
+                    imageRendering: "pixelated",
+                    opacity: s.state === "" ? 0.4 : 1,
+                    filter: isActive
+                      ? "drop-shadow(0 0 4px rgba(250,204,21,0.8))"
+                      : isDone
+                        ? "drop-shadow(0 0 3px rgba(57,255,20,0.6))"
+                        : "grayscale(0.6)",
+                  }}
+                />
+                <span>{s.label}</span>
               </div>
-            )}
-          </>
-        ))}
+              {i < stages.length - 1 && (
+                <div
+                  className="font-pixel"
+                  style={{ fontSize: 9, color: "var(--text-dim)" }}
+                >
+                  ▶
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
       <div className="flex flex-col gap-2 mt-4">
         {[
