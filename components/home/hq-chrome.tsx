@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -735,44 +735,95 @@ export function WalkerStrip() {
 /* ─── Sticky right-side dot nav ─── */
 export function DotNav() {
   const items = [
-    { href: "#top", label: "HERO", active: true },
-    { href: "#features", label: "FEATURES" },
-    { href: "#heroes", label: "HEROES" },
-    { href: "#voices", label: "VOICES" },
-    { href: "#forge", label: "FORGE" },
+    { id: "top", href: "#top", label: "HERO" },
+    { id: "features", href: "#features", label: "FEATURES" },
+    { id: "heroes", href: "#heroes", label: "HEROES" },
+    { id: "voices", href: "#voices", label: "VOICES" },
+    { id: "forge", href: "#forge", label: "FORGE" },
   ];
+
+  const [activeId, setActiveId] = useState<string>("top");
+
+  // Scroll spy: observe each anchor section and pick whichever is "most in
+  // view" to highlight its dot. Uses a top-biased rootMargin so a section
+  // counts as active once it crosses roughly the upper third of the
+  // viewport — that feels more responsive than waiting for it to hit the
+  // center. Previously the HERO dot was hardcoded active, lying to users.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sections = items
+      .map((i) => document.getElementById(i.id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (sections.length === 0) return;
+
+    // Track intersection ratio per id so we can pick the one most in view.
+    const ratios = new Map<string, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          ratios.set(entry.target.id, entry.intersectionRatio);
+        }
+        // Pick the highest-ratio section among those currently intersecting.
+        let best: { id: string; ratio: number } | null = null;
+        for (const [id, ratio] of ratios.entries()) {
+          if (ratio > 0 && (!best || ratio > best.ratio)) {
+            best = { id, ratio };
+          }
+        }
+        if (best) setActiveId(best.id);
+      },
+      {
+        // Trim the top 25% and bottom 40% so sections "activate" around the
+        // upper-middle of the viewport instead of the edges.
+        rootMargin: "-25% 0px -40% 0px",
+        threshold: [0, 0.25, 0.5, 0.75, 1],
+      },
+    );
+
+    for (const el of sections) observer.observe(el);
+    return () => observer.disconnect();
+    // items is a static literal — not a real dep. Exhaustive-deps would
+    // suggest stabilising it but the array never changes at runtime.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <div
+    <nav
+      aria-label="Section navigation"
       className="hidden xl:flex fixed flex-col gap-3 z-[80]"
       style={{ right: 20, top: "50%", transform: "translateY(-50%)" }}
     >
-      {items.map((i) => (
-        <a
-          key={i.label}
-          href={i.href}
-          className="flex items-center gap-2.5 font-ui"
-          style={{
-            fontSize: 8,
-            color: i.active ? "var(--neon-yellow)" : "var(--text-muted)",
-            letterSpacing: 1.5,
-            textDecoration: "none",
-          }}
-        >
-          <span
-            className="inline-block"
+      {items.map((i) => {
+        const isActive = i.id === activeId;
+        return (
+          <a
+            key={i.label}
+            href={i.href}
+            aria-current={isActive ? "location" : undefined}
+            className="flex items-center gap-2.5 font-ui transition-colors"
             style={{
-              width: 8,
-              height: 8,
-              background: i.active ? "var(--neon-yellow)" : "transparent",
-              border: i.active
-                ? "1.5px solid var(--neon-yellow)"
-                : "1.5px solid var(--text-muted)",
-              boxShadow: i.active ? "0 0 8px rgba(250,204,21,0.6)" : "none",
+              fontSize: 8,
+              color: isActive ? "var(--neon-yellow)" : "var(--text-muted)",
+              letterSpacing: 1.5,
+              textDecoration: "none",
             }}
-          />
-          {i.label}
-        </a>
-      ))}
-    </div>
+          >
+            <span
+              className="inline-block transition-all"
+              style={{
+                width: 8,
+                height: 8,
+                background: isActive ? "var(--neon-yellow)" : "transparent",
+                border: isActive
+                  ? "1.5px solid var(--neon-yellow)"
+                  : "1.5px solid var(--text-muted)",
+                boxShadow: isActive ? "0 0 8px rgba(250,204,21,0.6)" : "none",
+              }}
+            />
+            {i.label}
+          </a>
+        );
+      })}
+    </nav>
   );
 }
