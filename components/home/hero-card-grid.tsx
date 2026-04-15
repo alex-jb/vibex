@@ -20,14 +20,13 @@ export function HeroCardGrid({
   return (
     <div
       id={id}
-      className="mx-auto"
-      style={{ maxWidth: 1440, padding: "0 32px", marginTop: 44 }}
+      className="mx-auto px-4 sm:px-8 mt-10 sm:mt-11"
+      style={{ maxWidth: 1440 }}
     >
-      <div className="flex items-baseline justify-between mb-[18px]">
+      <div className="flex items-baseline justify-between mb-[18px] gap-3 flex-wrap">
         <div
-          className="font-ui"
+          className="font-ui text-[11px] sm:text-[13px]"
           style={{
-            fontSize: 13,
             letterSpacing: 3,
             color: "var(--neon-green)",
             textShadow: "0 0 5px rgba(57,255,20,0.7)",
@@ -36,10 +35,10 @@ export function HeroCardGrid({
           {label}
           {subLabel ? (
             <span
+              className="text-[9px] sm:text-[11px]"
               style={{
                 color: "var(--muted)",
                 marginLeft: 10,
-                fontSize: 11,
               }}
             >
               {subLabel}
@@ -61,10 +60,7 @@ export function HeroCardGrid({
           VIEW ALL ›
         </a>
       </div>
-      <div
-        className="grid gap-[22px]"
-        style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
-      >
+      <div className="grid gap-[18px] sm:gap-[22px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((card) => (
           <HeroCard key={card.id} data={card} />
         ))}

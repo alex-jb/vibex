@@ -21,11 +21,9 @@ export function HqHeroBanner({
 }: HqHeroBannerProps) {
   return (
     <div
-      className="relative mx-auto overflow-hidden border-2"
+      className="relative mx-auto overflow-hidden border-2 mt-4 sm:mt-7 h-[400px] sm:h-[480px] md:h-[560px] lg:h-[620px]"
       style={{
         maxWidth: 1440,
-        height: 620,
-        marginTop: 28,
         background:
           "linear-gradient(180deg, #0a0519 0%, #1a0a3a 35%, #3d0a4a 65%, #1e0a2e 100%)",
         borderColor: "var(--border-metal)",
@@ -301,9 +299,9 @@ export function HqHeroBanner({
         );
       })}
 
-      {/* CRT mascot with animated bob */}
+      {/* CRT mascot with animated bob — hidden on small viewports to free room for copy */}
       <motion.div
-        className="absolute z-[8]"
+        className="absolute z-[8] hidden md:block"
         style={{
           bottom: 80,
           left: "22%",
@@ -349,9 +347,9 @@ export function HqHeroBanner({
         </svg>
       </motion.div>
 
-      {/* Butterfly */}
+      {/* Butterfly — hidden on small viewports */}
       <motion.div
-        className="absolute z-[9]"
+        className="absolute z-[9] hidden md:block"
         style={{ bottom: 200, left: "28%", width: 28, height: 22 }}
         animate={{
           x: [0, 14, 20, 8, 0],
@@ -383,13 +381,12 @@ export function HqHeroBanner({
 
       {/* Centered hero copy + CTA */}
       <div
-        className="relative z-[5] text-center mx-auto"
-        style={{ paddingTop: 60, maxWidth: 820 }}
+        className="relative z-[5] text-center mx-auto px-4 pt-8 sm:pt-12 md:pt-14 lg:pt-[60px]"
+        style={{ maxWidth: 820 }}
       >
         <div
-          className="font-ui"
+          className="font-ui text-[9px] sm:text-[10px] md:text-[11px]"
           style={{
-            fontSize: 11,
             color: "var(--neon-green)",
             letterSpacing: 3,
             textShadow: "0 0 4px rgba(57,255,20,0.9), 0 2px 0 #000",
@@ -404,15 +401,13 @@ export function HqHeroBanner({
         </div>
 
         <h1
-          className="font-pixel"
+          className="font-pixel text-[24px] sm:text-[34px] md:text-[42px] lg:text-[52px] mb-2 sm:mb-2.5"
           style={{
-            fontSize: 52,
             color: "#FFFCEB",
             letterSpacing: 4,
             lineHeight: 1.3,
             textShadow:
               "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #000, 6px 6px 0 #1a0a3a, 0 0 32px rgba(157,0,255,0.55)",
-            marginBottom: 10,
           }}
         >
           HUNT TODAY&apos;S
@@ -433,11 +428,9 @@ export function HqHeroBanner({
         </h1>
 
         <div
-          className="font-retro"
+          className="font-retro text-[15px] sm:text-[18px] md:text-[20px] lg:text-[22px] mb-5 sm:mb-7 md:mb-[34px]"
           style={{
-            fontSize: 22,
             color: "rgba(232,232,236,0.85)",
-            marginBottom: 34,
             textShadow: "0 2px 0 rgba(0,0,0,0.8)",
           }}
         >
@@ -448,10 +441,8 @@ export function HqHeroBanner({
         <Link href="/launch">
           <motion.button
             type="button"
-            className="inline-flex items-center gap-2.5 font-ui uppercase cursor-pointer"
+            className="inline-flex items-center gap-2.5 font-ui uppercase cursor-pointer text-[12px] sm:text-[14px] md:text-[16px] px-6 py-3 sm:px-8 sm:py-4 md:px-9 md:py-[18px]"
             style={{
-              fontSize: 16,
-              padding: "18px 36px",
               background: "linear-gradient(180deg, var(--neon-yellow), #D97706)",
               color: "#1a0a3a",
               border: "3px solid #000",

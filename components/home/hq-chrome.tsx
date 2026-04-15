@@ -14,17 +14,13 @@ import Link from "next/link";
 export function StatsStrip() {
   return (
     <div
-      className="grid mx-auto"
+      className="grid mx-auto grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8 px-4 sm:px-8 py-5 sm:py-[22px] mt-4 sm:mt-[18px]"
       style={{
         maxWidth: 1440,
-        marginTop: 18,
-        padding: "22px 32px",
         background: "var(--bg-panel)",
         borderLeft: "2px solid var(--border-metal)",
         borderRight: "2px solid var(--border-metal)",
         borderBottom: "2px solid var(--border-metal)",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gap: 32,
       }}
     >
       {[
@@ -34,17 +30,18 @@ export function StatsStrip() {
       ].map((s, i, arr) => (
         <div
           key={s.label}
-          className="text-center"
+          className={`text-center ${
+            i < arr.length - 1
+              ? "pb-5 sm:pb-0 sm:pr-8 border-b sm:border-b-0 sm:border-r"
+              : ""
+          }`}
           style={{
-            borderRight:
-              i < arr.length - 1 ? "1px solid var(--border-hair)" : "none",
-            paddingRight: i < arr.length - 1 ? 32 : 0,
+            borderColor: "var(--border-hair)",
           }}
         >
           <span
-            className="font-pixel block"
+            className="font-pixel block text-[28px] sm:text-[32px] md:text-[34px]"
             style={{
-              fontSize: 34,
               color: "var(--neon-yellow)",
               textShadow:
                 "0 0 12px rgba(250,204,21,0.6), 3px 3px 0 #000",
@@ -143,8 +140,8 @@ export function HotRightNow() {
 
   return (
     <div
-      className="mx-auto"
-      style={{ maxWidth: 1440, padding: "0 32px", marginTop: 48 }}
+      className="mx-auto px-4 sm:px-8 mt-10 sm:mt-12"
+      style={{ maxWidth: 1440 }}
     >
       <div className="flex items-baseline gap-3.5 mb-3.5">
         <div
@@ -181,10 +178,7 @@ export function HotRightNow() {
           LIVE
         </div>
       </div>
-      <div
-        className="grid gap-3.5"
-        style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
-      >
+      <div className="grid gap-3.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {tiles.map((t) => (
           <motion.div
             key={t.name}
@@ -256,8 +250,8 @@ export function CategoryFilterPills() {
   ];
   return (
     <div
-      className="mx-auto"
-      style={{ maxWidth: 1440, padding: "0 32px", marginTop: 44 }}
+      className="mx-auto px-4 sm:px-8 mt-10 sm:mt-11"
+      style={{ maxWidth: 1440 }}
     >
       <div
         className="flex gap-2 overflow-x-auto"
@@ -334,8 +328,8 @@ export function Testimonials() {
   return (
     <div
       id="voices"
-      className="mx-auto"
-      style={{ maxWidth: 1440, padding: "0 32px", marginTop: 72 }}
+      className="mx-auto px-4 sm:px-8 mt-14 sm:mt-[72px]"
+      style={{ maxWidth: 1440 }}
     >
       <div className="text-center mb-[34px]">
         <div
@@ -351,9 +345,8 @@ export function Testimonials() {
           ▸ CREATOR REPORTS FROM THE FIELD
         </div>
         <h2
-          className="font-pixel"
+          className="font-pixel text-[18px] sm:text-[20px] md:text-[22px]"
           style={{
-            fontSize: 22,
             color: "var(--text)",
             letterSpacing: 2,
             textShadow: "3px 3px 0 rgba(0,0,0,0.7)",
@@ -364,10 +357,7 @@ export function Testimonials() {
           <span style={{ color: "var(--neon-yellow)" }}>ARE SAYING.</span>
         </h2>
       </div>
-      <div
-        className="grid gap-5"
-        style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
-      >
+      <div className="grid gap-5 grid-cols-1 md:grid-cols-3">
         {quotes.map((q) => (
           <div
             key={q.name}
@@ -442,13 +432,12 @@ export function ForgeCtaBlock() {
   return (
     <div
       id="forge"
-      className="relative mx-auto overflow-hidden"
+      className="mx-auto px-4 sm:px-8 mt-12 sm:mt-16"
+      style={{ maxWidth: 1440 }}
+    >
+    <div
+      className="relative overflow-hidden px-6 py-7 sm:px-10 sm:py-[38px]"
       style={{
-        maxWidth: 1376, // 1440 - 64
-        marginTop: 64,
-        marginLeft: 32,
-        marginRight: 32,
-        padding: "38px 40px",
         background:
           "linear-gradient(135deg, var(--neon-purple) 0%, #9333EA 40%, var(--neon-pink) 100%)",
         border: "3px solid #FFF",
@@ -463,15 +452,11 @@ export function ForgeCtaBlock() {
             "repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px)",
         }}
       />
-      <div
-        className="relative grid items-center gap-[30px]"
-        style={{ gridTemplateColumns: "1fr auto" }}
-      >
+      <div className="relative grid items-center gap-6 sm:gap-[30px] grid-cols-1 sm:[grid-template-columns:1fr_auto]">
         <div>
           <div
-            className="font-ui mb-2.5"
+            className="font-ui mb-2.5 text-[10px] sm:text-[11px]"
             style={{
-              fontSize: 11,
               color: "var(--neon-yellow)",
               letterSpacing: 3,
               textShadow: "0 0 6px rgba(250,204,21,0.8)",
@@ -480,9 +465,8 @@ export function ForgeCtaBlock() {
             ▸ READY TO ENLIST?
           </div>
           <h2
-            className="font-pixel mb-3"
+            className="font-pixel mb-3 text-[18px] sm:text-[22px] md:text-[24px]"
             style={{
-              fontSize: 24,
               color: "#FFF",
               letterSpacing: 2,
               lineHeight: 1.4,
@@ -494,9 +478,8 @@ export function ForgeCtaBlock() {
             <span style={{ color: "var(--neon-yellow)" }}>HERO CARD.</span>
           </h2>
           <p
-            className="font-retro mb-5"
+            className="font-retro mb-5 text-[15px] sm:text-[18px] md:text-[20px]"
             style={{
-              fontSize: 20,
               color: "rgba(255,255,255,0.9)",
               maxWidth: 560,
             }}
@@ -506,10 +489,8 @@ export function ForgeCtaBlock() {
           </p>
           <Link href="/launch">
             <button
-              className="font-ui uppercase cursor-pointer"
+              className="font-ui uppercase cursor-pointer text-[12px] sm:text-[14px] px-5 py-3 sm:px-7 sm:py-4"
               style={{
-                fontSize: 14,
-                padding: "16px 28px",
                 background: "var(--neon-yellow)",
                 color: "#000",
                 border: "3px solid #000",
@@ -522,13 +503,13 @@ export function ForgeCtaBlock() {
           </Link>
         </div>
         <div
-          className="flex items-center justify-center font-ui text-center"
+          className="flex items-center justify-center font-ui text-center mx-auto sm:mx-0"
           style={{
             padding: 14,
             background: "rgba(0,0,0,0.3)",
             border: "2px dashed rgba(255,255,255,0.4)",
-            minWidth: 180,
-            minHeight: 180,
+            minWidth: 140,
+            minHeight: 140,
             fontSize: 9,
             color: "rgba(255,255,255,0.6)",
             letterSpacing: 1,
@@ -541,6 +522,7 @@ export function ForgeCtaBlock() {
           HERE ]
         </div>
       </div>
+    </div>
     </div>
   );
 }

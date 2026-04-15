@@ -30,22 +30,21 @@ function Section({
 }: SectionProps) {
   return (
     <div
-      className="mx-auto"
-      style={{ maxWidth: 1440, padding: "0 40px", marginTop: 72 }}
+      className="mx-auto px-4 sm:px-8 md:px-10 mt-14 sm:mt-[72px]"
+      style={{ maxWidth: 1440 }}
     >
       <div
-        className="grid items-center"
+        className="grid items-center grid-cols-1 md:grid-cols-2 gap-8 md:gap-12"
         style={{
-          gridTemplateColumns: "1fr 1fr",
-          gap: 48,
+          // reverse only kicks in on md+ where the 2-col layout exists; on
+          // mobile we always show copy first, frame second.
           direction: reverse ? "rtl" : "ltr",
         }}
       >
         <div style={{ direction: "ltr" }}>
           <div
-            className="font-ui"
+            className="font-ui text-[10px] sm:text-[11px]"
             style={{
-              fontSize: 11,
               color: "var(--neon-green)",
               letterSpacing: 3,
               marginBottom: 14,
@@ -55,9 +54,8 @@ function Section({
             {eyebrow}
           </div>
           <h2
-            className="font-pixel"
+            className="font-pixel text-[20px] sm:text-[24px] md:text-[26px]"
             style={{
-              fontSize: 26,
               color: "var(--text)",
               letterSpacing: 2,
               lineHeight: 1.4,
@@ -69,9 +67,8 @@ function Section({
             {title}
           </h2>
           <p
-            className="font-retro"
+            className="font-retro text-[16px] sm:text-[19px] md:text-[21px]"
             style={{
-              fontSize: 21,
               color: "var(--muted)",
               lineHeight: 1.5,
               marginBottom: 24,
