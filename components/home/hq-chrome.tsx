@@ -372,21 +372,21 @@ export function Testimonials() {
     {
       stars: "★ ★ ★ ★ ★",
       text: "Forged my first hero in 30 seconds. Hit Legendary in a week with zero marketing. The AI review caught two holes in my pitch before it went live.",
-      initial: "M",
+      avatar: "/generated/avatar-marcus.png",
       name: "@marcus",
       role: "PixelForge creator · LV.28",
     },
     {
       stars: "★ ★ ★ ★ ★",
       text: "Dropped a URL, the card auto-generated, AI scored it 94, shared it on X, got 1.2k plays by Tuesday. The QR code on the card is the growth hack I didn't know I needed.",
-      initial: "S",
+      avatar: "/generated/avatar-sam.png",
       name: "@sam",
       role: "LoopMaster creator · LV.35",
     },
     {
       stars: "★ ★ ★ ★ ★",
       text: "I run a fund and VibeX became my dealflow. Radar charts catch patterns I'd miss on X. Found three investments here before Twitter did.",
-      initial: "R",
+      avatar: "/generated/avatar-riley.png",
       name: "@riley",
       role: "VC partner · Watchlist mode",
     },
@@ -461,20 +461,22 @@ export function Testimonials() {
               className="flex items-center gap-2.5 pt-3.5"
               style={{ borderTop: "1px solid var(--border-hair)" }}
             >
-              <div
-                className="flex items-center justify-center font-pixel"
+              <Image
+                src={q.avatar}
+                alt=""
+                width={48}
+                height={48}
+                aria-hidden="true"
+                className="shrink-0"
                 style={{
-                  width: 32,
-                  height: 32,
-                  background:
-                    "linear-gradient(135deg, var(--neon-purple), var(--neon-pink))",
+                  width: 48,
+                  height: 48,
                   border: "2px solid var(--border-bolt)",
-                  fontSize: 11,
-                  color: "#FFF",
+                  boxShadow: "0 0 8px rgba(157,0,255,0.3)",
+                  imageRendering: "pixelated",
+                  objectFit: "cover",
                 }}
-              >
-                {q.initial}
-              </div>
+              />
               <div
                 className="font-ui"
                 style={{
