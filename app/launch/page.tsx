@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -509,6 +510,32 @@ export default function LaunchPage() {
               zIndex: -1,
             }}
           />
+
+          {/* Forge portal illustration — pixel art anvil + flames + card
+              materializing above, generated via scripts/gen.mjs. Gives the
+              URL-paste hero a visual anchor instead of pure text on gradient. */}
+          <motion.div
+            className="mx-auto mb-5 sm:mb-6 relative"
+            style={{
+              width: "min(260px, 55vw)",
+              aspectRatio: "1 / 1",
+            }}
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Image
+              src="/generated/launch-forge.png"
+              alt="VibeX forge with a glowing golden anvil and a hero card materializing in the flames"
+              fill
+              sizes="(max-width: 640px) 55vw, 260px"
+              priority
+              style={{
+                imageRendering: "pixelated",
+                objectFit: "contain",
+                filter: "drop-shadow(0 0 40px rgba(250,204,21,0.35))",
+              }}
+            />
+          </motion.div>
 
           <div
             className="mb-5"
