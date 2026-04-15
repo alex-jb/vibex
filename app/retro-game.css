@@ -18,6 +18,11 @@
   /* Linear-style hairline borders (structural, data-free) — 2026-04-14 */
   --border-hair: rgba(255,255,255,0.05);
   --border-wire: rgba(255,255,255,0.08);
+  /* VibeX text tokens (namespaced to avoid collision with shadcn's --muted
+     which is a background token). Use these for all hq-* component copy. */
+  --text: #E8E8EC;
+  --text-muted: #8B7AA0;
+  --text-dim: #4A4050;
   --neon-green: #39FF14;
   --neon-green-dim: #39FF1440;
   --neon-orange: #FF4500;

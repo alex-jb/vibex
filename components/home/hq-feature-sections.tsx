@@ -69,7 +69,7 @@ function Section({
           <p
             className="font-retro text-[16px] sm:text-[19px] md:text-[21px]"
             style={{
-              color: "var(--muted)",
+              color: "var(--text-muted)",
               lineHeight: 1.5,
               marginBottom: 24,
               maxWidth: 520,
@@ -140,7 +140,7 @@ function AiReviewShot() {
         className="font-ui"
         style={{
           fontSize: 9,
-          color: "var(--muted)",
+          color: "var(--text-muted)",
           letterSpacing: 2,
           marginBottom: 8,
         }}
@@ -165,7 +165,7 @@ function AiReviewShot() {
         </div>
         <div
           className="font-ui"
-          style={{ fontSize: 12, color: "var(--muted)" }}
+          style={{ fontSize: 12, color: "var(--text-muted)" }}
         >
           / 100
           <br />
@@ -191,7 +191,7 @@ function AiReviewShot() {
             className="flex items-center gap-2.5 font-ui"
             style={{ fontSize: 10, color: "var(--text)", letterSpacing: 1 }}
           >
-            <span style={{ width: 92, color: "var(--muted)" }}>{s.label}</span>
+            <span style={{ width: 92, color: "var(--text-muted)" }}>{s.label}</span>
             <div
               className="flex-1 relative"
               style={{
@@ -218,7 +218,7 @@ function AiReviewShot() {
         style={{
           borderTop: "1px solid var(--border-hair)",
           fontSize: 16,
-          color: "var(--muted)",
+          color: "var(--text-muted)",
           lineHeight: 1.4,
         }}
       >
@@ -249,7 +249,7 @@ function EvolutionShot() {
     <div className="flex flex-col gap-3.5">
       <div
         className="font-ui"
-        style={{ fontSize: 9, color: "var(--muted)", letterSpacing: 2 }}
+        style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: 2 }}
       >
         ▸ VIBEX://EVOLUTION · VIBETRANSLATE
       </div>
@@ -269,7 +269,7 @@ function EvolutionShot() {
                     ? "var(--neon-yellow)"
                     : s.state === "done"
                     ? "var(--neon-green)"
-                    : "var(--muted)",
+                    : "var(--text-muted)",
                 borderColor:
                   s.state === "active"
                     ? "var(--neon-yellow)"
@@ -294,7 +294,7 @@ function EvolutionShot() {
               <div
                 key={`arrow-${i}`}
                 className="font-pixel"
-                style={{ fontSize: 10, color: "var(--dim)" }}
+                style={{ fontSize: 10, color: "var(--text-dim)" }}
               >
                 ▶
               </div>
@@ -316,7 +316,7 @@ function EvolutionShot() {
             <span
               style={{
                 width: 36,
-                color: "var(--muted)",
+                color: "var(--text-muted)",
                 letterSpacing: 1,
               }}
             >
@@ -352,7 +352,7 @@ function EvolutionShot() {
         style={{
           borderTop: "1px solid var(--border-hair)",
           fontSize: 15,
-          color: "var(--muted)",
+          color: "var(--text-muted)",
           lineHeight: 1.4,
         }}
       >
@@ -371,7 +371,7 @@ function ArenaShot() {
     <>
       <div
         className="font-ui mb-3.5"
-        style={{ fontSize: 9, color: "var(--muted)", letterSpacing: 2 }}
+        style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: 2 }}
       >
         ▸ VIBEX://ARENA · ROUND 3
       </div>
@@ -401,7 +401,7 @@ function ArenaShot() {
               </div>
               <div
                 className="flex items-center gap-1.5 font-ui"
-                style={{ fontSize: 7, color: "var(--muted)" }}
+                style={{ fontSize: 7, color: "var(--text-muted)" }}
               >
                 <span>HP</span>
                 <div
@@ -565,7 +565,7 @@ function BuddyShot() {
         className="font-ui mb-2.5"
         style={{
           fontSize: 8,
-          color: "var(--muted)",
+          color: "var(--text-muted)",
           letterSpacing: 1.5,
         }}
       >
@@ -573,7 +573,7 @@ function BuddyShot() {
       </div>
       <div
         className="flex gap-2.5 justify-center font-ui"
-        style={{ fontSize: 9, color: "var(--muted)", letterSpacing: 1 }}
+        style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: 1 }}
       >
         <span>
           HP <b style={{ color: "var(--neon-green)", fontWeight: "normal" }}>78</b>
@@ -599,13 +599,13 @@ function VcShot() {
     { rank: "02", name: "LoopMaster", score: 94, status: "◆ TRACK", c: "var(--neon-cyan)", rc: "var(--neon-yellow)" },
     { rank: "03", name: "CodeSage", score: 91, status: "◆ TRACK", c: "var(--neon-cyan)", rc: "var(--text)" },
     { rank: "04", name: "PixelForge", score: 85, status: "▲ NEW", c: "var(--neon-pink)", rc: "var(--text)" },
-    { rank: "05", name: "Hyperdrive", score: 81, status: "— HOLD", c: "var(--muted)", rc: "var(--text)" },
+    { rank: "05", name: "Hyperdrive", score: 81, status: "— HOLD", c: "var(--text-muted)", rc: "var(--text)" },
   ];
   return (
     <div style={{ padding: 4 }}>
       <div
         className="font-ui mb-3"
-        style={{ fontSize: 9, color: "var(--muted)", letterSpacing: 2 }}
+        style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: 2 }}
       >
         ▸ VIBEX://VC · DEAL FLOW · WEEK 16
       </div>
@@ -615,7 +615,7 @@ function VcShot() {
           style={{
             gridTemplateColumns: "20px 1fr 40px 60px",
             fontSize: 9,
-            color: "var(--muted)",
+            color: "var(--text-muted)",
             letterSpacing: 1,
             borderBottom: "1px solid var(--border-hair)",
           }}
@@ -702,7 +702,7 @@ function VcShot() {
             className="font-ui mb-1.5"
             style={{
               fontSize: 9,
-              color: "var(--muted)",
+              color: "var(--text-muted)",
               letterSpacing: 1.5,
             }}
           >
@@ -718,7 +718,7 @@ function VcShot() {
               ["MARKET FIT", 88, "var(--neon-green)"],
               ["TRACTION", 91, "var(--neon-green)"],
               ["CRAFT", 92, "var(--neon-yellow)"],
-              ["TEAM", 76, "var(--muted)"],
+              ["TEAM", 76, "var(--text-muted)"],
             ].map(([k, v, c]) => (
               <div key={String(k)} style={{ color: "var(--text)" }}>
                 {String(k)} ·{" "}

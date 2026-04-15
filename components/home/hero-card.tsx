@@ -149,7 +149,7 @@ export function HeroCard({ data }: { data: HeroCardData }) {
         </div>
         <div
           className="font-ui text-right"
-          style={{ fontSize: 8, color: "var(--muted)", lineHeight: 1 }}
+          style={{ fontSize: 8, color: "var(--text-muted)", lineHeight: 1 }}
         >
           <span>HP</span>
           <div
@@ -172,7 +172,7 @@ export function HeroCard({ data }: { data: HeroCardData }) {
         className="relative z-[2] font-ui"
         style={{
           fontSize: 7,
-          color: "var(--dim)",
+          color: "var(--text-dim)",
           letterSpacing: 1,
           marginBottom: 6,
         }}
@@ -317,7 +317,7 @@ export function HeroCard({ data }: { data: HeroCardData }) {
       <div className="relative z-[2] flex items-center justify-between gap-2.5">
         <span
           className="font-ui"
-          style={{ fontSize: 8, color: "var(--muted)", letterSpacing: 1 }}
+          style={{ fontSize: 8, color: "var(--text-muted)", letterSpacing: 1 }}
         >
           by <b style={{ color: "var(--text)", fontWeight: "normal" }}>@{data.creator}</b>
         </span>

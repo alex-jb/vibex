@@ -103,7 +103,7 @@ export function HeroCardGrid({
             <span
               className="text-[9px] sm:text-[11px]"
               style={{
-                color: "var(--muted)",
+                color: "var(--text-muted)",
                 marginLeft: 10,
               }}
             >
@@ -116,7 +116,7 @@ export function HeroCardGrid({
           className="font-ui"
           style={{
             fontSize: 11,
-            color: "var(--muted)",
+            color: "var(--text-muted)",
             textDecoration: "none",
             letterSpacing: 1.5,
             borderBottom: "1px dashed var(--border-wire)",

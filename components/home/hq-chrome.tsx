@@ -56,7 +56,7 @@ export function StatsStrip() {
             className="font-ui"
             style={{
               fontSize: 10,
-              color: "var(--muted)",
+              color: "var(--text-muted)",
               letterSpacing: 2.5,
             }}
           >
@@ -224,7 +224,7 @@ export function HotRightNow() {
               className="font-ui"
               style={{
                 fontSize: 8,
-                color: "var(--muted)",
+                color: "var(--text-muted)",
                 letterSpacing: 1,
               }}
             >
@@ -269,7 +269,7 @@ export function CategoryFilterPills() {
               fontSize: 10,
               padding: "9px 14px",
               background: c.active ? "rgba(157,0,255,0.15)" : "rgba(0,0,0,0.5)",
-              color: c.active ? "var(--text)" : "var(--muted)",
+              color: c.active ? "var(--text)" : "var(--text-muted)",
               border: c.active
                 ? "1.5px solid var(--neon-purple)"
                 : "1.5px solid var(--border-bolt)",
@@ -286,7 +286,7 @@ export function CategoryFilterPills() {
                 background: c.active
                   ? "var(--neon-purple)"
                   : "rgba(255,255,255,0.05)",
-                color: c.active ? "#FFF" : "var(--muted)",
+                color: c.active ? "#FFF" : "var(--text-muted)",
                 letterSpacing: 1,
               }}
             >
@@ -417,7 +417,7 @@ export function Testimonials() {
                 }}
               >
                 <div style={{ color: "var(--neon-cyan)" }}>{q.name}</div>
-                <div style={{ color: "var(--muted)" }}>{q.role}</div>
+                <div style={{ color: "var(--text-muted)" }}>{q.role}</div>
               </div>
             </div>
           </div>
@@ -631,7 +631,7 @@ export function DotNav() {
           className="flex items-center gap-2.5 font-ui"
           style={{
             fontSize: 8,
-            color: i.active ? "var(--neon-yellow)" : "var(--muted)",
+            color: i.active ? "var(--neon-yellow)" : "var(--text-muted)",
             letterSpacing: 1.5,
             textDecoration: "none",
           }}
@@ -644,7 +644,7 @@ export function DotNav() {
               background: i.active ? "var(--neon-yellow)" : "transparent",
               border: i.active
                 ? "1.5px solid var(--neon-yellow)"
-                : "1.5px solid var(--muted)",
+                : "1.5px solid var(--text-muted)",
               boxShadow: i.active ? "0 0 8px rgba(250,204,21,0.6)" : "none",
             }}
           />
