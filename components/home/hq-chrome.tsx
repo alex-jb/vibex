@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -503,23 +504,29 @@ export function ForgeCtaBlock() {
           </Link>
         </div>
         <div
-          className="flex items-center justify-center font-ui text-center mx-auto sm:mx-0"
+          className="relative flex items-center justify-center mx-auto sm:mx-0 overflow-hidden"
           style={{
-            padding: 14,
-            background: "rgba(0,0,0,0.3)",
-            border: "2px dashed rgba(255,255,255,0.4)",
-            minWidth: 140,
-            minHeight: 140,
-            fontSize: 9,
-            color: "rgba(255,255,255,0.6)",
-            letterSpacing: 1,
+            width: 180,
+            height: 180,
+            background: "rgba(0,0,0,0.35)",
+            border: "3px solid #FFF",
+            boxShadow:
+              "4px 4px 0 #000, inset 0 0 20px rgba(157,0,255,0.4)",
           }}
         >
-          [ MASCOT
-          <br />
-          PIXEL ART
-          <br />
-          HERE ]
+          <Image
+            src="/generated/mascot-v1.png"
+            alt="VibeX hero mascot — armored pixel-art knight with glowing eyes"
+            width={180}
+            height={180}
+            priority
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              imageRendering: "pixelated",
+            }}
+          />
         </div>
       </div>
     </div>
