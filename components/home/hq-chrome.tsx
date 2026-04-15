@@ -287,18 +287,58 @@ export function HotRightNow() {
 }
 
 /* ─── Category filter pills ─── */
-export function CategoryFilterPills() {
+
+// Canonical category identifiers used across the app. Note: the pill LABEL
+// is in all-caps for the game-UI aesthetic, but the underlying Project
+// row uses title-case ("AI Agent", "AI Tool"...) — the two are mapped via
+// labelToCategory below. "ALL" and "EXPERIMENT" get special handling.
+export type CategoryKey =
+  | "ALL"
+  | "AI AGENT"
+  | "AI TOOL"
+  | "AI GAME"
+  | "AI WORKFLOW"
+  | "AI UTILITY"
+  | "AI EXPERIMENT";
+
+// Map a pill label to the schema enum values in lib/mock-data/categories.ts.
+// EXPERIMENT maps to "Experimental" which is the actual DB check constraint.
+export function labelToCategory(label: CategoryKey): string | null {
+  if (label === "ALL") return null; // null = no filter
+  if (label === "AI EXPERIMENT") return "Experimental";
+  // "AI AGENT" → "AI Agent", "AI TOOL" → "AI Tool", etc.
+  return label
+    .split(" ")
+    .map((w, i) => (i === 0 ? w : w.charAt(0) + w.slice(1).toLowerCase()))
+    .join(" ");
+}
+
+type CategoryFilterPillsProps = {
+  /** Which pill is highlighted; "ALL" when unspecified. */
+  active?: CategoryKey;
+  /** Called when the user clicks a pill. */
+  onChange?: (key: CategoryKey) => void;
+  /** Per-category counts (keyed by label). Pass from HomePage after
+   *  running useProjects. Missing keys default to 0. */
+  counts?: Partial<Record<CategoryKey, number>>;
+};
+
+export function CategoryFilterPills({
+  active = "ALL",
+  onChange,
+  counts = {},
+}: CategoryFilterPillsProps = {}) {
   // icon paths live in public/generated/ — generated via scripts/gen.mjs
   // with Gemini 2.5 Flash Image, style-ref'd from mascot-v1.png so the
   // whole set feels like the same pixel illustrator drew them.
-  const cats = [
-    { label: "ALL", count: 250, icon: "/generated/icon-all.png", active: true },
-    { label: "AI AGENT", count: 52, icon: "/generated/icon-agent.png", active: false },
-    { label: "AI TOOL", count: 74, icon: "/generated/icon-tool.png", active: false },
-    { label: "AI GAME", count: 38, icon: "/generated/icon-game.png", active: false },
-    { label: "AI WORKFLOW", count: 31, icon: "/generated/icon-workflow.png", active: false },
-    { label: "AI UTILITY", count: 23, icon: "/generated/icon-utility.png", active: false },
-    { label: "AI EXPERIMENT", count: 12, icon: "/generated/icon-experiment.png", active: false },
+  const cats: { label: CategoryKey; icon: string }[] = [
+    { label: "ALL", icon: "/generated/icon-all.png" },
+    { label: "AI AGENT", icon: "/generated/icon-agent.png" },
+    { label: "AI TOOL", icon: "/generated/icon-tool.png" },
+    { label: "AI GAME", icon: "/generated/icon-game.png" },
+    { label: "AI WORKFLOW", icon: "/generated/icon-workflow.png" },
+    { label: "AI UTILITY", icon: "/generated/icon-utility.png" },
+    { label: "AI EXPERIMENT", icon: "/generated/icon-experiment.png" },
   ];
   return (
     <div
@@ -313,54 +353,61 @@ export function CategoryFilterPills() {
           marginBottom: -16,
         }}
       >
-        {cats.map((c) => (
-          <button
-            key={c.label}
-            className="font-ui flex items-center gap-2 cursor-pointer whitespace-nowrap"
-            style={{
-              fontSize: 10,
-              padding: "7px 12px",
-              background: c.active ? "rgba(157,0,255,0.15)" : "rgba(0,0,0,0.5)",
-              color: c.active ? "var(--text)" : "var(--text-muted)",
-              border: c.active
-                ? "1.5px solid var(--neon-purple)"
-                : "1.5px solid var(--border-bolt)",
-              letterSpacing: 1.5,
-              boxShadow: c.active ? "0 0 12px rgba(157,0,255,0.3)" : "none",
-            }}
-          >
-            <Image
-              src={c.icon}
-              alt=""
-              width={22}
-              height={22}
-              aria-hidden="true"
-              className="shrink-0"
+        {cats.map((c) => {
+          const isActive = c.label === active;
+          const count = counts[c.label] ?? 0;
+          return (
+            <button
+              key={c.label}
+              type="button"
+              onClick={() => onChange?.(c.label)}
+              aria-pressed={isActive}
+              className="font-ui flex items-center gap-2 cursor-pointer whitespace-nowrap"
               style={{
-                imageRendering: "pixelated",
-                opacity: c.active ? 1 : 0.75,
-                filter: c.active
-                  ? "drop-shadow(0 0 4px rgba(250,204,21,0.5))"
-                  : "none",
-              }}
-            />
-            {c.label}
-            <span
-              className="font-ui"
-              style={{
-                fontSize: 8,
-                padding: "2px 5px",
-                background: c.active
-                  ? "var(--neon-purple)"
-                  : "rgba(255,255,255,0.05)",
-                color: c.active ? "#FFF" : "var(--text-muted)",
-                letterSpacing: 1,
+                fontSize: 10,
+                padding: "7px 12px",
+                background: isActive ? "rgba(157,0,255,0.15)" : "rgba(0,0,0,0.5)",
+                color: isActive ? "var(--text)" : "var(--text-muted)",
+                border: isActive
+                  ? "1.5px solid var(--neon-purple)"
+                  : "1.5px solid var(--border-bolt)",
+                letterSpacing: 1.5,
+                boxShadow: isActive ? "0 0 12px rgba(157,0,255,0.3)" : "none",
               }}
             >
-              {c.count}
-            </span>
-          </button>
-        ))}
+              <Image
+                src={c.icon}
+                alt=""
+                width={22}
+                height={22}
+                aria-hidden="true"
+                className="shrink-0"
+                style={{
+                  imageRendering: "pixelated",
+                  opacity: isActive ? 1 : 0.75,
+                  filter: isActive
+                    ? "drop-shadow(0 0 4px rgba(250,204,21,0.5))"
+                    : "none",
+                }}
+              />
+              {c.label}
+              <span
+                className="font-ui"
+                style={{
+                  fontSize: 8,
+                  padding: "2px 5px",
+                  background: isActive
+                    ? "var(--neon-purple)"
+                    : "rgba(255,255,255,0.05)",
+                  color: isActive ? "#FFF" : "var(--text-muted)",
+                  letterSpacing: 1,
+                }}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { useProjects } from "@/lib/use-data";
 import { HqHeroBanner } from "@/components/home/hq-hero-banner";
@@ -8,6 +8,8 @@ import {
   StatsStrip,
   HotRightNow,
   CategoryFilterPills,
+  type CategoryKey,
+  labelToCategory,
   Testimonials,
   ForgeCtaBlock,
   WalkerStrip,
@@ -53,6 +55,7 @@ import type { HeroCardData } from "@/components/home/hero-card";
 export default function HomePage() {
   const { user } = useAuth();
   const { data: projects, loading: projectsLoading } = useProjects();
+  const [activeCategory, setActiveCategory] = useState<CategoryKey>("ALL");
 
   // Prefer GitHub/Google handle if we have it, fall back to the local-part of
   // the email, fall back to "trainer" for logged-out visitors. Stripping to a
@@ -65,15 +68,36 @@ export default function HomePage() {
     "trainer";
   const userName = rawName.replace(/\s+/g, "").slice(0, 20);
 
+  // Per-category counts — used by the filter pills to show real numbers
+  // instead of hardcoded 250/52/74. Computed from the unfiltered project
+  // set so the pills always show totals even after a filter is applied.
+  const counts = useMemo(() => {
+    const out: Partial<Record<CategoryKey, number>> = { ALL: projects.length };
+    for (const p of projects) {
+      // Map schema category ("AI Agent") back to pill label ("AI AGENT").
+      const label = p.category.toUpperCase() as CategoryKey;
+      // "Experimental" is special — its label is "AI EXPERIMENT".
+      const key: CategoryKey =
+        p.category === "Experimental" ? "AI EXPERIMENT" : label;
+      out[key] = (out[key] ?? 0) + 1;
+    }
+    return out;
+  }, [projects]);
+
   // Bucket real projects into JUST LAUNCHED / Legendary / Rising / Unexplored.
   // JUST LAUNCHED is sorted by createdAt DESC so newly submitted heroes land
   // at the top of /home immediately, giving creators instant feedback.
   // The other buckets are sorted by score to preserve the curation feel.
-  // The mock constants are used as a fallback while the fetch is in flight
-  // or if the query returns empty, so the page never renders a blank grid.
+  // The active category filter is applied BEFORE bucketing so all four
+  // grids reflect the same selection.
   const { justLaunched, legendary, rising, unexplored, unexploredCount } = useMemo(() => {
-    const byScore = [...projects].sort((a, b) => b.score - a.score);
-    const byDate = [...projects].sort(
+    const schemaCategory = labelToCategory(activeCategory);
+    const filtered = schemaCategory
+      ? projects.filter((p) => p.category === schemaCategory)
+      : projects;
+
+    const byScore = [...filtered].sort((a, b) => b.score - a.score);
+    const byDate = [...filtered].sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
@@ -90,19 +114,24 @@ export default function HomePage() {
       (c) => c.rarity === "uncommon" || c.rarity === "common",
     );
 
-    const withFallback = (real: HeroCardData[], mock: HeroCardData[]) =>
-      real.length > 0 ? real.slice(0, 3) : mock;
+    // When a category filter is active we show real results only — no mock
+    // fallback — because showing mocks across categories would be confusing
+    // ("AI GAME" should never render the AI WORKFLOW mock cards). When no
+    // filter is active we fall back to mocks as before so the page never
+    // renders empty during the pre-Supabase phase.
+    const withFallback = (real: HeroCardData[], mock: HeroCardData[]) => {
+      if (real.length > 0) return real.slice(0, 3);
+      return activeCategory === "ALL" ? mock : [];
+    };
 
-    // JUST LAUNCHED falls back to the first 3 RISING mocks when empty so the
-    // row still renders something plausible during the pre-Supabase demo.
     return {
       justLaunched: withFallback(dateCards, MOCK_RISING),
       legendary: withFallback(legendaryCards, MOCK_LEGENDARY),
       rising: withFallback(risingCards, MOCK_RISING),
       unexplored: withFallback(unexploredCards, MOCK_UNEXPLORED),
-      unexploredCount: unexploredCards.length || MOCK_UNEXPLORED.length,
+      unexploredCount: unexploredCards.length || (activeCategory === "ALL" ? MOCK_UNEXPLORED.length : 0),
     };
-  }, [projects]);
+  }, [projects, activeCategory]);
 
   const unexploredSub = projectsLoading
     ? "· LOADING…"
@@ -116,7 +145,11 @@ export default function HomePage() {
       <div id="features">
         <HqFeatureSections />
       </div>
-      <CategoryFilterPills />
+      <CategoryFilterPills
+        active={activeCategory}
+        onChange={setActiveCategory}
+        counts={counts}
+      />
       <div id="heroes">
         <HeroCardGrid
           label="▸ JUST LAUNCHED"
