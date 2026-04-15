@@ -261,7 +261,7 @@ export default function ProjectPage({
         <p className="text-muted-foreground">
           {t("project.notFoundDesc")}
         </p>
-        <Link href="/discover">
+        <Link href="/home">
           <Button variant="outline">
             <ArrowLeft className="size-4" />
             {t("project.backToExplore")}
@@ -288,7 +288,7 @@ export default function ProjectPage({
           {/* Breadcrumb nav */}
           <nav aria-label="Breadcrumb">
             <Link
-              href="/discover"
+              href="/home"
               className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <ArrowLeft className="size-4" />

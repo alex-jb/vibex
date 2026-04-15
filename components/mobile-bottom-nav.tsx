@@ -22,9 +22,11 @@ interface NavItem {
   exactMatch?: boolean;
 }
 
+// /discover merged into /home 2026-04-14. Replaced EXPLORE tile with ARENA
+// to keep the 5-item cap (HOME · ARENA · LAUNCH · FEED · PROFILE).
 const NAV_ITEMS: NavItem[] = [
   { href: "/home", label: "HOME", Icon: Home },
-  { href: "/discover", label: "EXPLORE", Icon: Compass },
+  { href: "/arena", label: "ARENA", Icon: Compass },
   { href: "/launch", label: "LAUNCH", Icon: Rocket },
   { href: "/feed", label: "FEED", Icon: MessageSquare },
   { href: "/profile", label: "PROFILE", Icon: User },

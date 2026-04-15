@@ -86,9 +86,13 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      { source: "/explore", destination: "/discover?tab=projects", permanent: true },
-      { source: "/agents", destination: "/discover?tab=agents", permanent: true },
-      { source: "/workflows", destination: "/discover?tab=workflows", permanent: true },
+      // /discover was merged into /home (HQ) on 2026-04-14. Legacy aliases
+      // and the old discover route all land at /home now.
+      { source: "/discover", destination: "/home", permanent: true },
+      { source: "/discover/:path*", destination: "/home", permanent: true },
+      { source: "/explore", destination: "/home", permanent: true },
+      { source: "/agents", destination: "/home", permanent: true },
+      { source: "/workflows", destination: "/home", permanent: true },
     ];
   },
 };

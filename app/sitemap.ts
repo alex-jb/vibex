@@ -20,7 +20,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "", priority: 1.0, changeFrequency: "daily" },
     { path: "/home", priority: 0.95, changeFrequency: "daily" },
     { path: "/launch", priority: 0.9, changeFrequency: "daily" },
-    { path: "/discover", priority: 0.9, changeFrequency: "daily" },
     { path: "/feed", priority: 0.9, changeFrequency: "hourly" },
     { path: "/hunt", priority: 0.85, changeFrequency: "daily" },
     // Content hubs

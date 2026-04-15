@@ -16,10 +16,9 @@ import { useAuth } from "@/lib/auth";
 import { ExplorerChrome } from "@/components/explorer-chrome";
 
 // Primary nav items — same for guests and logged-in users
-// Feed merged into Discover (as tab), Analytics merged into Insights (as tab)
+// /discover was merged into /home (HQ) on 2026-04-14 — one page, one catalog.
 const fullNavItems = [
   { href: "/home", key: "nav.home" as const },
-  { href: "/discover", key: "nav.discover" as const },
   { href: "/creators", key: "nav.creators" as const },
   { href: "/dojo", key: "nav.dojo" as const },
   { href: "/insights", key: "nav.insights" as const },
