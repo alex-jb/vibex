@@ -524,10 +524,9 @@ export default function LaunchPage() {
           </div>
 
           <h1
-            className="mb-3"
+            className="mb-3 text-[18px] sm:text-[24px] md:text-[30px]"
             style={{
               fontFamily: "var(--font-press-start), monospace",
-              fontSize: 30,
               color: "var(--text)",
               letterSpacing: 3,
               lineHeight: 1.5,
@@ -548,11 +547,10 @@ export default function LaunchPage() {
           </h1>
 
           <p
-            className="mb-10"
+            className="mb-8 sm:mb-10 text-[16px] sm:text-[19px] md:text-[22px]"
             style={{
               fontFamily: "var(--font-vt323), monospace",
-              fontSize: 22,
-              color: "var(--muted)",
+              color: "var(--text-muted)",
             }}
           >
             URL in, Hero Card out. 10 seconds. No form, no typing, no friction.
@@ -561,13 +559,11 @@ export default function LaunchPage() {
           {/* Mega URL input */}
           <div className="relative mb-5">
             <span
-              className="absolute"
+              className="absolute text-[11px] sm:text-[13px] md:text-[14px] left-4 sm:left-5 md:left-[22px]"
               style={{
-                left: 22,
                 top: "50%",
                 transform: "translateY(-50%)",
                 fontFamily: "var(--font-press-start), monospace",
-                fontSize: 14,
                 color: "var(--neon-green)",
                 textShadow: "0 0 6px rgba(57,255,20,0.9)",
                 zIndex: 2,
@@ -585,15 +581,13 @@ export default function LaunchPage() {
                   handleQuickScrape();
                 }
               }}
-              placeholder="https://   paste a repo, landing page, or demo URL"
-              className="w-full outline-none"
+              placeholder="https://   paste a repo or demo URL"
+              className="w-full outline-none text-[16px] sm:text-[19px] md:text-[22px] py-4 sm:py-5 md:py-[26px] pl-12 sm:pl-[52px] md:pl-[60px] pr-16 sm:pr-[80px] md:pr-[90px]"
               style={{
                 background: "rgba(0,0,0,0.75)",
                 border: "3px solid rgba(157,0,255,0.6)",
                 color: "var(--text)",
                 fontFamily: "var(--font-vt323), monospace",
-                fontSize: 22,
-                padding: "26px 90px 26px 60px",
                 letterSpacing: 0.5,
                 boxShadow:
                   "inset 0 4px 8px rgba(0,0,0,0.7), 0 0 30px rgba(157,0,255,0.25), 0 0 60px rgba(157,0,255,0.15)",
@@ -604,18 +598,14 @@ export default function LaunchPage() {
               onClick={handleQuickScrape}
               disabled={scrapeLoading || !quickUrl.trim()}
               aria-label={scrapeLoading ? "Scraping" : "Launch from URL"}
-              className="absolute flex items-center justify-center disabled:opacity-60"
+              className="absolute flex items-center justify-center disabled:opacity-60 right-2 sm:right-[10px] w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 text-[14px] sm:text-[16px] md:text-[18px]"
               style={{
-                right: 10,
                 top: "50%",
                 transform: "translateY(-50%)",
-                width: 56,
-                height: 56,
                 background:
                   "linear-gradient(135deg, var(--neon-purple), #C026D3)",
                 color: "#FFF",
                 fontFamily: "var(--font-press-start), monospace",
-                fontSize: 18,
                 border: "3px solid #FFF",
                 boxShadow: "3px 3px 0 #000, 0 0 20px rgba(157,0,255,0.7)",
                 cursor: scrapeLoading ? "wait" : "pointer",
@@ -643,11 +633,10 @@ export default function LaunchPage() {
           )}
 
           <div
-            className="mb-8"
+            className="mb-6 sm:mb-8 text-[13px] sm:text-[15px] md:text-[17px]"
             style={{
               fontFamily: "var(--font-vt323), monospace",
-              fontSize: 17,
-              color: "var(--muted)",
+              color: "var(--text-muted)",
             }}
           >
             ... or{" "}
@@ -655,7 +644,7 @@ export default function LaunchPage() {
               style={{
                 display: "inline-block",
                 padding: "4px 10px",
-                border: "1.5px dashed var(--dim, #555)",
+                border: "1.5px dashed var(--text-dim, #555)",
                 color: "var(--text)",
               }}
             >
@@ -679,7 +668,7 @@ export default function LaunchPage() {
                   fontSize: 9,
                   padding: "10px 14px",
                   background: "rgba(0,0,0,0.5)",
-                  color: "var(--muted)",
+                  color: "var(--text-muted)",
                   border: "1.5px solid var(--border-metal)",
                   letterSpacing: 1.5,
                 }}
