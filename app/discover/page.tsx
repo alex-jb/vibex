@@ -1,13 +1,14 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Compass, Folder, Bot, GitBranch, Search, MessageCircle } from "lucide-react";
+import { Folder, Bot, GitBranch, MessageCircle } from "lucide-react";
 import { ProjectsTab } from "@/components/discover/projects-tab";
 import { AgentsTab } from "@/components/discover/agents-tab";
 import { WorkflowsTab } from "@/components/discover/workflows-tab";
 import { FeedTab } from "@/components/discover/feed-tab";
+import { AtlasHero } from "@/components/discover/atlas-hero";
 import { useLang } from "@/lib/i18n";
 
 type Tab = "projects" | "agents" | "workflows" | "feed";
@@ -29,7 +30,6 @@ function DiscoverContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const [search, setSearch] = useState("");
 
   const rawTab = searchParams.get("tab");
   const activeTab: Tab =
@@ -57,92 +57,21 @@ function DiscoverContent() {
       {/* Background gradient orb */}
       <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[480px] w-[480px] rounded-full bg-violet-600/8 blur-[120px]" />
 
-      {/* Terminal header bar */}
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="relative mb-6"
-      >
-        <div
-          className="rounded-t-lg px-4 py-2 flex items-center gap-2"
-          style={{
-            background: "rgba(30,30,40,0.85)",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <span
-            className="inline-block w-3 h-3 rounded-full"
-            style={{ background: "#FF5F56" }}
-          />
-          <span
-            className="inline-block w-3 h-3 rounded-full"
-            style={{ background: "#FFBD2E" }}
-          />
-          <span
-            className="inline-block w-3 h-3 rounded-full"
-            style={{ background: "#27C93F" }}
-          />
-          <span
-            className="ml-3 text-xs tracking-widest"
-            style={{
-              fontFamily: "var(--font-pixel), monospace",
-              color: "#39FF14",
-              textShadow: "0 0 8px rgba(57,255,20,0.4)",
-            }}
-          >
-            VIBEX://DISCOVER v2.0
-          </span>
-        </div>
-      </motion.div>
+      {/* THE ATLAS — pixel world map hero (approved /design-shotgun 2026-04-14) */}
+      <AtlasHero />
 
-      {/* Page Hero */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative text-center mb-10"
+      {/* Divider */}
+      <div
+        className="mt-10 mb-8 font-ui"
+        style={{
+          fontSize: 11,
+          letterSpacing: 3,
+          color: "var(--muted)",
+          textAlign: "center",
+        }}
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 mb-5">
-          <Compass className="size-3.5 text-violet-400" />
-          <span className="text-xs font-medium text-violet-400 tracking-wide">
-            {t("discover.badge")}
-          </span>
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-          {t("discover.title")}{" "}
-          <span className="text-gradient">{t("discover.titleHighlight")}</span>
-        </h1>
-        <p className="mt-3 text-muted-foreground max-w-lg mx-auto text-sm leading-relaxed">
-          {t("discover.description")}
-        </p>
-      </motion.div>
-
-      {/* Search Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.05 }}
-        className="relative max-w-md mx-auto mb-8"
-      >
-        <div
-          className="retro-border flex items-center gap-2 px-3 py-2 rounded-md"
-          style={{
-            background: "rgba(20,20,30,0.7)",
-            border: "2px solid rgba(139,92,246,0.3)",
-          }}
-        >
-          <Search className="size-4 text-violet-400 shrink-0" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search projects, agents, workflows..."
-            className="w-full bg-transparent text-sm text-white placeholder-white/30 outline-none"
-            style={{ fontFamily: "var(--font-pixel), monospace" }}
-          />
-        </div>
-      </motion.div>
+        ▸ OR BROWSE BY TYPE ◂
+      </div>
 
       {/* Tab Switcher */}
       <motion.div
