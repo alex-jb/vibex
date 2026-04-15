@@ -1,6 +1,72 @@
 "use client";
 
-import { HeroCard, type HeroCardData } from "@/components/home/hero-card";
+import { HeroCard, type HeroCardData, type Rarity } from "@/components/home/hero-card";
+import type { Project } from "@/lib/types";
+
+/**
+ * Map a real Supabase Project row to the HeroCardData shape the grid renders.
+ * This is where the DB schema meets the design system: evolution_stage →
+ * rarity, score → HP, id → card number. Keep this pure so it's easy to test.
+ */
+const STAGE_TO_RARITY: Record<string, Rarity> = {
+  Seed: "common",
+  Active: "uncommon",
+  Growing: "rare",
+  Breakout: "epic",
+  Legend: "legendary",
+  Myth: "myth",
+};
+
+function projectToHeroCardData(
+  p: Project,
+  index: number,
+): HeroCardData {
+  // evolution_stage isn't in the Project TS type yet (it's a DB-only column),
+  // so we read it through an index lookup and fall back to score buckets.
+  const stage = (p as unknown as { evolutionStage?: string }).evolutionStage;
+  const stageRarity = stage ? STAGE_TO_RARITY[stage] : undefined;
+  const scoreRarity: Rarity =
+    p.score >= 90
+      ? "myth"
+      : p.score >= 85
+        ? "legendary"
+        : p.score >= 75
+          ? "epic"
+          : p.score >= 60
+            ? "rare"
+            : p.score >= 40
+              ? "uncommon"
+              : "common";
+  const rarity: Rarity = stageRarity ?? scoreRarity;
+
+  // Stable card number from project id — first 3 trailing chars, padded.
+  const tail = p.id.replace(/[^a-zA-Z0-9]/g, "").slice(-3).toUpperCase();
+  const cardNumber = tail.padStart(3, "0");
+
+  // HP is a cosmetic scale of the score. Map 0-100 → 60-250 so even low
+  // scores look playable.
+  const hp = 60 + Math.round((p.score / 100) * 190);
+
+  return {
+    id: p.id,
+    name: p.title,
+    hp,
+    category: p.category.toUpperCase(),
+    stage: stage ? `${stage.toUpperCase()}` : undefined,
+    creator: p.creatorName || "anon",
+    rarity,
+    cardNumber,
+    // Timeline is purely decorative (fake video player chrome).
+    timelineStart: "00:00",
+    timelineEnd: `00:${String(10 + (index % 40)).padStart(2, "0")}`,
+  };
+}
+
+export function projectsToCards(
+  projects: Project[],
+): HeroCardData[] {
+  return projects.map((p, i) => projectToHeroCardData(p, i));
+}
 
 type HeroCardGridProps = {
   id?: string;

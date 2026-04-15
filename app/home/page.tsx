@@ -1,6 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
 import { useAuth } from "@/lib/auth";
+import { useProjects } from "@/lib/use-data";
 import { HqHeroBanner } from "@/components/home/hq-hero-banner";
 import {
   StatsStrip,
@@ -14,10 +16,12 @@ import {
 import { HqFeatureSections } from "@/components/home/hq-feature-sections";
 import {
   HeroCardGrid,
+  projectsToCards,
   MOCK_LEGENDARY,
   MOCK_RISING,
   MOCK_UNEXPLORED,
 } from "@/components/home/hero-card-grid";
+import type { HeroCardData } from "@/components/home/hero-card";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    /home — HQ page (new composition, approved via /design-consultation
@@ -48,6 +52,7 @@ import {
 
 export default function HomePage() {
   const { user } = useAuth();
+  const { data: projects, loading: projectsLoading } = useProjects();
 
   // Prefer GitHub/Google handle if we have it, fall back to the local-part of
   // the email, fall back to "trainer" for logged-out visitors. Stripping to a
@@ -59,6 +64,38 @@ export default function HomePage() {
     user?.email?.split("@")[0] ??
     "trainer";
   const userName = rawName.replace(/\s+/g, "").slice(0, 20);
+
+  // Bucket real projects into Legendary / Rising / Unexplored by score. The
+  // fallback mock constants are used while the fetch is in flight or if the
+  // query returns empty, so the page never renders a blank grid.
+  const { legendary, rising, unexplored, unexploredCount } = useMemo(() => {
+    const sorted = [...projects].sort((a, b) => b.score - a.score);
+    const cards = projectsToCards(sorted);
+
+    const legendaryCards = cards.filter(
+      (c) => c.rarity === "myth" || c.rarity === "legendary",
+    );
+    const risingCards = cards.filter(
+      (c) => c.rarity === "epic" || c.rarity === "rare",
+    );
+    const unexploredCards = cards.filter(
+      (c) => c.rarity === "uncommon" || c.rarity === "common",
+    );
+
+    const withFallback = (real: HeroCardData[], mock: HeroCardData[]) =>
+      real.length > 0 ? real.slice(0, 3) : mock;
+
+    return {
+      legendary: withFallback(legendaryCards, MOCK_LEGENDARY),
+      rising: withFallback(risingCards, MOCK_RISING),
+      unexplored: withFallback(unexploredCards, MOCK_UNEXPLORED),
+      unexploredCount: unexploredCards.length || MOCK_UNEXPLORED.length,
+    };
+  }, [projects]);
+
+  const unexploredSub = projectsLoading
+    ? "· LOADING…"
+    : `· ${unexploredCount} HEROES YOU HAVEN'T MET`;
 
   return (
     <div id="top" className="relative" style={{ background: "var(--bg-deep)" }}>
@@ -73,17 +110,17 @@ export default function HomePage() {
         <HeroCardGrid
           label="▸ LEGENDARY IN THE WILD"
           subLabel="· TOP 3 THIS WEEK"
-          cards={MOCK_LEGENDARY}
+          cards={legendary}
         />
         <HeroCardGrid
           label="▸ RISING IN THE COMMUNITY"
           subLabel="· EPIC + RARE ON THE CLIMB"
-          cards={MOCK_RISING}
+          cards={rising}
         />
         <HeroCardGrid
           label="▸ UNEXPLORED"
-          subLabel="· 208 HEROES YOU HAVEN'T MET"
-          cards={MOCK_UNEXPLORED}
+          subLabel={unexploredSub}
+          cards={unexplored}
         />
       </div>
       <Testimonials />

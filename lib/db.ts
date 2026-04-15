@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 import * as mock from "./mock-data";
 import type {
@@ -10,6 +11,7 @@ import type {
   BattleResult,
   AIReview,
   BehaviorScore,
+  ProjectCategory,
 } from "./types";
 import type { AgentDefinition } from "./agent-types";
 import { agents as mockAgents } from "./mock-data/agents";
@@ -139,6 +141,150 @@ export async function incrementView(projectId: string): Promise<void> {
       .update({ views: data.views + 1 })
       .eq("id", projectId);
   }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// WRITE PATH — Launch Feedback Loop
+// ═══════════════════════════════════════════════════════════════
+
+export interface NewProjectInput {
+  title: string;
+  tagline: string;
+  description: string;
+  category: ProjectCategory;
+  tags: string[];
+  demoType?: "chat" | "sandbox" | "preview" | "embedded";
+  demoUrl?: string;
+  thumbnail?: string;
+}
+
+type AuthUser = {
+  id: string;
+  email?: string;
+  user_metadata?: Record<string, unknown>;
+};
+
+/**
+ * Ensure a `creators` row exists for the given auth user and return its id.
+ * Uses the per-request authed Supabase client so RLS (policy
+ * "Auth insert own creator" from migration 038) can match auth.uid().
+ *
+ * Returns null on any failure so callers can choose to fall back. We do not
+ * throw because this runs inside API routes that want to return structured
+ * errors instead of 500s.
+ */
+export async function getOrCreateCreator(
+  client: SupabaseClient,
+  user: AuthUser,
+): Promise<string | null> {
+  if (!USE_SUPABASE) return `creator-${user.id.slice(0, 8)}`;
+
+  // Look up existing by auth_user_id first.
+  const { data: existing } = await client
+    .from("creators")
+    .select("id")
+    .eq("auth_user_id", user.id)
+    .maybeSingle();
+
+  if (existing?.id) return existing.id as string;
+
+  // Derive a display name and stable id from the auth user.
+  const meta = user.user_metadata ?? {};
+  const displayName =
+    (meta.user_name as string | undefined) ??
+    (meta.preferred_username as string | undefined) ??
+    (meta.full_name as string | undefined) ??
+    user.email?.split("@")[0] ??
+    "trainer";
+
+  // Creator ids are TEXT in the schema. Use the auth uid directly so there
+  // is a 1:1 mapping and we never create duplicates.
+  const creatorId = user.id;
+
+  const { data: inserted, error } = await client
+    .from("creators")
+    .insert({
+      id: creatorId,
+      name: displayName,
+      auth_user_id: user.id,
+      bio: "",
+      rank: 0,
+      weekly_growth: 0,
+    })
+    .select("id")
+    .single();
+
+  if (error || !inserted?.id) {
+    console.error("[getOrCreateCreator] insert failed", error);
+    return null;
+  }
+  return inserted.id as string;
+}
+
+/**
+ * Insert a real project row. Caller must pass the authed supabase client and
+ * a creator_id that belongs to the current user (use getOrCreateCreator).
+ * Returns the inserted row (mapped to Project) or null on failure.
+ */
+export async function createProject(
+  client: SupabaseClient,
+  creatorId: string,
+  input: NewProjectInput,
+): Promise<Project | null> {
+  const projectId = `proj-${Date.now().toString(36)}-${Math.random()
+    .toString(36)
+    .slice(2, 6)}`;
+
+  if (!USE_SUPABASE) {
+    // Dev / demo mode: return a plausible Project shape so the submit route
+    // can still return 201 without a real database. The row isn't persisted.
+    return {
+      id: projectId,
+      title: input.title,
+      tagline: input.tagline,
+      description: input.description,
+      category: input.category,
+      creatorId,
+      creatorName: "",
+      tags: input.tags,
+      thumbnail: input.thumbnail ?? "",
+      views: 0,
+      upvotes: 0,
+      plays: 0,
+      shares: 0,
+      remixCount: 0,
+      score: 0,
+      featured: false,
+      demoType: input.demoType ?? "preview",
+      demoUrl: input.demoUrl,
+      createdAt: new Date().toISOString(),
+      behaviorScore: { plays: 0, avgStaySeconds: 0, shareRate: 0, remixCount: 0, aiScore: 0, compound: 0 },
+      aiReview: { originality: 0, clarity: 0, uxPotential: 0, viralityPotential: 0, investorCuriosity: 0, strengths: [], weaknesses: [], suggestions: [] },
+    };
+  }
+
+  const { data, error } = await client
+    .from("projects")
+    .insert({
+      id: projectId,
+      title: input.title,
+      tagline: input.tagline,
+      description: input.description,
+      category: input.category,
+      creator_id: creatorId,
+      tags: input.tags,
+      thumbnail: input.thumbnail ?? "",
+      demo_type: input.demoType ?? "preview",
+      demo_url: input.demoUrl ?? null,
+    })
+    .select("*, creators(name)")
+    .single();
+
+  if (error || !data) {
+    console.error("[createProject] insert failed", error);
+    return null;
+  }
+  return mapProject(data as Record<string, unknown>);
 }
 
 // ═══════════════════════════════════════════════════════════════

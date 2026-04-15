@@ -20,7 +20,7 @@ import {
 
 import { useLang } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
-import { projects } from "@/lib/mock-data";
+import { useProjects } from "@/lib/use-data";
 import type { Project, AIReview } from "@/lib/types";
 import { FeedbackPanel } from "@/components/launch-feedback/feedback-panel";
 import { Button } from "@/components/ui/button";
@@ -239,6 +239,7 @@ export default function ProjectPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const { data: projects, loading: projectsLoading } = useProjects();
   const project = projects.find((p) => p.id === id);
   const { t } = useLang();
   const { user } = useAuth();
@@ -252,9 +253,17 @@ export default function ProjectPage({
       .sort(() => 0.5 - Math.random())
       .slice(0, 3);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, projects]);
 
   if (!project) {
+    // Still fetching — show a lightweight skeleton instead of the 404 flash.
+    if (projectsLoading) {
+      return (
+        <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
+          <div className="text-sm text-muted-foreground font-ui">LOADING HERO…</div>
+        </div>
+      );
+    }
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
         <h1 className="text-2xl font-bold">{t("project.notFound")}</h1>
