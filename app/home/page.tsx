@@ -65,27 +65,38 @@ export default function HomePage() {
     "trainer";
   const userName = rawName.replace(/\s+/g, "").slice(0, 20);
 
-  // Bucket real projects into Legendary / Rising / Unexplored by score. The
-  // fallback mock constants are used while the fetch is in flight or if the
-  // query returns empty, so the page never renders a blank grid.
-  const { legendary, rising, unexplored, unexploredCount } = useMemo(() => {
-    const sorted = [...projects].sort((a, b) => b.score - a.score);
-    const cards = projectsToCards(sorted);
+  // Bucket real projects into JUST LAUNCHED / Legendary / Rising / Unexplored.
+  // JUST LAUNCHED is sorted by createdAt DESC so newly submitted heroes land
+  // at the top of /home immediately, giving creators instant feedback.
+  // The other buckets are sorted by score to preserve the curation feel.
+  // The mock constants are used as a fallback while the fetch is in flight
+  // or if the query returns empty, so the page never renders a blank grid.
+  const { justLaunched, legendary, rising, unexplored, unexploredCount } = useMemo(() => {
+    const byScore = [...projects].sort((a, b) => b.score - a.score);
+    const byDate = [...projects].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
 
-    const legendaryCards = cards.filter(
+    const scoreCards = projectsToCards(byScore);
+    const dateCards = projectsToCards(byDate);
+
+    const legendaryCards = scoreCards.filter(
       (c) => c.rarity === "myth" || c.rarity === "legendary",
     );
-    const risingCards = cards.filter(
+    const risingCards = scoreCards.filter(
       (c) => c.rarity === "epic" || c.rarity === "rare",
     );
-    const unexploredCards = cards.filter(
+    const unexploredCards = scoreCards.filter(
       (c) => c.rarity === "uncommon" || c.rarity === "common",
     );
 
     const withFallback = (real: HeroCardData[], mock: HeroCardData[]) =>
       real.length > 0 ? real.slice(0, 3) : mock;
 
+    // JUST LAUNCHED falls back to the first 3 RISING mocks when empty so the
+    // row still renders something plausible during the pre-Supabase demo.
     return {
+      justLaunched: withFallback(dateCards, MOCK_RISING),
       legendary: withFallback(legendaryCards, MOCK_LEGENDARY),
       rising: withFallback(risingCards, MOCK_RISING),
       unexplored: withFallback(unexploredCards, MOCK_UNEXPLORED),
@@ -107,6 +118,11 @@ export default function HomePage() {
       </div>
       <CategoryFilterPills />
       <div id="heroes">
+        <HeroCardGrid
+          label="▸ JUST LAUNCHED"
+          subLabel="· FRESH FROM THE FORGE"
+          cards={justLaunched}
+        />
         <HeroCardGrid
           label="▸ LEGENDARY IN THE WILD"
           subLabel="· TOP 3 THIS WEEK"
