@@ -71,17 +71,27 @@ export const metadata: Metadata = {
     "Discover, publish, and evolve playable AI-native vibe coding projects. The launch platform for the LLM era.",
   manifest: "/manifest.json",
   openGraph: {
-    title: "VibeX — AI-Native Launch Platform",
-    description: "Discover, publish, and evolve playable AI-native vibe coding projects.",
+    title: "VibeX — Forge Your AI Hero",
+    description:
+      "Every AI project is a collectible hero. Paste a URL, forge a card, get real feedback, evolve with real traction.",
     siteName: "VibeX",
     type: "website",
     locale: "en_US",
-    images: [{ url: "/og-default.png", width: 1200, height: 630 }],
+    images: [
+      {
+        url: "/generated/og-vibex.png",
+        width: 1200,
+        height: 630,
+        alt: "VibeX — Forge Your AI Hero. Pixel art knight mascot in a neon mountain night scene.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "VibeX — AI-Native Launch Platform",
-    description: "Discover, publish, and evolve playable AI-native vibe coding projects.",
+    title: "VibeX — Forge Your AI Hero",
+    description:
+      "Every AI project is a collectible hero. Paste a URL, forge a card, get real feedback, evolve with real traction.",
+    images: ["/generated/og-vibex.png"],
   },
   alternates: {
     canonical: "https://vibexforge.com",
