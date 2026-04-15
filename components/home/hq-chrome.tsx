@@ -288,14 +288,17 @@ export function HotRightNow() {
 
 /* ─── Category filter pills ─── */
 export function CategoryFilterPills() {
+  // icon paths live in public/generated/ — generated via scripts/gen.mjs
+  // with Gemini 2.5 Flash Image, style-ref'd from mascot-v1.png so the
+  // whole set feels like the same pixel illustrator drew them.
   const cats = [
-    { label: "ALL", count: 250, active: true },
-    { label: "AI AGENT", count: 52, active: false },
-    { label: "AI TOOL", count: 74, active: false },
-    { label: "AI GAME", count: 38, active: false },
-    { label: "AI WORKFLOW", count: 31, active: false },
-    { label: "AI UTILITY", count: 23, active: false },
-    { label: "AI EXPERIMENT", count: 12, active: false },
+    { label: "ALL", count: 250, icon: "/generated/icon-all.png", active: true },
+    { label: "AI AGENT", count: 52, icon: "/generated/icon-agent.png", active: false },
+    { label: "AI TOOL", count: 74, icon: "/generated/icon-tool.png", active: false },
+    { label: "AI GAME", count: 38, icon: "/generated/icon-game.png", active: false },
+    { label: "AI WORKFLOW", count: 31, icon: "/generated/icon-workflow.png", active: false },
+    { label: "AI UTILITY", count: 23, icon: "/generated/icon-utility.png", active: false },
+    { label: "AI EXPERIMENT", count: 12, icon: "/generated/icon-experiment.png", active: false },
   ];
   return (
     <div
@@ -316,7 +319,7 @@ export function CategoryFilterPills() {
             className="font-ui flex items-center gap-2 cursor-pointer whitespace-nowrap"
             style={{
               fontSize: 10,
-              padding: "9px 14px",
+              padding: "7px 12px",
               background: c.active ? "rgba(157,0,255,0.15)" : "rgba(0,0,0,0.5)",
               color: c.active ? "var(--text)" : "var(--text-muted)",
               border: c.active
@@ -326,6 +329,21 @@ export function CategoryFilterPills() {
               boxShadow: c.active ? "0 0 12px rgba(157,0,255,0.3)" : "none",
             }}
           >
+            <Image
+              src={c.icon}
+              alt=""
+              width={22}
+              height={22}
+              aria-hidden="true"
+              className="shrink-0"
+              style={{
+                imageRendering: "pixelated",
+                opacity: c.active ? 1 : 0.75,
+                filter: c.active
+                  ? "drop-shadow(0 0 4px rgba(250,204,21,0.5))"
+                  : "none",
+              }}
+            />
             {c.label}
             <span
               className="font-ui"
