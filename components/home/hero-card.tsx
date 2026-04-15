@@ -41,6 +41,26 @@ const RARITY_LABEL: Record<Rarity, string> = {
   myth: "MYTH",
 };
 
+// Per-project pixel art thumbnails generated via scripts/gen.mjs with
+// Gemini 2.5 Flash Image, all style-ref'd from mascot-v1.png so they
+// share the same pixel illustrator's visual language. The key is the
+// seed project id. Unknown ids fall through to card-fallback-v2 (the
+// generic INSERT COIN arcade screen).
+const PROJECT_THUMBNAILS: Record<string, string> = {
+  "1": "/generated/thumb-1-vibetranslate.png",
+  "2": "/generated/thumb-2-agentforge.png",
+  "3": "/generated/thumb-3-pixelmind.png",
+  "4": "/generated/thumb-4-codereview.png",
+  "5": "/generated/thumb-5-dreamboard.png",
+  "6": "/generated/thumb-6-voiceos.png",
+  "7": "/generated/thumb-7-narrativeai.png",
+  "8": "/generated/thumb-8-datasculpt.png",
+  "9": "/generated/thumb-9-sketchtoapp.png",
+  "10": "/generated/thumb-10-ecotrack.png",
+  "11": "/generated/thumb-11-meetingmind.png",
+  "12": "/generated/thumb-12-synthlab.png",
+};
+
 const RARITY_SYMBOL: Record<Rarity, string> = {
   common: "✦",
   uncommon: "✦",
@@ -191,17 +211,21 @@ export function HeroCard({ data }: { data: HeroCardData }) {
           minHeight: 110,
         }}
       >
-        {/* Fallback pixel art arcade screen — sits behind everything so
-            the scanlines / play button / timeline overlay on top. Cards
-            that have a real demo thumbnail will replace this in a later
-            pass. */}
+        {/* Per-project thumbnail — a pixel art scene that reflects the
+            product's tagline. Falls back to the INSERT COIN arcade screen
+            for projects we haven't generated art for yet. Sits BEHIND the
+            video chrome so scanlines / play button / timeline overlay on
+            top via z-index. */}
         <Image
-          src="/generated/card-fallback-v2.png"
+          src={
+            PROJECT_THUMBNAILS[data.id] ??
+            "/generated/card-fallback-v2.png"
+          }
           alt=""
           fill
           sizes="(max-width: 640px) 100vw, 33vw"
           aria-hidden="true"
-          className="object-cover opacity-80"
+          className="object-cover opacity-85"
           style={{ imageRendering: "pixelated" }}
         />
         {/* scanlines */}
