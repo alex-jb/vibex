@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Rocket,
@@ -57,6 +58,9 @@ export default function LaunchPage() {
   const [aiResponse, setAiResponse] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const router = useRouter();
   const [launchPkg, setLaunchPkg] = useState<LaunchPackage | null>(null);
   const [pkgLoading, setPkgLoading] = useState(false);
   const [pkgError, setPkgError] = useState<string | null>(null);
@@ -358,9 +362,58 @@ export default function LaunchPage() {
 
   const proTips = [t("launch.tip1"), t("launch.tip2"), t("launch.tip3")];
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitError(null);
+    setSubmitLoading(true);
+    try {
+      const tagList = tags
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+
+      const res = await fetch("/api/projects/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          tagline,
+          description,
+          category,
+          tags: tagList,
+          creatorName,
+          demoType: demoType || "preview",
+          demoUrl: demoLink,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setSubmitError(data?.error ?? "Submit failed");
+        setSubmitLoading(false);
+        return;
+      }
+
+      // Clear the autosaved draft so returning to /launch starts fresh.
+      try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+
+      setSubmitted(true);
+
+      // Redirect into the new project detail page so the user sees the
+      // full Launch Feedback Loop payoff. If the row was actually persisted
+      // (persisted: true), the /project/[id] route will find it via
+      // useProjects(). For the mock/fallback path, /project/[id] shows
+      // LOADING HERO... then 404 — which is still better than staying
+      // stuck on the form. Use a small delay so the success flash is
+      // visible before navigating.
+      setTimeout(() => {
+        router.push(`/project/${encodeURIComponent(data.id)}`);
+      }, 650);
+    } catch (err) {
+      console.error("[launch] submit failed", err);
+      setSubmitError("Network error — please try again");
+      setSubmitLoading(false);
+    }
   }
 
   // Suggestion helpers
@@ -1180,21 +1233,39 @@ export default function LaunchPage() {
             </div>
 
             {/* Submit */}
+            {submitError && (
+              <div className="mt-8 rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-center">
+                <p className="font-ui text-red-300 text-xs tracking-wider">
+                  <AlertCircle className="inline size-4 mr-2" />
+                  {submitError}
+                </p>
+              </div>
+            )}
             {submitted && (
               <div className="mt-8 rpgui-container framed p-4 text-center" style={{ padding: 16 }}>
                 <p className="font-pixel text-emerald-400" style={{ fontSize: 12, textShadow: "0 0 10px rgba(57,255,20,0.3)" }}>
                   <CheckCircle2 className="inline size-4 mr-2" />
-                  Project submitted! (MVP - mock)
+                  Hero forged! Taking you to your page…
                 </p>
               </div>
             )}
             {!submitted && (
               <Button
                 type="submit"
-                className="w-full mt-8 h-12 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-base font-semibold shadow-lg shadow-violet-500/20 transition-all duration-200 hover:shadow-violet-500/30 glow-violet"
+                disabled={submitLoading}
+                className="w-full mt-8 h-12 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-base font-semibold shadow-lg shadow-violet-500/20 transition-all duration-200 hover:shadow-violet-500/30 glow-violet disabled:opacity-60"
               >
-                <Rocket className="size-4 mr-2" />
-                {t("launch.submit")}
+                {submitLoading ? (
+                  <>
+                    <Loader2 className="size-4 mr-2 animate-spin" />
+                    Forging…
+                  </>
+                ) : (
+                  <>
+                    <Rocket className="size-4 mr-2" />
+                    {t("launch.submit")}
+                  </>
+                )}
               </Button>
             )}
           </form>
