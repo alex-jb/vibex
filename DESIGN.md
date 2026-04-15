@@ -24,29 +24,87 @@
 | Cyan | `#06B6D4` | `--neon-cyan` | MP bars, info, agility, secondary accent |
 | Pink | `#EC4899` | `--neon-pink` | Hearts, likes, charisma |
 
-### Backgrounds (dark theme only)
+### Backgrounds — 4-tier surface hierarchy
+
+Linear-style surface discipline: every element belongs to exactly one tier.
+The tier determines visual depth. Never mix tiers in the same container.
+
+| Tier | Hex | Variable | Role | Example use |
+|------|-----|----------|------|-------------|
+| **Tier 0** (deepest) | `#0D0D0D` | `--bg-deep` | Page background | `<body>` root, hero backdrops |
+| **Tier 1** (panel) | `#111114` | `--bg-panel` | Non-interactive panels | Nav bars, footer, status bars, quest cards |
+| **Tier 2** (card) | `#161619` | `--bg-card` | Interactive surfaces | Hero cards, discover regions, settings panels |
+| **Tier 3** (elevated) | `#1A1A1E` | `--bg-dialog` | Floating surfaces | Modals, dropdowns, popovers, hover states |
+| — | `#0A0A0C` | — | Bar/input interior | `<input>`, `<pre>`, HP/MP/XP bar backgrounds (darker than Tier 0 on purpose, a "recessed" feel) |
+
+**Rule:** a Tier 2 card on a Tier 0 page works. A Tier 1 panel inside a
+Tier 3 modal works. But never put a Tier 0 element inside a Tier 3 one
+(the tier order reverses and visual depth breaks).
+
+### Borders — two systems
+
+VibeX has two border systems. Pick the right one for the job.
+
+#### System A — metal bolts (data chrome, rarity, L-corners)
+
+Solid colors that PARTICIPATE in the arcade identity. Use when the border
+is carrying data (rarity tier, status, HP) or is an arcade-game visual
+element (corner brackets, card frames, terminal window chrome).
+
 | Hex | Variable | Usage |
 |-----|----------|-------|
-| `#0D0D0D` | `--bg-deep` | Page background, deepest |
-| `#111114` | `--bg-panel` | Panel/card backgrounds |
-| `#161619` | `--bg-card` | Elevated surfaces |
-| `#1A1A1E` | `--bg-dialog` | Modals, dropdowns |
-| `#0A0A0C` | — | Bar/input backgrounds |
+| `#2A2A30` | `--border-metal` | Standard 2px card/panel border |
+| `#3A3A42` | `--border-bolt` | 3px emphasized border (RPGUI framed, hero card) |
+| Rarity colors | — | 6 rarity tiers (common/uncommon/rare/epic/legendary/myth) |
+| `var(--neon-orange)` | — | L-corner brackets (4× per viewport, sharp pixels) |
 
-### Borders
+#### System B — hairlines (structural division, Linear-style)
+
+Semi-transparent white. Use when the border is STRUCTURAL (separating
+two sections inside a container, underlining a list item, dividing a
+quest panel) and is NOT carrying data. These are "drawn in moonlight" —
+present but whispering.
+
+| Value | Variable | Usage |
+|-------|----------|-------|
+| `rgba(255,255,255,0.05)` | `--border-hair` | Default structural divider (hr, list separator, sub-sections) |
+| `rgba(255,255,255,0.08)` | `--border-wire` | Slightly more visible — card inner frames, form field dividers |
+| `rgba(255,255,255,0.06)` | — | Glass card subtle (existing) |
+| `rgba(255,255,255,0.10)` | — | Glass card strong (existing) |
+
+**Rule:** never use System A (metal/rarity colors) for structural division
+and never use System B (hairlines) for data identification. Mixing them
+makes everything look like an arcade explosion. The System B borders are
+the quiet skeleton; System A borders are the LOUD identity.
+
+### Text — "never pure white" rule
+
+Dark UIs must never use `#FFFFFF` for body text. Pure white on pure black
+vibrates and strains the eye over time (ask any programmer). VibeX uses
+a near-white with a cool cast:
+
 | Hex | Variable | Usage |
 |-----|----------|-------|
-| `#2A2A30` | `--border-metal` | Standard borders (2px) |
-| `#3A3A42` | `--border-bolt` | Emphasized borders (3px) |
-| `rgba(255,255,255,0.06)` | — | Glass card subtle |
-| `rgba(255,255,255,0.10)` | — | Glass card strong |
+| `#E8E8EC` | — | Primary text (234-236 cool gray) |
+| `#8888A0` | — | Muted/secondary (labels, captions, metadata) |
+| `#555555` | — | Disabled/dim (timestamps, inactive states) |
 
-### Text
-| Hex | Usage |
-|-----|-------|
-| `#E8E8EC` | Primary text |
-| `#8888A0` | Muted/secondary |
-| `#555555` | Disabled/dim |
+**Exception:** pure white (`#FFFFFF`) IS allowed as a decoration color — in
+the 3px white border around Pixel Chromatic Buttons (hero CTAs), inside
+neon glow gradient stops, or as text INSIDE a neon-gradient button. Never
+as a default body/heading color on a dark surface.
+
+### Accent Discipline — northstar
+
+**Current rule (enforced):** 1 primary + 1 supporting neon per screen.
+See "Color Restraint Rule" below.
+
+**Aspirational rule (Linear-style):** eventually, the ENTIRE product
+should use 1 dominant accent color across all screens, with categories
+distinguished by *luminance and typography* rather than hue. This is
+currently too ambitious (VibeX's arcade identity depends on the 6-neon
+palette), but keep it as a 6-month north star: every time you add a new
+accent, ask *"could luminance or type do this job instead?"*
 
 ### Status Bars
 ```

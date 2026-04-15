@@ -15,6 +15,9 @@
   --bg-dialog: #1A1A1E;
   --border-metal: #2A2A30;
   --border-bolt: #3A3A42;
+  /* Linear-style hairline borders (structural, data-free) — 2026-04-14 */
+  --border-hair: rgba(255,255,255,0.05);
+  --border-wire: rgba(255,255,255,0.08);
   --neon-green: #39FF14;
   --neon-green-dim: #39FF1440;
   --neon-orange: #FF4500;
@@ -388,6 +391,44 @@
 .glow-orange { text-shadow: 0 0 10px var(--neon-orange-dim), 0 0 30px var(--neon-orange-dim); }
 .glow-green { text-shadow: 0 0 10px var(--neon-green-dim), 0 0 30px var(--neon-green-dim); }
 .glow-purple { text-shadow: 0 0 10px var(--neon-purple-dim), 0 0 30px var(--neon-purple-dim); }
+
+/* ─── Linear-style Hairline Borders (2026-04-14) ─── */
+/* Structural dividers that carry NO data — use for hr, list separators,
+   card inner frames, form field boundaries. Never for rarity or data. */
+.border-hair { border-color: var(--border-hair); }
+.border-wire { border-color: var(--border-wire); }
+.hr-hair { border: 0; border-top: 1px solid var(--border-hair); height: 0; }
+.hr-wire { border: 0; border-top: 1px solid var(--border-wire); height: 0; }
+
+/* ─── Ghost Button (Linear-inspired) ─── */
+/* Near-invisible until hover. For tertiary actions that should NOT compete
+   with the Pixel Chromatic hero CTAs. Default state is ambient, hover
+   state gently reveals. Pair with font-ui (Silkscreen). */
+.btn-ghost {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.02);
+  color: #d0d6e0;
+  border: 1px solid var(--border-wire);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--text, #E8E8EC);
+  border-color: rgba(255,255,255,0.14);
+}
+.btn-ghost:focus-visible {
+  outline: 2px solid rgba(157,0,255,0.4);
+  outline-offset: 2px;
+}
+.btn-ghost:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 
 /* ─── Level Badge ─── */
 .level-badge {
