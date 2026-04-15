@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -184,13 +185,25 @@ export function HeroCard({ data }: { data: HeroCardData }) {
       <div
         className="relative z-[2] flex-1 overflow-hidden"
         style={{
-          background:
-            "radial-gradient(ellipse at center, rgba(157,0,255,0.12), transparent 70%), #0A0A0C",
+          background: "#0A0A0C",
           border: "1px solid var(--border-wire)",
           marginBottom: 8,
           minHeight: 110,
         }}
       >
+        {/* Fallback pixel art arcade screen — sits behind everything so
+            the scanlines / play button / timeline overlay on top. Cards
+            that have a real demo thumbnail will replace this in a later
+            pass. */}
+        <Image
+          src="/generated/card-fallback-v2.png"
+          alt=""
+          fill
+          sizes="(max-width: 640px) 100vw, 33vw"
+          aria-hidden="true"
+          className="object-cover opacity-80"
+          style={{ imageRendering: "pixelated" }}
+        />
         {/* scanlines */}
         <div
           aria-hidden="true"
