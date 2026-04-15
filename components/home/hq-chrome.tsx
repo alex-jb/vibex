@@ -1,8 +1,10 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useProjects } from "@/lib/use-data";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    HQ Chrome primitives — all the small components that make the HQ page feel
@@ -12,7 +14,56 @@ import Link from "next/link";
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ─── Social proof stats ─── */
+
+// Compact a count like 1234 → "1.2K", 250 → "250".
+function formatCount(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K`;
+  return String(n);
+}
+
+// Count projects created in the last 7 days.
+function countRecent(projects: { createdAt: string }[]): number {
+  const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  return projects.filter((p) => {
+    const t = new Date(p.createdAt).getTime();
+    return !isNaN(t) && t >= cutoff;
+  }).length;
+}
+
 export function StatsStrip() {
+  const { data: projects, loading } = useProjects();
+
+  const stats = useMemo(() => {
+    const total = projects.length;
+    const creators = new Set(projects.map((p) => p.creatorId)).size;
+    const weeklyNew = countRecent(projects);
+    // "battles this week" isn't tracked yet — derive a plausible signal from
+    // total plays + shares as a proxy. Replace with a real battle_history
+    // count once that table is wired.
+    const engagement = projects.reduce(
+      (acc, p) => acc + (p.plays ?? 0) + (p.shares ?? 0),
+      0,
+    );
+
+    return [
+      {
+        num: formatCount(total),
+        label: "HEROES FORGED",
+        delta: weeklyNew > 0 ? `▲ +${weeklyNew} THIS WEEK` : "· STANDING BY",
+      },
+      {
+        num: formatCount(creators),
+        label: "CREATORS SHIPPING",
+        delta: creators > 0 ? "▲ LIVE NOW" : "· WAITING FOR FIRST DROP",
+      },
+      {
+        num: formatCount(engagement),
+        label: "TOTAL PLAYS + SHARES",
+        delta: engagement > 0 ? "▲ CLIMBING" : "· NEW ARENA",
+      },
+    ];
+  }, [projects]);
+
   return (
     <div
       className="grid mx-auto grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8 px-4 sm:px-8 py-5 sm:py-[22px] mt-4 sm:mt-[18px]"
@@ -23,12 +74,9 @@ export function StatsStrip() {
         borderRight: "2px solid var(--border-metal)",
         borderBottom: "2px solid var(--border-metal)",
       }}
+      aria-busy={loading}
     >
-      {[
-        { num: "250", label: "HEROES FORGED", delta: "▲ +12 THIS WEEK" },
-        { num: "42", label: "CREATORS SHIPPING", delta: "▲ +3 THIS WEEK" },
-        { num: "1.2K", label: "BATTLES THIS WEEK", delta: "▲ +47% VS LAST" },
-      ].map((s, i, arr) => (
+      {stats.map((s, i, arr) => (
         <div
           key={s.label}
           className={`text-center ${
