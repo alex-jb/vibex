@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/lib/auth";
 import { HqHeroBanner } from "@/components/home/hq-hero-banner";
 import {
   StatsStrip,
@@ -46,9 +47,22 @@ import {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 export default function HomePage() {
+  const { user } = useAuth();
+
+  // Prefer GitHub/Google handle if we have it, fall back to the local-part of
+  // the email, fall back to "trainer" for logged-out visitors. Stripping to a
+  // handle keeps the hero eyebrow short enough to fit on mobile.
+  const rawName =
+    (user?.user_metadata?.user_name as string | undefined) ??
+    (user?.user_metadata?.preferred_username as string | undefined) ??
+    (user?.user_metadata?.full_name as string | undefined) ??
+    user?.email?.split("@")[0] ??
+    "trainer";
+  const userName = rawName.replace(/\s+/g, "").slice(0, 20);
+
   return (
     <div id="top" className="relative" style={{ background: "var(--bg-deep)" }}>
-      <HqHeroBanner userName="creator" newEvolutionsToday={3} />
+      <HqHeroBanner userName={userName} newEvolutionsToday={3} />
       <StatsStrip />
       <HotRightNow />
       <div id="features">

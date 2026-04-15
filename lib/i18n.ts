@@ -70,6 +70,16 @@ const translations = {
     "hero.startQuest": "START QUEST",
     "hero.exploreArena": "EXPLORE ARENA",
 
+    // HQ (/home) hero banner — approved via /design-consultation 2026-04-14
+    "hq.eyebrow.brand": "▸ VIBEX://HQ",
+    "hq.eyebrow.welcome": "WELCOME BACK",
+    "hq.eyebrow.newEvolutions": "NEW EVOLUTIONS",
+    "hq.title.line1": "HUNT TODAY'S",
+    "hq.title.line2": "LEGENDS.",
+    "hq.subtitle":
+      "Every AI project is a collectible hero. Your daily expedition starts here.",
+    "hq.cta.forge": "▶ FORGE YOUR HERO",
+
     // Quick actions
     "quick.launch": "Launch Project",
     "quick.discover": "Discover",
@@ -902,6 +912,15 @@ const translations = {
     // Hero section buttons
     "hero.startQuest": "开始冒险",
     "hero.exploreArena": "探索竞技场",
+
+    // HQ (/home) hero banner
+    "hq.eyebrow.brand": "▸ VIBEX://基地",
+    "hq.eyebrow.welcome": "欢迎回来",
+    "hq.eyebrow.newEvolutions": "个新进化",
+    "hq.title.line1": "捕获今日",
+    "hq.title.line2": "传奇。",
+    "hq.subtitle": "每一个 AI 项目都是可收藏的英雄。你的每日远征从这里开始。",
+    "hq.cta.forge": "▶ 锻造你的英雄",
 
     // Quick actions
     "quick.launch": "发布项目",

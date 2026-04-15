@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    HeroCard — unified landing v7 format with uniform chrome.
@@ -93,15 +94,12 @@ export function HeroCard({ data }: { data: HeroCardData }) {
 
   return (
     <motion.div
-      className="relative overflow-hidden cursor-pointer"
+      className="relative overflow-hidden"
       style={{
         aspectRatio: "5 / 3",
         background:
           "linear-gradient(180deg, var(--bg-card) 0%, var(--bg-panel) 100%)",
         border: "2px solid var(--border-bolt)",
-        padding: "14px 16px",
-        display: "flex",
-        flexDirection: "column",
         boxShadow: "4px 4px 0 #000",
       }}
       whileHover={{
@@ -111,6 +109,12 @@ export function HeroCard({ data }: { data: HeroCardData }) {
         borderColor: "rgba(255,255,255,0.18)",
       }}
       transition={{ type: "spring", stiffness: 400, damping: 28 }}
+    >
+    <Link
+      href={`/project/${encodeURIComponent(data.id)}`}
+      aria-label={`${data.name} — ${RARITY_LABEL[data.rarity]} hero card`}
+      className="absolute inset-0 flex flex-col cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-yellow)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-deep)]"
+      style={{ padding: "14px 16px" }}
     >
       {/* Rarity stamp */}
       <div
@@ -342,6 +346,7 @@ export function HeroCard({ data }: { data: HeroCardData }) {
           {RARITY_SYMBOL[data.rarity]} #{data.cardNumber}
         </span>
       </div>
+    </Link>
     </motion.div>
   );
 }

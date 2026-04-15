@@ -377,7 +377,10 @@
   font-family: var(--font-zpix), "SimSun", monospace !important;
   letter-spacing: 2px !important;
 }
-:lang(zh) .font-pixel {
+/* Clamp utility pixel text to 12px in ZH mode (Zpix renders large at
+   native size). Hero-scale titles opt out via `.font-pixel-hero` so the
+   Tailwind text-[Npx] responsive size can win. */
+:lang(zh) .font-pixel:not(.font-pixel-hero) {
   font-size: 12px !important;
 }
 /* Override the CSS variable itself when in Chinese mode */

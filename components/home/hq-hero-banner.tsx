@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useLang } from "@/lib/i18n";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    HQ Hero Banner — pixel night scene + big title + CTA + CRT mascot
@@ -19,6 +20,7 @@ export function HqHeroBanner({
   userName = "creator",
   newEvolutionsToday = 3,
 }: HqHeroBannerProps) {
+  const { t } = useLang();
   return (
     <div
       className="relative mx-auto overflow-hidden border-2 mt-4 sm:mt-7 h-[400px] sm:h-[480px] md:h-[560px] lg:h-[620px]"
@@ -393,15 +395,15 @@ export function HqHeroBanner({
             marginBottom: 14,
           }}
         >
-          ▸ VIBEX://HQ ·{" "}
+          {t("hq.eyebrow.brand")} ·{" "}
           <b style={{ color: "var(--neon-yellow)", fontWeight: "normal" }}>
-            WELCOME BACK, @{userName.toUpperCase()}
+            {t("hq.eyebrow.welcome")}, @{userName.toUpperCase()}
           </b>{" "}
-          · {newEvolutionsToday} NEW EVOLUTIONS
+          · {newEvolutionsToday} {t("hq.eyebrow.newEvolutions")}
         </div>
 
         <h1
-          className="font-pixel text-[24px] sm:text-[34px] md:text-[42px] lg:text-[52px] mb-2 sm:mb-2.5"
+          className="font-pixel font-pixel-hero text-[24px] sm:text-[34px] md:text-[42px] lg:text-[52px] mb-2 sm:mb-2.5"
           style={{
             color: "#FFFCEB",
             letterSpacing: 4,
@@ -410,7 +412,7 @@ export function HqHeroBanner({
               "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #000, 6px 6px 0 #1a0a3a, 0 0 32px rgba(157,0,255,0.55)",
           }}
         >
-          HUNT TODAY&apos;S
+          {t("hq.title.line1")}
           <br />
           <span
             style={{
@@ -423,7 +425,7 @@ export function HqHeroBanner({
                 "6px 6px 0 #1a0a3a, 0 0 32px rgba(250,204,21,0.7), 0 0 60px rgba(250,204,21,0.4)",
             }}
           >
-            LEGENDS.
+            {t("hq.title.line2")}
           </span>
         </h1>
 
@@ -434,8 +436,7 @@ export function HqHeroBanner({
             textShadow: "0 2px 0 rgba(0,0,0,0.8)",
           }}
         >
-          Every AI project is a collectible hero. Your daily expedition starts
-          here.
+          {t("hq.subtitle")}
         </div>
 
         <Link href="/launch">
@@ -458,7 +459,7 @@ export function HqHeroBanner({
             }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            ▶ FORGE YOUR HERO
+            {t("hq.cta.forge")}
           </motion.button>
         </Link>
       </div>
