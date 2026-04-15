@@ -13,6 +13,7 @@ import { LangToggle } from "@/components/lang-toggle";
 import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
 import { useAuth } from "@/lib/auth";
+import { ExplorerChrome } from "@/components/explorer-chrome";
 
 // Primary nav items — same for guests and logged-in users
 // Feed merged into Discover (as tab), Analytics merged into Insights (as tab)
@@ -157,6 +158,9 @@ export function Navbar() {
 
       {/* Subtle gradient accent line */}
       <div className="h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
+
+      {/* Explorer chrome — adventure progress strip, authed users only */}
+      {user && <ExplorerChrome />}
 
       {/* Mobile Menu */}
       <AnimatePresence>
