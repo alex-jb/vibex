@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { useEvents } from "@/lib/use-data";
 import type { Event } from "@/lib/types";
-import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -208,25 +207,57 @@ export default function EventsPage() {
         <div className="absolute bottom-32 left-1/3 h-48 w-48 rounded-full bg-blue-600/5 blur-[100px]" />
       </div>
 
-      {/* Page Hero */}
+      {/* Page Hero — pixel treatment matching /home + /creators + /ideas */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative"
+        className="relative text-center"
       >
-        <SectionHeader
-          badge={t("events.community")}
-          title={`${t("events.title")} ${t("events.titleHighlight")}`}
-          description={t("events.description")}
-        />
-        {/* Override title with gradient */}
-        <div className="mt-[-2.1rem] sm:mt-[-2.4rem]">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            {t("events.title")}{" "}
-            <span className="text-gradient">{t("events.titleHighlight")}</span>
-          </h1>
+        <div
+          className="font-ui inline-flex items-center gap-2 mb-4"
+          style={{
+            fontSize: 11,
+            color: "var(--neon-green)",
+            letterSpacing: 3,
+            textShadow: "0 0 4px rgba(57,255,20,0.8)",
+          }}
+        >
+          <Calendar className="size-3.5" />
+          ▸ VIBEX://EVENTS · {t("events.community").toUpperCase()}
         </div>
+        <h1
+          className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"
+          style={{
+            color: "#FFFCEB",
+            letterSpacing: 3,
+            lineHeight: 1.25,
+            textShadow:
+              "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #1a0a3a, 0 0 32px rgba(157,0,255,0.5)",
+          }}
+        >
+          {t("events.title")}{" "}
+          <span
+            style={{
+              background:
+                "linear-gradient(180deg, #FFE27D 0%, #FFD700 40%, #B8860B 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            {t("events.titleHighlight")}
+          </span>
+        </h1>
+        <p
+          className="font-retro mt-4 max-w-lg mx-auto text-[16px] sm:text-[18px] md:text-[20px]"
+          style={{
+            color: "rgba(232,232,236,0.85)",
+            textShadow: "0 2px 0 rgba(0,0,0,0.7)",
+          }}
+        >
+          {t("events.description")}
+        </p>
       </motion.div>
 
       {/* Featured Events */}
@@ -234,10 +265,16 @@ export default function EventsPage() {
         <motion.h2
           {...fadeUp}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="mb-8 flex items-center gap-2.5 text-sm font-semibold uppercase tracking-widest text-muted-foreground/60"
+          className="font-ui mb-6 flex items-center gap-2.5"
+          style={{
+            fontSize: 12,
+            color: "var(--neon-yellow)",
+            letterSpacing: 3,
+            textShadow: "0 0 5px rgba(250,204,21,0.6)",
+          }}
         >
-          <Crown className="h-4 w-4 text-amber-400/80" />
-          {t("events.featured")}
+          <Crown className="size-4" />
+          ▸ {t("events.featured").toUpperCase()}
         </motion.h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -255,9 +292,15 @@ export default function EventsPage() {
         <motion.h2
           {...fadeUp}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="mb-8 flex items-center gap-2.5 text-sm font-semibold uppercase tracking-widest text-muted-foreground/60"
+          className="font-ui mb-6"
+          style={{
+            fontSize: 12,
+            color: "var(--neon-green)",
+            letterSpacing: 3,
+            textShadow: "0 0 5px rgba(57,255,20,0.6)",
+          }}
         >
-          {t("events.all")}
+          ▸ {t("events.all").toUpperCase()}
         </motion.h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
