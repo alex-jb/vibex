@@ -97,22 +97,50 @@ export function CreatorDetailPanel({
       {/* Stats */}
       <div className="grid grid-cols-2 gap-2">
         {[
-          { label: t("creators.projects"), value: data.creator.projectCount, color: "text-violet-400" },
-          { label: t("creators.upvotes"), value: data.creator.totalUpvotes, color: "text-fuchsia-400" },
-          { label: t("creators.plays"), value: data.creator.totalPlays, color: "text-cyan-400" },
-          { label: t("creators.remixes"), value: data.creator.totalRemixes, color: "text-emerald-400" },
+          { label: t("creators.projects"), value: data.creator.projectCount, accent: "var(--neon-purple)" },
+          { label: t("creators.upvotes"), value: data.creator.totalUpvotes, accent: "var(--neon-pink)" },
+          { label: t("creators.plays"), value: data.creator.totalPlays, accent: "var(--neon-cyan)" },
+          { label: t("creators.remixes"), value: data.creator.totalRemixes, accent: "var(--neon-green)" },
         ].map((s) => (
-          <div key={s.label} className="bg-white/[0.03] rounded px-3 py-2">
-            <span className="font-pixel text-[6px] text-muted-foreground uppercase">{s.label}</span>
-            <p className={`font-pixel text-[10px] ${s.color}`}>{formatNumber(s.value)}</p>
+          <div
+            key={s.label}
+            style={{
+              background: "rgba(0,0,0,0.4)",
+              border: "1px solid var(--border-wire)",
+              padding: "8px 10px",
+            }}
+          >
+            <span
+              className="font-ui block"
+              style={{ fontSize: 8, color: "var(--text-muted)", letterSpacing: 1.5 }}
+            >
+              {s.label.toUpperCase()}
+            </span>
+            <p
+              className="font-pixel mt-1"
+              style={{
+                fontSize: 13,
+                color: s.accent,
+                textShadow: "0 0 6px rgba(0,0,0,0.8)",
+              }}
+            >
+              {formatNumber(s.value)}
+            </p>
           </div>
         ))}
       </div>
 
       {/* Growth */}
-      <div className="flex items-center gap-1 text-emerald-400 text-xs font-medium">
-        <TrendingUp className="size-3" />
-        +{data.creator.weeklyGrowth}% {t("creators.weeklyGrowth")}
+      <div
+        className="font-ui flex items-center gap-1"
+        style={{
+          fontSize: 10,
+          color: "var(--neon-green)",
+          letterSpacing: 1,
+          textShadow: "0 0 4px rgba(57,255,20,0.6)",
+        }}
+      >
+        <TrendingUp className="size-3" />▲ {data.creator.weeklyGrowth}% {t("creators.weeklyGrowth").toUpperCase()}
       </div>
 
       {/* Projects by this creator */}

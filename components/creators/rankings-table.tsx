@@ -50,54 +50,117 @@ export function RankingsTable({
 
   return (
     <>
-      <motion.div variants={stagger} initial="initial" animate="animate" className="mt-8 glass-card rounded-2xl overflow-hidden divide-y divide-white/[0.06]">
-        {pagedCreators.map((creator) => {
+      <motion.div
+        variants={stagger}
+        initial="initial"
+        animate="animate"
+        className="mt-8 overflow-hidden"
+        style={{
+          background: "var(--bg-panel)",
+          border: "2px solid var(--border-metal)",
+          boxShadow: "4px 4px 0 #000",
+        }}
+      >
+        {pagedCreators.map((creator, i) => {
           const heroClass = getHeroClass(creator.id);
+          const isSelected = selectedCreator === creator.id;
           return (
             <motion.div
               key={creator.id}
               variants={fadeUp}
               transition={{ duration: 0.4 }}
-              className={`flex items-center gap-4 px-5 py-4 hover:bg-white/[0.03] transition-colors group cursor-pointer ${
-                selectedCreator === creator.id ? "bg-violet-500/5 ring-1 ring-violet-500/20" : ""
-              }`}
-              onClick={() => onSelectCreator(selectedCreator === creator.id ? null : creator.id)}
+              className="flex items-center gap-4 px-5 py-4 group cursor-pointer transition-colors"
+              style={{
+                borderTop: i > 0 ? "1px solid var(--border-hair)" : "none",
+                background: isSelected ? "rgba(157,0,255,0.12)" : "transparent",
+                boxShadow: isSelected
+                  ? "inset 0 0 0 1px var(--neon-purple)"
+                  : "none",
+              }}
+              onClick={() => onSelectCreator(isSelected ? null : creator.id)}
             >
-              <span className="text-lg font-bold text-muted-foreground/60 w-8 text-center shrink-0">
+              <span
+                className="font-pixel w-10 text-center shrink-0"
+                style={{
+                  fontSize: 14,
+                  color: isSelected ? "var(--neon-yellow)" : "var(--text-muted)",
+                  textShadow: isSelected
+                    ? "0 0 6px rgba(250,204,21,0.6)"
+                    : "none",
+                  letterSpacing: 1,
+                }}
+              >
                 #{creator.rank}
               </span>
               <AvatarCircle name={creator.name} size="sm" />
-              {heroClass && (
-                <ClassIcon heroClass={heroClass} size={16} />
-              )}
+              {heroClass && <ClassIcon heroClass={heroClass} size={16} />}
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-foreground truncate">{creator.name}</p>
-                <p className="text-xs text-muted-foreground truncate">{creator.bio}</p>
+                <p
+                  className="font-pixel truncate"
+                  style={{
+                    fontSize: 11,
+                    color: "var(--text)",
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  {creator.name}
+                </p>
+                <p
+                  className="font-retro truncate mt-0.5"
+                  style={{
+                    fontSize: 13,
+                    color: "var(--text-muted)",
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {creator.bio}
+                </p>
               </div>
-              <div className="hidden sm:flex items-center gap-6 text-xs text-muted-foreground">
+              <div
+                className="hidden sm:flex items-center gap-5 font-ui"
+                style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: 1 }}
+              >
                 <span className="flex items-center gap-1">
-                  <Zap className="size-3 text-violet-400" />
-                  {formatNumber(creator.totalUpvotes)}
+                  <Zap className="size-3" style={{ color: "var(--neon-purple)" }} />
+                  <b style={{ color: "var(--text)", fontWeight: "normal" }}>
+                    {formatNumber(creator.totalUpvotes)}
+                  </b>
                 </span>
                 <span className="flex items-center gap-1">
-                  <Play className="size-3 text-fuchsia-400" />
-                  {formatNumber(creator.totalPlays)}
+                  <Play className="size-3" style={{ color: "var(--neon-pink)" }} />
+                  <b style={{ color: "var(--text)", fontWeight: "normal" }}>
+                    {formatNumber(creator.totalPlays)}
+                  </b>
                 </span>
                 <span className="flex items-center gap-1">
-                  <GitFork className="size-3 text-cyan-400" />
-                  {creator.totalRemixes}
+                  <GitFork className="size-3" style={{ color: "var(--neon-cyan)" }} />
+                  <b style={{ color: "var(--text)", fontWeight: "normal" }}>
+                    {creator.totalRemixes}
+                  </b>
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-emerald-400 text-xs font-medium shrink-0">
-                <ChevronUp className="size-3" />
-                {creator.weeklyGrowth}%
+              <div
+                className="font-ui flex items-center gap-1 shrink-0"
+                style={{
+                  fontSize: 9,
+                  color: "var(--neon-green)",
+                  letterSpacing: 1,
+                  textShadow: "0 0 4px rgba(57,255,20,0.6)",
+                }}
+              >
+                <ChevronUp className="size-3" />▲{creator.weeklyGrowth}%
               </div>
               <div className="hidden lg:flex items-center gap-1.5">
                 {creator.badges.map((b) => (
                   <CreatorBadge key={b} badge={b} t={t} />
                 ))}
               </div>
-              <ArrowUpRight className="size-4 text-muted-foreground/40 group-hover:text-violet-400 transition-colors shrink-0" />
+              <ArrowUpRight
+                className="size-4 shrink-0 transition-colors"
+                style={{
+                  color: isSelected ? "var(--neon-purple)" : "var(--text-dim)",
+                }}
+              />
             </motion.div>
           );
         })}
