@@ -69,25 +69,18 @@ export default function IdeasPage() {
         <h1
           className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"
           style={{
-            color: "#FFFCEB",
             letterSpacing: 3,
             lineHeight: 1.25,
-            textShadow:
-              "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #1a0a3a, 0 0 32px rgba(157,0,255,0.5)",
+            background:
+              "linear-gradient(180deg, #FFE27D 0%, #FFD700 40%, #B8860B 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            filter:
+              "drop-shadow(2px 2px 0 #000) drop-shadow(3px 3px 0 #000) drop-shadow(0 0 20px rgba(250,204,21,0.5))",
           }}
         >
-          {t("ideas.title")}{" "}
-          <span
-            style={{
-              background:
-                "linear-gradient(180deg, #FFE27D 0%, #FFD700 40%, #B8860B 100%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            {t("ideas.titleHighlight")}
-          </span>
+          {t("ideas.title")} {t("ideas.titleHighlight")}
         </h1>
         <p
           className="font-retro mt-4 max-w-lg mx-auto text-[16px] sm:text-[18px] md:text-[20px]"
