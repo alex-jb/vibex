@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   Lightbulb,
-  Star,
   Calendar,
   User,
 } from "lucide-react";
@@ -21,7 +20,9 @@ import {
 import { useLang } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 import { useProjects } from "@/lib/use-data";
-import type { Project, AIReview } from "@/lib/types";
+import type { AIReview } from "@/lib/types";
+import { HeroCard } from "@/components/home/hero-card";
+import { projectsToCards } from "@/components/home/hero-card-grid";
 import { FeedbackPanel } from "@/components/launch-feedback/feedback-panel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -192,46 +193,6 @@ function AIReviewPanel({ review }: { review: AIReview }) {
 }
 
 /* ---------- Related Project Card ---------- */
-function RelatedProjectCard({ project }: { project: Project }) {
-  return (
-    <Link href={`/project/${project.id}`}>
-      <motion.div
-        whileHover={{ y: -4, scale: 1.01 }}
-        transition={{ duration: 0.2 }}
-        className="glass-card rounded-xl p-5 transition-all hover:border-white/15 group"
-      >
-        <div className="flex items-start justify-between">
-          <Badge
-            variant="secondary"
-            className="bg-white/5 border-white/10 text-muted-foreground text-[10px]"
-          >
-            {project.category}
-          </Badge>
-          <span className="text-xs font-mono font-bold text-muted-foreground">
-            {project.score}
-          </span>
-        </div>
-        <h4 className="mt-3 font-semibold group-hover:text-gradient-subtle">
-          {project.title}
-        </h4>
-        <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-          {project.tagline}
-        </p>
-        <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground/60">
-          <span className="flex items-center gap-1">
-            <ChevronUp className="size-3" />
-            {project.upvotes}
-          </span>
-          <span className="flex items-center gap-1">
-            <Eye className="size-3" />
-            {project.views.toLocaleString()}
-          </span>
-        </div>
-      </motion.div>
-    </Link>
-  );
-}
-
 /* ---------- Main Page ---------- */
 export default function ProjectPage({
   params,
@@ -305,51 +266,127 @@ export default function ProjectPage({
             </Link>
           </nav>
 
-          {/* Badges */}
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary" className="bg-white/5 border-white/10">
-              {project.category}
-            </Badge>
+          {/* Pixel eyebrow — matches /home HQ aesthetic. Shows the category
+              and featured flag as a single machine-readout line. */}
+          <div
+            className="font-ui"
+            style={{
+              fontSize: 11,
+              color: "var(--neon-green)",
+              letterSpacing: 3,
+              textShadow: "0 0 4px rgba(57,255,20,0.8)",
+            }}
+          >
+            ▸ VIBEX://PROJECT ·{" "}
+            <span style={{ color: "var(--neon-cyan)" }}>
+              {project.category.toUpperCase()}
+            </span>
             {project.featured && (
-              <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20">
-                <Star className="size-3" />
-                {t("project.featured")}
-              </Badge>
+              <>
+                {" · "}
+                <span style={{ color: "var(--neon-yellow)" }}>★ FEATURED</span>
+              </>
             )}
           </div>
 
-          {/* Title */}
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            {project.title}
+          {/* Title — big pixel game-title treatment with the same yellow
+              gradient used on /home HUNT TODAY'S LEGENDS. */}
+          <h1
+            className="font-pixel font-pixel-hero mt-2 text-[28px] sm:text-[38px] md:text-[48px]"
+            style={{
+              color: "#FFFCEB",
+              letterSpacing: 3,
+              lineHeight: 1.25,
+              textShadow:
+                "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #1a0a3a, 0 0 32px rgba(157,0,255,0.5)",
+            }}
+          >
+            <span
+              style={{
+                background:
+                  "linear-gradient(180deg, #FFE27D 0%, #FFD700 40%, #B8860B 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              {project.title}
+            </span>
           </h1>
 
-          {/* Tagline */}
-          <p className="text-xl text-muted-foreground max-w-2xl">
+          {/* Tagline — font-retro to mirror the HQ hero subtitle rhythm. */}
+          <p
+            className="font-retro text-[17px] sm:text-[20px] md:text-[22px] mt-3 max-w-2xl"
+            style={{
+              color: "rgba(232,232,236,0.85)",
+              textShadow: "0 2px 0 rgba(0,0,0,0.7)",
+            }}
+          >
             {project.tagline}
           </p>
 
-          {/* Creator + date + stats inline */}
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5">
+          {/* Stats strip — font-ui pixel chrome so the numbers read like
+              a game HUD rather than shadcn metadata. */}
+          <div
+            className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 font-ui"
+            style={{ fontSize: 10, letterSpacing: 1.5 }}
+          >
+            <span
+              className="flex items-center gap-1.5"
+              style={{ color: "var(--text-muted)" }}
+            >
               <User className="size-3.5" />
-              <span className="font-medium text-foreground">{project.creatorName}</span>
+              <b style={{ color: "var(--text)", fontWeight: "normal" }}>
+                @{project.creatorName}
+              </b>
             </span>
-            <span className="flex items-center gap-1.5">
+            <span
+              className="flex items-center gap-1.5"
+              style={{ color: "var(--text-muted)" }}
+            >
               <Calendar className="size-3.5" />
               <time dateTime={project.createdAt}>{project.createdAt}</time>
             </span>
-            <div className="hidden sm:block h-4 w-px bg-white/10" />
-            <span className="flex items-center gap-1.5">
+            <span
+              className="flex items-center gap-1.5"
+              style={{ color: "var(--text-muted)" }}
+            >
               <Eye className="size-3.5" />
-              {project.views.toLocaleString()} {t("project.views")}
+              <b style={{ color: "var(--text)", fontWeight: "normal" }}>
+                {project.views.toLocaleString()}
+              </b>{" "}
+              VIEWS
             </span>
-            <span className="flex items-center gap-1.5">
-              <ChevronUp className="size-3.5 text-violet-400" />
-              {project.upvotes.toLocaleString()} {t("project.upvotes")}
+            <span
+              className="flex items-center gap-1.5"
+              style={{ color: "var(--text-muted)" }}
+            >
+              <ChevronUp className="size-3.5" style={{ color: "var(--neon-purple)" }} />
+              <b style={{ color: "var(--neon-purple)", fontWeight: "normal" }}>
+                {project.upvotes.toLocaleString()}
+              </b>{" "}
+              UPVOTES
             </span>
-            <span className="flex items-center gap-1.5">
-              <Trophy className="size-3.5 text-amber-400" />
-              {t("project.score")} {project.score}
+            <span
+              className="flex items-center gap-1.5"
+              style={{ color: "var(--text-muted)" }}
+            >
+              <Trophy
+                className="size-3.5"
+                style={{ color: "var(--neon-yellow)" }}
+              />
+              SCORE{" "}
+              <b
+                className="font-pixel"
+                style={{
+                  color: "var(--neon-yellow)",
+                  fontWeight: "normal",
+                  fontSize: 13,
+                  textShadow: "0 0 8px rgba(250,204,21,0.6)",
+                }}
+              >
+                {project.score}
+              </b>
             </span>
           </div>
         </div>
@@ -501,10 +538,30 @@ export default function ProjectPage({
 
       {/* ===== Related Projects ===== */}
       <motion.div variants={fadeIn} className="mt-20">
-        <h2 className="text-2xl font-bold tracking-tight mb-6">{t("project.relatedProjects")}</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {relatedProjects.map((p) => (
-            <RelatedProjectCard key={p.id} project={p} />
+        <div
+          className="font-ui mb-4"
+          style={{
+            fontSize: 11,
+            color: "var(--neon-green)",
+            letterSpacing: 3,
+            textShadow: "0 0 4px rgba(57,255,20,0.6)",
+          }}
+        >
+          ▸ RELATED HEROES
+        </div>
+        <h2
+          className="font-pixel font-pixel-hero mb-6 text-[20px] sm:text-[24px] md:text-[28px]"
+          style={{
+            color: "var(--text)",
+            letterSpacing: 2,
+            textShadow: "3px 3px 0 rgba(0,0,0,0.7)",
+          }}
+        >
+          {t("project.relatedProjects")}
+        </h2>
+        <div className="grid grid-cols-1 gap-[22px] sm:grid-cols-2 lg:grid-cols-3">
+          {projectsToCards(relatedProjects).map((card) => (
+            <HeroCard key={card.id} data={card} />
           ))}
         </div>
       </motion.div>
