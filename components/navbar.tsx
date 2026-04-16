@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Rocket, Menu, X, Search } from "lucide-react";
+import { Rocket, Menu, X, Search } from "lucide-react";
 import { SearchDialog } from "@/components/search-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -71,14 +72,22 @@ export function Navbar() {
       {/* Main bar */}
       <div className="bg-background/60 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/[0.04]">
         <div className="mx-auto flex h-14 items-center justify-between px-3 sm:px-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/20 border border-violet-400/50">
-              <Sparkles className="h-4 w-4 text-white" />
-            </div>
-            <span className="text-sm font-bold tracking-widest font-[var(--font-press-start)] text-white">
-              Vibe<span className="text-gradient-subtle">X</span>
-            </span>
+          {/* Logo — Gemini-generated pixel wordmark. Gold "Vibe" +
+              magenta "X" with black outline and glow. Swap target at
+              >sm via CSS if needed for mobile later. */}
+          <Link href="/" className="flex items-center shrink-0" aria-label="VibeX home">
+            <Image
+              src="/generated/logo-vibex.png"
+              alt="VibeX"
+              width={110}
+              height={33}
+              priority
+              style={{
+                imageRendering: "pixelated",
+                height: "auto",
+                width: 110,
+              }}
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -92,14 +101,21 @@ export function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="relative flex flex-col items-center px-2.5 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
-                  style={navFont}
+                  className="relative flex flex-col items-center px-2.5 py-2 transition-colors duration-200"
+                  style={{
+                    ...navFont,
+                    color: isActive ? "var(--neon-yellow)" : "var(--text)",
+                    textShadow: isActive
+                      ? "0 0 6px rgba(250,204,21,0.6)"
+                      : "0 0 4px rgba(0,0,0,0.6)",
+                  }}
                 >
                   {t(item.key)}
                   {isActive && (
                     <motion.div
                       layoutId="nav-dot"
-                      className="absolute bottom-0.5 w-1 h-1 rounded-full bg-violet-400"
+                      className="absolute bottom-0.5 w-1 h-1 rounded-full"
+                      style={{ background: "var(--neon-yellow)" }}
                       transition={{
                         type: "spring",
                         bounce: 0.2,
