@@ -169,7 +169,7 @@ export default function LandingPage() {
           fontFamily: "var(--font-press-start), monospace",
           fontSize: 11,
           letterSpacing: 2,
-          color: "var(--muted)",
+          color: "var(--text-muted)",
         }}
       >
         <div
@@ -603,7 +603,7 @@ export default function LandingPage() {
                       style={{
                         width: 18,
                         textAlign: "right",
-                        color: "var(--muted)",
+                        color: "var(--text-muted)",
                       }}
                     >
                       {stat.pct}

@@ -60,7 +60,7 @@ export function ExplorerChrome({
             className="font-ui"
             style={{
               fontSize: 9,
-              color: "var(--muted)",
+              color: "var(--text-muted)",
               letterSpacing: 1.5,
             }}
           >
@@ -85,7 +85,7 @@ export function ExplorerChrome({
             className="font-ui"
             style={{
               fontSize: 9,
-              color: "var(--muted)",
+              color: "var(--text-muted)",
               letterSpacing: 1.5,
             }}
           >
@@ -140,7 +140,7 @@ export function ExplorerChrome({
             className="font-ui"
             style={{
               fontSize: 9,
-              color: "var(--muted)",
+              color: "var(--text-muted)",
               letterSpacing: 1.5,
             }}
           >
@@ -171,7 +171,7 @@ export function ExplorerChrome({
             className="font-ui"
             style={{
               fontSize: 9,
-              color: "var(--muted)",
+              color: "var(--text-muted)",
               letterSpacing: 0.5,
             }}
           >
