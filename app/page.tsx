@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -70,11 +71,35 @@ export default function LandingPage() {
   return (
     <div
       className="relative h-screen w-screen overflow-hidden"
-      style={{
-        background:
-          "radial-gradient(ellipse at 50% 44%, rgba(157,0,255,0.14), transparent 55%), radial-gradient(ellipse at 50% 44%, rgba(57,255,20,0.05), transparent 75%), var(--bg-deep)",
-      }}
+      style={{ background: "var(--bg-deep)" }}
     >
+      {/* Gemini-generated epic pixel landscape: swirling purple portal
+          over mountains, floating islands with lanterns, crystal spires,
+          cobblestone path leading toward the portal. Sits beneath all
+          the terminal boot log + AI HERO card + PRESS START overlays,
+          dimmed via the tint layer below so the foreground text stays
+          readable. */}
+      <Image
+        src="/generated/landing-bg.png"
+        alt=""
+        aria-hidden="true"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover z-0"
+        style={{ imageRendering: "pixelated" }}
+      />
+      {/* Darkening tint + neon glow layer on top of the image so the
+          foreground UI doesn't fight the art. Keeps the same gradient
+          colors as the old pure-gradient bg for brand continuity. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-[1]"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 44%, rgba(157,0,255,0.25), transparent 60%), radial-gradient(ellipse at 50% 44%, rgba(57,255,20,0.05), transparent 75%), rgba(13,13,13,0.55)",
+        }}
+      />
       {/* ═══ Scanline + vignette overlays ═══ */}
       <div
         aria-hidden="true"
