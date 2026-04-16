@@ -395,6 +395,25 @@
   --font-retro: var(--font-zpix), monospace;
 }
 
+/* ─── Form Input Text Color Fix (dark mode + Chrome autofill) ───
+   Base UI inputs don't inherit `--foreground` reliably, and Chrome's
+   autofill overrides input color to black-on-yellow. Force readable
+   text on all form inputs in dark mode and override autofill. */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
+.dark select {
+  color: var(--text, #E8E8EC);
+}
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--text, #E8E8EC) !important;
+  -webkit-box-shadow: 0 0 0 1000px rgba(10, 10, 12, 0.9) inset !important;
+  caret-color: var(--text, #E8E8EC);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 /* ─── Neon Glow Utilities ─── */
 .glow-orange { text-shadow: 0 0 10px var(--neon-orange-dim), 0 0 30px var(--neon-orange-dim); }
 .glow-green { text-shadow: 0 0 10px var(--neon-green-dim), 0 0 30px var(--neon-green-dim); }
