@@ -56,10 +56,22 @@ export async function proxy(request: NextRequest) {
   const { createMiddlewareClient } = await import("@/lib/supabase-server");
   const { supabase, ctx } = createMiddlewareClient(request);
 
+  // DEBUG: surface what cookies middleware actually sees on the request.
+  // Strip values so we never log session tokens to Vercel logs.
+  const cookieNames = request.cookies.getAll().map((c) => c.name);
+  const host = request.headers.get("host") ?? "unknown";
+  console.log(
+    `[proxy] ${pathname} on ${host} — cookies: [${cookieNames.join(", ")}]`,
+  );
+
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
+
+  console.log(
+    `[proxy] ${pathname} getUser → user: ${user?.email ?? "null"}, error: ${error?.message ?? "none"}`,
+  );
 
   if (error || !user) {
     // API / admin routes get a 401 JSON response (no redirect)
