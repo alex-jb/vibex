@@ -1,5 +1,6 @@
 // Public stub — full implementation is proprietary. See LICENSE.
 
+import Anthropic from "@anthropic-ai/sdk";
 import type {
   StructuredReview,
   FeedbackAction,
@@ -77,23 +78,257 @@ export async function evaluateIdea(_idea: {
 // See ceo-plans/launch-feedback-loop-20260413.md
 // ═══════════════════════════════════════════════════════════════
 
-/**
- * Generate a structured AI review that returns concrete, actionable items
- * instead of prose bullets. Each item has severity, 2-3 candidate fixes the
- * creator can apply with one click, and a success metric we'll watch after
- * apply to compute outcome delta.
- *
- * PUBLIC STUB — returns 5 sample actions so the UI works end-to-end without
- * a real LLM call. Real implementation lives in `.private/lib/ai.ts`.
- */
-export async function generateStructuredReview(project: {
+type ProjectForReview = {
   id: string;
   title: string;
   tagline: string;
   description: string;
   category: string;
   tags: string[];
-}): Promise<StructuredReview> {
+};
+
+/**
+ * Generate a structured AI review that returns concrete, actionable items
+ * instead of prose bullets. Each item has severity, 2-3 candidate fixes the
+ * creator can apply with one click, and a success metric we'll watch after
+ * apply to compute outcome delta.
+ *
+ * Uses Claude (Anthropic API) when ANTHROPIC_API_KEY is set in the server
+ * env. Falls back to a hand-written stub review when the key isn't available
+ * (local dev without an Anthropic account, CI, first-boot prod) so the UI
+ * keeps rendering a plausible shape.
+ */
+export async function generateStructuredReview(
+  project: ProjectForReview,
+): Promise<StructuredReview> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (apiKey) {
+    try {
+      return await generateClaudeReview(project, apiKey);
+    } catch (err) {
+      console.error("[ai] Claude review failed, falling back to stub:", err);
+      // fall through to stub
+    }
+  }
+  return generateStubReview(project);
+}
+
+/**
+ * Real Claude-powered review via Anthropic SDK + tool use for reliable
+ * structured output. Forced tool_choice prevents the model from producing
+ * prose instead of JSON.
+ */
+async function generateClaudeReview(
+  project: ProjectForReview,
+  apiKey: string,
+): Promise<StructuredReview> {
+  const client = new Anthropic({ apiKey });
+  const review_id = `cl-${project.id}-${Date.now().toString(36)}`;
+
+  const systemPrompt = `You are VibeX Launch Coach — a sharp, direct reviewer of AI projects on a launch platform. You have the instincts of a YC partner reviewing a demo day pitch: you name specific, fixable issues and reject vague advice.
+
+Your job: return 5 to 7 concrete actions the creator can apply RIGHT NOW to improve how this project lands with users. Each action must have:
+- ONE problem named (not "could be better" — what specifically is weak)
+- TWO or THREE suggested_values — each a real, usable rewrite or concrete instruction (not "improve the X", the actual new X)
+- WHY it matters tied to a metric the platform tracks
+
+Tone: direct, founder-to-founder. No AI hedging words. No "consider thinking about potentially". Name the problem, name the fix.
+
+Action type distribution — aim for:
+- 1-2 must_fix (the thing that will lose the most users if not fixed)
+- 2-3 should_try (high-leverage improvements)
+- 1-2 consider (nice-to-haves)
+
+Pick action TYPES that match what's actually weak. Don't generate all 10 types — pick the 5-7 most relevant.`;
+
+  const userPrompt = `Review this project and submit your structured review via the submit_review tool.
+
+PROJECT METADATA
+────────────────
+Title:       ${project.title}
+Tagline:     ${project.tagline}
+Category:    ${project.category}
+Tags:        ${project.tags.length ? project.tags.join(", ") : "(none)"}
+
+Description:
+${project.description}`;
+
+  const response = await client.messages.create({
+    model: "claude-sonnet-4-6",
+    max_tokens: 3000,
+    system: systemPrompt,
+    tools: [
+      {
+        name: "submit_review",
+        description:
+          "Submit the structured review with 5-7 actionable items and aggregate scores.",
+        input_schema: REVIEW_TOOL_SCHEMA,
+      },
+    ],
+    tool_choice: { type: "tool", name: "submit_review" },
+    messages: [{ role: "user", content: userPrompt }],
+  });
+
+  // Extract the tool_use block — tool_choice forced means it's always present.
+  const block = response.content.find((b) => b.type === "tool_use");
+  if (!block || block.type !== "tool_use") {
+    throw new Error("Claude did not return a tool_use block");
+  }
+  const parsed = block.input as {
+    actions: Array<{
+      type: FeedbackActionType;
+      severity: FeedbackSeverity;
+      rationale: string;
+      current_value: string | null;
+      suggested_values: string[];
+      success_metric: FeedbackSuccessMetric;
+    }>;
+    originality: number;
+    clarity: number;
+    ux_potential: number;
+    virality_potential: number;
+    investor_curiosity: number;
+  };
+
+  const actions: FeedbackAction[] = parsed.actions.map((a, i) => ({
+    action_id: `${a.type}-${i + 1}`,
+    review_id,
+    type: a.type,
+    severity: a.severity,
+    rationale: a.rationale,
+    current_value: a.current_value,
+    suggested_values: a.suggested_values,
+    success_metric: a.success_metric,
+    status: "suggested" as const,
+  }));
+
+  return {
+    review_id,
+    actions,
+    originality: parsed.originality,
+    clarity: parsed.clarity,
+    ux_potential: parsed.ux_potential,
+    virality_potential: parsed.virality_potential,
+    investor_curiosity: parsed.investor_curiosity,
+  };
+}
+
+/** JSON schema for the submit_review tool. Mirrors StructuredReview. */
+const REVIEW_TOOL_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    actions: {
+      type: "array",
+      description: "5 to 7 structured, actionable review items.",
+      minItems: 5,
+      maxItems: 7,
+      items: {
+        type: "object",
+        properties: {
+          type: {
+            type: "string",
+            enum: [
+              "tagline_rewrite",
+              "description_rewrite",
+              "demo_add",
+              "demo_quality",
+              "audience_narrow",
+              "cta_revamp",
+              "tag_fix",
+              "category_retarget",
+              "thumbnail_upgrade",
+              "pricing_clarify",
+            ],
+          },
+          severity: {
+            type: "string",
+            enum: ["must_fix", "should_try", "consider"],
+          },
+          rationale: {
+            type: "string",
+            description:
+              "1-2 sentences explaining what is weak and why fixing it helps.",
+          },
+          current_value: {
+            type: ["string", "null"],
+            description:
+              "The current text or state the action refers to. Null if the action is to ADD something that doesn't exist yet (e.g., demo_add when no demo is present).",
+          },
+          suggested_values: {
+            type: "array",
+            description:
+              "2-3 concrete, usable replacement texts or specific instructions the creator can apply directly.",
+            minItems: 2,
+            maxItems: 3,
+            items: { type: "string" },
+          },
+          success_metric: {
+            type: "string",
+            enum: [
+              "upvotes",
+              "plays",
+              "shares",
+              "ctr",
+              "retention",
+              "remix_count",
+            ],
+          },
+        },
+        required: [
+          "type",
+          "severity",
+          "rationale",
+          "current_value",
+          "suggested_values",
+          "success_metric",
+        ],
+      },
+    },
+    originality: {
+      type: "integer",
+      minimum: 0,
+      maximum: 100,
+      description: "How novel the concept is vs. the existing landscape.",
+    },
+    clarity: {
+      type: "integer",
+      minimum: 0,
+      maximum: 100,
+      description: "How clearly the project explains itself.",
+    },
+    ux_potential: {
+      type: "integer",
+      minimum: 0,
+      maximum: 100,
+      description: "How much the UX could convert a curious visitor.",
+    },
+    virality_potential: {
+      type: "integer",
+      minimum: 0,
+      maximum: 100,
+      description: "Likelihood of organic sharing.",
+    },
+    investor_curiosity: {
+      type: "integer",
+      minimum: 0,
+      maximum: 100,
+      description: "How likely a VC would want a closer look.",
+    },
+  },
+  required: [
+    "actions",
+    "originality",
+    "clarity",
+    "ux_potential",
+    "virality_potential",
+    "investor_curiosity",
+  ],
+};
+
+/** Hand-written fallback — used when ANTHROPIC_API_KEY isn't set. */
+async function generateStubReview(
+  project: ProjectForReview,
+): Promise<StructuredReview> {
   const review_id = `stub-${project.id}-${Date.now().toString(36)}`;
 
   const mk = (

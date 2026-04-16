@@ -134,6 +134,32 @@ export async function POST(request: Request) {
 }
 
 async function stubReview(projectId: string): Promise<Response> {
+  // First try Supabase (the real source for user-submitted proj-xxx ids).
+  // Fall through to mock-data only if Supabase isn't configured.
+  if (USE_SUPABASE) {
+    try {
+      const supabase = await createServerSupabase();
+      const { data: row } = await supabase
+        .from("projects")
+        .select("id, title, tagline, description, category, tags")
+        .eq("id", projectId)
+        .maybeSingle();
+      if (row) {
+        const review = await generateStructuredReview({
+          id: row.id as string,
+          title: row.title as string,
+          tagline: row.tagline as string,
+          description: row.description as string,
+          category: row.category as string,
+          tags: (row.tags as string[]) ?? [],
+        });
+        return NextResponse.json(review);
+      }
+    } catch {
+      // fall through to mock lookup
+    }
+  }
+
   const project = mockProjects.find((p) => p.id === projectId);
   if (!project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
