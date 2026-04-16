@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import { useTrendInsights } from "@/lib/use-data";
 import type { TrendInsight } from "@/lib/types";
-import { SectionHeader } from "@/components/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AnalyticsTab } from "@/components/insights/analytics-tab";
@@ -323,25 +322,56 @@ function InsightsContent() {
         <div className="absolute bottom-48 left-1/5 h-48 w-48 rounded-full bg-emerald-600/4 blur-[90px]" />
       </div>
 
-      {/* Page Hero */}
+      {/* Page Hero — pixel treatment matching other gold-title pages */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative"
+        className="relative text-center"
       >
-        <SectionHeader
-          badge={t("insights.badge")}
-          title={`${t("insights.title")} ${t("insights.titleHighlight")}`}
-          description={t("insights.description")}
-        />
-        {/* Override title with gradient word */}
-        <div className="mt-[-2.1rem] sm:mt-[-2.4rem]">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            {t("insights.title")}{" "}
-            <span className="text-gradient">{t("insights.titleHighlight")}</span>
-          </h1>
+        <div
+          className="font-ui mb-4"
+          style={{
+            fontSize: 11,
+            color: "var(--neon-green)",
+            letterSpacing: 3,
+            textShadow: "0 0 4px rgba(57,255,20,0.8)",
+          }}
+        >
+          ▸ VIBEX://INSIGHTS · {t("insights.badge").toUpperCase()}
         </div>
+        <h1
+          className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"
+          style={{
+            color: "#FFFCEB",
+            letterSpacing: 3,
+            lineHeight: 1.25,
+            textShadow:
+              "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #1a0a3a, 0 0 32px rgba(157,0,255,0.5)",
+          }}
+        >
+          {t("insights.title")}{" "}
+          <span
+            style={{
+              background:
+                "linear-gradient(180deg, #FFE27D 0%, #FFD700 40%, #B8860B 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            {t("insights.titleHighlight")}
+          </span>
+        </h1>
+        <p
+          className="font-retro mt-4 max-w-lg mx-auto text-[16px] sm:text-[18px] md:text-[20px]"
+          style={{
+            color: "rgba(232,232,236,0.85)",
+            textShadow: "0 2px 0 rgba(0,0,0,0.7)",
+          }}
+        >
+          {t("insights.description")}
+        </p>
       </motion.div>
 
       {/* Tab Switcher */}
