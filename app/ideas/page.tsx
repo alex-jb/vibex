@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { categories } from "@/lib/mock-data";
 import { useIdeas } from "@/lib/use-data";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLang } from "@/lib/i18n";
 import Link from "next/link";
@@ -48,24 +47,55 @@ export default function IdeasPage() {
       {/* Background gradient orb */}
       <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[480px] w-[480px] rounded-full bg-violet-600/8 blur-[120px]" />
 
-      {/* Page Hero */}
+      {/* Page Hero — pixel treatment matching /home + /creators */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="relative text-center mb-12"
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 mb-5">
-          <Lightbulb className="size-3.5 text-violet-400" />
-          <span className="text-xs font-medium text-violet-400 tracking-wide">
-            {t("ideas.badge")}
-          </span>
+        <div
+          className="font-ui inline-flex items-center gap-2 mb-4"
+          style={{
+            fontSize: 11,
+            color: "var(--neon-green)",
+            letterSpacing: 3,
+            textShadow: "0 0 4px rgba(57,255,20,0.8)",
+          }}
+        >
+          <Lightbulb className="size-3.5" />
+          ▸ VIBEX://IDEAS · {t("ideas.badge").toUpperCase()}
         </div>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
+        <h1
+          className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"
+          style={{
+            color: "#FFFCEB",
+            letterSpacing: 3,
+            lineHeight: 1.25,
+            textShadow:
+              "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #1a0a3a, 0 0 32px rgba(157,0,255,0.5)",
+          }}
+        >
           {t("ideas.title")}{" "}
-          <span className="text-gradient">{t("ideas.titleHighlight")}</span>
+          <span
+            style={{
+              background:
+                "linear-gradient(180deg, #FFE27D 0%, #FFD700 40%, #B8860B 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            {t("ideas.titleHighlight")}
+          </span>
         </h1>
-        <p className="mt-3 text-muted-foreground max-w-lg mx-auto text-sm leading-relaxed">
+        <p
+          className="font-retro mt-4 max-w-lg mx-auto text-[16px] sm:text-[18px] md:text-[20px]"
+          style={{
+            color: "rgba(232,232,236,0.85)",
+            textShadow: "0 2px 0 rgba(0,0,0,0.7)",
+          }}
+        >
           {t("ideas.description")}
         </p>
       </motion.div>
@@ -175,27 +205,76 @@ export default function IdeasPage() {
       {/* AI Evaluate: Submit New Idea */}
       <IdeaSubmitForm />
 
-      {/* Submit CTA */}
+      {/* Submit CTA — retro frame matching ForgeCtaBlock on /home */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="mt-16 text-center"
+        className="mt-16 relative overflow-hidden max-w-2xl mx-auto px-6 py-8 sm:px-10 sm:py-10 text-center"
+        style={{
+          background:
+            "linear-gradient(135deg, var(--neon-purple) 0%, #9333EA 40%, var(--neon-pink) 100%)",
+          border: "3px solid #FFF",
+          boxShadow: "8px 8px 0 #000, 0 0 60px rgba(157,0,255,0.4)",
+        }}
       >
-        <div className="glass-card-strong rounded-2xl border border-white/[0.06] p-8 sm:p-12 max-w-2xl mx-auto">
-          <Lightbulb className="mx-auto size-8 text-violet-400 mb-4" />
-          <h2 className="text-2xl font-bold mb-2">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px)",
+          }}
+        />
+        <div className="relative">
+          <Lightbulb className="mx-auto size-8 text-white mb-4" />
+          <div
+            className="font-ui mb-2"
+            style={{
+              fontSize: 11,
+              color: "var(--neon-yellow)",
+              letterSpacing: 3,
+              textShadow: "0 0 6px rgba(250,204,21,0.8)",
+            }}
+          >
+            ▸ READY TO SHIP?
+          </div>
+          <h2
+            className="font-pixel mb-3 text-[18px] sm:text-[22px] md:text-[24px]"
+            style={{
+              color: "#FFF",
+              letterSpacing: 2,
+              lineHeight: 1.4,
+              textShadow: "3px 3px 0 rgba(0,0,0,0.5)",
+            }}
+          >
             {t("ideas.haveAnIdea")}
           </h2>
-          <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
+          <p
+            className="font-retro mb-6 text-[15px] sm:text-[18px] md:text-[20px]"
+            style={{
+              color: "rgba(255,255,255,0.9)",
+              maxWidth: 480,
+              margin: "0 auto 24px",
+            }}
+          >
             {t("ideas.ctaDesc")}
           </p>
           <Link href="/launch">
-            <Button className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-500 hover:to-fuchsia-500 shadow-lg shadow-violet-500/10">
-              <Rocket className="mr-2 size-4" />
+            <button
+              className="font-ui uppercase cursor-pointer text-[12px] sm:text-[14px] inline-flex items-center gap-2 px-5 py-3 sm:px-7 sm:py-4"
+              style={{
+                background: "var(--neon-yellow)",
+                color: "#000",
+                border: "3px solid #000",
+                boxShadow: "5px 5px 0 #000",
+                letterSpacing: 2,
+              }}
+            >
+              <Rocket className="size-4" />
               {t("ideas.submitIdea")}
-            </Button>
+            </button>
           </Link>
         </div>
       </motion.div>
