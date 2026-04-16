@@ -1,11 +1,28 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
+import { type SupabaseClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
-/** Supabase client - only valid when env vars are configured */
+/**
+ * Browser-side Supabase client.
+ *
+ * Uses `createBrowserClient` from `@supabase/ssr` so the session is stored
+ * in COOKIES (not localStorage) and the OAuth flow uses PKCE (code in
+ * query param) instead of implicit (token in URL hash). This is critical
+ * for SSR auth to work — server middleware reads from cookies, so the
+ * browser must write to cookies too.
+ *
+ * The previous setup used `@supabase/supabase-js` createClient which
+ * defaulted to localStorage + implicit flow. The result: OAuth completed
+ * client-side (token in URL hash, parsed into localStorage) but the
+ * server's /auth/callback was never invoked with a code, so cookies were
+ * never written, and protected server routes (/launch, /profile, etc.)
+ * couldn't see the user. Symptom: clicking Forge Project bounced back
+ * to /login despite being "logged in" client-side.
+ */
 export const supabase: SupabaseClient = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? (createBrowserClient(supabaseUrl, supabaseAnonKey) as SupabaseClient)
   : createMockClient();
 
 /** Mock client that returns safe defaults for all operations */
