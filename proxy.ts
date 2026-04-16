@@ -1,8 +1,27 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
+
+/**
+ * VibeX auth middleware. Mirrors the canonical Supabase SSR proxy
+ * (see github.com/supabase/supabase examples/auth/nextjs/lib/supabase/proxy.ts)
+ * with VibeX-specific route gating layered on top.
+ *
+ * Critical pieces from the canonical pattern that MUST stay intact:
+ *   1. createServerClient is built with cookie handlers that update both
+ *      `request.cookies` and `supabaseResponse.cookies` so refreshed tokens
+ *      land in the outgoing response.
+ *   2. supabase.auth.getClaims() is called immediately after building the
+ *      client. Per Supabase docs: "If you remove getClaims() and you use
+ *      server-side rendering with the Supabase client, your users may be
+ *      randomly logged out." Switching from getUser() to getClaims() was
+ *      the bug fix on 2026-04-16 — getUser's network refresh was racing
+ *      the cookie write and dropping the session.
+ *   3. supabaseResponse must be returned for authenticated requests so any
+ *      refreshed cookies reach the browser.
+ */
 
 // Page routes requiring an authenticated session
-const AUTH_ROUTES = [
+const AUTH_PAGE_ROUTES = [
   "/profile",
   "/settings",
   "/launch",
@@ -31,65 +50,64 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
 
-  // --- Determine whether this route needs auth ---
-  const needsPageAuth = AUTH_ROUTES.some((r) => pathname.startsWith(r));
-  const needsApiAuth =
+  const needsPage = AUTH_PAGE_ROUTES.some((r) => pathname.startsWith(r));
+  const needsApi =
     AUTH_API_ROUTES.some((r) => pathname.startsWith(r)) && method !== "GET";
   const needsModerator = MODERATOR_ROUTES.some((r) => pathname.startsWith(r));
-  const needsAdmin = !needsModerator && ADMIN_ROUTES.some((r) => pathname.startsWith(r));
+  const needsAdmin =
+    !needsModerator && ADMIN_ROUTES.some((r) => pathname.startsWith(r));
 
-  // Nothing to protect — pass through immediately
-  if (!needsPageAuth && !needsApiAuth && !needsModerator && !needsAdmin) {
+  if (!needsPage && !needsApi && !needsModerator && !needsAdmin) {
     return NextResponse.next();
   }
 
-  // --- Graceful degradation: skip auth when Supabase is not configured ---
+  // Graceful degradation when Supabase env isn't configured (local dev,
+  // mock data mode). Let everything through.
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
   if (!supabaseUrl || !supabaseKey) {
-    // Dev mode without Supabase — let everything through
     return NextResponse.next();
   }
 
-  // --- Validate session via Supabase SSR (getUser contacts auth server) ---
-  const { createMiddlewareClient } = await import("@/lib/supabase-server");
-  const { supabase, ctx } = createMiddlewareClient(request);
+  let supabaseResponse = NextResponse.next({ request });
 
-  // DEBUG: surface what cookies middleware actually sees on the request.
-  // Strip values so we never log session tokens to Vercel logs.
-  const cookieNames = request.cookies.getAll().map((c) => c.name);
-  const host = request.headers.get("host") ?? "unknown";
-  console.log(
-    `[proxy] ${pathname} on ${host} — cookies: [${cookieNames.join(", ")}]`,
-  );
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        for (const { name, value } of cookiesToSet) {
+          request.cookies.set(name, value);
+        }
+        supabaseResponse = NextResponse.next({ request });
+        for (const { name, value, options } of cookiesToSet) {
+          supabaseResponse.cookies.set(name, value, options);
+        }
+      },
+    },
+  });
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  // Do not run code between createServerClient and getClaims(). Per Supabase:
+  // "A simple mistake could make it very hard to debug issues with users
+  // being randomly logged out."
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
 
-  console.log(
-    `[proxy] ${pathname} getUser → user: ${user?.email ?? "null"}, error: ${error?.message ?? "none"}`,
-  );
-
-  if (error || !user) {
-    // API / admin routes get a 401 JSON response (no redirect)
-    if (needsApiAuth || needsAdmin) {
+  if (!claims) {
+    if (needsApi || needsAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    // Page routes redirect to login with a return-to param
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // --- Role gate (moderator / admin) ---
+  // Role gate — moderator / admin paths
   if (needsModerator || needsAdmin) {
-    const { data: role } = await supabase.rpc("get_user_role", { uid: user.id });
+    const userId = claims.sub;
+    const { data: role } = await supabase.rpc("get_user_role", { uid: userId });
     const userRole = role ?? "user";
-
     if (needsAdmin && userRole !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -98,9 +116,9 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // Authenticated (and authorized if admin) — return the response which
-  // carries any refreshed auth cookies written by the Supabase client.
-  return ctx.response;
+  // Return the supabaseResponse so any refreshed auth cookies reach the
+  // browser. Returning a different response here will desync the session.
+  return supabaseResponse;
 }
 
 export const config = {
