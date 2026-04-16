@@ -77,12 +77,47 @@ function parseMetadata(html: string, url: string): ScrapedMetadata {
   const image = ogImage || twImage || "";
 
   return {
-    title: decodeEntities(title).slice(0, 100),
+    title: cleanTitle(decodeEntities(title)).slice(0, 60),
     description: decodeEntities(description).slice(0, 2000),
     image: image,
     siteName: decodeEntities(ogSiteName),
     url,
   };
+}
+
+/**
+ * Clean a scraped page title down to something usable as a project name.
+ *
+ * Examples:
+ *  "GitHub - alex-jb/orallexa-ai-trading-agent: Multi-agent AI..."
+ *    → "orallexa-ai-trading-agent"
+ *  "Vercel – Build and deploy the best web experiences"
+ *    → "Vercel"
+ *  "Framer | Every interface is an interaction"
+ *    → "Framer"
+ *  "Next.js by Vercel - The React Framework"
+ *    → "Next.js"
+ */
+function cleanTitle(raw: string): string {
+  let t = raw.trim();
+
+  // GitHub repo pages: "GitHub - owner/repo: description" → owner/repo, then repo
+  const ghMatch = t.match(/^GitHub\s*[-–—:]\s*([^/]+\/([^:]+?))(?::.*)?$/);
+  if (ghMatch) {
+    const repo = ghMatch[2]?.trim();
+    if (repo) return repo;
+  }
+
+  // Strip common "SiteName - Tagline" / "SiteName | Tagline" patterns —
+  // keep the part before the first dash/pipe/bullet if it's short enough
+  // to look like a brand name (< 30 chars).
+  const sepMatch = t.match(/^(.{1,30}?)\s*[-–—|·•]\s*.+$/);
+  if (sepMatch) {
+    const name = sepMatch[1]?.trim();
+    if (name) t = name;
+  }
+
+  return t;
 }
 
 export async function POST(request: Request) {
