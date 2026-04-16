@@ -142,15 +142,49 @@ export default function AnalyticsPage() {
         }}
       />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 space-y-12" style={{ position: "relative", zIndex: 2 }}>
-        {/* ── Hero ─────────────────────────────────────── */}
+        {/* ── Hero — pixel treatment matching other gold-title pages ── */}
         <motion.section variants={fadeUp} initial="hidden" animate="visible" className="text-center space-y-3">
-          <div className="font-pixel" style={{ fontSize: 10, color: "#555", letterSpacing: 2 }}>
-            {">"} VIBEX://ANALYTICS v2.0
+          <div
+            className="font-ui"
+            style={{
+              fontSize: 11,
+              color: "var(--neon-green)",
+              letterSpacing: 3,
+              textShadow: "0 0 4px rgba(57,255,20,0.8)",
+            }}
+          >
+            ▸ VIBEX://ANALYTICS · v2.0
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-            {t("analytics.title")}<span className="text-gradient-subtle">{t("analytics.titleHighlight")}</span>
+          <h1
+            className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"
+            style={{
+              color: "#FFFCEB",
+              letterSpacing: 3,
+              lineHeight: 1.25,
+              textShadow:
+                "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #1a0a3a, 0 0 32px rgba(157,0,255,0.5)",
+            }}
+          >
+            {t("analytics.title")}
+            <span
+              style={{
+                background:
+                  "linear-gradient(180deg, #FFE27D 0%, #FFD700 40%, #B8860B 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              {t("analytics.titleHighlight")}
+            </span>
           </h1>
-          <p className="font-pixel text-muted-foreground max-w-lg mx-auto" style={{ fontSize: 10 }}>
+          <p
+            className="font-retro max-w-lg mx-auto text-[16px] sm:text-[18px] md:text-[20px]"
+            style={{
+              color: "rgba(232,232,236,0.85)",
+              textShadow: "0 2px 0 rgba(0,0,0,0.7)",
+            }}
+          >
             {t("analytics.subtitle")}
           </p>
           {/* Date range picker + CSV export */}
