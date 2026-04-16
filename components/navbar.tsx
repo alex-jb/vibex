@@ -130,9 +130,9 @@ export function Navbar() {
 
           {/* Desktop CTA + Lang Toggle + User */}
           <div className="hidden items-center gap-2 md:flex shrink-0">
-            <button onClick={() => setSearchOpen(true)} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <button onClick={() => setSearchOpen(true)} className="flex items-center gap-1.5 text-sm transition-colors hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>
               <Search className="size-4" />
-              <span className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 text-[10px] text-muted-foreground font-sans">⌘K</span>
+              <span className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 text-[10px] font-sans" style={{ color: "var(--text)" }}>⌘K</span>
             </button>
             <LangToggle />
             <Link href="/launch">

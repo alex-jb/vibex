@@ -67,7 +67,7 @@ function ScoreBar({ label, value, index }: { label: string; value: number; index
   return (
     <div ref={ref} className="space-y-1.5">
       <div className="flex items-center justify-between text-sm">
-        <span className="text-muted-foreground capitalize">
+        <span className="text-[color:var(--text-muted)] capitalize">
           {label.replace(/([A-Z])/g, " $1").trim()}
         </span>
         <span className="font-semibold tabular-nums">{value}</span>
@@ -137,7 +137,7 @@ function AIReviewPanel({ review }: { review: AIReview }) {
             {review.strengths.map((s, i) => (
               <li
                 key={i}
-                className="flex gap-3 text-sm text-muted-foreground rounded-lg py-1.5"
+                className="flex gap-3 text-sm text-[color:var(--text-muted)] rounded-lg py-1.5"
               >
                 <div className="mt-0.5 h-full w-0.5 shrink-0 rounded-full bg-emerald-500/50" />
                 <span>{s}</span>
@@ -155,7 +155,7 @@ function AIReviewPanel({ review }: { review: AIReview }) {
             {review.weaknesses.map((w, i) => (
               <li
                 key={i}
-                className="flex gap-3 text-sm text-muted-foreground rounded-lg py-1.5"
+                className="flex gap-3 text-sm text-[color:var(--text-muted)] rounded-lg py-1.5"
               >
                 <div className="mt-0.5 h-full w-0.5 shrink-0 rounded-full bg-yellow-500/50" />
                 <span>{w}</span>
@@ -173,7 +173,7 @@ function AIReviewPanel({ review }: { review: AIReview }) {
             {review.suggestions.map((s, i) => (
               <li
                 key={i}
-                className="flex gap-3 text-sm text-muted-foreground rounded-lg py-1.5"
+                className="flex gap-3 text-sm text-[color:var(--text-muted)] rounded-lg py-1.5"
               >
                 <div className="mt-0.5 h-full w-0.5 shrink-0 rounded-full bg-blue-500/50" />
                 <span>{s}</span>
@@ -185,7 +185,7 @@ function AIReviewPanel({ review }: { review: AIReview }) {
 
       <Separator className="my-5 bg-white/5" />
 
-      <p className="text-xs text-muted-foreground/40">
+      <p className="text-xs text-[color:var(--text-muted)]/40">
         {t("project.aiDisclaimer")}
       </p>
     </motion.div>
@@ -221,14 +221,14 @@ export default function ProjectPage({
     if (projectsLoading) {
       return (
         <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-          <div className="text-sm text-muted-foreground font-ui">LOADING HERO…</div>
+          <div className="text-sm text-[color:var(--text-muted)] font-ui">LOADING HERO…</div>
         </div>
       );
     }
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
         <h1 className="text-2xl font-bold">{t("project.notFound")}</h1>
-        <p className="text-muted-foreground">
+        <p className="text-[color:var(--text-muted)]">
           {t("project.notFoundDesc")}
         </p>
         <Link href="/home">
@@ -259,7 +259,7 @@ export default function ProjectPage({
           <nav aria-label="Breadcrumb">
             <Link
               href="/home"
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-1.5 text-sm text-[color:var(--text-muted)] transition-colors hover:text-foreground"
             >
               <ArrowLeft className="size-4" />
               {t("project.backToExplore")}
@@ -410,7 +410,7 @@ export default function ProjectPage({
           {/* Description */}
           <motion.div variants={fadeIn} className="space-y-3">
             <h2 className="text-xl font-semibold">{t("project.about")}</h2>
-            <p className="leading-relaxed text-muted-foreground">
+            <p className="leading-relaxed text-[color:var(--text-muted)]">
               {project.description}
             </p>
           </motion.div>
@@ -420,7 +420,7 @@ export default function ProjectPage({
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="glass-card rounded-full px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground hover:border-white/15"
+                className="glass-card rounded-full px-3.5 py-1.5 text-xs font-medium text-[color:var(--text-muted)] transition-colors hover:text-foreground hover:border-white/15"
               >
                 {tag}
               </span>
@@ -503,7 +503,7 @@ export default function ProjectPage({
 
               {/* Skill Tree */}
               <div className="pt-2">
-                <h4 className="font-pixel text-[7px] text-muted-foreground uppercase tracking-widest mb-3">
+                <h4 className="font-pixel text-[7px] text-[color:var(--text-muted)] uppercase tracking-widest mb-3">
                   {t("project.skillTree")}
                 </h4>
                 <SkillTree skills={project.hero.skillTree} />

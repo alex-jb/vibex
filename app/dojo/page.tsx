@@ -163,7 +163,7 @@ export default function DojoPage() {
           {t("dojo.title")}{" "}
           <span className="text-gradient">{t("dojo.titleHighlight")}</span>
         </h2>
-        <p className="mt-3 text-muted-foreground max-w-lg mx-auto text-sm leading-relaxed">
+        <p className="mt-3 text-[color:var(--text-muted)] max-w-lg mx-auto text-sm leading-relaxed">
           {t("dojo.description")}
         </p>
       </motion.div>
@@ -243,7 +243,7 @@ export default function DojoPage() {
                   <h3 className={`text-xl font-bold ${room.accent} mb-2`}>
                     {t(room.i18nKey as Parameters<typeof t>[0])}
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-[color:var(--text-muted)] leading-relaxed">
                     {t(room.descKey as Parameters<typeof t>[0])}
                   </p>
                 </div>
@@ -265,7 +265,7 @@ export default function DojoPage() {
                   <h3 className="text-xl font-bold text-cyan-400/60 mb-2">
                     {t("nav.messages")}
                   </h3>
-                  <p className="text-sm text-muted-foreground/60 leading-relaxed">
+                  <p className="text-sm text-[color:var(--text-muted)]/60 leading-relaxed">
                     {t("dojo.loginToChat")}
                   </p>
                 </div>
@@ -292,7 +292,7 @@ export default function DojoPage() {
               {lang === "zh" ? "分享你的英雄卡片" : "SHARE YOUR HERO CARD"}
             </span>
           </div>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-sm text-[color:var(--text-muted)] mb-4">
             {lang === "zh"
               ? "选择一个项目，生成你的 16-bit 英雄成就卡，分享到社交媒体！"
               : "Pick a project and generate your 16-bit Hero Achievement Card to share on social media!"}
@@ -311,7 +311,7 @@ export default function DojoPage() {
                 >
                   <div className="flex items-center gap-2 mb-1.5">
                     <span className="text-lg">{classEmoji}</span>
-                    <span className="font-pixel text-[7px] text-muted-foreground">
+                    <span className="font-pixel text-[7px] text-[color:var(--text-muted)]">
                       LV.{p.hero?.level || 1}
                     </span>
                   </div>
@@ -319,7 +319,7 @@ export default function DojoPage() {
                     {p.title}
                   </span>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] text-muted-foreground/60">{p.creatorName}</span>
+                    <span className="text-[10px] text-[color:var(--text-muted)]/60">{p.creatorName}</span>
                     <span className="text-[10px] text-amber-400">★{p.score}</span>
                   </div>
                 </button>

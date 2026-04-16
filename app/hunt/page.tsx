@@ -88,7 +88,7 @@ function RankChange({ change }: { change: number }) {
     );
   }
   return (
-    <span className="text-[10px] font-bold text-muted-foreground/40">&mdash;</span>
+    <span className="text-[10px] font-bold" style={{ color: "var(--text-dim)" }}>&mdash;</span>
   );
 }
 
@@ -99,7 +99,7 @@ function LeaderboardTab({ tab }: { tab: string }) {
   if (loading) {
     return (
       <div className="mt-6 glass-card-strong noise-bg rounded-2xl p-6 text-center">
-        <span className="font-pixel text-[8px] text-muted-foreground animate-pulse">
+        <span className="font-pixel text-[8px] animate-pulse" style={{ color: "var(--text-muted)" }}>
           Loading rankings...
         </span>
       </div>
@@ -154,7 +154,7 @@ export default function HuntPage() {
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
               {t("hunt.title")} <span className="text-gradient">{t("hunt.titleHighlight")}</span>
             </h1>
-            <p className="mx-auto mt-3 max-w-md text-base text-muted-foreground">
+            <p className="mx-auto mt-3 max-w-md text-base" style={{ color: "var(--text)" }}>
               {t("hunt.description")}
             </p>
           </motion.div>
@@ -166,19 +166,19 @@ export default function HuntPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-sm"
           >
-            <div className="flex items-center gap-1.5 text-muted-foreground">
+            <div className="flex items-center gap-1.5" style={{ color: "var(--text)" }}>
               <Zap className="size-3.5 text-amber-400" />
               <span className="font-semibold text-foreground">{stats.todayProjects}</span>
               <span>{t("hunt.projectsToday")}</span>
             </div>
             <div className="h-4 w-px bg-white/10" />
-            <div className="flex items-center gap-1.5 text-muted-foreground">
+            <div className="flex items-center gap-1.5" style={{ color: "var(--text)" }}>
               <ChevronUp className="size-3.5 text-violet-400" />
               <span className="font-semibold text-foreground">{stats.totalUpvotes.toLocaleString()}</span>
               <span>{t("hunt.totalUpvotes")}</span>
             </div>
             <div className="h-4 w-px bg-white/10" />
-            <div className="flex items-center gap-1.5 text-muted-foreground">
+            <div className="flex items-center gap-1.5" style={{ color: "var(--text)" }}>
               <Users className="size-3.5 text-fuchsia-400" />
               <span className="font-semibold text-foreground">{stats.creators}</span>
               <span>{t("hunt.creators")}</span>
@@ -243,7 +243,7 @@ function RankBadge({ rank }: { rank: number }) {
     );
   }
   return (
-    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-muted-foreground font-bold text-sm font-mono">
+    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 font-bold text-sm font-mono" style={{ color: "var(--text)" }}>
       {rank}
     </div>
   );
@@ -339,7 +339,7 @@ function RankItem({ entry }: { entry: LeaderboardEntry }) {
             className="glass-card flex flex-col items-center gap-0.5 rounded-lg px-3 py-2 transition-all hover:glow-violet hover:border-violet-500/30 hover:bg-violet-500/10"
           >
             <ChevronUp className="size-4 text-violet-400" />
-            <span className="text-xs font-semibold text-muted-foreground">
+            <span className="text-xs font-semibold" style={{ color: "var(--text)" }}>
               {entry.upvotes}
             </span>
           </button>
@@ -357,9 +357,9 @@ function RankItem({ entry }: { entry: LeaderboardEntry }) {
               </span>
             )}
           </div>
-          <p className="text-xs text-muted-foreground/60 mt-0.5">
+          <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
             {t("hunt.by")}{" "}
-            <span className="text-muted-foreground">{entry.creatorName}</span>
+            <span style={{ color: "var(--text)" }}>{entry.creatorName}</span>
           </p>
         </div>
 
@@ -368,7 +368,8 @@ function RankItem({ entry }: { entry: LeaderboardEntry }) {
           <EvolutionBadge stage={estimateStage(entry.score, entry.upvotes)} size="sm" />
           <Badge
             variant="secondary"
-            className="bg-white/5 border-white/10 text-muted-foreground"
+            className="bg-white/5 border-white/10"
+            style={{ color: "var(--text)" }}
           >
             {entry.category}
           </Badge>
@@ -384,7 +385,7 @@ function RankItem({ entry }: { entry: LeaderboardEntry }) {
           href={`/project/${entry.projectId}`}
           className="shrink-0 rounded-lg p-2 transition-all hover:bg-white/10 hover:scale-105"
         >
-          <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+          <ArrowUpRight className="size-4 group-hover:text-[var(--neon-yellow)] transition-colors" style={{ color: "var(--text-muted)" }} />
         </Link>
       </div>
     </motion.div>

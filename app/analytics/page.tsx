@@ -217,7 +217,7 @@ export default function AnalyticsPage() {
                 <div key={s.label} className="glass-card-strong rounded-2xl p-5 space-y-2">
                   <div className="flex items-center gap-2">
                     <s.icon className={`size-4 ${s.accent}`} />
-                    <span className="font-pixel text-[7px] text-muted-foreground">{s.label}</span>
+                    <span className="font-pixel text-[7px] text-[color:var(--text-muted)]">{s.label}</span>
                   </div>
                   <p className="font-pixel text-[14px]">{s.value}</p>
                 </div>
@@ -234,7 +234,7 @@ export default function AnalyticsPage() {
           <div aria-label={t("analytics.runTrend")} className="flex items-end gap-[2px] h-48 overflow-x-auto" style={{ imageRendering: "pixelated" as const }}>
             {currentRuns.map((v, i) => (
               <div key={i} className="flex-1 min-w-[12px] flex flex-col items-center gap-1">
-                {range === 7 && <span className="font-pixel text-[8px] text-muted-foreground">{v}</span>}
+                {range === 7 && <span className="font-pixel text-[8px] text-[color:var(--text-muted)]">{v}</span>}
                 <div
                   className="w-full bg-gradient-to-t from-violet-600 to-fuchsia-500 transition-all duration-500"
                   style={{
@@ -252,7 +252,7 @@ export default function AnalyticsPage() {
                     }}
                   />
                 </div>
-                {range === 7 && <span className="font-pixel text-[8px] text-muted-foreground">{currentLabels[i]}</span>}
+                {range === 7 && <span className="font-pixel text-[8px] text-[color:var(--text-muted)]">{currentLabels[i]}</span>}
               </div>
             ))}
           </div>
@@ -265,7 +265,7 @@ export default function AnalyticsPage() {
             <div className="overflow-x-auto">
               <table role="table" className="w-full text-sm">
                 <thead>
-                  <tr role="row" className="text-left text-muted-foreground border-b border-white/5">
+                  <tr role="row" className="text-left text-[color:var(--text-muted)] border-b border-white/5">
                     <th className="font-pixel text-[8px] pb-2 pr-4">#</th>
                     <th className="font-pixel text-[8px] pb-2 pr-4">Agent</th>
                     <th className="font-pixel text-[8px] pb-2 pr-4">{t("analytics.category")}</th>
@@ -287,7 +287,7 @@ export default function AnalyticsPage() {
                         role="row"
                         className={`border-b border-white/[0.03] ${highlight ? "bg-violet-500/5" : ""}`}
                       >
-                        <td className="py-2.5 pr-4 font-mono text-muted-foreground">
+                        <td className="py-2.5 pr-4 font-mono text-[color:var(--text-muted)]">
                           {highlight ? (
                             <span
                               className="font-pixel"
@@ -315,7 +315,7 @@ export default function AnalyticsPage() {
                             {a.successRate}%
                           </span>
                         </td>
-                        <td className="py-2.5 pr-4 text-right font-mono text-muted-foreground">{(a.avgLatencyMs / 1000).toFixed(1)}s</td>
+                        <td className="py-2.5 pr-4 text-right font-mono text-[color:var(--text-muted)]">{(a.avgLatencyMs / 1000).toFixed(1)}s</td>
                         <td className="py-2.5 text-right font-mono">${estCost}</td>
                       </tr>
                     );
@@ -339,7 +339,7 @@ export default function AnalyticsPage() {
                     style={{ width: `${(t.tokens / maxTokens) * 100}%` }}
                   />
                 </div>
-                <span className="text-xs text-muted-foreground w-16 text-right font-mono">
+                <span className="text-xs text-[color:var(--text-muted)] w-16 text-right font-mono">
                   {t.tokens >= 1_000_000 ? `${(t.tokens / 1_000_000).toFixed(1)}M` : `${(t.tokens / 1_000).toFixed(0)}K`}
                 </span>
               </div>
@@ -365,10 +365,10 @@ export default function AnalyticsPage() {
                 ) : (
                   <span className="nes-btn is-error" style={{ fontSize: 8, padding: "2px 8px" }}>{t("analytics.failed")}</span>
                 )}
-                <span className="flex-1 text-xs text-muted-foreground truncate">{r.input}</span>
-                <span className="text-xs font-mono text-muted-foreground w-16 text-right">{r.tokens.toLocaleString()} tk</span>
-                <span className="text-xs font-mono text-muted-foreground w-14 text-right">{(r.latency / 1000).toFixed(1)}s</span>
-                <span className="text-xs text-muted-foreground w-20 text-right">{r.time}</span>
+                <span className="flex-1 text-xs text-[color:var(--text-muted)] truncate">{r.input}</span>
+                <span className="text-xs font-mono text-[color:var(--text-muted)] w-16 text-right">{r.tokens.toLocaleString()} tk</span>
+                <span className="text-xs font-mono text-[color:var(--text-muted)] w-14 text-right">{(r.latency / 1000).toFixed(1)}s</span>
+                <span className="text-xs text-[color:var(--text-muted)] w-20 text-right">{r.time}</span>
               </Link>
             ))}
           </div>
@@ -382,7 +382,7 @@ export default function AnalyticsPage() {
 
           {/* Model breakdown */}
           <div className="space-y-3">
-            <h3 className="font-pixel text-[9px] text-muted-foreground">{">"} {t("analytics.modelUsage")}</h3>
+            <h3 className="font-pixel text-[9px] text-[color:var(--text-muted)]">{">"} {t("analytics.modelUsage")}</h3>
             {modelCosts.map((m) => (
               <div key={m.model} className="flex items-center gap-3">
                 <span className="w-24 text-sm">{m.model}</span>
@@ -393,18 +393,18 @@ export default function AnalyticsPage() {
                   />
                 </div>
                 <span className="text-xs font-mono w-14 text-right">{m.cost}</span>
-                <span className="text-xs text-muted-foreground w-10 text-right">{m.pct}%</span>
+                <span className="text-xs text-[color:var(--text-muted)] w-10 text-right">{m.pct}%</span>
               </div>
             ))}
           </div>
 
           {/* Daily cost trend */}
           <div className="space-y-3">
-            <h3 className="font-pixel text-[9px] text-muted-foreground">{">"} {t("analytics.dailyCostTrend")}</h3>
+            <h3 className="font-pixel text-[9px] text-[color:var(--text-muted)]">{">"} {t("analytics.dailyCostTrend")}</h3>
             <div className="flex items-end gap-[2px] h-32 overflow-x-auto" style={{ imageRendering: "pixelated" as const }}>
               {currentCosts.map((v, i) => (
                 <div key={i} className="flex-1 min-w-[12px] flex flex-col items-center gap-1">
-                  {range === 7 && <span className="font-pixel text-[8px] text-muted-foreground">${v}</span>}
+                  {range === 7 && <span className="font-pixel text-[8px] text-[color:var(--text-muted)]">${v}</span>}
                   <div
                     className="w-full bg-gradient-to-t from-emerald-600 to-cyan-500 transition-all duration-500"
                     style={{
@@ -422,7 +422,7 @@ export default function AnalyticsPage() {
                       }}
                     />
                   </div>
-                  {range === 7 && <span className="font-pixel text-[8px] text-muted-foreground">{currentLabels[i]}</span>}
+                  {range === 7 && <span className="font-pixel text-[8px] text-[color:var(--text-muted)]">{currentLabels[i]}</span>}
                 </div>
               ))}
             </div>
