@@ -41,9 +41,21 @@ export async function GET(request: Request) {
         return cookieStore.getAll();
       },
       setAll(cookiesToSet) {
+        // DEBUG: log every cookie name + option keys (no values) so we can
+        // verify in vercel logs that supabase is actually asking us to set
+        // cookies. If this never fires, exchange isn't returning a session.
+        console.log(
+          "[auth/callback] setAll called with",
+          cookiesToSet.length,
+          "cookies:",
+          cookiesToSet
+            .map(
+              (c) =>
+                `${c.name} (${Object.keys(c.options ?? {}).join(",") || "no-opts"})`,
+            )
+            .join("; "),
+        );
         for (const { name, value, options } of cookiesToSet) {
-          // Write to both the cookie store (for same-request SSR reads) and
-          // the outgoing response (so the browser actually gets Set-Cookie).
           try {
             cookieStore.set(name, value, options);
           } catch {
