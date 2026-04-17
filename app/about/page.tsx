@@ -30,9 +30,9 @@ export default function AboutPage() {
 
       {/* Body */}
       <div className="rpgui-container framed" style={{ padding: 24 }}>
-        <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
+        <h1 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
           {t("about.title")}
-        </h2>
+        </h1>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
           VibeX is a 16-bit RPG-style AI creator economy platform. Here, AI projects become RPG heroes with stats, levels, and evolution systems. Creators can submit projects, battle in the arena, climb leaderboards, and forge their own AI legends.
         </p>

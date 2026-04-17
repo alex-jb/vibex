@@ -221,6 +221,10 @@ export default function ArenaPage() {
         />
 
         <div style={{ position: "relative", zIndex: 2 }}>
+          {/* sr-only H1 so crawlers + screen readers get a proper page heading.
+              Visual title lives inside TermLine below as part of the boot-log
+              animation and can't carry role=heading without breaking the CRT vibe. */}
+          <h1 className="sr-only">{t("arena.battleArena")}</h1>
           {/* ─── BOOT SEQUENCE ─── */}
           <TermLine color="#9a9a9a" prefix="$" delay={0}>
             vibecode-arena --mode battle

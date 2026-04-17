@@ -64,6 +64,10 @@ export default function DevelopersPage() {
         />
 
         <div style={{ position: "relative", zIndex: 2 }}>
+          {/* sr-only H1 so crawlers + screen readers get a proper page heading.
+              Visual title below is a non-semantic <span> because the animated
+              boot-log effect needs motion.div, not a heading element. */}
+          <h1 className="sr-only">{t("dev.title")}</h1>
           {/* Title */}
           <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
             <span className="font-pixel" style={{ fontSize: 7, color: "#555" }}>$ vibex --dev-portal</span>
