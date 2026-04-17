@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
-import { projects } from "@/lib/mock-data";
+import { supabase } from "@/lib/supabase";
+import { projects as mockProjects } from "@/lib/mock-data";
 
 /**
  * Sitemap for crawlers.
@@ -7,10 +8,17 @@ import { projects } from "@/lib/mock-data";
  * - Medium: content hubs (creators, insights, dojo, ideas)
  * - Low: user-specific (profile/settings) and legal
  * - Auth flows (/login, /register) intentionally excluded — no SEO value
- * - Dynamic routes (/project/[id]) enumerated from mock data; swap to DB later
+ * - Dynamic routes (/project/[id]) pulled live from Supabase, with a
+ *   fall-through to mock data so the sitemap still generates when the
+ *   DB is unreachable (Vercel build without env, local dev, etc).
+ *
+ * Canonical host is www — matches metadataBase in app/layout.tsx
+ * (switched 2026-04-17; the old apex URL costs a 307 hop per crawl).
  */
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://vibexforge.com";
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = "https://www.vibexforge.com";
   const now = new Date();
 
   type Entry = { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] };
@@ -46,8 +54,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/profile", priority: 0.5, changeFrequency: "weekly" },
     { path: "/profile/dashboard", priority: 0.5, changeFrequency: "weekly" },
     { path: "/settings", priority: 0.3, changeFrequency: "monthly" },
-    // Legal & info (low priority, rarely change)
+    // Legal, contact & info
     { path: "/about", priority: 0.5, changeFrequency: "monthly" },
+    { path: "/contact", priority: 0.4, changeFrequency: "monthly" },
     { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
     { path: "/terms", priority: 0.3, changeFrequency: "yearly" },
   ];
@@ -59,11 +68,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: r.priority,
   }));
 
+  // Pull live projects from Supabase — before 2026-04-17 this used
+  // mock data, so user-submitted projects never appeared in the
+  // sitemap and Google couldn't discover them. Fall through to mock
+  // data when the DB is unreachable so the build doesn't break.
+  let projectIds: { id: string; updated: string }[] = [];
+  try {
+    const { data } = await supabase
+      .from("projects")
+      .select("id, created_at")
+      .order("created_at", { ascending: false })
+      .limit(2000);
+    if (data) {
+      projectIds = data.map((r) => ({
+        id: r.id as string,
+        updated: (r.created_at as string) || now.toISOString(),
+      }));
+    }
+  } catch {
+    // fall through to mock
+  }
+
+  if (projectIds.length === 0) {
+    projectIds = mockProjects.map((p) => ({
+      id: p.id,
+      updated: p.createdAt || now.toISOString(),
+    }));
+  }
+
   // Defensive: encode the id so a future DB-backed project with special
   // characters (slashes, hashes, unicode) doesn't produce a malformed URL.
-  const projectPages: MetadataRoute.Sitemap = projects.map((p) => ({
+  const projectPages: MetadataRoute.Sitemap = projectIds.map((p) => ({
     url: `${baseUrl}/project/${encodeURIComponent(p.id)}`,
-    lastModified: now,
+    lastModified: new Date(p.updated),
     changeFrequency: "weekly" as const,
     priority: 0.65,
   }));

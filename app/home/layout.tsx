@@ -64,9 +64,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      {/* Visually-hidden prose rendering of the same Q&A. Crawlers that
-          don't parse JSON-LD (or only consume plain HTML) get the same
-          content this way. Users see the arcade /home UI as before. */}
+      {children}
+      {/* Visually-hidden prose rendering of the same Q&A, rendered AFTER
+          children so the page's real H1 comes first in DOM order. Moving
+          this before {children} trips Lighthouse's heading-order audit
+          (H2 → H1 non-sequential jump). Crawlers still pick this up:
+          sr-only hides visually, not from screen readers or the
+          accessibility tree. */}
       <section className="sr-only" aria-label="Frequently asked questions about VibeX">
         <h2>Frequently asked questions</h2>
         {FAQ.map((item) => (
@@ -76,7 +80,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         ))}
       </section>
-      {children}
     </>
   );
 }

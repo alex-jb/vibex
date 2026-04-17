@@ -13,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "PerplexityBot", allow: "/" },
       { userAgent: "Google-Extended", allow: "/" },
     ],
-    sitemap: "https://vibexforge.com/sitemap.xml",
+    sitemap: "https://www.vibexforge.com/sitemap.xml",
   };
 }

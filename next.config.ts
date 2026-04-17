@@ -34,6 +34,11 @@ const nextConfig: NextConfig = {
     // tightening that to nonces/hashes needs middleware-level work. Switch
     // `Content-Security-Policy-Report-Only` → `Content-Security-Policy`
     // once the app is observed clean under monitoring.
+    // `upgrade-insecure-requests` is intentionally omitted: Chrome logs
+    // a console error ("ignored when delivered in a report-only policy")
+    // that shows up in Lighthouse's Best Practices audit. The directive
+    // will be re-added once CSP moves out of report-only (see 2026-04-17
+    // Lighthouse baseline in docs/lighthouse/BASELINE.md).
     const csp = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.vercel-insights.com https://*.sentry.io",
@@ -46,7 +51,6 @@ const nextConfig: NextConfig = {
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
-      "upgrade-insecure-requests",
     ].join("; ");
 
     const securityHeaders = [

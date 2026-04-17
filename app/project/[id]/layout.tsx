@@ -26,8 +26,16 @@ export async function generateMetadata({
   const project = await resolveProject(id);
 
   if (!project) {
+    // Fall-through metadata: Lighthouse occasionally caught /project/2
+    // in a state where project resolution returned undefined (likely a
+    // transient DB-fetch race in the audit's first crawl). Without a
+    // description here the page briefly advertised no meta description
+    // and cost 8 SEO points. Defense-in-depth: every metadata path
+    // carries a usable description.
     return {
       title: "Project Not Found | VibeX",
+      description:
+        "This project page is unavailable. Browse all launched AI projects on VibeX — the launch platform where projects evolve from Seed to Myth based on real traction, scored by Claude across five dimensions.",
     };
   }
 
