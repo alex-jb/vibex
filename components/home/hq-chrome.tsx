@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useProjects } from "@/lib/use-data";
+import { CobeGlobe } from "@/components/cobe-globe";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    HQ Chrome primitives — all the small components that make the HQ page feel
@@ -66,7 +67,7 @@ export function StatsStrip() {
 
   return (
     <div
-      className="grid mx-auto grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8 px-4 sm:px-8 py-5 sm:py-[22px] mt-4 sm:mt-[18px]"
+      className="flex mx-auto items-center gap-6 px-4 sm:px-8 py-5 sm:py-[22px] mt-4 sm:mt-[18px]"
       style={{
         maxWidth: 1440,
         background: "var(--bg-panel)",
@@ -76,6 +77,12 @@ export function StatsStrip() {
       }}
       aria-busy={loading}
     >
+      {/* 3D globe — hidden on mobile, decorative on desktop */}
+      <div className="hidden lg:flex shrink-0 items-center justify-center" style={{ width: 140 }}>
+        <CobeGlobe size={130} />
+      </div>
+
+      <div className="grid flex-1 grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
       {stats.map((s, i, arr) => (
         <div
           key={s.label}
@@ -124,6 +131,7 @@ export function StatsStrip() {
           </span>
         </div>
       ))}
+      </div>
     </div>
   );
 }
