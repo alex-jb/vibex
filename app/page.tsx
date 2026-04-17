@@ -73,13 +73,44 @@ export default function LandingPage() {
       className="relative h-screen w-screen overflow-hidden"
       style={{ background: "var(--bg-deep)" }}
     >
-      {/* Visually-hidden H1 so crawlers + screen readers get a proper
-          document heading without breaking the arcade splash design.
-          The press-start screen is intentionally one viewport tall and
-          can't carry a visible H1 without pushing the CTAs below the fold. */}
-      <h1 className="sr-only">
-        VibeX — Launch your AI project. Watch it evolve.
-      </h1>
+      {/* Visually-hidden page introduction so crawlers + screen readers
+          get a proper heading + definitional prose without breaking the
+          arcade splash. The press-start screen is intentionally one
+          viewport tall and can't carry visible body copy without pushing
+          the CTAs below the fold. Citability agent measured `/` at 22/100
+          before this block — LLMs need at least one answer-friendly
+          paragraph to cite the page when asked "what is VibeX?". */}
+      <section className="sr-only" aria-label="About VibeX">
+        <h1>VibeX — Launch your AI project. Watch it evolve.</h1>
+        <p>
+          VibeX is an AI-native launch platform where creators publish
+          projects and receive structured reviews from Claude across four
+          dimensions: originality, craft, market fit, and growth. Every
+          project becomes a collectible RPG hero that evolves through six
+          stages — Seed, Active, Growing, Breakout, Legend, and Myth —
+          based on real traction (plays, saves, shares) rather than
+          upvote sprints. Built for the LLM era as an alternative to
+          Product Hunt specifically for AI tools, agents, and vibe-coded
+          projects.
+        </p>
+        <h2>How VibeX is different from Product Hunt</h2>
+        <p>
+          Product Hunt is a 24-hour upvote contest optimized for
+          mainstream SaaS. VibeX is a long-running evolution system
+          optimized for AI-native projects. Reviews are written by
+          Claude against a published rubric, not collected as vanity
+          upvotes. Projects keep progressing after launch day.
+        </p>
+        <h2>What you can do on VibeX</h2>
+        <p>
+          Submit an AI project (paste a URL), get a Claude-scored
+          review, watch the project evolve based on real engagement,
+          battle other projects in the Arena, and discover heroes across
+          categories: AI agents, workflows, trading systems, code
+          review, image generation, data tools, voice interfaces, and
+          more.
+        </p>
+      </section>
       {/* Gemini-generated epic pixel landscape: swirling purple portal
           over mountains, floating islands with lanterns, crystal spires,
           cobblestone path leading toward the portal. Sits beneath all

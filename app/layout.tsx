@@ -27,14 +27,21 @@ const ServiceWorkerRegister = dynamic(() => import("@/components/sw-register").t
 const NotificationToastProvider = dynamic(() => import("@/components/notification-toast").then((m) => ({ default: m.NotificationToastProvider })));
 const PwaInstallPrompt = dynamic(() => import("@/components/pwa-install-prompt").then((m) => ({ default: m.PwaInstallPrompt })));
 
+// Only preload the 3 fonts rendered above the fold on `/` (the entry
+// route most crawlers hit): Press Start 2P, VT323, Silkscreen. Sans and
+// Mono still load — just without the <link rel="preload"> hint — so any
+// downstream page that needs them still gets them, but we stop competing
+// with the hero image for the preload budget on cold visits.
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  preload: false,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
 const pressStart = Press_Start_2P({
@@ -68,8 +75,11 @@ export const viewport: Viewport = {
   themeColor: "#8b5cf6",
 };
 
+// Canonical host is www — apex 307-redirects here. Previously metadataBase
+// pointed to the apex, which meant every canonical + OG URL advertised the
+// redirected host, costing each crawl one extra hop.
 export const metadata: Metadata = {
-  metadataBase: new URL("https://vibexforge.com"),
+  metadataBase: new URL("https://www.vibexforge.com"),
   title: "VibeX — AI-Native Launch Platform",
   description:
     "Discover, publish, and evolve playable AI-native vibe coding projects. The launch platform for the LLM era.",
@@ -98,7 +108,7 @@ export const metadata: Metadata = {
     images: ["/generated/og-vibex.png"],
   },
   alternates: {
-    canonical: "https://vibexforge.com",
+    canonical: "https://www.vibexforge.com",
   },
 };
 
@@ -114,27 +124,60 @@ export default function RootLayout({
     >
       <head>
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        {/* Structured data as @graph so Organization + WebSite are reusable
+            via @id from per-page schema on project/creator/about routes. The
+            `sameAs` array is what lets ChatGPT / Gemini / Copilot disambiguate
+            "VibeX" from the unrelated `tiwater/vibex`, `dustland/vibex`, and
+            `sethdford/vibex-*` GitHub projects that currently dominate the
+            namespace. Update the social URLs below as channels go live. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "WebApplication",
-              name: "VibeX",
-              url: "https://vibexforge.com",
-              description: "The launch and growth platform for AI-native creators. Discover, publish, and grow AI projects.",
-              applicationCategory: "DeveloperApplication",
-              operatingSystem: "Web",
-              offers: {
-                "@type": "Offer",
-                price: "0",
-                priceCurrency: "USD",
-              },
-              author: {
-                "@type": "Organization",
-                name: "VibeX",
-                url: "https://vibexforge.com",
-              },
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": "https://www.vibexforge.com/#org",
+                  name: "VibeX",
+                  alternateName: "VibeX Forge",
+                  url: "https://www.vibexforge.com",
+                  logo: "https://www.vibexforge.com/generated/logo-vibex.png",
+                  description:
+                    "AI-native launch platform where every project is a collectible RPG hero that evolves Seed → Myth on real traction, reviewed by Claude.",
+                  foundingDate: "2026-04-13",
+                  sameAs: [
+                    "https://github.com/alex-jb/vibex",
+                  ],
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": "https://www.vibexforge.com/#website",
+                  url: "https://www.vibexforge.com",
+                  name: "VibeX",
+                  publisher: { "@id": "https://www.vibexforge.com/#org" },
+                  inLanguage: ["en", "zh-CN"],
+                  potentialAction: {
+                    "@type": "SearchAction",
+                    target:
+                      "https://www.vibexforge.com/home?q={search_term_string}",
+                    "query-input": "required name=search_term_string",
+                  },
+                },
+                {
+                  "@type": "SoftwareApplication",
+                  name: "VibeX",
+                  url: "https://www.vibexforge.com",
+                  applicationCategory: "DeveloperApplication",
+                  operatingSystem: "Web",
+                  publisher: { "@id": "https://www.vibexforge.com/#org" },
+                  offers: {
+                    "@type": "Offer",
+                    price: "0",
+                    priceCurrency: "USD",
+                  },
+                },
+              ],
             }),
           }}
         />
