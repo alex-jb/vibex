@@ -9,12 +9,8 @@
 <h1 align="center">VibeX</h1>
 
 <p align="center">
-  <strong>粘贴 AI 项目 URL, Claude 30 秒给你一份可执行的 launch page 审稿.</strong>
-</p>
-
-<p align="center">
-  贴 URL → Claude 以第一次访客的视角读完你的页面 →<br/>
-  返回 5-7 条具体可以一键 Apply 的改进建议.
+  <strong>Vibe Coding 项目的发射平台.</strong><br/>
+  <sub>AI 时代的 Product Hunt, 自带 Claude 驱动的 launch review.</sub>
 </p>
 
 <p align="center">
@@ -33,11 +29,19 @@
 
 ---
 
+## Demo
+
+https://github.com/alex-jb/vibex/releases/download/v0.1.0-demo/vibex-demo.mp4
+
+> **在线版**: [vibexforge.com/launch](https://www.vibexforge.com/launch) — GitHub 登录, 贴任意 URL, 30 秒内看到真实的 Claude review.
+
+---
+
 ## 要解决的问题
 
-你上线了一个 AI 项目. 发了链接. 没人点.
+所有人都在 vibe coding. **造东西容易, 被看见才是瓶颈.**
 
-问题不在代码. 在 landing page — 标题弱, buzzword 太多, 陌生人点进来头 5 秒不知道你是干嘛的. 独立开发者没有设计师, 没有文案, 也没有 growth advisor. 大部分人只能发个 README 然后期待.
+你上线了一个 AI 项目, 发了链接, 没人点. 代码没问题, 但 landing page 标题弱, buzzword 太多, 陌生人 5 秒看不懂你是干嘛的. 独立开发者没有设计师, 没有文案, 也没有 growth advisor.
 
 ## 这个 Loop
 
