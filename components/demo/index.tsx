@@ -74,16 +74,21 @@ export default function PlayableDemo({
   useEffect(() => {
     if (pingedRef.current) return;
     pingedRef.current = true;
-    // Fire-and-forget: bumps projects.plays via /api/projects/:id/play.
-    // Don't block render on the network round-trip; the UI reflects the
-    // local optimistic increment below while the server settles.
+    // Bump projects.plays via /api/projects/:id/play and reflect the
+    // increment locally only after the server confirms. Doing the +1
+    // synchronously inside the effect body trips React's
+    // set-state-in-effect rule (cascading renders), and also lies to
+    // the user if the request 429s or network fails.
     fetch(`/api/projects/${encodeURIComponent(projectId)}/play`, {
       method: "POST",
       keepalive: true,
     })
-      .then((res) => (res.ok ? res.json() : null))
-      .catch(() => null);
-    setPlayCount((n) => n + 1);
+      .then((res) => {
+        if (res.ok) setPlayCount((n) => n + 1);
+      })
+      .catch(() => {
+        // ignore — we leave playCount at initialPlays
+      });
   }, [projectId]);
 
   return (
