@@ -43,6 +43,13 @@ import { RareCandyButton } from "@/components/rpg/rare-candy-button";
 import { RealtimeChat } from "@/components/realtime-chat";
 import { Swords } from "lucide-react";
 
+function formatProjectDate(raw: string): string {
+  if (!raw) return "";
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return raw;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -289,13 +296,14 @@ export default function ProjectPage({
             )}
           </div>
 
-          {/* Title — big pixel game-title treatment with the same yellow
-              gradient used on /home HUNT TODAY'S LEGENDS. */}
+          {/* Title — short titles get the big pixel game-title; long
+              titles (>20 chars) drop to font-retro which stays readable
+              at large sizes without ugly line breaks. */}
           <h1
-            className="font-pixel font-pixel-hero mt-2 text-[28px] sm:text-[38px] md:text-[48px]"
+            className={`${project.title.length > 20 ? "font-retro" : "font-pixel font-pixel-hero"} mt-2 text-[28px] sm:text-[38px] md:text-[48px]`}
             style={{
               color: "#FFFCEB",
-              letterSpacing: 3,
+              letterSpacing: project.title.length > 20 ? 1 : 3,
               lineHeight: 1.25,
               textShadow:
                 "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #1a0a3a, 0 0 32px rgba(157,0,255,0.5)",
@@ -345,7 +353,7 @@ export default function ProjectPage({
               style={{ color: "var(--text-muted)" }}
             >
               <Calendar className="size-3.5" />
-              <time dateTime={project.createdAt}>{project.createdAt}</time>
+              <time dateTime={project.createdAt}>{formatProjectDate(project.createdAt)}</time>
             </span>
             <span
               className="flex items-center gap-1.5"
