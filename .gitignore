@@ -43,6 +43,7 @@ supabase/.temp/
 *.tsbuildinfo
 next-env.d.ts
 .gstack/
+.claude/scheduled_tasks.lock
 
 # ═══ PROPRIETARY (private core — not tracked) ═══
 # Real implementations stored locally, public repo has stubs only.
