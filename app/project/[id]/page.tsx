@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useRef, useState, useMemo } from "react";
+import { use, useEffect, useRef, useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import {
@@ -224,6 +224,23 @@ export default function ProjectPage({
   const { user } = useAuth();
   const [shareOpen, setShareOpen] = useState(false);
   const { burstStage, clearBurst } = useEvolutionDetector(project?.hero?.evolutionStage);
+  const viewPingedRef = useRef(false);
+
+  // Fire view pingback once per page mount. POSTs to /api/projects/:id/view
+  // which bumps projects.views via the SECURITY DEFINER increment_view RPC
+  // (migration 041). Before 2026-04-17 nothing incremented this counter, so
+  // the "Views" HUD field on every project page was permanently stuck at
+  // whatever the seed set (0 for user-submitted projects).
+  useEffect(() => {
+    if (!project?.id || viewPingedRef.current) return;
+    viewPingedRef.current = true;
+    fetch(`/api/projects/${encodeURIComponent(project.id)}/view`, {
+      method: "POST",
+      keepalive: true,
+    }).catch(() => {
+      // fire-and-forget; no user-facing consequence if it fails
+    });
+  }, [project?.id]);
 
   const relatedProjects = useMemo(() => {
     if (!project) return [];
