@@ -164,6 +164,13 @@ Post → first 2 hours:
       + `/api/ai/review`). If a burst of traffic hits, rate limits
       are set to 20/min/IP on /api/ai/review — that's ~1200/hr
       capacity, should be fine.
+- [ ] **Submit `alex-jb/vibex` to trendshift.io** (right column,
+      "Submit repository" button — it's a modal, not a direct URL).
+      Trendshift ranks by *same-day* star velocity, so the HN spike
+      is exactly when it'll catch. Timing matters: submit within
+      the first 2 hours of the HN post going live. If it trends,
+      grab the badge URL (`trendshift.io/api/badge/repositories/
+      <id>`) and add to README + vibexforge.com homepage.
 
 Post → day 1:
 - [ ] Screenshot the post's final rank, save to `docs/launches/`

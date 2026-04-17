@@ -9,8 +9,8 @@
 <h1 align="center">VibeX</h1>
 
 <p align="center">
-  <strong>Vibe Coding 项目的发射平台.</strong><br/>
-  <sub>AI 时代的 Product Hunt, 自带 Claude 驱动的 launch review.</sub>
+  <strong>把你的 AI 项目变成一张可收藏的像素 RPG 英雄卡。</strong><br/>
+  <sub>贴一个 URL 或 GitHub 仓库 → Claude 从 5 个维度打分(原创度、清晰度、UX 潜力、病毒潜力、投资人好奇心)→ 项目根据真实 plays / upvotes / shares 自动进化 <code>Seed → Active → Growing → Breakout → Legend → Myth</code>。不是 24 小时投票赛跑,是一个奖励"持续变好"的作品展。</sub>
 </p>
 
 <p align="center">
@@ -24,7 +24,7 @@
   <a href="https://github.com/alex-jb/vibex/commits"><img src="https://img.shields.io/github/commit-activity/m/alex-jb/vibex?style=flat-square&color=39FF14" alt="Commits" /></a>
   <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-000?style=flat-square&logo=next.js" alt="Next.js" /></a>
   <a href="https://supabase.com"><img src="https://img.shields.io/badge/Supabase-Realtime-3ECF8E?style=flat-square&logo=supabase" alt="Supabase" /></a>
-  <a href="https://anthropic.com"><img src="https://img.shields.io/badge/Claude-Sonnet_4.6-D97706?style=flat-square" alt="Claude" /></a>
+  <a href="https://anthropic.com"><img src="https://img.shields.io/badge/Claude-Haiku_4.5-D97706?style=flat-square" alt="Claude" /></a>
 </p>
 
 ---
