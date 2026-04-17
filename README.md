@@ -1,3 +1,7 @@
+<p align="right">
+  <strong>English</strong> · <a href="./README.zh-CN.md">中文</a>
+</p>
+
 <p align="center">
   <img src="docs/screenshots-v2/01-landing.png" width="820" alt="VibeX — enter the portal" />
 </p>
