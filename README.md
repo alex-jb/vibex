@@ -1,26 +1,22 @@
 <p align="center">
-  <img src="docs/demo.gif" width="720" alt="VibeX Demo" />
+  <img src="docs/screenshots-v2/01-landing.png" width="820" alt="VibeX — enter the portal" />
 </p>
 
 <h1 align="center">VibeX</h1>
 
 <p align="center">
-  <strong>Turn your AI project into a viral, evolving collectible.</strong>
+  <strong>Your AI project's launch page, reviewed by Claude in 30 seconds.</strong>
 </p>
 
 <p align="center">
-  <a href="https://www.vibexforge.com"><img src="https://img.shields.io/badge/▶_Try_Live-vibexforge.com-8b5cf6?style=for-the-badge" alt="Try Live" /></a>
-  <a href="#-quick-start"><img src="https://img.shields.io/badge/⚡_Quick_Start-30_seconds-39FF14?style=for-the-badge" alt="Quick Start" /></a>
-  <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/badge/⭐_Star_Us-GitHub-FACC15?style=for-the-badge" alt="Star Us" /></a>
+  Paste your URL → Claude reads the page like a first-time visitor →<br/>
+  Get 5-7 concrete, clickable improvements you can apply with one tap.
 </p>
 
 <p align="center">
-  <a href="https://www.vibexforge.com">Website</a> &bull;
-  <a href="#-how-it-works">How It Works</a> &bull;
-  <a href="#-core-features">Features</a> &bull;
-  <a href="#-architecture">Architecture</a> &bull;
-  <a href="#-quick-start">Quick Start</a> &bull;
-  <a href="./CONTRIBUTING.md">Contributing</a>
+  <a href="https://www.vibexforge.com/launch"><img src="https://img.shields.io/badge/▶_Try_Live-Forge_a_Project-8b5cf6?style=for-the-badge" alt="Try Live" /></a>
+  <a href="#-quick-start"><img src="https://img.shields.io/badge/⚡_Run_Locally-30_seconds-39FF14?style=for-the-badge" alt="Quick Start" /></a>
+  <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/badge/⭐_Star-GitHub-FACC15?style=for-the-badge" alt="Star" /></a>
 </p>
 
 <p align="center">
@@ -28,130 +24,45 @@
   <a href="https://github.com/alex-jb/vibex/commits"><img src="https://img.shields.io/github/commit-activity/m/alex-jb/vibex?style=flat-square&color=39FF14" alt="Commits" /></a>
   <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-000?style=flat-square&logo=next.js" alt="Next.js" /></a>
   <a href="https://supabase.com"><img src="https://img.shields.io/badge/Supabase-Realtime-3ECF8E?style=flat-square&logo=supabase" alt="Supabase" /></a>
+  <a href="https://anthropic.com"><img src="https://img.shields.io/badge/Claude-Sonnet_4.6-D97706?style=flat-square" alt="Claude" /></a>
 </p>
-
----
-
-VibeX is a gamified growth platform for AI creators.  
-We transform AI projects into shareable, collectible cards that evolve based on real-world traction.
 
 ---
 
 ## The Problem
 
-Building AI products has never been easier.  
-Getting attention has never been harder.
+You shipped an AI project. You posted the link. Nothing happened.
 
-Creators struggle with:
-- No distribution after launch
-- Low visibility — projects disappear in 48 hours
-- No ongoing growth loop
-- Product Hunt is one-shot, not continuous
+Getting traction isn't about the code. It's about the landing page, the headline, the first 5 seconds a stranger spends on your site. Most solo builders ship a README and hope. They don't have a design team, a copywriter, or a growth advisor.
 
----
+## The Loop
 
-## The Solution
+VibeX is that advisor, powered by Claude.
 
-VibeX turns every AI project into a **living, evolving asset**.
+**1. Forge** — Paste your project URL. We scrape the page, parse the pitch, index your README.
 
-### How it works:
+**2. Review** — Claude reads it like a first-time visitor and outputs 5-7 specific, actionable improvements — each with a clear headline, why it matters, and a copy-pasteable suggestion.
 
-**1. Create** — Upload your AI project
+**3. Apply** — Click Apply on any suggestion. It goes into your project's "improvements" log. Come back next week, rerun. Watch the score climb.
 
-**2. Generate** — Instantly turn it into a collectible Hero Card
+That's the whole product.
 
-**3. Evolve** — Your project levels up based on real traction (views, likes, shares)
-
-**4. Share** — Export a viral card with QR code to bring traffic back
+The gamification (evolution stages, rarity, pixel art chrome) is there to make the feedback loop feel fun, not like homework.
 
 ---
 
-## Growth Loop
+## Demo
 
-```
-Create → Card → Share → Traffic → Level Up → Share again
-```
+**Live:** [vibexforge.com/launch](https://www.vibexforge.com/launch) — sign in with GitHub, paste any URL, get a real Claude review in ~30 seconds.
 
-This creates a **built-in distribution engine** for every creator.
-
----
-
-## Core Features
-
-### AI Project Cards
-Generate beautiful, pixel-style collectible cards with HP/MP/EXP bars, rarity badges, skill tags, and QR codes. Three sizes: 3:4 (Xiaohongshu), 1:1 (Instagram), 16:9 (Twitter/X).
-
-### 6-Stage Evolution System
-Projects evolve automatically based on real metrics:
-
-| Stage | Rarity | Trigger |
-|-------|--------|---------|
-| Seed | Common | Just created |
-| Active | Uncommon | 50+ plays or 40+ score |
-| Growing | Rare | 500+ plays, 50+ upvotes, 1K+ views |
-| Breakout | Epic | 1K+ plays, 100+ upvotes, 70+ originality |
-| Legend | Legendary | 5K+ plays, 500+ upvotes, 85+ score |
-| Myth | Mythic | 10K+ plays, 1K+ upvotes, VC interest |
-
-### Share-to-Grow
-Cards are designed for social platforms with built-in QR codes. Download → Post → Scan → Traffic → Level Up.
-
-### Auto Demo Generator
-One-click: input URL → Playwright captures frames → animated GIF cover for your project.
-
-### Growth Signals
-Track engagement, evolution progress, and unlock higher tiers. Creator Dashboard with trend charts.
-
-### VC Dashboard
-Investor intelligence: radar charts, talent graph, deal flow table ranked by AI score.
-
----
-
-## Why VibeX
-
-| Platform | Limitation |
-|----------|-----------|
-| Product Hunt | One-time launch |
-| GitHub | No discovery |
-| X (Twitter) | High noise |
-| **VibeX** | **Continuous growth loop** |
-
----
-
-## Screenshots
-
-| Home | Discover | Project Detail |
-|------|----------|----------------|
-| ![Home](docs/screenshots/01-home.png) | ![Discover](docs/screenshots/03-discover.png) | ![Project](docs/screenshots/04-project.png) |
-
-| Feed | Arena | VC Dashboard |
-|------|-------|-------------|
-| ![Feed](docs/screenshots/05-feed.png) | ![Arena](docs/screenshots/07-arena.png) | ![VC](docs/screenshots/08-vc.png) |
-
----
-
-## Monetization (Planned)
-
-- Card upgrades (Rare / Epic / Legendary visual skins)
-- Featured placement on discover page
-- Growth insights (AI-powered analytics)
-- Premium Agent marketplace
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| **Framework** | Next.js 16 (App Router, Turbopack) |
-| **Language** | TypeScript 5 (strict) |
-| **UI** | React 19 + Tailwind CSS 4 + Framer Motion |
-| **Design** | NES.css + RPGUI (16-bit pixel aesthetic) |
-| **Database** | Supabase (PostgreSQL, RLS, Realtime) |
-| **Auth** | Supabase Auth (GitHub + Google OAuth) |
-| **AI** | Claude API (launch packages, reviews, growth) |
-| **Monitoring** | Sentry + PostHog |
-| **CI/CD** | GitHub Actions + Vercel |
+|  |  |
+|---|---|
+| ![Landing](docs/screenshots-v2/01-landing.png) | ![HQ](docs/screenshots-v2/02-home.png) |
+| **Portal** — every session starts here | **HQ** — your projects + today's leaderboard |
+| ![Project](docs/screenshots-v2/04-project.png) | ![Hunt](docs/screenshots-v2/03-hunt.png) |
+| **Project detail** — review history + stats | **Hunt** — daily/weekly rankings |
+| ![Ideas](docs/screenshots-v2/05-ideas.png) | ![Creators](docs/screenshots-v2/06-creators.png) |
+| **Idea Lab** — score your concept before you build | **Creators** — the builders behind the projects |
 
 ---
 
@@ -166,20 +77,39 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000 — the app runs in **mock mode** with built-in demo data.
+Open http://localhost:3000. The app runs in **mock mode** with built-in demo data, so you can explore every page without wiring up Supabase or Claude.
 
 <details>
-<summary><strong>Want real data? Configure Supabase + Claude (optional)</strong></summary>
+<summary><strong>Want the real thing? Wire up Supabase + Claude (optional)</strong></summary>
 
 ```bash
 cp .env.local.example .env.local
-# Fill in: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, ANTHROPIC_API_KEY
+# Fill in:
+#   NEXT_PUBLIC_SUPABASE_URL
+#   NEXT_PUBLIC_SUPABASE_ANON_KEY
+#   ANTHROPIC_API_KEY
 npm run dev
 ```
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup details.
+Then run the SQL migrations in `supabase/migrations/*.sql` through the Supabase Dashboard SQL editor. Full setup guide in [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 </details>
+
+---
+
+## Tech Stack
+
+| Layer | Choice | Why |
+|-------|--------|-----|
+| Framework | Next.js 16 (App Router, Turbopack) | Server Components + streaming |
+| Language | TypeScript 5 (strict) | Refactor fearlessly |
+| UI | React 19 + Tailwind v4 + Framer Motion | Zero-config, fast, smooth |
+| Design | nes-core.css + local rpgui + custom pixel tokens | 16-bit aesthetic, ~50KB CSS |
+| DB | Supabase (Postgres + RLS + Realtime) | One stack, one auth, realtime out of the box |
+| Auth | Supabase Auth (GitHub + Google OAuth + PKCE) | Cookies, not localStorage — SSR-friendly |
+| AI | Anthropic Claude Sonnet 4.6 with tool_use | Structured JSON reviews, not prose |
+| Monitoring | Sentry + PostHog | Errors + product analytics |
+| Deploy | Vercel + GitHub Actions | `git push` = prod |
 
 ---
 
@@ -187,83 +117,86 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup details.
 
 ```
 vibex/
-├── app/                   # Next.js 16 App Router
-│   ├── feed/              # Social timeline (realtime)
-│   ├── discover/          # Project browser
-│   ├── dojo/              # Training hub
-│   ├── arena/             # Battle simulator
-│   ├── launch/            # AI Launch Copilot
-│   ├── vc/                # VC dashboard
-│   └── api/               # 43 API routes
-├── components/            # 105+ React components
-│   ├── rpg/               # Pixel UI (hero card, battle HUD, skill tree)
-│   ├── feed/              # Social (posts, reactions, mentions)
-│   ├── home/              # Landing page sections
-│   └── vc/                # Investor dashboard
+├── app/                      # Next.js 16 App Router
+│   ├── page.tsx              # Landing (the portal)
+│   ├── home/                 # HQ dashboard (authed)
+│   ├── hunt/                 # Realtime leaderboard
+│   ├── launch/               # Forge a project → AI review
+│   ├── project/[id]/         # Project detail + review history
+│   ├── ideas/                # Idea Lab (pre-build scoring)
+│   ├── creators/             # Builder profiles + rankings
+│   └── api/                  # REST + streaming endpoints
+├── components/
+│   ├── ui/                   # shadcn-derived primitives
+│   ├── rpg/                  # Pixel chrome (cards, evolution badges)
+│   ├── demo/                 # Embed/preview helpers
+│   └── ideas/                # Idea Lab components
 ├── lib/
-│   ├── ai.ts              # Claude API integration
-│   ├── battle-engine.ts   # 6-attribute combat
-│   ├── buddy-system.ts    # Pet + gacha system
-│   ├── data-moat.ts       # Growth intelligence
-│   └── i18n.ts            # 708 translation keys (EN/ZH)
-├── supabase/migrations/   # Schema (48 tables)
-└── .private/              # Proprietary core (not in repo)
+│   ├── ai.ts                 # Claude tool_use wrapper
+│   ├── realtime.ts           # Supabase realtime hooks (per-mount useId)
+│   ├── use-data.ts           # Data fetchers (mock + real)
+│   └── i18n.ts               # Bilingual UI (EN / zh)
+├── proxy.ts                  # Next 16 middleware (Supabase SSR auth)
+├── supabase/migrations/      # Public schema stubs
+└── .private/migrations/      # Real schema + RLS policies (not in repo)
 ```
 
-**Data flow:** Browser → Next.js API routes → Supabase (PostgreSQL + Realtime) + Claude API → Response.
+**Data flow:** Browser → Next.js proxy (auth) → API route → Supabase + Claude → stream response back.
+
+---
+
+## Roadmap
+
+**Shipped**
+- [x] GitHub + Google OAuth (PKCE, cookie-based)
+- [x] Project submission + URL scrape + cleanTitle
+- [x] Claude-powered structured review (5-7 actions per review)
+- [x] Apply / Skip / Reject action persistence
+- [x] Real-time leaderboard with `postgres_changes` subscriptions
+- [x] Pixel-art UI with nes-core + custom retro tokens
+- [x] Bilingual (EN / zh) with 708 strings
+
+**In progress**
+- [ ] Drive first 10 real users through the loop
+- [ ] Weekly re-review cadence (reminder to come back)
+- [ ] Public review feed on creator profiles
+
+**Later**
+- [ ] Multi-reviewer (Claude + GPT + Gemini cross-check)
+- [ ] Auto-apply for low-risk copy changes (with diff preview)
+- [ ] Creator → creator peer review marketplace
 
 ---
 
 ## License & Source Model
 
-VibeX is **source-available**, not fully open source. Here's what that means:
+VibeX is **source-available**, not fully open source.
 
 ### Public (this repo)
-- All UI, components, pages, API routes
-- Public stubs of core logic (compile + run with demo behavior)
-- Schema overview
+All UI, pages, API routes, components. Public stubs of core logic that compile and run with demo data. Schema overview.
 
 ### Private (not in this repo)
-- Claude AI prompt templates (the secret sauce)
-- Battle engine combat math
-- Gacha/evolution probability tuning
+- Claude prompt templates and tool schemas
+- Scoring + evolution tuning
 - Growth intelligence algorithms
 - Full migration history with RLS policies
 
-**You can:** fork, study, learn from, and contribute to the public parts. Run it locally. Build on top of it for personal/educational use.
-
+**You can:** fork, study, learn from, run locally, contribute to the public parts.
 **You can't:** use it commercially without permission. See [LICENSE](./LICENSE).
-
-Want to contribute? See [CONTRIBUTING.md](./CONTRIBUTING.md).
-
----
-
-## Vision
-
-To become the **growth layer for AI creators**,  
-where every project is not just launched — but evolves.
 
 ---
 
 ## Status
 
-Early-stage MVP. Actively building the core growth loop. Join the beta at [vibexforge.com](https://www.vibexforge.com).
+Shipped the Launch Feedback Loop on 2026-04-16. First real user submission (an AI trading agent repo) ran through end-to-end: URL scraped → title cleaned → Claude returned 7 actions → actions persisted to Supabase with RLS enforcement.
 
----
+Now looking for the next 9 users to validate that the feedback is actually useful, not just available.
 
-## Support the Project
-
-If VibeX inspires you or helps you ship your AI project:
-
-<p align="center">
-  <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/badge/⭐_Star_this_repo-It_takes_1_second-FACC15?style=for-the-badge" alt="Star" /></a>
-  <a href="https://www.vibexforge.com/"><img src="https://img.shields.io/badge/Launch_Your_AI_Project-vibexforge.com-8b5cf6?style=for-the-badge" alt="Launch" /></a>
-</p>
-
-Stars help other AI creators discover VibeX. It's the single most impactful thing you can do if you like this.
+**If you're shipping an AI project this week:** [try the live loop on your own URL](https://www.vibexforge.com/launch) and send me the actions Claude gave you. I want to know which ones landed and which missed.
 
 ---
 
 <p align="center">
-  Built with vibe coding energy by <a href="https://github.com/alex-jb">Orallexa</a>
+  Built with vibe coding energy by <a href="https://github.com/alex-jb">Orallexa</a><br/>
+  <a href="https://www.vibexforge.com"><img src="https://img.shields.io/badge/⭐_Star_this_repo-It_takes_1_second-FACC15?style=for-the-badge" alt="Star" /></a>
 </p>
