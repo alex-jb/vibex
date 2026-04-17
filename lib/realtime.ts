@@ -119,9 +119,13 @@ export function useRealtimeLeaderboard(
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void fetchLeaderboard();
 
-    // Subscribe to project score/upvote changes
+    // Subscribe to project score/upvote changes.
+    // Channel name includes `limit` because HuntPage renders two hooks with
+    // the same period but different limits (tab content vs. connected badge).
+    // Supabase reuses a channel by name, so colliding names caused the second
+    // `.on()` call to run after `.subscribe()` and throw.
     const channel = supabase
-      .channel(`leaderboard-${period}`)
+      .channel(`leaderboard-${period}-${limit}`)
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "projects" },

@@ -4,10 +4,12 @@ import { Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLang } from "@/lib/i18n";
+import { isFeatureEnabled } from "@/lib/feature-flags";
 
 export function Footer() {
   const { t } = useLang();
   const pathname = usePathname();
+  const eventsOn = isFeatureEnabled("FEATURE_EVENTS");
   // Hide footer on chrome-less routes (landing + auth flows)
   const hideChrome = pathname === "/" || pathname === "/login" || pathname === "/register";
   if (hideChrome) return null;
@@ -41,7 +43,9 @@ export function Footer() {
               <Link href="/ideas" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("footer.ideaLab")}</Link>
               <Link href="/creators" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.creators")}</Link>
               <Link href="/launch" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.launch")}</Link>
-              <Link href="/events" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.events")}</Link>
+              {eventsOn && (
+                <Link href="/events" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.events")}</Link>
+              )}
             </div>
           </div>
           <div>
