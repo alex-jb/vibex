@@ -1,0 +1,30 @@
+# VibeX — AI-Native Launch Platform
+> Paste your AI project URL, get 5-7 concrete improvements from Claude in 30 seconds.
+
+## What VibeX Does
+VibeX reviews your AI project's launch page using Claude Sonnet 4.6. You paste a URL, Claude reads it like a first-time visitor, and returns structured, actionable feedback you can apply with one click. The gamification layer (evolution stages, pixel art, leaderboards) makes the feedback loop feel fun.
+
+## Key Pages
+- /launch — Forge a project (paste URL, get AI review)
+- /home — Dashboard with projects and daily leaderboard
+- /hunt — Realtime rankings powered by Supabase
+- /ideas — AI-scored idea validation before you build
+- /creators — Builder profiles ranked by shipped work
+- /project/{id} — Individual project detail with review history
+
+## Tech Stack
+- Next.js 16 (App Router, Turbopack)
+- Supabase (PostgreSQL, RLS, Realtime)
+- Claude Sonnet 4.6 with tool_use for structured reviews
+- React 19 + Tailwind CSS 4 + Framer Motion
+- Bilingual UI (English / Chinese)
+
+## API
+REST API at /api/* — 43 endpoints for project management, agent execution, and webhooks.
+
+## Source
+GitHub: https://github.com/alex-jb/vibex (source-available)
+
+## Contact
+Website: https://vibexforge.com
+GitHub: https://github.com/alex-jb
