@@ -402,6 +402,9 @@ const translations = {
     "demo.loadingExperience": "Loading experience...",
     "demo.playing": "Playing...",
     "demo.clickToPlay": "Click to play",
+    "demo.externalSite": "External site",
+    "demo.visitSite": "Open in new tab",
+    "demo.embedBlocked": "This host blocks embedded previews, so we link out instead.",
 
     // Developer Platform
     "dev.title": "Developer Platform",
@@ -1244,6 +1247,9 @@ const translations = {
     "demo.loadingExperience": "加载体验中...",
     "demo.playing": "播放中...",
     "demo.clickToPlay": "点击播放",
+    "demo.externalSite": "外部站点",
+    "demo.visitSite": "新标签页打开",
+    "demo.embedBlocked": "该站点不允许嵌入预览，为你直接跳转过去。",
 
     // Developer Platform
     "dev.title": "开发者平台",

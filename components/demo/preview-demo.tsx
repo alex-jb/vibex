@@ -1,8 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLang } from "@/lib/i18n";
+import { canEmbedInIframe, getHostname } from "./embed-utils";
 
 interface PreviewDemoProps {
   demoUrl?: string;
@@ -10,7 +12,7 @@ interface PreviewDemoProps {
 
 export function PreviewDemo({ demoUrl }: PreviewDemoProps) {
   const { t } = useLang();
-  if (demoUrl) {
+  if (demoUrl && canEmbedInIframe(demoUrl)) {
     return (
       <div className="min-h-64 sm:min-h-80 md:min-h-[400px] p-4">
         <div className="overflow-hidden rounded-lg border border-white/10 bg-black/40 h-64 sm:h-80 md:h-[420px]">
@@ -19,7 +21,7 @@ export function PreviewDemo({ demoUrl }: PreviewDemoProps) {
             <div className="size-3 rounded-full bg-red-500/70" />
             <div className="size-3 rounded-full bg-yellow-500/70" />
             <div className="size-3 rounded-full bg-green-500/70" />
-            <span className="ml-3 text-xs text-muted-foreground truncate">{demoUrl}</span>
+            <span className="ml-3 text-xs truncate" style={{ color: "var(--text-muted)" }}>{demoUrl}</span>
           </div>
           <iframe
             src={demoUrl}
@@ -27,6 +29,32 @@ export function PreviewDemo({ demoUrl }: PreviewDemoProps) {
             sandbox="allow-scripts allow-same-origin"
             title="App preview"
           />
+        </div>
+      </div>
+    );
+  }
+
+  if (demoUrl) {
+    const host = getHostname(demoUrl);
+    return (
+      <div className="min-h-64 sm:min-h-80 md:min-h-[400px] p-4">
+        <div className="flex h-64 flex-col items-center justify-center gap-3 rounded-lg border border-white/10 bg-black/40 p-6 text-center sm:h-80 md:h-[420px]">
+          <p className="font-pixel text-[10px] tracking-wide" style={{ color: "var(--text-muted)" }}>
+            {host.toUpperCase()} · {t("demo.externalSite")}
+          </p>
+          <a
+            href={demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2 text-sm transition-colors hover:border-[var(--neon-yellow)] hover:text-[var(--neon-yellow)]"
+            style={{ color: "var(--text)" }}
+          >
+            <ExternalLink className="size-4" />
+            {t("demo.visitSite")}
+          </a>
+          <p className="max-w-sm text-xs" style={{ color: "var(--text-muted)" }}>
+            {t("demo.embedBlocked")}
+          </p>
         </div>
       </div>
     );
