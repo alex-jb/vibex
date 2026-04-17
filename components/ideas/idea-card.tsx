@@ -12,6 +12,18 @@ import Link from "next/link";
 import { AiEvaluationPanel } from "./ai-evaluation";
 import { statusConfig } from "./idea-helpers";
 
+function formatIdeaDate(raw: string): string {
+  if (!raw) return "";
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return raw;
+  const now = new Date();
+  const diffDays = Math.floor((now.getTime() - d.getTime()) / 86_400_000);
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 30) return `${diffDays}d ago`;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
 export function IdeaCard({
   idea,
   index,
@@ -57,7 +69,7 @@ export function IdeaCard({
         {/* Center: Content */}
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-1.5">
-            <h3 className="text-base font-semibold leading-snug">
+            <h3 className="text-base font-semibold leading-snug" style={{ color: "var(--text)" }}>
               {idea.title}
             </h3>
             {idea.status === "launched" && idea.launchedProjectId && (
@@ -71,7 +83,7 @@ export function IdeaCard({
               </Link>
             )}
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+          <p className="text-sm line-clamp-2 leading-relaxed" style={{ color: "var(--text-muted)" }}>
             {idea.description}
           </p>
           <div className="flex flex-wrap items-center gap-2 mt-3">
@@ -85,11 +97,11 @@ export function IdeaCard({
             <Badge variant="outline" className="text-[10px]">
               {idea.category}
             </Badge>
-            <span className="text-[11px] text-muted-foreground">
+            <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>
               {t("ideas.by")} {idea.creatorName}
             </span>
-            <span className="text-[11px] text-muted-foreground/60">
-              {idea.createdAt}
+            <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+              {formatIdeaDate(idea.createdAt)}
             </span>
           </div>
         </div>
