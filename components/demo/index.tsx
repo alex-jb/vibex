@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MessageSquare, Code2, Monitor, Play, Maximize2, Share2, Eye } from "lucide-react";
 import { useLang } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/i18n";
@@ -19,6 +19,7 @@ interface PlayableDemoProps {
   demoContent?: string;
   projectTitle: string;
   projectId: string;
+  initialPlays?: number;
 }
 
 /* ------------------------------------------------------------------ */
@@ -59,10 +60,31 @@ export default function PlayableDemo({
   demoType,
   demoUrl,
   projectTitle,
-  projectId: _projectId, // reserved for future analytics tracking
+  projectId,
+  initialPlays = 0,
 }: PlayableDemoProps) {
   const { t } = useLang();
-  const [playCount] = useState(() => Math.floor(Math.random() * 500) + 100);
+  // Real play count seeded from the server-rendered project row. The old
+  // `Math.random()` default was why project pages showed e.g. "180 plays"
+  // that contradicted the evolution bar's "0/2 PLAYS" (pulled from DB) —
+  // two data sources disagreed. Fixed 2026-04-17.
+  const [playCount, setPlayCount] = useState(initialPlays);
+  const pingedRef = useRef(false);
+
+  useEffect(() => {
+    if (pingedRef.current) return;
+    pingedRef.current = true;
+    // Fire-and-forget: bumps projects.plays via /api/projects/:id/play.
+    // Don't block render on the network round-trip; the UI reflects the
+    // local optimistic increment below while the server settles.
+    fetch(`/api/projects/${encodeURIComponent(projectId)}/play`, {
+      method: "POST",
+      keepalive: true,
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .catch(() => null);
+    setPlayCount((n) => n + 1);
+  }, [projectId]);
 
   return (
     <div className="glass-card-strong border-glow overflow-hidden rounded-xl noise-bg min-h-[450px]">

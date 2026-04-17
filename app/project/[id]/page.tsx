@@ -412,6 +412,7 @@ export default function ProjectPage({
               demoContent={project.demoContent}
               projectTitle={project.title}
               projectId={project.id}
+              initialPlays={project.plays}
             />
           </motion.div>
 

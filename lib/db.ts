@@ -143,6 +143,81 @@ export async function incrementView(projectId: string): Promise<void> {
   }
 }
 
+export async function incrementPlay(projectId: string): Promise<void> {
+  if (!USE_SUPABASE) return;
+  // Uses the increment_play RPC added in migration 040. Atomic +1 with
+  // SECURITY DEFINER so anonymous visitors bumping plays on a project
+  // page don't need an RLS UPDATE policy on projects.
+  await supabase.rpc("increment_play", { p_id: projectId });
+}
+
+/**
+ * Insert or update the ai_reviews row for a project + refresh
+ * projects.score to the compound. Called from /api/projects/submit
+ * after a fresh Claude review, and from the rescue script for legacy
+ * score=0 projects.
+ *
+ * Pass an authenticated client — RLS on ai_reviews is gated by
+ * creators.auth_user_id = auth.uid() (see migration 040).
+ */
+export async function upsertAIReview(
+  client: SupabaseClient,
+  projectId: string,
+  review: {
+    originality: number;
+    clarity: number;
+    uxPotential: number;
+    viralityPotential: number;
+    investorCuriosity: number;
+    strengths: string[];
+    weaknesses: string[];
+    suggestions: string[];
+  },
+): Promise<boolean> {
+  const compound = Math.round(
+    (review.originality +
+      review.clarity +
+      review.uxPotential +
+      review.viralityPotential +
+      review.investorCuriosity) /
+      5,
+  );
+
+  const { error: upsertErr } = await client
+    .from("ai_reviews")
+    .upsert(
+      {
+        project_id: projectId,
+        originality: review.originality,
+        clarity: review.clarity,
+        ux_potential: review.uxPotential,
+        virality_potential: review.viralityPotential,
+        investor_curiosity: review.investorCuriosity,
+        strengths: review.strengths,
+        weaknesses: review.weaknesses,
+        suggestions: review.suggestions,
+      },
+      { onConflict: "project_id" },
+    );
+
+  if (upsertErr) {
+    console.error("[upsertAIReview] upsert ai_reviews failed", upsertErr);
+    return false;
+  }
+
+  const { error: scoreErr } = await client
+    .from("projects")
+    .update({ score: compound })
+    .eq("id", projectId);
+
+  if (scoreErr) {
+    console.error("[upsertAIReview] projects.score update failed", scoreErr);
+    return false;
+  }
+
+  return true;
+}
+
 // ═══════════════════════════════════════════════════════════════
 // WRITE PATH — Launch Feedback Loop
 // ═══════════════════════════════════════════════════════════════

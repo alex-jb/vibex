@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase-server";
-import { createProject, getOrCreateCreator, type NewProjectInput } from "@/lib/db";
+import {
+  createProject,
+  getOrCreateCreator,
+  upsertAIReview,
+  type NewProjectInput,
+} from "@/lib/db";
+import { generateProjectReview } from "@/lib/ai";
 import type { ProjectCategory } from "@/lib/types";
 
 interface SubmitBody {
@@ -62,6 +68,45 @@ function generateMockReview() {
       "Consider integrating with popular dev tools for distribution",
     ],
   };
+}
+
+/**
+ * The GitHub web flow auto-generates this description on OG tags when
+ * a repo has no README. If we see it, the user pasted a GH URL with
+ * no manual description — fetch the real README to give Claude something
+ * to review against. Matches "Contribute to X/Y development..." exactly.
+ */
+function isGithubBoilerplate(description: string): boolean {
+  return /^Contribute to [\w.-]+\/[\w.-]+ development by creating an account on GitHub\.?$/i.test(
+    description.trim(),
+  );
+}
+
+async function fetchGithubReadme(demoUrl: string): Promise<string | null> {
+  const m = demoUrl.match(/github\.com\/([^\/]+)\/([^\/?#]+)/);
+  if (!m) return null;
+  const [, owner, repoRaw] = m;
+  const repo = repoRaw.replace(/\.git$/, "");
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/readme`,
+      {
+        headers: {
+          Accept: "application/vnd.github.raw",
+          "User-Agent": "VibeX-submit-pipeline",
+        },
+        // 10s cap — don't let a slow GitHub response block the submit flow.
+        signal: AbortSignal.timeout(10_000),
+      },
+    );
+    if (!res.ok) return null;
+    const text = await res.text();
+    // Cap at 4KB — Claude context + token budget. READMEs beyond this point
+    // are usually install/config detail that doesn't help scoring.
+    return text.slice(0, 4000);
+  } catch {
+    return null;
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -137,6 +182,53 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      // If the user pasted a GitHub URL with no real description (the
+      // classic "Contribute to X/Y development..." boilerplate that GitHub
+      // auto-generates when a repo has no README), fetch the README and
+      // pass it to Claude as supplemental context so we're not reviewing
+      // a blank slate. This rescues the exact flow that produced the
+      // 0/0/0 project pages before 2026-04-17.
+      let reviewDescription = project.description;
+      if (
+        project.demoUrl &&
+        (isGithubBoilerplate(project.description) ||
+          project.description.length < 80)
+      ) {
+        const readme = await fetchGithubReadme(project.demoUrl);
+        if (readme) {
+          reviewDescription = `${project.description}\n\n--- README (excerpt) ---\n${readme}`;
+        }
+      }
+
+      // Synchronous Claude review. Takes ~3-5s but means the user lands
+      // on a populated project page instead of zeros. If the Claude call
+      // fails (rate limit, network), generateProjectReview returns a stub
+      // so we still write something reasonable rather than leaving the
+      // row blank.
+      let aiReview;
+      try {
+        aiReview = await generateProjectReview({
+          title: project.title,
+          tagline: project.tagline,
+          description: reviewDescription,
+          category: project.category,
+          tags: project.tags,
+        });
+        await upsertAIReview(supabase, project.id, aiReview);
+      } catch (err) {
+        console.error("[submit] AI review pipeline failed", err);
+        aiReview = generateMockReview();
+      }
+
+      const compound = Math.round(
+        (aiReview.originality +
+          aiReview.clarity +
+          aiReview.uxPotential +
+          aiReview.viralityPotential +
+          aiReview.investorCuriosity) /
+          5,
+      );
+
       return NextResponse.json(
         {
           id: project.id,
@@ -149,8 +241,8 @@ export async function POST(req: NextRequest) {
           demoType: project.demoType,
           demoUrl: project.demoUrl ?? null,
           url: `/project/${project.id}`,
-          score: project.score,
-          aiReview: generateMockReview(),
+          score: compound,
+          aiReview: { ...aiReview, compound },
           createdAt: project.createdAt,
           persisted: true,
         },

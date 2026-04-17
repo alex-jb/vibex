@@ -24,23 +24,86 @@ export interface AIReviewResult {
   suggestions: string[];
 }
 
-export async function generateProjectReview(_project: {
+const REVIEW_MODEL = "claude-haiku-4-5";
+
+const STUB_REVIEW: AIReviewResult = {
+  originality: 75,
+  clarity: 80,
+  uxPotential: 70,
+  viralityPotential: 65,
+  investorCuriosity: 60,
+  strengths: ["Interesting concept", "Clean presentation"],
+  weaknesses: ["Needs more detail", "Market validation pending"],
+  suggestions: ["Add a demo video", "Define target audience more clearly"],
+};
+
+/**
+ * Five-dimension Claude-scored review. Calls the Anthropic API when
+ * ANTHROPIC_API_KEY is present, else returns a neutral stub so local dev
+ * (no key) and first-boot prod don't crash.
+ *
+ * Pattern mirrors generateStructuredReview() below — same fallback shape.
+ * Previously this was a hardcoded stub even with a key in env; that was
+ * the reason /api/projects/submit wrote 0/empty AI fields to every new
+ * user's project page. Fixed 2026-04-17.
+ */
+export async function generateProjectReview(project: {
   title: string;
   tagline: string;
   description: string;
   category: string;
   tags: string[];
 }): Promise<AIReviewResult> {
-  return {
-    originality: 75,
-    clarity: 80,
-    uxPotential: 70,
-    viralityPotential: 65,
-    investorCuriosity: 60,
-    strengths: ["Interesting concept", "Clean presentation"],
-    weaknesses: ["Needs more detail", "Market validation pending"],
-    suggestions: ["Add a demo video", "Define target audience more clearly"],
-  };
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return STUB_REVIEW;
+
+  try {
+    const client = new Anthropic({ apiKey });
+    const response = await client.messages.create({
+      model: REVIEW_MODEL,
+      max_tokens: 2000,
+      system: `You are an expert AI project reviewer for VibeX, a platform for AI-native creations.
+Evaluate projects on these dimensions (0-100 scale):
+- originality: How novel and unique is this idea?
+- clarity: How well-defined and understandable is the project?
+- uxPotential: How good could the user experience be?
+- viralityPotential: How likely is this to spread organically?
+- investorCuriosity: How interesting would this be to investors?
+
+Also provide 2-3 strengths, 2-3 weaknesses, and 2-3 actionable suggestions.
+Respond ONLY with valid JSON matching the exact schema.`,
+      messages: [
+        {
+          role: "user",
+          content: `Review this project:
+Title: ${project.title}
+Tagline: ${project.tagline}
+Description: ${project.description}
+Category: ${project.category}
+Tags: ${project.tags.join(", ")}
+
+Respond with JSON: {"originality":N,"clarity":N,"uxPotential":N,"viralityPotential":N,"investorCuriosity":N,"strengths":["..."],"weaknesses":["..."],"suggestions":["..."]}`,
+        },
+      ],
+    });
+
+    const text = response.content.find((b) => b.type === "text")?.text || "{}";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(jsonMatch?.[0] || "{}") as Partial<AIReviewResult>;
+
+    // Defensive: Claude can omit fields on rare malformed responses.
+    // Merge with the stub so every field always has a safe default.
+    return {
+      ...STUB_REVIEW,
+      ...parsed,
+      strengths: parsed.strengths?.length ? parsed.strengths : STUB_REVIEW.strengths,
+      weaknesses: parsed.weaknesses?.length ? parsed.weaknesses : STUB_REVIEW.weaknesses,
+      suggestions: parsed.suggestions?.length ? parsed.suggestions : STUB_REVIEW.suggestions,
+    };
+  } catch (err) {
+    console.error("[ai] generateProjectReview failed, returning stub:", err);
+    return STUB_REVIEW;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
