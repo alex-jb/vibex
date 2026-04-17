@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useId, useState, useCallback } from "react";
 import { supabase } from "./supabase";
 import {
   getProjectLeaderboard,
@@ -108,6 +108,7 @@ export function useRealtimeLeaderboard(
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [connected, setConnected] = useState(false);
+  const hookId = useId();
 
   const fetchLeaderboard = useCallback(async () => {
     const data = await getProjectLeaderboard(period, limit);
@@ -120,12 +121,14 @@ export function useRealtimeLeaderboard(
     void fetchLeaderboard();
 
     // Subscribe to project score/upvote changes.
-    // Channel name includes `limit` because HuntPage renders two hooks with
-    // the same period but different limits (tab content vs. connected badge).
-    // Supabase reuses a channel by name, so colliding names caused the second
-    // `.on()` call to run after `.subscribe()` and throw.
+    // Channel name is per-hook-instance via useId() so every mount gets a
+    // fresh channel. supabase.removeChannel() is async — if two hooks share
+    // a name, StrictMode double-mount or fast remounts would race: the
+    // second mount hits supabase.channel(name) before the cleanup finishes,
+    // gets handed back the still-subscribed channel, and .on() after
+    // .subscribe() throws "cannot add postgres_changes callbacks".
     const channel = supabase
-      .channel(`leaderboard-${period}-${limit}`)
+      .channel(`leaderboard-${period}-${limit}-${hookId}`)
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "projects" },
@@ -149,7 +152,7 @@ export function useRealtimeLeaderboard(
       supabase.removeChannel(channel);
       setConnected(false);
     };
-  }, [period, limit, fetchLeaderboard]);
+  }, [period, limit, hookId, fetchLeaderboard]);
 
   return { entries, loading, connected };
 }

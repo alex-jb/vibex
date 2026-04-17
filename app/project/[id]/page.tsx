@@ -259,7 +259,7 @@ export default function ProjectPage({
           <nav aria-label="Breadcrumb">
             <Link
               href="/home"
-              className="inline-flex items-center gap-1.5 text-sm text-[color:var(--text-muted)] transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-1.5 text-sm text-[color:var(--text-muted)] transition-colors hover:text-[var(--neon-yellow)]"
             >
               <ArrowLeft className="size-4" />
               {t("project.backToExplore")}
@@ -420,7 +420,7 @@ export default function ProjectPage({
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="glass-card rounded-full px-3.5 py-1.5 text-xs font-medium text-[color:var(--text-muted)] transition-colors hover:text-foreground hover:border-white/15"
+                className="glass-card rounded-full px-3.5 py-1.5 text-xs font-medium text-[color:var(--text-muted)] transition-colors hover:text-[var(--neon-yellow)] hover:border-white/15"
               >
                 {tag}
               </span>
