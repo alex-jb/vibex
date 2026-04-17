@@ -60,9 +60,9 @@ const scenes = [
     scrollTo: 400, cursor: [500, 300],
   },
   {
-    id: '05-project', url: '/project/proj-mo1w2haf-ga3v',
+    id: '05-project', url: '/project/2',
     narration: 'Every project gets a Claude review. Five to seven concrete actions you can apply with one click.',
-    subtitle: '▸ Claude reviewed → 7 actions',
+    subtitle: '▸ AgentForge — Claude reviewed → 7 actions',
     scrollTo: 600, cursor: [600, 250],
   },
   {
