@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Compass, Rocket, MessageSquare, User } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useLang, type TranslationKey } from "@/lib/i18n";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    MobileBottomNav — fixed bottom tab bar for mobile.
@@ -11,29 +12,32 @@ import type { LucideIcon } from "lucide-react";
    - Hidden on ≥md and on chrome-less routes (landing, auth)
    - Uses safe-area-inset-bottom for notched devices
    - Active state: neon purple glow + filled icon + dot indicator
+   - Labels are i18n keys (nav.*) so /home reads "HQ" here and in the top nav
+     instead of diverging (was "HOME" vs "HQ" pre-2026-04-17).
    ═══════════════════════════════════════════════════════════════════════════ */
 
 const CHROMELESS_ROUTES = new Set(["/", "/login", "/register"]);
 
 interface NavItem {
   href: string;
-  label: string;
+  key: TranslationKey;
   Icon: LucideIcon;
   exactMatch?: boolean;
 }
 
 // /discover merged into /home 2026-04-14. Replaced EXPLORE tile with ARENA
-// to keep the 5-item cap (HOME · ARENA · LAUNCH · FEED · PROFILE).
+// to keep the 5-item cap (HQ · ARENA · LAUNCH · FEED · PROFILE).
 const NAV_ITEMS: NavItem[] = [
-  { href: "/home", label: "HOME", Icon: Home },
-  { href: "/arena", label: "ARENA", Icon: Compass },
-  { href: "/launch", label: "LAUNCH", Icon: Rocket },
-  { href: "/feed", label: "FEED", Icon: MessageSquare },
-  { href: "/profile", label: "PROFILE", Icon: User },
+  { href: "/home", key: "nav.home", Icon: Home },
+  { href: "/arena", key: "nav.arena", Icon: Compass },
+  { href: "/launch", key: "nav.tab.launch", Icon: Rocket },
+  { href: "/feed", key: "nav.tab.feed", Icon: MessageSquare },
+  { href: "/profile", key: "nav.tab.profile", Icon: User },
 ];
 
 export function MobileBottomNav() {
   const pathname = usePathname();
+  const { t } = useLang();
 
   if (CHROMELESS_ROUTES.has(pathname)) return null;
 
@@ -52,11 +56,12 @@ export function MobileBottomNav() {
       }}
     >
       <div className="grid grid-cols-5 gap-0">
-        {NAV_ITEMS.map(({ href, label, Icon, exactMatch }) => {
+        {NAV_ITEMS.map(({ href, key, Icon, exactMatch }) => {
           const isActive = exactMatch
             ? pathname === href
             : pathname === href || pathname.startsWith(`${href}/`);
           const isLaunch = href === "/launch";
+          const label = t(key);
 
           return (
             <Link

@@ -10,11 +10,11 @@ import { AnalyticsProvider } from "@/components/analytics-provider";
 import { MainWrapper } from "@/components/main-wrapper";
 import { MotionProvider } from "@/components/motion-provider";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
-// nes-core.min is 51KB vs full nes.min at 283KB. We only use nes-btn,
-// nes-container, nes-input, nes-select, nes-textarea, nes-badge, nes-balloon,
-// nes-progress + is-* modifiers, all present in core. The 232KB saving wins
-// ~50KB after gzip on every cold visit.
-import "nes.css/css/nes-core.min.css";
+// nes.css is now imported inside globals.css with `layer(base)` so that
+// Tailwind utilities (display, spacing, etc.) can override its HTML5 reset.
+// Unlayered CSS wins over layered rules regardless of specificity — without
+// the layer wrap, `hidden` / `md:hidden` silently fail on <nav>, <section>,
+// <article>, <aside>, <footer>, <header>, <main>, <figure>, <hgroup>.
 import "./globals.css";
 import "./retro-game.css";
 import "./nes-overrides.css";

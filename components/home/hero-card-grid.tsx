@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { HeroCard, type HeroCardData, type Rarity } from "@/components/home/hero-card";
 import type { Project } from "@/lib/types";
 
@@ -81,7 +82,7 @@ export function HeroCardGrid({
   label,
   subLabel,
   cards,
-  viewAllHref = "#",
+  viewAllHref = "/creators",
 }: HeroCardGridProps) {
   return (
     <div
@@ -111,7 +112,7 @@ export function HeroCardGrid({
             </span>
           ) : null}
         </div>
-        <a
+        <Link
           href={viewAllHref}
           className="font-ui"
           style={{
@@ -124,7 +125,7 @@ export function HeroCardGrid({
           }}
         >
           VIEW ALL ›
-        </a>
+        </Link>
       </div>
       <div className="grid gap-[18px] sm:gap-[22px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((card) => (

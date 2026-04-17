@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    HQ Feature Sections — 5 variants showcasing VibeX's unique capabilities.
@@ -78,7 +79,7 @@ function Section({
           >
             {body}
           </p>
-          <a
+          <Link
             href={learnHref}
             className="font-ui"
             style={{
@@ -91,7 +92,7 @@ function Section({
             }}
           >
             {learnLabel}
-          </a>
+          </Link>
         </div>
         <div
           className="relative"
@@ -762,6 +763,7 @@ export function HqFeatureSections() {
         }
         body="Claude reviews every hero. Originality, craft, market fit, growth. One score, one verdict."
         learnLabel="▸ SEE AN EXAMPLE REVIEW"
+        learnHref="/project/2"
         frame={<AiReviewShot />}
       />
       <Section
@@ -776,6 +778,7 @@ export function HqFeatureSections() {
         }
         body="Every hero levels up on real plays, saves, and shares. Seed to Myth in 6 stages."
         learnLabel="▸ WATCH ONE EVOLVE"
+        learnHref="/insights"
         frame={<EvolutionShot />}
       />
       <Section
@@ -789,6 +792,7 @@ export function HqFeatureSections() {
         }
         body="Battle other heroes in the Arena. Real crit math, elemental types, weekly ranks."
         learnLabel="▸ ENTER THE ARENA"
+        learnHref="/arena"
         frame={<ArenaShot />}
       />
       <Section
@@ -803,6 +807,7 @@ export function HqFeatureSections() {
         }
         body="A pet that grows with your projects. 12 classes, 6 stages, unique passives."
         learnLabel="▸ PICK YOUR STARTER"
+        learnHref="/launch"
         frame={<BuddyShot />}
       />
       <Section
@@ -816,6 +821,7 @@ export function HqFeatureSections() {
         }
         body="Radar charts, talent graphs, deal flow ranked by Claude. VC mode turns the codex into a watchlist."
         learnLabel="▸ SEE THE VC DASHBOARD"
+        learnHref="/insights"
         frame={<VcShot />}
       />
     </>

@@ -31,6 +31,12 @@ const translations = {
     "nav.more": "More",
     "nav.moreComing": "More Coming",
     "nav.moreComingHint": "New features dropping soon",
+    // Short labels for mobile bottom tab bar (8px font, ≤7 chars).
+    // Separate from nav.launch ("Forge Project") / nav.feed ("The Wire")
+    // so the tab stays readable without wrapping.
+    "nav.tab.launch": "Launch",
+    "nav.tab.feed": "Feed",
+    "nav.tab.profile": "Profile",
 
     // Discover page
     "discover.badge": "Discover what's next",
@@ -877,6 +883,9 @@ const translations = {
     "nav.more": "更多",
     "nav.moreComing": "更多功能",
     "nav.moreComingHint": "新功能即将上线",
+    "nav.tab.launch": "锻造",
+    "nav.tab.feed": "动态",
+    "nav.tab.profile": "档案",
 
     // Discover page
     "discover.badge": "发现下一个热门",

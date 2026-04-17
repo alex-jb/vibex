@@ -18,12 +18,11 @@
   right: 0 !important;
   z-index: 50 !important;
 }
-[data-slot="navbar"] nav {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 0 !important;
-}
+/* The global `[data-slot="navbar"] nav { display: flex !important }` rule
+   was removed 2026-04-17 because it forced every <nav> inside the navbar
+   (including `hidden md:flex` desktop nav and `flex flex-col` mobile
+   hamburger menu) to display:flex+row, defeating Tailwind responsive
+   classes. Tailwind classes on each nav now handle layout directly. */
 [data-slot="navbar"] nav a,
 [data-slot="navbar"] nav button {
   font-size: 14px !important;

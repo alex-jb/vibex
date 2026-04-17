@@ -73,6 +73,13 @@ export default function LandingPage() {
       className="relative h-screen w-screen overflow-hidden"
       style={{ background: "var(--bg-deep)" }}
     >
+      {/* Visually-hidden H1 so crawlers + screen readers get a proper
+          document heading without breaking the arcade splash design.
+          The press-start screen is intentionally one viewport tall and
+          can't carry a visible H1 without pushing the CTAs below the fold. */}
+      <h1 className="sr-only">
+        VibeX — Launch your AI project. Watch it evolve.
+      </h1>
       {/* Gemini-generated epic pixel landscape: swirling purple portal
           over mountains, floating islands with lanterns, crystal spires,
           cobblestone path leading toward the portal. Sits beneath all
@@ -669,7 +676,7 @@ export default function LandingPage() {
               ▶ PRESS START
             </motion.button>
           </Link>
-          <Link href="/about">
+          <Link href="/about" prefetch={false}>
             <motion.button
               type="button"
               className="font-pixel uppercase cursor-pointer"
