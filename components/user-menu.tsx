@@ -6,6 +6,7 @@ import { LogOut, User, Swords, Target, MessageSquare, Heart } from "lucide-react
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { useLang } from "@/lib/i18n";
+import { isFeatureEnabled } from "@/lib/feature-flags";
 
 function getInitials(name: string): string {
   return name
@@ -137,15 +138,17 @@ export function UserMenu() {
                   <Swords className="size-4 text-amber-400" />
                   {t("nav.arena")}
                 </Link>
-                <Link
-                  role="menuitem"
-                  href="/buddy"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-                >
-                  <Heart className="size-4 text-pink-400" />
-                  {t("nav.buddy")}
-                </Link>
+                {isFeatureEnabled("FEATURE_BUDDY") && (
+                  <Link
+                    role="menuitem"
+                    href="/buddy"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+                  >
+                    <Heart className="size-4 text-pink-400" />
+                    {t("nav.buddy")}
+                  </Link>
+                )}
                 <Link
                   role="menuitem"
                   href="/hunt"

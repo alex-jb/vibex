@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { isFeatureEnabled } from "@/lib/feature-flags";
 import {
   Camera,
   Save,
@@ -490,48 +491,50 @@ export default function ProfilePage() {
         </div>
       </FadeIn>
 
-      {/* ── My Buddies ── */}
-      <FadeIn delay={0.48} className="mt-8">
-        <div className="rpgui-container framed rounded-xl p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-pixel text-lg text-gradient">{t("profile.myBuddies")}</h2>
-            <Link href="/buddy" className="font-pixel text-xs text-violet-400 hover:text-violet-300 transition-colors">
-              {t("profile.viewAll")}
-            </Link>
-          </div>
-          <div className="flex gap-3 overflow-x-auto pb-1">
-            {mockBuddies.map((buddy) => {
-              const buddyType = BUDDY_TYPES.find(t => t.id === buddy.buddyTypeId);
-              if (!buddyType) return null;
-              const rarity = RARITY_CONFIG[buddyType.rarity];
-              return (
-                <div
-                  key={buddy.id}
-                  className={`shrink-0 w-32 rounded-xl border-2 p-3 text-center transition-all duration-300 ${
-                    buddy.isActive
-                      ? "border-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.3)] bg-amber-500/5"
-                      : `${rarity.borderColor} ${rarity.bgColor}`
-                  }`}
-                >
-                  <motion.span
-                    className="block text-3xl mb-1"
-                    animate={buddy.isActive ? { y: [0, -3, 0] } : {}}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      {/* ── My Buddies (only when FEATURE_BUDDY is on) ── */}
+      {isFeatureEnabled("FEATURE_BUDDY") && (
+        <FadeIn delay={0.48} className="mt-8">
+          <div className="rpgui-container framed rounded-xl p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-pixel text-lg text-gradient">{t("profile.myBuddies")}</h2>
+              <Link href="/buddy" className="font-pixel text-xs text-violet-400 hover:text-violet-300 transition-colors">
+                {t("profile.viewAll")}
+              </Link>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-1">
+              {mockBuddies.map((buddy) => {
+                const buddyType = BUDDY_TYPES.find(t => t.id === buddy.buddyTypeId);
+                if (!buddyType) return null;
+                const rarity = RARITY_CONFIG[buddyType.rarity];
+                return (
+                  <div
+                    key={buddy.id}
+                    className={`shrink-0 w-32 rounded-xl border-2 p-3 text-center transition-all duration-300 ${
+                      buddy.isActive
+                        ? "border-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.3)] bg-amber-500/5"
+                        : `${rarity.borderColor} ${rarity.bgColor}`
+                    }`}
                   >
-                    {buddyType.emoji}
-                  </motion.span>
-                  <p className="font-pixel text-xs text-white/90">{buddyType.nameZh}</p>
-                  <p className="font-pixel text-[10px] text-white/50 mt-0.5">Lv.{buddy.level}</p>
-                  <p className="text-[9px] mt-0.5" style={{ color: rarity.color }}>{rarity.labelZh}</p>
-                  {buddy.isActive && (
-                    <span className="inline-block mt-1 font-pixel text-[9px] text-amber-400">{t("buddy.inBattle")}</span>
-                  )}
-                </div>
-              );
-            })}
+                    <motion.span
+                      className="block text-3xl mb-1"
+                      animate={buddy.isActive ? { y: [0, -3, 0] } : {}}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      {buddyType.emoji}
+                    </motion.span>
+                    <p className="font-pixel text-xs text-white/90">{buddyType.nameZh}</p>
+                    <p className="font-pixel text-[10px] text-white/50 mt-0.5">Lv.{buddy.level}</p>
+                    <p className="text-[9px] mt-0.5" style={{ color: rarity.color }}>{rarity.labelZh}</p>
+                    {buddy.isActive && (
+                      <span className="inline-block mt-1 font-pixel text-[9px] text-amber-400">{t("buddy.inBattle")}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </FadeIn>
+        </FadeIn>
+      )}
 
       {/* ── Creator Dashboard Link ── */}
       <FadeIn delay={0.45} className="mt-8">
