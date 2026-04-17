@@ -192,9 +192,20 @@ function AIReviewPanel({ review }: { review: AIReview }) {
 
       <Separator className="my-5 bg-white/5" />
 
-      <p className="text-xs text-[color:var(--text-muted)]/40">
-        {t("project.aiDisclaimer")}
-      </p>
+      {/* Byline + disclaimer. The byline (model + rubric version) is
+          here so the block reads as a signed AI evaluation rather than
+          floating unattributed text. Google's quality raters and the
+          E-E-A-T audit both flag unsigned AI content as a low-trust
+          signal; this closes the gap. */}
+      <div className="flex items-center justify-between gap-3 text-xs text-[color:var(--text-muted)]/60">
+        <span className="flex items-center gap-1.5">
+          <Sparkles className="size-3" />
+          {t("project.reviewedBy")}
+        </span>
+        <span className="text-[color:var(--text-muted)]/40">
+          {t("project.aiDisclaimer")}
+        </span>
+      </div>
     </motion.div>
   );
 }
