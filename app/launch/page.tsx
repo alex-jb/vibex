@@ -1197,7 +1197,15 @@ export default function LaunchPage() {
             <Button
               onClick={handleQuickScrape}
               disabled={scrapeLoading || !quickUrl.trim()}
-              className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white h-11 px-6 shrink-0"
+              className="font-pixel h-11 px-6 shrink-0 border-0 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+              style={{
+                background: "#FF4500",
+                border: "2px solid #FFE27D",
+                color: "#1A0F00",
+                boxShadow: "3px 3px 0 #000, inset 0 8px 0 rgba(255,255,255,0.12), inset 0 -8px 0 rgba(0,0,0,0.2)",
+                fontSize: 11,
+                letterSpacing: 2,
+              }}
             >
               {scrapeLoading ? (
                 <>
@@ -1561,8 +1569,15 @@ export default function LaunchPage() {
             <div className="glass-card-strong border-glow noise-bg rounded-xl border border-white/[0.06] p-6 overflow-hidden">
               {/* Header */}
               <div className="flex items-center gap-3 mb-1">
-                <div className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/25">
-                  <Sparkles className="size-4 text-white" />
+                <div
+                  className="flex size-9 items-center justify-center"
+                  style={{
+                    background: "#FF4500",
+                    border: "2px solid #FFE27D",
+                    boxShadow: "2px 2px 0 #000",
+                  }}
+                >
+                  <Sparkles className="size-4" style={{ color: "#1A0F00" }} />
                 </div>
                 <div className="flex-1">
                   <h2 className="text-base font-semibold">{t("launch.aiAssistant")}</h2>
@@ -1635,7 +1650,15 @@ export default function LaunchPage() {
                   type="button"
                   onClick={fetchAIFeedback}
                   disabled={aiLoading}
-                  className="w-full h-10 bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 hover:from-violet-500 hover:to-fuchsia-500 text-white text-sm font-medium shadow-md shadow-violet-500/15 transition-all duration-200 hover:shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="font-pixel w-full h-10 border-0 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+                  style={{
+                    background: "#FF4500",
+                    border: "2px solid #FFE27D",
+                    color: "#1A0F00",
+                    boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",
+                    fontSize: 10,
+                    letterSpacing: 2,
+                  }}
                 >
                   {aiLoading ? (
                     <Loader2 className="size-4 mr-2 animate-spin" />
@@ -1648,10 +1671,16 @@ export default function LaunchPage() {
 
               {/* AI Response */}
               {(aiResponse || aiLoading) && (
-                <div className="mt-4 rounded-lg border border-violet-500/20 bg-violet-500/5 p-4">
+                <div
+                  className="mt-4 p-4"
+                  style={{
+                    border: "1px solid rgba(255,69,0,0.35)",
+                    background: "rgba(255,69,0,0.06)",
+                  }}
+                >
                   <div className="flex items-center gap-2 mb-2">
-                    <Sparkles className="size-3.5 text-violet-400" />
-                    <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">
+                    <Sparkles className="size-3.5" style={{ color: "#FF4500" }} />
+                    <span className="font-ui text-xs uppercase" style={{ color: "#FF4500", letterSpacing: 2 }}>
                       AI Analysis Result
                     </span>
                   </div>

@@ -111,8 +111,16 @@ function FeaturedEventCard({
 
         {/* Register button */}
         <Button
-          className="mt-6 w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-500/20 transition-all duration-300 hover:shadow-violet-500/40 hover:brightness-110 border-0"
+          className="font-pixel mt-6 w-full border-0 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform"
           size="default"
+          style={{
+            background: "#FF4500",
+            border: "2px solid #FFE27D",
+            color: "#1A0F00",
+            boxShadow: "3px 3px 0 #000, inset 0 8px 0 rgba(255,255,255,0.12), inset 0 -8px 0 rgba(0,0,0,0.2)",
+            fontSize: 11,
+            letterSpacing: 2,
+          }}
         >
           <Sparkles className="mr-2 h-4 w-4" />
           {t("events.register")}
@@ -327,10 +335,22 @@ export default function EventsPage() {
           </div>
 
           <div className="relative flex flex-col items-center text-center">
-            {/* Lock icon with gradient ring */}
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 ring-1 ring-white/[0.06]">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/30 to-fuchsia-500/30">
-                <Lock className="h-5 w-5 text-violet-300/90" />
+            {/* Lock icon with forge ring */}
+            <div
+              className="flex h-16 w-16 items-center justify-center"
+              style={{
+                background: "rgba(255,69,0,0.12)",
+                border: "1px solid rgba(255,69,0,0.25)",
+              }}
+            >
+              <div
+                className="flex h-11 w-11 items-center justify-center"
+                style={{
+                  background: "rgba(255,69,0,0.25)",
+                  border: "1px solid rgba(255,69,0,0.5)",
+                }}
+              >
+                <Lock className="h-5 w-5" style={{ color: "#FFE27D" }} />
               </div>
             </div>
 
@@ -345,7 +365,16 @@ export default function EventsPage() {
             </p>
 
             {/* Pro badge */}
-            <Badge className="mt-5 border-0 bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 text-violet-300 ring-1 ring-violet-500/20 px-4 py-1 text-xs font-semibold">
+            <Badge
+              className="font-pixel mt-5 border-0 px-4 py-1"
+              style={{
+                background: "rgba(255,69,0,0.18)",
+                border: "1px solid rgba(255,69,0,0.45)",
+                color: "#FFE27D",
+                fontSize: 10,
+                letterSpacing: 2,
+              }}
+            >
               <Sparkles className="mr-1.5 h-3 w-3" />
               {t("events.pro")}
             </Badge>

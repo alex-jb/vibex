@@ -298,7 +298,14 @@ export default function ProfilePage() {
                           className="h-full w-full rounded-full object-cover opacity-50"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-violet-500/30 to-fuchsia-500/30 text-xl font-bold text-white/40">
+                        <div
+                          className="flex h-full w-full items-center justify-center rounded-full text-xl font-bold"
+                          style={{
+                            background: "linear-gradient(135deg, rgba(255,69,0,0.3) 0%, rgba(184,56,11,0.3) 100%)",
+                            border: "2px solid rgba(255,226,125,0.6)",
+                            color: "rgba(26,15,0,0.6)",
+                          }}
+                        >
                           {getInitials(displayName)}
                         </div>
                       )}
@@ -381,10 +388,19 @@ export default function ProfilePage() {
                     <img
                       src={avatarUrl}
                       alt={displayName}
-                      className="h-20 w-20 rounded-full border-2 border-violet-500/60 object-cover"
+                      className="h-20 w-20 rounded-full object-cover"
+                      style={{ border: "2px solid rgba(255,226,125,0.6)" }}
                     />
                   ) : (
-                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-xl font-bold text-white">
+                    <div
+                      className="flex h-20 w-20 items-center justify-center rounded-full text-xl font-bold"
+                      style={{
+                        background: "linear-gradient(135deg, #FF4500 0%, #B8380B 100%)",
+                        border: "2px solid #FFE27D",
+                        color: "#1A0F00",
+                        boxShadow: "3px 3px 0 #000",
+                      }}
+                    >
                       {getInitials(displayName)}
                     </div>
                   )}
