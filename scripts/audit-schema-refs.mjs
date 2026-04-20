@@ -35,46 +35,31 @@ if (!inventoryPath) {
 }
 
 const inventory = JSON.parse(fs.readFileSync(inventoryPath, "utf8"));
+// PostgREST treats views and tables the same way for .from("X") calls,
+// so collapse both under `tables` when matching code references.
 const tables = new Set(
-  inventory.filter((x) => x.kind === "table").map((x) => x.name),
+  inventory
+    .filter((x) => x.kind === "table" || x.kind === "view")
+    .map((x) => x.name),
 );
 const functions = new Set(
   inventory.filter((x) => x.kind === "function").map((x) => x.name),
 );
 
-// Known-broken references surfaced by the 2026-04-18 audit. These
-// tables / RPCs are referenced by code paths that don't crash (they
-// hit a Supabase error and fail gracefully) but the feature is
-// effectively dead until the migration ships. Burn this list down
-// over time — each entry is a TODO disguised as a suppression.
+// Allowlist for references that legitimately shouldn't fail the
+// audit. Currently empty after migration 044 shipped the five real
+// schemas (push_subscriptions, trending_hashtags, project_daily_stats,
+// algorithmic_feed) and the one RPC (add_creator_exp) that had been
+// referenced in code but never applied.
 //
-// Before removing an entry: write + apply the migration, run
-// `npm run audit:dump`, commit the inventory, then delete the
-// allowlist line. CI will keep you honest.
-const ALLOWLIST_TABLES = new Set([
-  // Referenced by app/api/admin/analytics + app/api/feed/tags.
-  // The hashtags feature surfaces "trending" in UI — backed by a view
-  // that was never created.
-  "trending_hashtags",
-  // app/api/demos/generate references a thumbnails table for demo
-  // snapshot storage; no migration exists yet.
-  "thumbnails",
-  // app/api/feed references an algorithmic_feed materialized view /
-  // table for ranked feed queries. Never shipped.
-  "algorithmic_feed",
-  // app/api/project/[id]/analytics references a daily rollup table
-  // that was in the roadmap but never created.
-  "project_daily_stats",
-  // app/api/push/subscribe references push_subscriptions. Web push
-  // flow designed but never finished.
-  "push_subscriptions",
-]);
-const ALLOWLIST_FUNCTIONS = new Set([
-  // app/api/buddy/evolve-reward calls add_creator_exp (XP reward on
-  // buddy evolution). The RPC was written in design docs but never
-  // authored as a migration.
-  "add_creator_exp",
-]);
+// If CI flags a new entry, first instinct is to write the migration —
+// not to allowlist. Allowlist only when:
+//   - The target is a Supabase-managed schema we don't control
+//     (auth, storage, realtime)
+//   - The name is a dynamic value that happens to match the regex
+//     but isn't a real .from() target
+const ALLOWLIST_TABLES = new Set([]);
+const ALLOWLIST_FUNCTIONS = new Set([]);
 
 // Walk source tree, collecting .from("X") and .rpc("Y") call sites.
 const ROOTS = ["app", "lib", "components"];
@@ -99,7 +84,17 @@ for (const root of ROOTS) {
   if (!fs.existsSync(root)) continue;
   walk(root, (file) => {
     const src = fs.readFileSync(file, "utf8");
-    for (const m of src.matchAll(/\.from\(\s*["']([a-z_][a-z0-9_]*)["']/gi)) {
+    // Skip `supabase.storage.from("bucket")` — those are Storage
+    // buckets, not DB tables. Same `.from(X)` surface, different
+    // backend. Bug: the naive regex picked up the `thumbnails`
+    // storage bucket as a missing table (false positive).
+    for (const m of src.matchAll(
+      /(?<!storage\s*)\.from\(\s*["']([a-z_][a-z0-9_]*)["']/gi,
+    )) {
+      // Double-check: look backwards for `storage.` within 30 chars
+      // since the lookbehind above only handles one-line cases.
+      const before = src.slice(Math.max(0, m.index - 40), m.index);
+      if (/\.storage\s*$/.test(before)) continue;
       const name = m[1].toLowerCase();
       if (!tableRefs.has(name)) tableRefs.set(name, []);
       tableRefs.get(name).push(file);
