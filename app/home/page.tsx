@@ -105,13 +105,13 @@ export default function HomePage() {
     const dateCards = projectsToCards(byDate);
 
     const legendaryCards = scoreCards.filter(
-      (c) => c.rarity === "myth" || c.rarity === "legendary",
+      (c) => c.evolutionStage === "Myth" || c.evolutionStage === "Legend",
     );
     const risingCards = scoreCards.filter(
-      (c) => c.rarity === "epic" || c.rarity === "rare",
+      (c) => c.evolutionStage === "Breakout" || c.evolutionStage === "Growing",
     );
     const unexploredCards = scoreCards.filter(
-      (c) => c.rarity === "uncommon" || c.rarity === "common",
+      (c) => c.evolutionStage === "Active" || c.evolutionStage === "Seed",
     );
 
     // When a category filter is active we show real results only — no mock

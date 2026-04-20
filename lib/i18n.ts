@@ -398,6 +398,20 @@ const translations = {
     "project.viralityPotential": "Virality Potential",
     "project.investorCuriosity": "Investor Curiosity",
 
+    // HeroCard — Direction A character sheet (grid + share variants)
+    "heroCard.eyebrow": "CLAUDE REVIEW",
+    "heroCard.new": "NEW · DAY 1",
+    "heroCard.compound": "COMPOUND",
+    "heroCard.rank": "RANK",
+    "heroCard.tier": "TIER",
+    "heroCard.topAttrs": "TOP ATTRIBUTES",
+    "heroCard.by": "by",
+    "heroCard.view": "VIEW",
+    "heroCard.watermark": "VIBEXFORGE.COM",
+    "heroCard.traction.plays": "PLAYS",
+    "heroCard.traction.upvotes": "UPVOTES",
+    "heroCard.traction.shares": "SHARES",
+
     // Playable demo
     "demo.liveChat": "Live Chat",
     "demo.codeSandbox": "Code Sandbox",
@@ -1255,6 +1269,20 @@ const translations = {
     "project.uxPotential": "UX 潜力",
     "project.viralityPotential": "传播力",
     "project.investorCuriosity": "投资者兴趣",
+
+    // HeroCard — Direction A 角色卡(网格 + 分享双形态)
+    "heroCard.eyebrow": "CLAUDE 评测",
+    "heroCard.new": "NEW · 第 1 天",
+    "heroCard.compound": "综合分",
+    "heroCard.rank": "等级",
+    "heroCard.tier": "阶",
+    "heroCard.topAttrs": "核心属性",
+    "heroCard.by": "作者",
+    "heroCard.view": "查看",
+    "heroCard.watermark": "VIBEXFORGE.COM",
+    "heroCard.traction.plays": "试玩",
+    "heroCard.traction.upvotes": "点赞",
+    "heroCard.traction.shares": "分享",
 
     // Playable demo
     "demo.liveChat": "实时聊天",

@@ -1,72 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { HeroCard, type HeroCardData, type Rarity } from "@/components/home/hero-card";
-import type { Project } from "@/lib/types";
+import { HeroCard, type HeroCardData } from "@/components/home/hero-card";
+import { computeEvolutionStage, pickTopAttrs } from "@/lib/rpg-utils";
+import type { Project, EvolutionStage } from "@/lib/types";
 
-/**
- * Map a real Supabase Project row to the HeroCardData shape the grid renders.
- * This is where the DB schema meets the design system: evolution_stage →
- * rarity, score → HP, id → card number. Keep this pure so it's easy to test.
- */
-const STAGE_TO_RARITY: Record<string, Rarity> = {
-  Seed: "common",
-  Active: "uncommon",
-  Growing: "rare",
-  Breakout: "epic",
-  Legend: "legendary",
-  Myth: "myth",
-};
+const SEVEN_DAYS_MS = 7 * 86400 * 1000;
 
-function projectToHeroCardData(
-  p: Project,
-  index: number,
-): HeroCardData {
-  // evolution_stage isn't in the Project TS type yet (it's a DB-only column),
-  // so we read it through an index lookup and fall back to score buckets.
-  const stage = (p as unknown as { evolutionStage?: string }).evolutionStage;
-  const stageRarity = stage ? STAGE_TO_RARITY[stage] : undefined;
-  const scoreRarity: Rarity =
-    p.score >= 90
-      ? "myth"
-      : p.score >= 85
-        ? "legendary"
-        : p.score >= 75
-          ? "epic"
-          : p.score >= 60
-            ? "rare"
-            : p.score >= 40
-              ? "uncommon"
-              : "common";
-  const rarity: Rarity = stageRarity ?? scoreRarity;
+export function projectToHeroCardData(p: Project): HeroCardData {
+  const stage: EvolutionStage =
+    (p.hero?.evolutionStage as EvolutionStage | undefined) ??
+    computeEvolutionStage(p);
 
-  // Stable card number from project id — first 3 trailing chars, padded.
-  const tail = p.id.replace(/[^a-zA-Z0-9]/g, "").slice(-3).toUpperCase();
-  const cardNumber = tail.padStart(3, "0");
+  const topTraction: HeroCardData["traction"] =
+    p.plays >= p.upvotes * 10
+      ? { kind: "plays", value: p.plays }
+      : p.upvotes >= p.shares
+        ? { kind: "upvotes", value: p.upvotes }
+        : { kind: "shares", value: p.shares };
 
-  // HP is a cosmetic scale of the score. Map 0-100 → 60-250 so even low
-  // scores look playable.
-  const hp = 60 + Math.round((p.score / 100) * 190);
+  const newChip =
+    stage === "Seed" &&
+    !!p.createdAt &&
+    Date.now() - new Date(p.createdAt).getTime() < SEVEN_DAYS_MS;
 
   return {
     id: p.id,
     name: p.title,
-    hp,
-    category: p.category.toUpperCase(),
-    stage: stage ? `${stage.toUpperCase()}` : undefined,
     creator: p.creatorName || "anon",
-    rarity,
-    cardNumber,
-    // Timeline is purely decorative (fake video player chrome).
-    timelineStart: "00:00",
-    timelineEnd: `00:${String(10 + (index % 40)).padStart(2, "0")}`,
+    category: p.category.toUpperCase(),
+    evolutionStage: stage,
+    compound: p.score,
+    topAttrs: pickTopAttrs(p.aiReview, 2),
+    traction: topTraction,
+    newChip,
   };
 }
 
-export function projectsToCards(
-  projects: Project[],
-): HeroCardData[] {
-  return projects.map((p, i) => projectToHeroCardData(p, i));
+export function projectsToCards(projects: Project[]): HeroCardData[] {
+  return projects.map(projectToHeroCardData);
 }
 
 type HeroCardGridProps = {
@@ -103,10 +75,7 @@ export function HeroCardGrid({
           {subLabel ? (
             <span
               className="text-[9px] sm:text-[11px]"
-              style={{
-                color: "var(--text-muted)",
-                marginLeft: 10,
-              }}
+              style={{ color: "var(--text-muted)", marginLeft: 10 }}
             >
               {subLabel}
             </span>
@@ -127,7 +96,7 @@ export function HeroCardGrid({
           VIEW ALL ›
         </Link>
       </div>
-      <div className="grid gap-[18px] sm:gap-[22px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-[18px] sm:gap-[22px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
         {cards.map((card) => (
           <HeroCard key={card.id} data={card} />
         ))}
@@ -136,46 +105,47 @@ export function HeroCardGrid({
   );
 }
 
-/* Mock data for the 9 sample heroes — to be replaced with real supabase
-   query in a follow-up pass. Order matches /design-shotgun approved mockup
-   v6 "LEGENDARY IN THE WILD / RISING / UNEXPLORED". */
+/* Mock data for the 9 sample heroes — new HeroCardData shape (Direction A) */
 
 export const MOCK_LEGENDARY: HeroCardData[] = [
   {
     id: "agentcraft",
     name: "AgentCraft",
-    hp: 240,
-    category: "AI AGENT",
-    stage: "STAGE 2 · EVOLVES FROM CODESAGE",
     creator: "orallexa",
-    rarity: "myth",
-    cardNumber: "001",
-    timelineStart: "00:12",
-    timelineEnd: "00:42",
+    category: "AI AGENT",
+    evolutionStage: "Myth",
+    compound: 94,
+    topAttrs: [
+      { code: "VIR", label: "Virality Potential", value: 99 },
+      { code: "INV", label: "Investor Curiosity", value: 97 },
+    ],
+    traction: { kind: "plays", value: 18200 },
   },
   {
     id: "loopmaster",
     name: "LoopMaster",
-    hp: 180,
-    category: "AI WORKFLOW",
-    stage: "STAGE 2 · EVOLVES FROM HYPERDRIVE",
     creator: "sam",
-    rarity: "legendary",
-    cardNumber: "017",
-    timelineStart: "00:08",
-    timelineEnd: "00:32",
+    category: "AI WORKFLOW",
+    evolutionStage: "Legend",
+    compound: 88,
+    topAttrs: [
+      { code: "ORG", label: "Originality", value: 92 },
+      { code: "UXP", label: "UX Potential", value: 85 },
+    ],
+    traction: { kind: "upvotes", value: 1240 },
   },
   {
     id: "codesage",
     name: "CodeSage",
-    hp: 170,
-    category: "AI AGENT",
-    stage: "STAGE 1 · EVOLVES FROM TINYGPT",
     creator: "tessa",
-    rarity: "legendary",
-    cardNumber: "028",
-    timelineStart: "00:05",
-    timelineEnd: "00:28",
+    category: "AI AGENT",
+    evolutionStage: "Legend",
+    compound: 86,
+    topAttrs: [
+      { code: "CLR", label: "Clarity", value: 90 },
+      { code: "INV", label: "Investor Curiosity", value: 82 },
+    ],
+    traction: { kind: "plays", value: 9800 },
   },
 ];
 
@@ -183,38 +153,41 @@ export const MOCK_RISING: HeroCardData[] = [
   {
     id: "pixelforge",
     name: "PixelForge",
-    hp: 140,
-    category: "AI GAME",
-    stage: "STAGE 1 · EVOLVES FROM DREAMCAST",
     creator: "marcus",
-    rarity: "epic",
-    cardNumber: "044",
-    timelineStart: "00:14",
-    timelineEnd: "00:38",
+    category: "AI GAME",
+    evolutionStage: "Breakout",
+    compound: 76,
+    topAttrs: [
+      { code: "VIR", label: "Virality Potential", value: 84 },
+      { code: "ORG", label: "Originality", value: 78 },
+    ],
+    traction: { kind: "plays", value: 4200 },
   },
   {
     id: "hyperdrive",
     name: "Hyperdrive",
-    hp: 130,
-    category: "AI WORKFLOW",
-    stage: "STAGE 1 · EVOLVES FROM TINYGPT",
     creator: "dev42",
-    rarity: "epic",
-    cardNumber: "061",
-    timelineStart: "00:11",
-    timelineEnd: "00:36",
+    category: "AI WORKFLOW",
+    evolutionStage: "Breakout",
+    compound: 73,
+    topAttrs: [
+      { code: "UXP", label: "UX Potential", value: 81 },
+      { code: "CLR", label: "Clarity", value: 76 },
+    ],
+    traction: { kind: "shares", value: 340 },
   },
   {
     id: "moodalchemy",
     name: "MoodAlchemy",
-    hp: 130,
-    category: "AI TOOL",
-    stage: "STAGE 1 · EVOLVES FROM RHYMEBOT",
     creator: "zoe",
-    rarity: "epic",
-    cardNumber: "072",
-    timelineStart: "00:07",
-    timelineEnd: "00:24",
+    category: "AI TOOL",
+    evolutionStage: "Growing",
+    compound: 68,
+    topAttrs: [
+      { code: "ORG", label: "Originality", value: 80 },
+      { code: "VIR", label: "Virality Potential", value: 72 },
+    ],
+    traction: { kind: "upvotes", value: 420 },
   },
 ];
 
@@ -222,35 +195,41 @@ export const MOCK_UNEXPLORED: HeroCardData[] = [
   {
     id: "vibetranslate",
     name: "VibeTranslate",
-    hp: 110,
-    category: "AI TOOL",
-    stage: "STAGE 1 · EVOLVES FROM RHYMEBOT",
     creator: "linda",
-    rarity: "rare",
-    cardNumber: "088",
-    timelineStart: "00:09",
-    timelineEnd: "00:30",
+    category: "AI TOOL",
+    evolutionStage: "Growing",
+    compound: 61,
+    topAttrs: [
+      { code: "CLR", label: "Clarity", value: 74 },
+      { code: "UXP", label: "UX Potential", value: 68 },
+    ],
+    traction: { kind: "plays", value: 1800 },
   },
   {
     id: "starlight",
     name: "Starlight.io",
-    hp: 100,
-    category: "AI GAME",
     creator: "nova",
-    rarity: "rare",
-    cardNumber: "104",
-    timelineStart: "00:06",
-    timelineEnd: "00:22",
+    category: "AI GAME",
+    evolutionStage: "Active",
+    compound: 48,
+    topAttrs: [
+      { code: "VIR", label: "Virality Potential", value: 62 },
+      { code: "ORG", label: "Originality", value: 55 },
+    ],
+    traction: { kind: "plays", value: 720 },
   },
   {
     id: "dreamcast",
     name: "DreamCast",
-    hp: 80,
-    category: "AI GAME",
     creator: "jenny",
-    rarity: "uncommon",
-    cardNumber: "142",
-    timelineStart: "00:03",
-    timelineEnd: "00:15",
+    category: "AI GAME",
+    evolutionStage: "Seed",
+    compound: 32,
+    topAttrs: [
+      { code: "CLR", label: "Clarity", value: 48 },
+      { code: "ORG", label: "Originality", value: 35 },
+    ],
+    traction: { kind: "plays", value: 96 },
+    newChip: true,
   },
 ];

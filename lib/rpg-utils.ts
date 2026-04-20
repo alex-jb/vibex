@@ -1,4 +1,5 @@
 import type {
+  AIReview,
   Project,
   ProjectCategory,
   HeroStats,
@@ -269,12 +270,37 @@ export const EVOLUTION_CONFIG: Record<
   { label: string; icon: string; cssClass: string; color: string }
 > = {
   Seed:     { label: "Seed",     icon: "Sprout",     cssClass: "evo-seed",     color: "#d4d4d8" },
-  Active:   { label: "Active",   icon: "Zap",        cssClass: "evo-active",   color: "#39FF14" },
+  Active:   { label: "Active",   icon: "Zap",        cssClass: "evo-active",   color: "#22c55e" }, // was #39FF14 — cedes phosphor green to Claude header
   Growing:  { label: "Growing",  icon: "TrendingUp",  cssClass: "evo-growing",  color: "#06B6D4" },
-  Breakout: { label: "Breakout", icon: "Flame",      cssClass: "evo-breakout", color: "#8b5cf6" },
-  Legend:   { label: "Legend",   icon: "Crown",      cssClass: "evo-legend",   color: "#FFD700" },
+  Breakout: { label: "Breakout", icon: "Flame",      cssClass: "evo-breakout", color: "#D946EF" }, // was #8b5cf6 — cedes purple to attribute bars
+  Legend:   { label: "Legend",   icon: "Crown",      cssClass: "evo-legend",   color: "#EF4444" }, // was #FFD700 — cedes yellow to compound score
   Myth:     { label: "Myth",    icon: "Sparkles",   cssClass: "evo-myth",     color: "#FF69B4" },
 };
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HeroCard helpers — keep the card's vocabulary single-sourced here
+// ═══════════════════════════════════════════════════════════════════════════
+
+export const RANK_BY_STAGE: Record<EvolutionStage, string> = {
+  Seed: "D", Active: "C", Growing: "B", Breakout: "A", Legend: "S", Myth: "S+",
+};
+
+export const AI_REVIEW_ATTRS = [
+  { key: "originality",       code: "ORG", label: "Originality" },
+  { key: "clarity",           code: "CLR", label: "Clarity" },
+  { key: "uxPotential",       code: "UXP", label: "UX Potential" },
+  { key: "viralityPotential", code: "VIR", label: "Virality Potential" },
+  { key: "investorCuriosity", code: "INV", label: "Investor Curiosity" },
+] as const;
+
+export type TopAttr = { code: string; label: string; value: number };
+
+export function pickTopAttrs(ai: AIReview, n = 2): TopAttr[] {
+  return AI_REVIEW_ATTRS
+    .map((a) => ({ code: a.code, label: a.label, value: ai[a.key] as number }))
+    .sort((x, y) => y.value - x.value)
+    .slice(0, n);
+}
 
 export const ATTRIBUTE_LABELS: Record<
   keyof HeroAttributes,
