@@ -457,10 +457,14 @@ function AIReviewPanel({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            maxWidth: "55%",
+            maxWidth: "45%",
+            flexShrink: 0,
           }}
         >
-          VIBEX://PROJECT/{projectId}
+          {/* Truncate long ids (e.g. proj-mo3bo8p1-i8k8 → proj-mo3b…)
+              so the header doesn't wrap to 2 lines inside the ~380px
+              sidebar. Seed ids like "2" stay untouched. */}
+          VIBEX://PROJECT/{projectId.length > 10 ? projectId.slice(0, 8) + "…" : projectId}
         </div>
       </div>
 
