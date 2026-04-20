@@ -22,6 +22,7 @@ import { useLang } from "@/lib/i18n";
 import type { LaunchPackage } from "@/lib/ai";
 import { LaunchPackageDisplay } from "@/components/launch/launch-package";
 import { categories } from "@/lib/mock-data";
+import { HeroCard, type HeroCardData } from "@/components/home/hero-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -1312,14 +1313,60 @@ export default function LaunchPage() {
           </form>
         </motion.div>
 
-        {/* Right: AI Assistant Panel (2/5) */}
+        {/* Right: Live Preview + AI Assistant Panel (2/5) */}
         <motion.div
           className="lg:col-span-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <div className="sticky top-24">
+          <div className="sticky top-24 flex flex-col gap-5">
+            {/* Live HeroCard preview — Direction A. Seed-locked pre-submit:
+                frame / sprite / rank / compound stay Seed until Claude runs.
+                Only user-owned fields (name, creator, category) react live. */}
+            <div className="hidden lg:flex flex-col items-center gap-2">
+              <div
+                className="font-ui"
+                style={{
+                  fontSize: 10,
+                  letterSpacing: 3,
+                  color: "#FF4500",
+                  textShadow: "0 0 4px rgba(255,69,0,0.5)",
+                }}
+              >
+                ▸ LIVE FORGE PREVIEW
+              </div>
+              <HeroCard
+                data={
+                  {
+                    id: "preview",
+                    name: title || "—",
+                    creator: creatorName || "newuser",
+                    category: (category || "—").toUpperCase(),
+                    evolutionStage: "Seed",
+                    compound: 0,
+                    topAttrs: [
+                      { code: "ORG", label: "Originality", value: 0 },
+                      { code: "CLR", label: "Clarity", value: 0 },
+                    ],
+                    traction: { kind: "plays", value: 0 },
+                    newChip: true,
+                  } satisfies HeroCardData
+                }
+              />
+              <div
+                className="font-ui"
+                style={{
+                  fontSize: 8,
+                  letterSpacing: 2,
+                  color: "#8B7AA0",
+                  marginTop: 2,
+                }}
+              >
+                ⏳ PENDING CLAUDE · STRIKE ANVIL TO FORGE
+              </div>
+            </div>
+
             <div className="glass-card-strong border-glow noise-bg rounded-xl border border-white/[0.06] p-6 overflow-hidden">
               {/* Header */}
               <div className="flex items-center gap-3 mb-1">
