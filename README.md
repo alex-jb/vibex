@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.vibexforge.com/launch"><img src="https://img.shields.io/badge/▶_Try_It-Forge_a_Project-8b5cf6?style=for-the-badge" alt="Try It" /></a>
+  <a href="https://www.vibexforge.com/launch"><img src="https://img.shields.io/badge/▶_STRIKE_THE_ANVIL-Forge_a_Project-FF4500?style=for-the-badge" alt="Strike the Anvil" /></a>
   <a href="#-quick-start"><img src="https://img.shields.io/badge/⚡_Run_Locally-30_seconds-39FF14?style=for-the-badge" alt="Quick Start" /></a>
   <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/badge/⭐_Star-GitHub-FACC15?style=for-the-badge" alt="Star" /></a>
 </p>
@@ -162,7 +162,14 @@ vibex/
 - [x] Claude structured review (5-7 actions per review)
 - [x] Apply / Skip / Reject action persistence
 - [x] Realtime leaderboard (Supabase `postgres_changes`)
-- [x] Pixel-art UI with nes-core + custom retro tokens
+- [x] Direction A visual system — forge/pixel/RPG character sheet
+  vocabulary across every user-facing surface: AIReviewPanel,
+  HeroCard (grid + share + OG image), /launch (live preview +
+  forge plates + STRIKE THE ANVIL + post-submit "forging" animation),
+  /hunt, /creators, /ideas, /dojo, /events, /insights, /profile,
+  /workflows, /agents — single color token canon across 20+ components
+- [x] Forge-unveil animation on `/project/[id]?forged=1` — frame
+  color reveal + compound count-up + staggered bar fill
 - [x] Interactive 3D globe (cobe)
 - [x] GEO optimization (llms.txt, AI crawler rules)
 - [x] Bilingual UI (EN / zh, 708 strings)
