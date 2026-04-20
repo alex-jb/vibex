@@ -151,8 +151,15 @@ export default function AgentBuilderPage() {
       {/* Title */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
         <div className="flex items-center gap-3 mb-2">
-          <div className="size-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center">
-            <Bot className="size-5 text-white" />
+          <div
+            className="size-10 flex items-center justify-center"
+            style={{
+              background: "linear-gradient(135deg, #FF4500 0%, #B8380B 100%)",
+              border: "2px solid #FFE27D",
+              boxShadow: "2px 2px 0 #000",
+            }}
+          >
+            <Bot className="size-5" style={{ color: "#1A0F00" }} />
           </div>
           <h1 className="font-pixel text-[12px] tracking-widest text-emerald-400" style={{ textShadow: "0 0 10px rgba(57,255,20,0.3)" }}>
             {"> AGENT-BUILDER v1.0"}
@@ -394,7 +401,15 @@ export default function AgentBuilderPage() {
                     rows={3} placeholder={t("builder.testPlaceholder")}
                     className="bg-white/5 border-white/[0.08] mb-3" />
                   <Button onClick={handleTest} disabled={!testInput.trim() || testRunning}
-                    className="gap-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white mb-4">
+                    className="font-pixel gap-2 border-0 mb-4 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+                    style={{
+                      background: "#FF4500",
+                      border: "2px solid #FFE27D",
+                      color: "#1A0F00",
+                      boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",
+                      fontSize: 11,
+                      letterSpacing: 2,
+                    }}>
                     {testRunning ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />}
                     {testRunning ? t("agents.running") : t("agents.run")}
                   </Button>

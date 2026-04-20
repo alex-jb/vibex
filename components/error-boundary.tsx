@@ -45,7 +45,15 @@ export class ErrorBoundary extends Component<Props, State> {
             </p>
             <button
               onClick={this.reset}
-              className="rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition-all hover:shadow-violet-500/30 hover:brightness-110"
+              className="font-pixel px-6 py-2.5 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform"
+              style={{
+                background: "#FF4500",
+                border: "2px solid #FFE27D",
+                color: "#1A0F00",
+                boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",
+                fontSize: 11,
+                letterSpacing: 2,
+              }}
             >
               Try Again
             </button>

@@ -114,8 +114,15 @@ export default function AgentDetailPage({
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
         <div className="flex items-start gap-4">
-          <div className="size-14 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/25">
-            <Bot className="size-7 text-white" />
+          <div
+            className="size-14 flex items-center justify-center"
+            style={{
+              background: "linear-gradient(135deg, #FF4500 0%, #B8380B 100%)",
+              border: "2px solid #FFE27D",
+              boxShadow: "3px 3px 0 #000",
+            }}
+          >
+            <Bot className="size-7" style={{ color: "#1A0F00" }} />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-1">
@@ -160,7 +167,15 @@ export default function AgentDetailPage({
             <Button
               onClick={handleRun}
               disabled={!input.trim() || running}
-              className="gap-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white"
+              className="font-pixel gap-2 border-0 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+              style={{
+                background: "#FF4500",
+                border: "2px solid #FFE27D",
+                color: "#1A0F00",
+                boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",
+                fontSize: 11,
+                letterSpacing: 2,
+              }}
             >
               {running ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />}
               {running ? t("agents.running") : t("agents.run")}

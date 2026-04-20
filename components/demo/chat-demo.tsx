@@ -161,7 +161,13 @@ export function ChatDemo({ projectTitle }: ChatDemoProps) {
             aria-label="Send message"
             onClick={handleSend}
             disabled={!input.trim() || isTyping}
-            className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+            className="flex size-8 items-center justify-center transition-opacity hover:opacity-90 disabled:opacity-40"
+            style={{
+              background: "#FF4500",
+              border: "2px solid #FFE27D",
+              color: "#1A0F00",
+              boxShadow: "2px 2px 0 #000",
+            }}
           >
             <Send className="size-3.5" />
           </button>

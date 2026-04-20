@@ -173,7 +173,15 @@ export default function WorkflowsPage() {
                     <Link href={`/workflows/${wf.id}`}>
                       <Button
                         size="sm"
-                        className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-500 hover:to-fuchsia-500"
+                        className="font-pixel w-full border-0 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform"
+                        style={{
+                          background: "#FF4500",
+                          border: "2px solid #FFE27D",
+                          color: "#1A0F00",
+                          boxShadow: "3px 3px 0 #000, inset 0 5px 0 rgba(255,255,255,0.12), inset 0 -5px 0 rgba(0,0,0,0.2)",
+                          fontSize: 10,
+                          letterSpacing: 2,
+                        }}
                       >
                         <Play className="size-3.5 mr-1.5" />
                         {t("workflows.run")}

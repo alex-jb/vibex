@@ -156,7 +156,15 @@ export function IdeaSubmitForm() {
                 <Button
                   onClick={handleEvaluate}
                   disabled={evaluating || !newTitle.trim() || !newDescription.trim()}
-                  className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-500 hover:to-fuchsia-500 shadow-lg shadow-violet-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="font-pixel w-full border-0 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+                  style={{
+                    background: "#FF4500",
+                    border: "2px solid #FFE27D",
+                    color: "#1A0F00",
+                    boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",
+                    fontSize: 11,
+                    letterSpacing: 2,
+                  }}
                 >
                   {evaluating ? (
                     <>

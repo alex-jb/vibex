@@ -146,7 +146,17 @@ export function ProjectCard({ project }: { project: Project }) {
             {(project.featured || project.viralBoosted) && (
               <div className="absolute top-3 left-3 z-10 flex gap-1.5">
                 {project.featured && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-2.5 py-0.5 text-[10px] font-semibold tracking-wide text-white shadow-lg shadow-violet-500/20">
+                  <span
+                    className="font-pixel inline-flex items-center gap-1 px-2.5 py-0.5"
+                    style={{
+                      background: "#FFD700",
+                      border: "1px solid #FFE27D",
+                      color: "#1A0F00",
+                      boxShadow: "1px 1px 0 #000",
+                      fontSize: 8,
+                      letterSpacing: 1.5,
+                    }}
+                  >
                     {t("cat.featured")}
                   </span>
                 )}

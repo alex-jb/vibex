@@ -23,7 +23,8 @@ function ScoreBar({ label, value }: { label: string; value: number }) {
       </div>
       <div className="h-1.5 rounded-full bg-white/5">
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500"
+          className="h-full rounded-full"
+          style={{ background: "var(--neon-purple)" }}
           initial={{ width: 0 }}
           whileInView={{ width: `${value}%` }}
           viewport={{ once: true }}
