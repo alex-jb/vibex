@@ -2,6 +2,7 @@
 
 import { use, useEffect, useRef, useState, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import {
   ArrowLeft,
@@ -9,10 +10,6 @@ import {
   ChevronUp,
   Trophy,
   Share2,
-  Sparkles,
-  CheckCircle2,
-  AlertTriangle,
-  Lightbulb,
   Calendar,
   User,
 } from "lucide-react";
@@ -20,13 +17,12 @@ import {
 import { useLang } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 import { useProjects } from "@/lib/use-data";
-import type { AIReview } from "@/lib/types";
+import type { AIReview, EvolutionStage } from "@/lib/types";
+import { EVOLUTION_CONFIG } from "@/lib/rpg-utils";
 import { HeroCard } from "@/components/home/hero-card";
 import { projectsToCards } from "@/components/home/hero-card-grid";
 import { FeedbackPanel } from "@/components/launch-feedback/feedback-panel";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import PlayableDemo from "@/components/playable-demo";
 import { HudBars } from "@/components/rpg/hud-bars";
 import { ExpBar } from "@/components/rpg/exp-bar";
@@ -59,150 +55,610 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.1 } },
 };
 
-/* ---------- Score Bar with gradient fills ---------- */
-function ScoreBar({ label, value, index }: { label: string; value: number; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
+/* ═══════════════════════════════════════════════════════════════════════════
+   AI Review Panel — Direction A: Character Sheet / Hero Stat Card
+   Replaces the old ScoreBar + AIReviewPanel. Token discipline:
+   purple primary (bars + quests), green supporting (Claude header /
+   byline / combos), yellow compound score only, orange L-corners +
+   hits-taken. No shadcn, no blur, no gradient fills. nes-overrides.css
+   forces border-radius: 0 globally, so we don't set it here.
+   Hi-fi source: claude.ai/design · Direction A (2026-04-19 mockup).
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-  const gradient =
-    value > 80
-      ? "from-violet-500 to-fuchsia-500"
-      : value > 60
-        ? "from-amber-500 to-orange-500"
-        : "from-red-500 to-rose-500";
+/* ---------- L-corner brackets (orange, 4 per panel) ---------- */
+function LCorner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
+  const SIZE = 14;
+  const col = "var(--neon-orange)";
+  const base: React.CSSProperties = {
+    position: "absolute",
+    width: SIZE,
+    height: SIZE,
+    zIndex: 2,
+    pointerEvents: "none",
+  };
+  const edges: Record<typeof pos, React.CSSProperties> = {
+    tl: { top: -2, left: -2, borderTop: `3px solid ${col}`, borderLeft: `3px solid ${col}` },
+    tr: { top: -2, right: -2, borderTop: `3px solid ${col}`, borderRight: `3px solid ${col}` },
+    bl: { bottom: -2, left: -2, borderBottom: `3px solid ${col}`, borderLeft: `3px solid ${col}` },
+    br: { bottom: -2, right: -2, borderBottom: `3px solid ${col}`, borderRight: `3px solid ${col}` },
+  };
+  return <div style={{ ...base, ...edges[pos] }} aria-hidden="true" />;
+}
 
+/* ---------- Tiny 5×5 pixel "C" — decorative Claude sigil ---------- */
+function ClaudeSigil({ color = "var(--neon-green)" }: { color?: string }) {
+  const grid = [
+    [0, 1, 1, 1, 0],
+    [1, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0],
+    [1, 0, 0, 0, 1],
+    [0, 1, 1, 1, 0],
+  ];
   return (
-    <div ref={ref} className="space-y-1.5">
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-[color:var(--text-muted)] capitalize">
-          {label.replace(/([A-Z])/g, " $1").trim()}
-        </span>
-        <span className="font-semibold tabular-nums">{value}</span>
-      </div>
-      <div className="h-2 w-full rounded-full bg-white/5 overflow-hidden">
-        <motion.div
-          className={`h-2 rounded-full bg-gradient-to-r ${gradient}`}
-          initial={{ width: 0 }}
-          animate={isInView ? { width: `${value}%` } : { width: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: index * 0.1 }}
+    <div
+      aria-hidden="true"
+      style={{
+        width: 15,
+        height: 15,
+        display: "grid",
+        gridTemplateColumns: "repeat(5, 3px)",
+        gridTemplateRows: "repeat(5, 3px)",
+        flexShrink: 0,
+      }}
+    >
+      {grid.flat().map((on, i) => (
+        <div key={i} style={{ width: 3, height: 3, background: on ? color : "transparent" }} />
+      ))}
+    </div>
+  );
+}
+
+/* ---------- Pixel bar (solid purple fill, no gradient) ---------- */
+function PixelBar({ value, animate }: { value: number; animate: boolean }) {
+  const v = Math.max(0, Math.min(100, value));
+  return (
+    <div
+      role="progressbar"
+      aria-valuenow={v}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      style={{
+        height: 10,
+        background: "var(--bg-deep)",
+        border: "1px solid var(--border-hair)",
+        boxShadow: "inset 0 0 0 1px #000",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: animate ? `${v}%` : 0 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          height: "100%",
+          background: "var(--neon-purple)",
+          boxShadow: "2px 0 0 #000",
+          position: "relative",
+        }}
+      >
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "repeating-linear-gradient(90deg, transparent 0 4px, rgba(0,0,0,0.28) 4px 6px)",
+          }}
         />
+      </motion.div>
+    </div>
+  );
+}
+
+/* ---------- Attribute row ---------- */
+function AttrRow({
+  code,
+  label,
+  value,
+  index,
+  inView,
+}: {
+  code: string;
+  label: string;
+  value: number;
+  index: number;
+  inView: boolean;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -6 }}
+      animate={{ opacity: inView ? 1 : 0, x: inView ? 0 : -6 }}
+      transition={{ delay: index * 0.06, duration: 0.35 }}
+      style={{
+        display: "grid",
+        gridTemplateColumns: "52px 1fr 34px",
+        alignItems: "center",
+        columnGap: 12,
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <span
+          className="font-ui"
+          style={{ fontSize: 14, color: "var(--neon-purple)", letterSpacing: 1, lineHeight: 1 }}
+        >
+          {code}
+        </span>
+        <span
+          className="font-ui"
+          style={{ fontSize: 8, color: "var(--text-muted)", letterSpacing: 0.5, lineHeight: 1.2 }}
+        >
+          {label}
+        </span>
       </div>
+      <PixelBar value={value} animate={inView} />
+      <span
+        className="font-pixel"
+        style={{
+          fontSize: 12,
+          color: "var(--neon-purple)",
+          textAlign: "right",
+          textShadow: "0 0 6px rgba(157,0,255,0.5)",
+          lineHeight: 1,
+        }}
+      >
+        {value}
+      </span>
+    </motion.div>
+  );
+}
+
+/* ---------- Evolution sigil (large square; pairs with EvolutionBadge pill) ---------- */
+function EvoSigil({ stage }: { stage: EvolutionStage }) {
+  const cfg = EVOLUTION_CONFIG[stage];
+  const spriteIndex: Record<EvolutionStage, string> = {
+    Seed: "1-seed",
+    Active: "2-active",
+    Growing: "3-growing",
+    Breakout: "4-breakout",
+    Legend: "5-legend",
+    Myth: "6-myth",
+  };
+  return (
+    <div
+      style={{
+        width: 96,
+        height: 96,
+        flexShrink: 0,
+        background: "var(--bg-deep)",
+        border: `3px solid ${cfg.color}`,
+        boxShadow: `4px 4px 0 #000, 0 0 24px ${cfg.color}66`,
+        position: "relative",
+        display: "grid",
+        placeItems: "center",
+      }}
+    >
+      {(["tl", "tr", "bl", "br"] as const).map((p) => (
+        <div
+          key={p}
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            width: 6,
+            height: 6,
+            background: cfg.color,
+            top: p.startsWith("t") ? 2 : "auto",
+            bottom: p.startsWith("b") ? 2 : "auto",
+            left: p.endsWith("l") ? 2 : "auto",
+            right: p.endsWith("r") ? 2 : "auto",
+          }}
+        />
+      ))}
+      <Image
+        src={`/generated/evo-${spriteIndex[stage]}.png`}
+        alt=""
+        width={72}
+        height={72}
+        unoptimized
+        style={{
+          imageRendering: "pixelated",
+          filter: `drop-shadow(0 0 10px ${cfg.color}99)`,
+        }}
+      />
+    </div>
+  );
+}
+
+/* ---------- Stars (1–5 by stage ordinal; Myth shows 5 filled) ---------- */
+const STAGE_ORDINAL: Record<EvolutionStage, number> = {
+  Seed: 1,
+  Active: 2,
+  Growing: 3,
+  Breakout: 4,
+  Legend: 5,
+  Myth: 5,
+};
+
+/* ---------- Battle-log column ---------- */
+function LogColumn({
+  glyph,
+  label,
+  items,
+  color,
+  itemAttrs,
+}: {
+  glyph: string;
+  label: string;
+  items: string[];
+  color: string;
+  itemAttrs?: (i: number) => React.LiHTMLAttributes<HTMLLIElement>;
+}) {
+  return (
+    <div style={{ minWidth: 0 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          marginBottom: 12,
+        }}
+      >
+        <span
+          className="font-ui"
+          style={{ fontSize: 10, letterSpacing: 2, color, textTransform: "uppercase" }}
+        >
+          <span style={{ marginRight: 6, fontFamily: "Menlo, Monaco, monospace" }}>{glyph}</span>
+          {label}
+        </span>
+        <span
+          className="font-pixel"
+          style={{
+            marginLeft: "auto",
+            fontSize: 8,
+            color,
+            border: `2px solid ${color}`,
+            padding: "3px 6px",
+            background: "var(--bg-deep)",
+            lineHeight: 1,
+          }}
+        >
+          {items.length.toString().padStart(2, "0")}
+        </span>
+      </div>
+      <ul
+        style={{
+          listStyle: "none",
+          margin: 0,
+          padding: 0,
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        {items.map((it, i) => (
+          <li
+            key={i}
+            {...(itemAttrs ? itemAttrs(i) : {})}
+            className="font-retro"
+            style={{
+              fontSize: 16,
+              lineHeight: 1.4,
+              color: "#c8c8d4",
+              display: "flex",
+              gap: 8,
+            }}
+          >
+            <span
+              className="font-ui"
+              style={{
+                color,
+                fontSize: 12,
+                flexShrink: 0,
+                lineHeight: 1.5,
+                fontFamily: "Menlo, Monaco, monospace",
+              }}
+              aria-hidden="true"
+            >
+              {glyph}
+            </span>
+            <span>{it}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
 /* ---------- AI Review Panel ---------- */
-function AIReviewPanel({ review }: { review: AIReview }) {
+function AIReviewPanel({
+  review,
+  compound,
+  evolutionStage,
+  projectId,
+}: {
+  review: AIReview;
+  compound: number;
+  evolutionStage: EvolutionStage;
+  projectId: string;
+}) {
   const { t } = useLang();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const cfg = EVOLUTION_CONFIG[evolutionStage];
+  const stars = STAGE_ORDINAL[evolutionStage];
+  const filledStars = evolutionStage === "Myth" ? 5 : stars;
+
   const metrics: {
-    key: keyof Pick<AIReview, "originality" | "clarity" | "uxPotential" | "viralityPotential" | "investorCuriosity">;
+    key: keyof Pick<
+      AIReview,
+      "originality" | "clarity" | "uxPotential" | "viralityPotential" | "investorCuriosity"
+    >;
+    code: string;
     label: string;
   }[] = [
-    { key: "originality", label: t("project.originality") },
-    { key: "clarity", label: t("project.clarity") },
-    { key: "uxPotential", label: t("project.uxPotential") },
-    { key: "viralityPotential", label: t("project.viralityPotential") },
-    { key: "investorCuriosity", label: t("project.investorCuriosity") },
+    { key: "originality",       code: "ORG", label: t("project.originality") },
+    { key: "clarity",           code: "CLR", label: t("project.clarity") },
+    { key: "uxPotential",       code: "UXP", label: t("project.uxPotential") },
+    { key: "viralityPotential", code: "VIR", label: t("project.viralityPotential") },
+    { key: "investorCuriosity", code: "INV", label: t("project.investorCuriosity") },
   ];
 
   return (
     <motion.div
-      variants={fadeIn}
-      className="glass-card-strong border-glow rounded-2xl p-6"
+      ref={ref}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      style={{
+        position: "relative",
+        background: "var(--bg-panel)",
+        border: "3px solid var(--border-bolt)",
+        boxShadow: "4px 4px 0 #000",
+        padding: 24,
+        color: "var(--text, #E8E8EC)",
+      }}
     >
-      {/* Header */}
-      <div className="mb-6 flex items-center gap-2">
-        <Sparkles className="size-5 text-violet-400" />
-        <h3 className="text-lg font-semibold">{t("project.aiAnalysis")}</h3>
-        <Badge className="ml-auto bg-violet-500/10 text-violet-400 border-violet-500/20 text-[10px]">
-          {t("project.beta")}
-        </Badge>
-      </div>
+      <LCorner pos="tl" />
+      <LCorner pos="tr" />
+      <LCorner pos="bl" />
+      <LCorner pos="br" />
 
-      {/* Score bars */}
-      <div className="space-y-4">
-        {metrics.map((metric, i) => (
-          <ScoreBar
-            key={metric.key}
-            label={metric.label}
-            value={review[metric.key]}
-            index={i}
-          />
-        ))}
-      </div>
-
-      <Separator className="my-6 bg-white/5" />
-
-      {/* Strengths / Weaknesses / Suggestions */}
-      <div className="space-y-5">
-        <div>
-          <h4 className="mb-3 flex items-center gap-1.5 text-sm font-medium text-emerald-400">
-            <CheckCircle2 className="size-4" />
-            {t("project.strengths")}
-          </h4>
-          <ul className="space-y-2">
-            {review.strengths.map((s, i) => (
-              <li
-                key={i}
-                className="flex gap-3 text-sm text-[color:var(--text-muted)] rounded-lg py-1.5"
-              >
-                <div className="mt-0.5 h-full w-0.5 shrink-0 rounded-full bg-emerald-500/50" />
-                <span>{s}</span>
-              </li>
-            ))}
-          </ul>
+      {/* 1. HEADER STRIP */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          borderBottom: "1px solid var(--border-hair)",
+          paddingBottom: 10,
+          marginBottom: 18,
+          minHeight: 32,
+        }}
+      >
+        <ClaudeSigil color="var(--neon-green)" />
+        <div
+          className="font-ui"
+          style={{
+            fontSize: 10,
+            letterSpacing: 3,
+            color: "var(--neon-green)",
+            textShadow: "0 0 4px rgba(57,255,20,0.6)",
+          }}
+        >
+          {t("project.reviewBoard")}
         </div>
-
-        <div>
-          <h4 className="mb-3 flex items-center gap-1.5 text-sm font-medium text-yellow-400">
-            <AlertTriangle className="size-4" />
-            {t("project.weaknesses")}
-          </h4>
-          <ul className="space-y-2">
-            {review.weaknesses.map((w, i) => (
-              <li
-                key={i}
-                className="flex gap-3 text-sm text-[color:var(--text-muted)] rounded-lg py-1.5"
-              >
-                <div className="mt-0.5 h-full w-0.5 shrink-0 rounded-full bg-yellow-500/50" />
-                <span>{w}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="mb-3 flex items-center gap-1.5 text-sm font-medium text-blue-400">
-            <Lightbulb className="size-4" />
-            {t("project.suggestions")}
-          </h4>
-          <ul className="space-y-2">
-            {review.suggestions.map((s, i) => (
-              <li
-                key={i}
-                className="flex gap-3 text-sm text-[color:var(--text-muted)] rounded-lg py-1.5"
-              >
-                <div className="mt-0.5 h-full w-0.5 shrink-0 rounded-full bg-blue-500/50" />
-                <span>{s}</span>
-              </li>
-            ))}
-          </ul>
+        <div
+          className="font-code"
+          style={{
+            marginLeft: "auto",
+            fontSize: 9,
+            color: "rgba(136,136,160,0.7)",
+            letterSpacing: 0.5,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: "55%",
+          }}
+        >
+          VIBEX://PROJECT/{projectId}
         </div>
       </div>
 
-      <Separator className="my-5 bg-white/5" />
+      {/* 2. VERDICT CALLOUT */}
+      <div
+        style={{
+          position: "relative",
+          background: "var(--bg-card)",
+          border: "3px solid var(--border-bolt)",
+          boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.03)",
+          padding: "18px 20px",
+          display: "flex",
+          alignItems: "center",
+          gap: 20,
+          minHeight: 120,
+          overflow: "hidden",
+        }}
+      >
+        {/* scanline overlay */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,0.25) 2px 3px)",
+            pointerEvents: "none",
+            opacity: 0.6,
+          }}
+        />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <EvoSigil stage={evolutionStage} />
+        </div>
+        <div style={{ position: "relative", zIndex: 1, flex: 1, minWidth: 0 }}>
+          <div
+            className="font-ui"
+            style={{
+              fontSize: 9,
+              letterSpacing: 3,
+              color: "var(--text-muted)",
+              marginBottom: 8,
+            }}
+          >
+            {t("project.overallVerdict")}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              gap: 10,
+              marginBottom: 10,
+              flexWrap: "wrap",
+            }}
+          >
+            <span
+              className="font-pixel"
+              style={{
+                fontSize: 52,
+                color: "var(--neon-yellow)",
+                lineHeight: 1,
+                textShadow: "4px 4px 0 #000, 0 0 18px rgba(250,204,21,0.45)",
+              }}
+            >
+              {compound}
+            </span>
+            <span
+              className="font-retro"
+              style={{ fontSize: 22, color: "var(--text-muted)", lineHeight: 1 }}
+            >
+              / 100
+            </span>
+            <span style={{ marginLeft: "auto" }}>
+              <EvolutionBadge stage={evolutionStage} size="lg" />
+            </span>
+          </div>
+          <div
+            className="font-pixel"
+            style={{
+              fontSize: 11,
+              color: cfg.color,
+              letterSpacing: 2,
+              textShadow: `0 0 8px ${cfg.color}88`,
+            }}
+          >
+            {t("project.tierLabel").replace("{STAGE}", cfg.label.toUpperCase())}{" "}
+            <span style={{ letterSpacing: 2 }}>
+              {Array.from({ length: 5 }, (_, i) => (i < filledStars ? "★" : "☆")).join("")}
+            </span>
+          </div>
+        </div>
+      </div>
 
-      {/* Byline + disclaimer. The byline (model + rubric version) is
-          here so the block reads as a signed AI evaluation rather than
-          floating unattributed text. Google's quality raters and the
-          E-E-A-T audit both flag unsigned AI content as a low-trust
-          signal; this closes the gap. */}
-      <div className="flex items-center justify-between gap-3 text-xs text-[color:var(--text-muted)]/60">
-        <span className="flex items-center gap-1.5">
-          <Sparkles className="size-3" />
-          {t("project.reviewedBy")}
+      {/* 3. ATTRIBUTE BREAKDOWN */}
+      <div style={{ marginTop: 22 }}>
+        <div
+          className="font-ui"
+          style={{
+            fontSize: 10,
+            letterSpacing: 3,
+            color: "var(--neon-green)",
+            marginBottom: 14,
+          }}
+        >
+          {t("project.attributeBreakdown")}
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {metrics.map((m, i) => (
+            <AttrRow
+              key={m.key}
+              code={m.code}
+              label={m.label}
+              value={review[m.key]}
+              index={i}
+              inView={inView}
+            />
+          ))}
+        </div>
+        <div
+          className="font-ui"
+          style={{
+            fontSize: 7,
+            letterSpacing: 2,
+            color: "var(--text-dim, #555)",
+            marginTop: 10,
+            textAlign: "right",
+          }}
+        >
+          {t("project.attributeDiscipline")}
+        </div>
+      </div>
+
+      {/* 4. PIXEL DIVIDER */}
+      <div
+        aria-hidden="true"
+        style={{
+          height: 2,
+          margin: "20px 0",
+          backgroundImage:
+            "repeating-linear-gradient(90deg, var(--border-bolt) 0 4px, transparent 4px 8px)",
+        }}
+      />
+
+      {/* 5. BATTLE LOG — 3 columns */}
+      <div
+        className="grid grid-cols-1 md:grid-cols-3 gap-5"
+        style={{ alignItems: "flex-start" }}
+      >
+        <LogColumn
+          glyph="⚔"
+          label={t("project.combosLanded")}
+          items={review.strengths}
+          color="var(--neon-green)"
+        />
+        <LogColumn
+          glyph="✦"
+          label={t("project.hitsTaken")}
+          items={review.weaknesses}
+          color="var(--neon-orange)"
+        />
+        <LogColumn
+          glyph="▸"
+          label={t("project.nextQuests")}
+          items={review.suggestions}
+          color="var(--neon-purple)"
+          itemAttrs={() =>
+            ({ "data-quest": "pending" } as React.LiHTMLAttributes<HTMLLIElement>)
+          }
+        />
+      </div>
+
+      {/* 6. BYLINE */}
+      <div
+        style={{
+          marginTop: 22,
+          paddingTop: 14,
+          borderTop: "1px solid var(--border-hair)",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          flexWrap: "wrap",
+        }}
+      >
+        <ClaudeSigil color="var(--neon-green)" />
+        <span
+          className="font-ui"
+          style={{ fontSize: 9, letterSpacing: 2, color: "var(--neon-green)" }}
+        >
+          {t("project.judgedBy")}
         </span>
-        <span className="text-[color:var(--text-muted)]/40">
+        <span
+          className="font-ui"
+          style={{
+            marginLeft: "auto",
+            fontSize: 9,
+            letterSpacing: 1,
+            color: "rgba(136,136,160,0.6)",
+          }}
+        >
           {t("project.aiDisclaimer")}
         </span>
       </div>
@@ -564,7 +1020,12 @@ export default function ProjectPage({
           )}
 
           {/* AI Review Panel */}
-          <AIReviewPanel review={project.aiReview} />
+          <AIReviewPanel
+            review={project.aiReview}
+            compound={project.score}
+            evolutionStage={project.hero?.evolutionStage ?? "Seed"}
+            projectId={project.id}
+          />
         </div>
       </article>
 
