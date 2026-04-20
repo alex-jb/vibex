@@ -603,10 +603,16 @@ function AIReviewPanel({
         }}
       />
 
-      {/* 5. BATTLE LOG — 3 columns */}
+      {/* 5. BATTLE LOG — single column stack.
+          The panel lives in a ~380px-wide right-sidebar cell. Three
+          horizontal columns there give each log ~120px, which pushes
+          VT323 copy into 3-word-per-line breaks (observed on prod
+          2026-04-20 with AgentForge's suggestions). Keep the Claude
+          Design hi-fi's 3-col feel for a future wider layout by
+          switching to container queries; for now, stack vertically —
+          item legibility > the row aesthetic. */}
       <div
-        className="grid grid-cols-1 md:grid-cols-3 gap-5"
-        style={{ alignItems: "flex-start" }}
+        className="flex flex-col gap-6"
       >
         <LogColumn
           glyph="⚔"
