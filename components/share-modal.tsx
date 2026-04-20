@@ -70,19 +70,42 @@ function CopyButton({
   variant = "ghost",
   size = "icon-xs",
   className = "",
+  trackProjectId,
+  trackEvent,
+  trackPlatform,
 }: {
   text: string;
   label?: string;
   variant?: "ghost" | "outline" | "secondary";
   size?: "icon-xs" | "xs" | "sm";
   className?: string;
+  // Fire a /api/share/track POST when the user copies, so share_events
+  // gets a row. Without these three props the button is a dumb clipboard
+  // write (which is fine for non-share uses elsewhere in the codebase).
+  trackProjectId?: string;
+  trackEvent?: "link_copy" | "social_click";
+  trackPlatform?: string;
 }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(text);
     setCopied(true);
-  }, [text]);
+    if (trackProjectId && trackEvent) {
+      fetch("/api/share/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          projectId: trackProjectId,
+          event: trackEvent,
+          platform: trackPlatform ?? null,
+        }),
+        keepalive: true,
+      }).catch(() => {
+        // fire-and-forget — don't block the copy UX on network
+      });
+    }
+  }, [text, trackProjectId, trackEvent, trackPlatform]);
 
   useEffect(() => {
     if (!copied) return;
@@ -479,6 +502,8 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                       variant="secondary"
                       size="sm"
                       className="shrink-0 bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white border-0 hover:from-violet-600 hover:to-fuchsia-600"
+                      trackProjectId={project.id}
+                      trackEvent="link_copy"
                     />
                   </div>
                 </div>
@@ -586,6 +611,9 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                           variant="ghost"
                           size="xs"
                           className="text-muted-foreground hover:text-foreground"
+                          trackProjectId={project.id}
+                          trackEvent="social_click"
+                          trackPlatform={activePlatform}
                         />
                       </div>
                     </motion.div>
@@ -613,6 +641,9 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                         variant="ghost"
                         size="xs"
                         className="text-muted-foreground hover:text-foreground"
+                        trackProjectId={project.id}
+                        trackEvent="social_click"
+                        trackPlatform="embed"
                       />
                     </div>
                   </div>
