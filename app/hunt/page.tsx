@@ -133,11 +133,14 @@ export default function HuntPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-      {/* Hero Section */}
+      {/* Hero Section — Direction A pixel treatment (matches /creators + /ideas) */}
       <div className="relative mb-12 overflow-hidden">
-        {/* Gradient orbs */}
-        <div className="pointer-events-none absolute -top-32 -left-32 h-64 w-64 rounded-full bg-violet-600/20 blur-[100px] animate-pulse-slow" />
-        <div className="pointer-events-none absolute -top-20 right-0 h-48 w-48 rounded-full bg-fuchsia-600/15 blur-[80px] animate-pulse-slow" style={{ animationDelay: "2s" }} />
+        {/* Forge ember glow — single orange pulse (replaces violet/fuchsia orbs) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 h-[320px] w-[480px] rounded-full"
+          style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+        />
 
         <div className="relative text-center">
           <motion.div
@@ -145,16 +148,41 @@ export default function HuntPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="mb-3 flex items-center justify-center gap-2">
-              <span className="inline-block rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-400">
-                {t("hunt.badge")}
-              </span>
+            <div
+              className="font-ui inline-flex items-center justify-center gap-3 mb-4"
+              style={{
+                fontSize: 11,
+                color: "var(--neon-green)",
+                letterSpacing: 3,
+                textShadow: "0 0 4px rgba(57,255,20,0.8)",
+              }}
+            >
+              ▸ VIBEX://HUNT · {t("hunt.badge").toUpperCase()}
               <LiveBadge connected={connected} />
             </div>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              {t("hunt.title")} <span className="text-gradient">{t("hunt.titleHighlight")}</span>
+            <h1
+              className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"
+              style={{
+                letterSpacing: 3,
+                lineHeight: 1.25,
+                background:
+                  "linear-gradient(180deg, #FFE27D 0%, #FFD700 40%, #B8860B 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                filter:
+                  "drop-shadow(2px 2px 0 #000) drop-shadow(3px 3px 0 #000) drop-shadow(0 0 20px rgba(250,204,21,0.5))",
+              }}
+            >
+              {t("hunt.title")} {t("hunt.titleHighlight")}
             </h1>
-            <p className="mx-auto mt-3 max-w-md text-base" style={{ color: "var(--text)" }}>
+            <p
+              className="font-retro mx-auto mt-4 max-w-lg text-[16px] sm:text-[18px] md:text-[20px]"
+              style={{
+                color: "rgba(232,232,236,0.85)",
+                textShadow: "0 2px 0 rgba(0,0,0,0.7)",
+              }}
+            >
               {t("hunt.description")}
             </p>
           </motion.div>

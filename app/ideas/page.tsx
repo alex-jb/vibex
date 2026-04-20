@@ -44,8 +44,12 @@ export default function IdeasPage() {
 
   return (
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16">
-      {/* Background gradient orb */}
-      <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[480px] w-[480px] rounded-full bg-violet-600/8 blur-[120px]" />
+      {/* Forge ember glow — matches /launch / /creators / /hunt */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
+        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+      />
 
       {/* Page Hero — pixel treatment matching /home + /creators */}
       <motion.div

@@ -56,8 +56,11 @@ export default function CreatorsPage() {
 
   return (
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16">
-      <div className="pointer-events-none absolute -top-32 left-1/4 h-[480px] w-[480px] rounded-full bg-violet-600/8 blur-[120px]" />
-      <div className="pointer-events-none absolute top-64 right-1/4 h-[360px] w-[360px] rounded-full bg-fuchsia-600/6 blur-[100px]" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
+        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+      />
 
       {/* Hero — pixel game-UI treatment matching /home + /project/[id] */}
       <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="relative text-center mb-14 sm:mb-16">
