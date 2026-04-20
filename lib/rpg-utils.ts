@@ -268,7 +268,7 @@ export const EVOLUTION_CONFIG: Record<
   EvolutionStage,
   { label: string; icon: string; cssClass: string; color: string }
 > = {
-  Seed:     { label: "Seed",     icon: "Sprout",     cssClass: "evo-seed",     color: "#a1a1aa" },
+  Seed:     { label: "Seed",     icon: "Sprout",     cssClass: "evo-seed",     color: "#d4d4d8" },
   Active:   { label: "Active",   icon: "Zap",        cssClass: "evo-active",   color: "#39FF14" },
   Growing:  { label: "Growing",  icon: "TrendingUp",  cssClass: "evo-growing",  color: "#06B6D4" },
   Breakout: { label: "Breakout", icon: "Flame",      cssClass: "evo-breakout", color: "#8b5cf6" },
