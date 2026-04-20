@@ -22,11 +22,18 @@ export function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/20">
-                <Sparkles className="h-3.5 w-3.5 text-white" />
+              <div
+                className="flex h-7 w-7 items-center justify-center"
+                style={{
+                  background: "#FF4500",
+                  border: "2px solid #FFE27D",
+                  boxShadow: "2px 2px 0 #000",
+                }}
+              >
+                <Sparkles className="h-3.5 w-3.5" style={{ color: "#1A0F00" }} />
               </div>
               <span className="font-pixel text-[10px] tracking-widest text-foreground">
-                Vibe<span className="text-violet-400">X</span>
+                Vibe<span style={{ color: "#FF4500" }}>X</span>
               </span>
             </div>
             <p className="mt-4 text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>

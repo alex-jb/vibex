@@ -138,8 +138,16 @@ export function Navbar() {
             <Link href="/launch">
               <Button
                 size="sm"
-                className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-500 hover:to-fuchsia-500 shadow-lg shadow-violet-500/10 px-3 h-8"
-                style={isCJK ? { fontFamily: "var(--font-zpix), monospace", fontSize: 12, letterSpacing: 2 } : { fontFamily: "var(--font-pixel), monospace", fontSize: 10, letterSpacing: 1, imageRendering: "pixelated" as never }}
+                className="text-black hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform px-3 h-8 border-0"
+                style={{
+                  background: "#FF4500",
+                  border: "2px solid #FFE27D",
+                  color: "#1A0F00",
+                  boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",
+                  ...(isCJK
+                    ? { fontFamily: "var(--font-zpix), monospace", fontSize: 12, letterSpacing: 2 }
+                    : { fontFamily: "var(--font-pixel), monospace", fontSize: 10, letterSpacing: 1, imageRendering: "pixelated" as never }),
+                }}
               >
                 <Rocket className="mr-1 h-3 w-3" />
                 {t("nav.launch")}
@@ -211,7 +219,17 @@ export function Navbar() {
               <div className="mt-2 flex items-center gap-3">
                 <LangToggle />
                 <Link href="/launch" onClick={() => setMobileOpen(false)} className="flex-1">
-                  <Button className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-sm">
+                  <Button
+                    className="w-full font-pixel text-sm border-0"
+                    style={{
+                      background: "#FF4500",
+                      border: "2px solid #FFE27D",
+                      color: "#1A0F00",
+                      boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",
+                      letterSpacing: 2,
+                      fontSize: 11,
+                    }}
+                  >
                     <Rocket className="mr-1.5 h-3.5 w-3.5" />
                     {t("nav.launch")}
                   </Button>

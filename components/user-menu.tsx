@@ -77,7 +77,16 @@ export function UserMenu() {
             className="size-8 rounded-full border border-white/10"
           />
         ) : (
-          <div className="size-8 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-[10px] font-bold text-white">
+          <div
+            className="size-8 flex items-center justify-center text-[10px] font-bold"
+            style={{
+              background: "linear-gradient(135deg, #FF4500 0%, #B8380B 100%)",
+              border: "2px solid #FFE27D",
+              color: "#1A0F00",
+              boxShadow: "2px 2px 0 #000",
+              fontFamily: "var(--font-pixel), monospace",
+            }}
+          >
             {getInitials(displayName)}
           </div>
         )}
