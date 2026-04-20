@@ -1708,7 +1708,7 @@ const translations = {
   },
 } as const;
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 const _ja_removed = {
     // Nav items
     "nav.home": "ホーム",
@@ -2077,7 +2077,7 @@ const _ja_removed = {
     // Common
     "common.comingSoon": "近日公開",
   };
-/* eslint-enable @typescript-eslint/no-unused-vars */
+ 
 
 export type TranslationKey = keyof typeof translations.en;
 

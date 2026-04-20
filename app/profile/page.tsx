@@ -118,7 +118,20 @@ export default function ProfilePage() {
   const { t } = useLang();
 
   /* ── Profile overrides from localStorage ── */
-  const [overrides, setOverrides] = useState<ProfileOverrides>({});
+  // Lazy initializer — localStorage read happens once on mount, avoiding
+  // the cascading-renders lint error from doing it in a useEffect +
+  // setState. SSR guard because Next.js runs client components on the
+  // server for initial HTML (localStorage is undefined there).
+  const [overrides, setOverrides] = useState<ProfileOverrides>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const raw = window.localStorage.getItem(PROFILE_STORAGE_KEY);
+      if (raw) return JSON.parse(raw) as ProfileOverrides;
+    } catch {
+      // ignore parse errors
+    }
+    return {};
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState("");
   const [editBio, setEditBio] = useState("");
@@ -131,20 +144,6 @@ export default function ProfilePage() {
       router.replace("/login");
     }
   }, [loading, user, router]);
-
-  // Load overrides from localStorage on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
-      if (raw) {
-        const parsed: ProfileOverrides = JSON.parse(raw);
-        setOverrides(parsed);
-      }
-    } catch {
-      // ignore parse errors
-    }
-  }, []);
 
   const meta = user?.user_metadata as Record<string, unknown> | undefined;
   const baseDisplayName = String(
