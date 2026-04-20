@@ -415,7 +415,7 @@ export default function LaunchPage() {
       // stuck on the form. Use a small delay so the success flash is
       // visible before navigating.
       setTimeout(() => {
-        router.push(`/project/${encodeURIComponent(data.id)}`);
+        router.push(`/project/${encodeURIComponent(data.id)}?forged=1`);
       }, 650);
     } catch (err) {
       console.error("[launch] submit failed", err);

@@ -114,7 +114,7 @@ function ClaudeSigil({ color = "var(--neon-green)" }: { color?: string }) {
 }
 
 /* ---------- Pixel bar (solid purple fill, no gradient) ---------- */
-function PixelBar({ value, animate }: { value: number; animate: boolean }) {
+function PixelBar({ value, animate, delay = 0 }: { value: number; animate: boolean; delay?: number }) {
   const v = Math.max(0, Math.min(100, value));
   return (
     <div
@@ -134,7 +134,7 @@ function PixelBar({ value, animate }: { value: number; animate: boolean }) {
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: animate ? `${v}%` : 0 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
         style={{
           height: "100%",
           background: "var(--neon-purple)",
@@ -163,18 +163,21 @@ function AttrRow({
   value,
   index,
   inView,
+  forging = false,
 }: {
   code: string;
   label: string;
   value: number;
   index: number;
   inView: boolean;
+  forging?: boolean;
 }) {
+  const delay = forging ? 1.8 + index * 0.25 : index * 0.06;
   return (
     <motion.div
       initial={{ opacity: 0, x: -6 }}
       animate={{ opacity: inView ? 1 : 0, x: inView ? 0 : -6 }}
-      transition={{ delay: index * 0.06, duration: 0.35 }}
+      transition={{ delay, duration: 0.35 }}
       style={{
         display: "grid",
         gridTemplateColumns: "52px 1fr 34px",
@@ -196,7 +199,7 @@ function AttrRow({
           {label}
         </span>
       </div>
-      <PixelBar value={value} animate={inView} />
+      <PixelBar value={value} animate={inView} delay={delay} />
       <span
         className="font-pixel"
         style={{
@@ -214,7 +217,7 @@ function AttrRow({
 }
 
 /* ---------- Evolution sigil (large square; pairs with EvolutionBadge pill) ---------- */
-function EvoSigil({ stage }: { stage: EvolutionStage }) {
+function EvoSigil({ stage, forging = false }: { stage: EvolutionStage; forging?: boolean }) {
   const cfg = EVOLUTION_CONFIG[stage];
   const spriteIndex: Record<EvolutionStage, string> = {
     Seed: "1-seed",
@@ -224,29 +227,40 @@ function EvoSigil({ stage }: { stage: EvolutionStage }) {
     Legend: "5-legend",
     Myth: "6-myth",
   };
+  // Forge unveil: frame color + glow + corner dots + sprite filter all start as
+  // Seed grey (#d4d4d8) and animate to the real stage color over 1.2s.
+  const SEED = "#d4d4d8";
   return (
-    <div
+    <motion.div
+      initial={forging ? { borderColor: SEED, boxShadow: `4px 4px 0 #000, 0 0 12px ${SEED}66` } : false}
+      animate={{
+        borderColor: cfg.color,
+        boxShadow: `4px 4px 0 #000, 0 0 24px ${cfg.color}66`,
+      }}
+      transition={{ duration: 1.2, delay: forging ? 0.6 : 0, ease: [0.22, 1, 0.36, 1] }}
       style={{
         width: 96,
         height: 96,
         flexShrink: 0,
         background: "var(--bg-deep)",
-        border: `3px solid ${cfg.color}`,
-        boxShadow: `4px 4px 0 #000, 0 0 24px ${cfg.color}66`,
+        borderWidth: 3,
+        borderStyle: "solid",
         position: "relative",
         display: "grid",
         placeItems: "center",
       }}
     >
       {(["tl", "tr", "bl", "br"] as const).map((p) => (
-        <div
+        <motion.div
           key={p}
           aria-hidden="true"
+          initial={forging ? { background: SEED } : false}
+          animate={{ background: cfg.color }}
+          transition={{ duration: 1.2, delay: forging ? 0.6 : 0 }}
           style={{
             position: "absolute",
             width: 6,
             height: 6,
-            background: cfg.color,
             top: p.startsWith("t") ? 2 : "auto",
             bottom: p.startsWith("b") ? 2 : "auto",
             left: p.endsWith("l") ? 2 : "auto",
@@ -254,18 +268,21 @@ function EvoSigil({ stage }: { stage: EvolutionStage }) {
           }}
         />
       ))}
-      <Image
-        src={`/generated/evo-${spriteIndex[stage]}.png`}
-        alt=""
-        width={72}
-        height={72}
-        unoptimized
-        style={{
-          imageRendering: "pixelated",
-          filter: `drop-shadow(0 0 10px ${cfg.color}99)`,
-        }}
-      />
-    </div>
+      <motion.div
+        initial={forging ? { filter: `drop-shadow(0 0 10px ${SEED}99)` } : false}
+        animate={{ filter: `drop-shadow(0 0 10px ${cfg.color}99)` }}
+        transition={{ duration: 1.2, delay: forging ? 0.6 : 0 }}
+      >
+        <Image
+          src={`/generated/evo-${spriteIndex[stage]}.png`}
+          alt=""
+          width={72}
+          height={72}
+          unoptimized
+          style={{ imageRendering: "pixelated" }}
+        />
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -375,16 +392,44 @@ function AIReviewPanel({
   compound,
   evolutionStage,
   projectId,
+  forging = false,
 }: {
   review: AIReview;
   compound: number;
   evolutionStage: EvolutionStage;
   projectId: string;
+  forging?: boolean;
 }) {
   const { t } = useLang();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
   const cfg = EVOLUTION_CONFIG[evolutionStage];
+
+  // Compound count-up: when forging, ramp from 0 → compound over 1.8s
+  // starting at delay 1.4s (so the frame color reveal happens first).
+  const [compoundDisplay, setCompoundDisplay] = useState(forging ? 0 : compound);
+  useEffect(() => {
+    if (!forging) {
+      setCompoundDisplay(compound);
+      return;
+    }
+    let rafId: number | undefined;
+    let started: number | null = null;
+    const start = setTimeout(() => {
+      const step = (ts: number) => {
+        if (started === null) started = ts;
+        const t = Math.min(1, (ts - started) / 1800);
+        const eased = 1 - Math.pow(1 - t, 3);
+        setCompoundDisplay(Math.round(eased * compound));
+        if (t < 1) rafId = requestAnimationFrame(step);
+      };
+      rafId = requestAnimationFrame(step);
+    }, 1400);
+    return () => {
+      clearTimeout(start);
+      if (rafId !== undefined) cancelAnimationFrame(rafId);
+    };
+  }, [forging, compound]);
   const stars = STAGE_ORDINAL[evolutionStage];
   const filledStars = evolutionStage === "Myth" ? 5 : stars;
 
@@ -496,7 +541,7 @@ function AIReviewPanel({
           }}
         />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <EvoSigil stage={evolutionStage} />
+          <EvoSigil stage={evolutionStage} forging={forging} />
         </div>
         <div style={{ position: "relative", zIndex: 1, flex: 1, minWidth: 0 }}>
           <div
@@ -528,7 +573,7 @@ function AIReviewPanel({
                 textShadow: "4px 4px 0 #000, 0 0 18px rgba(250,204,21,0.45)",
               }}
             >
-              {compound}
+              {compoundDisplay}
             </span>
             <span
               className="font-retro"
@@ -579,6 +624,7 @@ function AIReviewPanel({
               value={review[m.key]}
               index={i}
               inView={inView}
+              forging={forging}
             />
           ))}
         </div>
@@ -691,6 +737,24 @@ export default function ProjectPage({
   const [shareOpen, setShareOpen] = useState(false);
   const { burstStage, clearBurst } = useEvolutionDetector(project?.hero?.evolutionStage);
   const viewPingedRef = useRef(false);
+
+  // Forge unveil: when the user lands here from /launch with ?forged=1, play a
+  // one-shot 3.5s animation (frame color reveal + compound count-up + staggered
+  // bar fill), then strip the param so a refresh doesn't replay.
+  const [forging, setForging] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("forged") !== "1") return;
+    setForging(true);
+    const timer = setTimeout(() => {
+      setForging(false);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("forged");
+      window.history.replaceState(null, "", url.toString());
+    }, 3600);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Fire view pingback once per page mount. POSTs to /api/projects/:id/view
   // which bumps projects.views via the SECURITY DEFINER increment_view RPC
@@ -1035,6 +1099,7 @@ export default function ProjectPage({
             compound={project.score}
             evolutionStage={project.hero?.evolutionStage ?? "Seed"}
             projectId={project.id}
+            forging={forging}
           />
         </div>
       </article>
