@@ -202,7 +202,11 @@ export default function EventsPage() {
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16">
       {/* Background gradient orbs */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-32 left-1/4 h-72 w-72 rounded-full bg-violet-600/8 blur-[120px]" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
+          style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+        />
         <div className="absolute top-48 right-1/6 h-56 w-56 rounded-full bg-fuchsia-600/6 blur-[100px]" />
         <div className="absolute bottom-32 left-1/3 h-48 w-48 rounded-full bg-blue-600/5 blur-[100px]" />
       </div>
@@ -313,7 +317,11 @@ export default function EventsPage() {
         >
           {/* Interior gradient orbs */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
-            <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-violet-600/10 blur-[80px]" />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full"
+              style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.18), transparent 70%)" }}
+            />
             <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-fuchsia-600/8 blur-[70px]" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-32 w-32 rounded-full bg-violet-500/5 blur-[60px]" />
           </div>

@@ -158,11 +158,14 @@
     box-shadow: 0 0 60px -15px oklch(0.55 0.2 280 / 20%);
   }
 
+  /* Direction A forge-gold gradient — replaces the old violet/fuchsia sludge.
+     Used across all section headers + hero highlight spans app-wide. */
   .text-gradient {
-    background: linear-gradient(135deg, oklch(0.75 0.2 280), oklch(0.72 0.22 320), oklch(0.7 0.18 280));
+    background: linear-gradient(180deg, #FFE27D 0%, #FFD700 40%, #B8860B 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    filter: drop-shadow(1px 1px 0 #000);
   }
 
   .text-gradient-subtle {

@@ -116,8 +116,12 @@ export default function DojoPage() {
         }}
       />
 
-      {/* Background gradient orb */}
-      <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[480px] w-[480px] rounded-full bg-violet-600/8 blur-[120px]" />
+      {/* Forge ember — replaces violet blur orb */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
+        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+      />
 
       {/* Terminal header bar */}
       <motion.div
