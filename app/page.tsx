@@ -110,7 +110,114 @@ export default function LandingPage() {
           review, image generation, data tools, voice interfaces, and
           more.
         </p>
+        {/* Same 5-question FAQ block as app/home/layout.tsx. Duplicated
+            intentionally: `/` is the entry URL for AI crawlers + the
+            linked-from-everywhere splash, and the 2026-04-18 GEO audit
+            flagged that FAQ JSON-LD living only on /home left / with
+            30 fewer citability points than the dashboard page. Same
+            answers, different URL context, allowed by schema.org. */}
+        <h2>Frequently asked questions</h2>
+        <h3>What is VibeX?</h3>
+        <p>
+          VibeX is an AI-native launch platform where every project is a
+          16-bit RPG hero. Creators submit AI projects (URL or GitHub
+          repo) and receive a Claude-scored review across five dimensions
+          (originality, clarity, UX potential, virality potential,
+          investor curiosity). Projects evolve through six stages — Seed,
+          Active, Growing, Breakout, Legend, Myth — based on real
+          engagement (plays, upvotes, shares), not 24-hour upvote
+          sprints.
+        </p>
+        <h3>How does the Claude review work?</h3>
+        <p>
+          Every submitted project is reviewed by Claude Haiku 4.5 against
+          a published rubric. Claude reads the title, tagline,
+          description, and (if the demo URL is a GitHub repo) the README,
+          then returns five 0-100 scores, two to three named strengths,
+          two to three weaknesses, and two to three actionable
+          suggestions. The review is stored in the ai_reviews table and
+          the compound score becomes the project&rsquo;s headline score.
+        </p>
+        <h3>How is a project&rsquo;s VibeX score calculated?</h3>
+        <p>
+          The compound score is the arithmetic mean of the five Claude
+          dimensions: originality, clarity, UX potential, virality
+          potential, and investor curiosity. Each dimension is 0-100. The
+          compound is displayed as the project&rsquo;s headline score on
+          its detail page and used as an aggregateRating when search
+          engines index the page.
+        </p>
+        <h3>What is VibeX&rsquo;s evolution system?</h3>
+        <p>
+          Every project progresses through six evolution stages tied to
+          real engagement thresholds. Seed is the starting stage (score
+          below 40 and low traction). Active requires 50+ plays or a
+          compound score of 40+. Growing, Breakout, Legend, and Myth add
+          progressively higher play, upvote, and score gates. The
+          progression is driven by a Postgres trigger — no cron needed.
+        </p>
+        <h3>Is VibeX open source?</h3>
+        <p>
+          VibeX is source-available on GitHub at
+          github.com/alex-jb/vibex under a custom VibeX Source Available
+          License. Anyone can read, fork for personal use, and contribute
+          back. Commercial hosting by third parties is restricted.
+        </p>
       </section>
+      {/* FAQPage JSON-LD for AI Overviews / Bing Copilot / Perplexity.
+          Duplicates the same 5 Q&amp;A the /home layout emits, but scoped
+          to `/` so the splash URL is directly answerable. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "What is VibeX?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "VibeX is an AI-native launch platform where every project is a 16-bit RPG hero. Creators submit AI projects (URL or GitHub repo) and receive a Claude-scored review across five dimensions (originality, clarity, UX potential, virality potential, investor curiosity). Projects evolve through six stages — Seed, Active, Growing, Breakout, Legend, Myth — based on real engagement (plays, upvotes, shares), not 24-hour upvote sprints.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "How does the Claude review work?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Every submitted project is reviewed by Claude Haiku 4.5 against a published rubric. Claude reads the title, tagline, description, and (if the demo URL is a GitHub repo) the README, then returns five 0-100 scores, two to three named strengths, two to three weaknesses, and two to three actionable suggestions. The review is stored in the ai_reviews table and the compound score becomes the project's headline score.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "How is a project's VibeX score calculated?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "The compound score is the arithmetic mean of the five Claude dimensions: originality, clarity, UX potential, virality potential, and investor curiosity. Each dimension is 0-100. The compound is displayed as the project's headline score on its detail page and used as an aggregateRating when search engines index the page.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "What is VibeX's evolution system?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Every project progresses through six evolution stages tied to real engagement thresholds. Seed is the starting stage (score below 40 and low traction). Active requires 50+ plays or a compound score of 40+. Growing, Breakout, Legend, and Myth add progressively higher play, upvote, and score gates. The progression is driven by a Postgres trigger — no cron needed.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Is VibeX open source?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "VibeX is source-available on GitHub at github.com/alex-jb/vibex under a custom VibeX Source Available License. Anyone can read, fork for personal use, and contribute back. Commercial hosting by third parties is restricted.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
       {/* Gemini-generated epic pixel landscape: swirling purple portal
           over mountains, floating islands with lanterns, crystal spires,
           cobblestone path leading toward the portal. Sits beneath all

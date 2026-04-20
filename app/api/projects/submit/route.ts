@@ -82,6 +82,30 @@ function isGithubBoilerplate(description: string): boolean {
   );
 }
 
+const INDEXNOW_KEY = "3f14d4d3278b4cbf882b9f94de88147e";
+
+/**
+ * Ping IndexNow so Bing + Yandex + Seznam pick up newly-submitted
+ * project URLs in minutes. Single-URL form is the cheapest — the
+ * batch endpoint is worth it only if we later do bulk re-index.
+ * No account needed; the key file at
+ * public/3f14d4d3278b4cbf882b9f94de88147e.txt is the ownership proof.
+ */
+async function pingIndexNow(url: string): Promise<void> {
+  const endpoint = `https://api.indexnow.org/indexnow?url=${encodeURIComponent(
+    url,
+  )}&key=${INDEXNOW_KEY}&keyLocation=https://www.vibexforge.com/${INDEXNOW_KEY}.txt`;
+  try {
+    await fetch(endpoint, {
+      method: "GET",
+      signal: AbortSignal.timeout(5_000),
+    });
+  } catch {
+    // Any failure is swallowed — caller uses .catch(() => {}) and
+    // submit flow shouldn't block on a third-party ping
+  }
+}
+
 async function fetchGithubReadme(demoUrl: string): Promise<string | null> {
   const m = demoUrl.match(/github\.com\/([^\/]+)\/([^\/?#]+)/);
   if (!m) return null;
@@ -227,6 +251,15 @@ export async function POST(req: NextRequest) {
           aiReview.viralityPotential +
           aiReview.investorCuriosity) /
           5,
+      );
+
+      // Ping IndexNow so Bing + Yandex + Seznam reindex the new
+      // project page within minutes instead of days. The key file
+      // at public/3f14d4d3278b4cbf882b9f94de88147e.txt is what
+      // IndexNow checks to verify we control the host. Fire-and-
+      // forget — failing this must not block the submit response.
+      pingIndexNow(`https://www.vibexforge.com/project/${project.id}`).catch(
+        () => {},
       );
 
       return NextResponse.json(

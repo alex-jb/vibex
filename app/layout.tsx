@@ -163,6 +163,15 @@ export default function RootLayout({
                       "https://www.vibexforge.com/home?q={search_term_string}",
                     "query-input": "required name=search_term_string",
                   },
+                  // Google Assistant / AI voice surfaces pull from
+                  // `speakable` — they read aloud the matched CSS
+                  // regions when answering voice queries about the
+                  // page. Keeps the synthesis focused on the hero
+                  // tagline + the FAQ answers rather than nav chrome.
+                  speakable: {
+                    "@type": "SpeakableSpecification",
+                    cssSelector: ["h1", ".tagline", ".faq-answer"],
+                  },
                 },
                 {
                   "@type": "SoftwareApplication",

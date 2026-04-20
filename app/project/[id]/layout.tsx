@@ -139,11 +139,46 @@ export default async function Layout({
     },
   };
 
+  // BreadcrumbList so search engines can render the
+  // Home › Creators › <Project> crumb trail under the SERP title.
+  // Also gives AI crawlers explicit hierarchy: the project page sits
+  // under /creators (the creator leaderboard) which sits under / (the
+  // site root). Google surfaces this in AI Overviews too when
+  // answering "where did [project] come from" queries.
+  const breadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "VibeX",
+        item: "https://www.vibexforge.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Creators",
+        item: "https://www.vibexforge.com/creators",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: project.title,
+        item: `https://www.vibexforge.com/project/${project.id}`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
       />
       {children}
     </>
