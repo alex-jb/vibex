@@ -21,7 +21,8 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  if (!id || id.length < 3 || id.length > 64) {
+  // See /api/projects/[id]/play for rationale — seed ids are 1-2 chars.
+  if (!id || id.length > 64) {
     return NextResponse.json({ error: "Invalid project id" }, { status: 400 });
   }
 

@@ -40,7 +40,18 @@ export async function generateMetadata({
   }
 
   const title = `${project.title} | VibeX`;
-  const description = project.tagline;
+  // Compose a 140-180 char description so Lighthouse / Google don't flag
+  // it as too short. Taglines are typically 40-80 chars; appending the
+  // category + Claude compound score + creator context reliably lands
+  // in the sweet spot while surfacing the data points most useful for
+  // search-result snippets (category, score).
+  const baseTagline = (project.tagline || "").trim();
+  const creatorPart = project.creatorName ? ` by ${project.creatorName}` : "";
+  const scorePart = project.score > 0 ? ` · Claude score ${project.score}/100` : "";
+  const description =
+    `${baseTagline} — ${project.category} project on VibeX${creatorPart}${scorePart}. An AI-native launch platform where projects evolve from Seed to Myth on real traction.`
+      .replace(/\s+/g, " ")
+      .slice(0, 200);
   const url = `https://www.vibexforge.com/project/${project.id}`;
 
   // Images are auto-resolved from app/project/[id]/opengraph-image.tsx — don't

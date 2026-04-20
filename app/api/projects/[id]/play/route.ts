@@ -18,7 +18,12 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  if (!id || id.length < 3 || id.length > 64) {
+  // Seed projects use 1-2 char ids ("1", "2", ..., "12"); user-submitted
+  // projects use `proj-<timestamp>-<suffix>` (~20 chars). The earlier
+  // `id.length < 3` guard rejected every seeded project's play pingback
+  // with 400, which Lighthouse flagged as a console error. Allow any
+  // 1-64 char id.
+  if (!id || id.length > 64) {
     return NextResponse.json({ error: "Invalid project id" }, { status: 400 });
   }
 
