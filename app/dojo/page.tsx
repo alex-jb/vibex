@@ -163,11 +163,29 @@ export default function DojoPage() {
         >
           {"> VIBEX://DOJO"}
         </h1>
-        <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
-          {t("dojo.title")}{" "}
-          <span className="text-gradient">{t("dojo.titleHighlight")}</span>
+        <h2
+          className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"
+          style={{
+            letterSpacing: 3,
+            lineHeight: 1.25,
+            background:
+              "linear-gradient(180deg, #FFE27D 0%, #FFD700 40%, #B8860B 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            filter:
+              "drop-shadow(2px 2px 0 #000) drop-shadow(3px 3px 0 #000) drop-shadow(0 0 20px rgba(250,204,21,0.5))",
+          }}
+        >
+          {t("dojo.title")} {t("dojo.titleHighlight")}
         </h2>
-        <p className="mt-3 text-[color:var(--text-muted)] max-w-lg mx-auto text-sm leading-relaxed">
+        <p
+          className="font-retro mt-4 max-w-lg mx-auto text-[16px] sm:text-[18px] md:text-[20px]"
+          style={{
+            color: "rgba(232,232,236,0.85)",
+            textShadow: "0 2px 0 rgba(0,0,0,0.7)",
+          }}
+        >
           {t("dojo.description")}
         </p>
       </motion.div>
@@ -228,26 +246,39 @@ export default function DojoPage() {
             >
               <Link href={room.href} className="group block">
                 <div
-                  className="glass-card-strong rounded-xl retro-border p-6 transition-all hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/5"
+                  className="p-6 transition-all hover:-translate-x-0.5 hover:-translate-y-0.5"
                   style={{
-                    transition: "box-shadow 0.3s ease, border-color 0.3s ease",
+                    background: "var(--bg-panel)",
+                    border: "2px solid #3A3A42",
+                    boxShadow: "3px 3px 0 #000",
+                    transition: "box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = `0 0 16px ${room.glowColor}, 0 0 32px ${room.glowColor}, inset 0 0 8px ${room.glowColor}30`;
-                    e.currentTarget.style.borderColor = room.glowColor;
+                    e.currentTarget.style.boxShadow = `5px 5px 0 #000, 0 0 20px ${room.glowColor}`;
+                    e.currentTarget.style.borderColor = "#FFE27D";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = "";
-                    e.currentTarget.style.borderColor = "";
+                    e.currentTarget.style.boxShadow = "3px 3px 0 #000";
+                    e.currentTarget.style.borderColor = "#3A3A42";
                   }}
                 >
-                  <div className={`inline-flex items-center justify-center size-14 rounded-xl bg-gradient-to-br ${room.color} ${room.shadow} shadow-lg mb-4 group-hover:scale-110 transition-transform`}>
-                    <room.icon className="size-7 text-white" />
+                  <div
+                    className="inline-flex items-center justify-center size-14 mb-4 group-hover:scale-105 transition-transform"
+                    style={{
+                      background: room.glowColor,
+                      border: "2px solid #FFE27D",
+                      boxShadow: "2px 2px 0 #000",
+                    }}
+                  >
+                    <room.icon className="size-7" style={{ color: "#1A0F00" }} />
                   </div>
-                  <h3 className={`text-xl font-bold ${room.accent} mb-2`}>
+                  <h3
+                    className="font-pixel mb-2"
+                    style={{ fontSize: 13, letterSpacing: 1.5, color: "#FFFCEB", textShadow: "1px 1px 0 #000" }}
+                  >
                     {t(room.i18nKey as Parameters<typeof t>[0])}
                   </h3>
-                  <p className="text-sm text-[color:var(--text-muted)] leading-relaxed">
+                  <p className="font-retro text-[15px] text-[color:var(--text-muted)] leading-snug">
                     {t(room.descKey as Parameters<typeof t>[0])}
                   </p>
                 </div>
@@ -260,16 +291,29 @@ export default function DojoPage() {
             <motion.div variants={roomVariants}>
               <Link href="/login" className="group block">
                 <div
-                  className="glass-card-strong rounded-xl retro-border p-6 transition-all hover:border-violet-500/30 border-dashed border-white/10 opacity-60 hover:opacity-80"
-                  style={{ transition: "box-shadow 0.3s ease, opacity 0.3s ease" }}
+                  className="p-6 opacity-60 hover:opacity-80 transition-opacity"
+                  style={{
+                    background: "var(--bg-panel)",
+                    border: "2px dashed #3A3A42",
+                    boxShadow: "3px 3px 0 #000",
+                  }}
                 >
-                  <div className="inline-flex items-center justify-center size-14 rounded-xl bg-gradient-to-br from-cyan-500/30 to-blue-500/30 shadow-lg mb-4">
-                    <Lock className="size-7 text-cyan-400/60" />
+                  <div
+                    className="inline-flex items-center justify-center size-14 mb-4"
+                    style={{
+                      background: "rgba(255,69,0,0.12)",
+                      border: "2px dashed rgba(255,69,0,0.35)",
+                    }}
+                  >
+                    <Lock className="size-7" style={{ color: "rgba(255,226,125,0.6)" }} />
                   </div>
-                  <h3 className="text-xl font-bold text-cyan-400/60 mb-2">
+                  <h3
+                    className="font-pixel mb-2"
+                    style={{ fontSize: 13, letterSpacing: 1.5, color: "rgba(255,252,235,0.5)" }}
+                  >
                     {t("nav.messages")}
                   </h3>
-                  <p className="text-sm text-[color:var(--text-muted)]/60 leading-relaxed">
+                  <p className="font-retro text-[15px] text-[color:var(--text-muted)]/60 leading-snug">
                     {t("dojo.loginToChat")}
                   </p>
                 </div>
@@ -288,7 +332,7 @@ export default function DojoPage() {
       >
         <div className="rpgui-container framed" style={{ padding: "1.5rem" }}>
           <div className="flex items-center gap-2 mb-4">
-            <Share2 className="size-4 text-fuchsia-400" />
+            <Share2 className="size-4" style={{ color: "#FF4500" }} />
             <span
               className="font-pixel text-[8px] uppercase tracking-widest"
               style={{ color: "#FACC15", textShadow: "0 0 8px rgba(250,204,21,0.3)" }}
