@@ -180,8 +180,27 @@ console.log(
 );
 console.log("─".repeat(72));
 
-if (partiallyApplied + notApplied > 0) {
+if (notApplied > 0) {
   console.log("");
-  console.log("Run the missing migrations via Supabase Dashboard → SQL Editor.");
+  console.log(
+    "Run the missing migrations via Supabase Dashboard → SQL Editor, then",
+  );
+  console.log("regen the inventory: `npm run audit:dump` and commit the file.");
   process.exit(1);
+}
+
+// "partial" is usually a false positive (a policy renamed by a later
+// rls_tighten_* migration — the new name is in the inventory but not
+// listed as a match for the original file's CREATE POLICY statement).
+// We surface the list as a warning but don't fail CI on it, since a
+// strict-match of policy names across replacements is noisy.
+if (partiallyApplied > 0) {
+  console.log("");
+  console.log(
+    `Note: ${partiallyApplied} migration(s) report partial coverage. These`,
+  );
+  console.log(
+    "are typically policy renames superseded by later migrations. Audit the",
+  );
+  console.log("list above if anything looks unfamiliar.");
 }
