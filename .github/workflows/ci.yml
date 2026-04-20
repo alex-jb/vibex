@@ -139,3 +139,24 @@ jobs:
             echo "  OK: $f"
           done
           echo "All migrations have valid names."
+
+  # Schema-reference audit — see scripts/audit-schema-refs.mjs.
+  # Catches the class of silent-bug where code references a DB
+  # object that was never applied to prod (the Supabase client
+  # logs an error and the feature breaks without crashing).
+  schema-audit:
+    name: Schema Reference Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Check schema references
+        run: |
+          if [ ! -f scripts/migration-inventory.json ]; then
+            echo "ERROR: scripts/migration-inventory.json missing."
+            echo "Run 'npm run audit:dump' locally and commit the output."
+            exit 1
+          fi
+          node scripts/audit-schema-refs.mjs scripts/migration-inventory.json
