@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Question or idea
+    url: https://github.com/alex-jb/vibex/discussions
+    about: Ask a question, float an idea, or show off what you built. Issues are for bugs and concrete feature asks — everything else is better in Discussions.
+  - name: 📣 Submit your AI project
+    url: https://www.vibexforge.com/launch
+    about: Got an AI project you want reviewed by Claude? Drop the URL into VibeX. That's the fastest feedback loop, not a GitHub issue.
+  - name: 📧 Private email
+    url: https://www.vibexforge.com/contact
+    about: For security issues, partnership questions, or anything that shouldn't be public.

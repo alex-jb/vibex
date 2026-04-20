@@ -1,0 +1,10 @@
+# GitHub Sponsors + Ko-fi + Buy Me a Coffee links surface as a "Sponsor"
+# button on the repo page. Uncomment + fill once the corresponding
+# accounts are set up. Until then the file is a no-op placeholder that
+# saves one round trip when the first sponsor arrives.
+
+# github: alex-jb
+# ko_fi: alex_jb
+# buy_me_a_coffee: alex_jb
+# custom:
+#   - https://www.vibexforge.com/sponsor
