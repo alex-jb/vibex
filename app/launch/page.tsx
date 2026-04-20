@@ -1164,7 +1164,7 @@ export default function LaunchPage() {
             {/* Section: Project Identity */}
             <SectionLabel>{t("launch.identity")}</SectionLabel>
             <div className="flex flex-col gap-5 mt-3">
-              <FormField label={t("launch.projectTitle")}>
+              <FormField label={t("launch.projectTitle")} filled={!!title.trim()}>
                 <Input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -1173,7 +1173,7 @@ export default function LaunchPage() {
                 />
               </FormField>
 
-              <FormField label={t("launch.tagline")}>
+              <FormField label={t("launch.tagline")} filled={!!tagline.trim()}>
                 <Input
                   value={tagline}
                   onChange={(e) => setTagline(e.target.value)}
@@ -1188,7 +1188,7 @@ export default function LaunchPage() {
             {/* Section: Details */}
             <SectionLabel>{t("launch.details")}</SectionLabel>
             <div className="flex flex-col gap-5 mt-3">
-              <FormField label={t("launch.descriptionLabel")}>
+              <FormField label={t("launch.descriptionLabel")} filled={!!description.trim()}>
                 <Textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -1198,7 +1198,7 @@ export default function LaunchPage() {
                 />
               </FormField>
 
-              <FormField label={t("launch.category")}>
+              <FormField label={t("launch.category")} filled={!!category}>
                 <Select
                   value={category}
                   onValueChange={(v) => setCategory(v ?? "")}
@@ -1218,7 +1218,7 @@ export default function LaunchPage() {
                 </Select>
               </FormField>
 
-              <FormField label={t("launch.demoType")}>
+              <FormField label={t("launch.demoType")} filled={!!demoType}>
                 <Select
                   value={demoType}
                   onValueChange={(v) => setDemoType(v ?? "")}
@@ -1241,7 +1241,7 @@ export default function LaunchPage() {
             {/* Section: Assets */}
             <SectionLabel>{t("launch.assets")}</SectionLabel>
             <div className="flex flex-col gap-5 mt-3">
-              <FormField label={t("launch.demoLink")}>
+              <FormField label={t("launch.demoLink")} filled={!!demoLink.trim()}>
                 <Input
                   value={demoLink}
                   onChange={(e) => setDemoLink(e.target.value)}
@@ -1259,7 +1259,7 @@ export default function LaunchPage() {
                 }}
               />
 
-              <FormField label={t("launch.thumbnailUrl")}>
+              <FormField label={t("launch.thumbnailUrl")} filled={!!thumbnailUrl.trim()}>
                 <Input
                   value={thumbnailUrl}
                   onChange={(e) => setThumbnailUrl(e.target.value)}
@@ -1274,7 +1274,7 @@ export default function LaunchPage() {
             {/* Section: Creator */}
             <SectionLabel>{t("launch.creator")}</SectionLabel>
             <div className="flex flex-col gap-5 mt-3">
-              <FormField label={t("launch.creatorName")}>
+              <FormField label={t("launch.creatorName")} filled={!!creatorName.trim()}>
                 <Input
                   value={creatorName}
                   onChange={(e) => setCreatorName(e.target.value)}
@@ -1283,7 +1283,7 @@ export default function LaunchPage() {
                 />
               </FormField>
 
-              <FormField label={t("launch.tags")}>
+              <FormField label={t("launch.tags")} filled={!!tags.trim()}>
                 <Input
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
@@ -1572,25 +1572,71 @@ export default function LaunchPage() {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/50">
-      {children}
-    </h3>
+    <div
+      className="font-ui flex items-center gap-2"
+      style={{
+        fontSize: 10,
+        letterSpacing: 3,
+        color: "var(--neon-green)",
+        textShadow: "0 0 4px rgba(57,255,20,0.6)",
+      }}
+    >
+      <span aria-hidden style={{ display: "inline-block", width: 8, height: 8, background: "#FF4500", boxShadow: "0 0 6px rgba(255,69,0,0.8)" }} />
+      <h3 className="m-0 uppercase">{children}</h3>
+    </div>
   );
 }
 
+/**
+ * FormField — Direction A "forge plate".
+ * Grey/orange 2px frame, pixel eyebrow label, bottom heat-gradient strip that
+ * glows orange when the input has content. Wraps existing shadcn primitives
+ * so we don't have to restyle every Input/Textarea/Select internal — the plate
+ * provides the chrome, the primitives provide the behavior.
+ */
 function FormField({
   label,
+  filled,
   children,
 }: {
   label: string;
+  filled?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col">
-      <label className="text-sm font-medium text-muted-foreground mb-1.5">
-        {label}
+    <div
+      className="relative transition-colors"
+      style={{
+        border: filled ? "2px solid rgba(255,69,0,0.55)" : "2px solid #3A3A42",
+        background: "#0D0D0D",
+        boxShadow: filled
+          ? "inset 0 0 24px rgba(255,69,0,0.08), 2px 2px 0 #000"
+          : "2px 2px 0 #000",
+      }}
+    >
+      <label
+        className="font-ui block"
+        style={{
+          fontSize: 9,
+          letterSpacing: 3,
+          color: filled ? "#FF4500" : "#8B7AA0",
+          padding: "10px 14px 2px",
+          textShadow: filled ? "0 0 4px rgba(255,69,0,0.4)" : "none",
+        }}
+      >
+        ▸ {label.toUpperCase()}
       </label>
-      {children}
+      <div className="px-2.5 pb-2.5 pt-1">{children}</div>
+      <div
+        aria-hidden
+        style={{
+          height: 2,
+          background: filled
+            ? "linear-gradient(90deg, transparent 0%, rgba(255,69,0,0.85) 50%, transparent 100%)"
+            : "linear-gradient(90deg, transparent 0%, rgba(139,122,160,0.3) 50%, transparent 100%)",
+          transition: "background 0.3s ease",
+        }}
+      />
     </div>
   );
 }
