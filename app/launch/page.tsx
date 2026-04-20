@@ -1349,9 +1349,11 @@ export default function LaunchPage() {
           <div className="sticky top-24 flex flex-col gap-5">
             {/* Live HeroCard preview — Direction A. Seed-locked pre-submit:
                 frame / sprite / rank / compound stay Seed until Claude runs.
-                Only user-owned fields (name, creator, category) react live. */}
+                Only user-owned fields (name, creator, category) react live.
+                During submitLoading, the card "forges" — shakes on hammer hits
+                + emits pixel sparks + eyebrow pulses between orange + yellow. */}
             <div className="hidden lg:flex flex-col items-center gap-2">
-              <div
+              <motion.div
                 className="font-ui"
                 style={{
                   fontSize: 10,
@@ -1359,28 +1361,98 @@ export default function LaunchPage() {
                   color: "#FF4500",
                   textShadow: "0 0 4px rgba(255,69,0,0.5)",
                 }}
-              >
-                ▸ LIVE FORGE PREVIEW
-              </div>
-              <HeroCard
-                data={
-                  {
-                    id: "preview",
-                    name: title || "—",
-                    creator: creatorName || "newuser",
-                    category: (category || "—").toUpperCase(),
-                    evolutionStage: "Seed",
-                    compound: 0,
-                    topAttrs: [
-                      { code: "ORG", label: "Originality", value: 0 },
-                      { code: "CLR", label: "Clarity", value: 0 },
-                    ],
-                    traction: { kind: "plays", value: 0 },
-                    newChip: true,
-                  } satisfies HeroCardData
+                animate={
+                  submitLoading
+                    ? { color: ["#FF4500", "#FACC15", "#FF4500"] }
+                    : { color: "#FF4500" }
                 }
-              />
-              <div
+                transition={{
+                  duration: 0.6,
+                  repeat: submitLoading ? Infinity : 0,
+                }}
+              >
+                {submitLoading ? "🔨 FORGING HERO…" : "▸ LIVE FORGE PREVIEW"}
+              </motion.div>
+              <motion.div
+                className="relative"
+                animate={
+                  submitLoading
+                    ? { x: [0, -3, 4, -2, 3, 0], rotate: [0, -0.3, 0.4, -0.2, 0] }
+                    : { x: 0, rotate: 0 }
+                }
+                transition={{
+                  duration: 0.45,
+                  repeat: submitLoading ? Infinity : 0,
+                  ease: "easeInOut",
+                }}
+                style={{
+                  filter: submitLoading
+                    ? "drop-shadow(0 0 24px rgba(255,69,0,0.55))"
+                    : "none",
+                  transition: "filter 0.3s ease",
+                }}
+              >
+                <HeroCard
+                  data={
+                    {
+                      id: "preview",
+                      name: title || "—",
+                      creator: creatorName || "newuser",
+                      category: (category || "—").toUpperCase(),
+                      evolutionStage: "Seed",
+                      compound: 0,
+                      topAttrs: [
+                        { code: "ORG", label: "Originality", value: 0 },
+                        { code: "CLR", label: "Clarity", value: 0 },
+                      ],
+                      traction: { kind: "plays", value: 0 },
+                      newChip: true,
+                    } satisfies HeroCardData
+                  }
+                />
+                {/* Forge sparks — only visible during submitLoading. 6 pixel dots
+                    radiating from center, staggered, looping. */}
+                {submitLoading && (
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 flex items-center justify-center"
+                  >
+                    {[
+                      { x: -80, y: -60, delay: 0, color: "#FFE27D" },
+                      { x: 70, y: -50, delay: 0.1, color: "#FF4500" },
+                      { x: -50, y: 70, delay: 0.2, color: "#FACC15" },
+                      { x: 90, y: 40, delay: 0.3, color: "#FF4500" },
+                      { x: -90, y: 10, delay: 0.4, color: "#FFE27D" },
+                      { x: 60, y: -80, delay: 0.5, color: "#FACC15" },
+                    ].map((s, i) => (
+                      <motion.span
+                        key={i}
+                        style={{
+                          position: "absolute",
+                          width: 4,
+                          height: 4,
+                          background: s.color,
+                          boxShadow: `0 0 6px ${s.color}`,
+                        }}
+                        initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                        animate={{
+                          x: [0, s.x * 0.3, s.x],
+                          y: [0, s.y * 0.3, s.y],
+                          opacity: [0, 1, 0],
+                          scale: [0, 1.3, 0],
+                        }}
+                        transition={{
+                          duration: 1.1,
+                          delay: s.delay,
+                          repeat: Infinity,
+                          ease: "easeOut",
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+              <motion.div
                 className="font-ui"
                 style={{
                   fontSize: 8,
@@ -1388,9 +1460,18 @@ export default function LaunchPage() {
                   color: "#8B7AA0",
                   marginTop: 2,
                 }}
+                animate={
+                  submitLoading ? { opacity: [1, 0.4, 1] } : { opacity: 1 }
+                }
+                transition={{
+                  duration: 0.8,
+                  repeat: submitLoading ? Infinity : 0,
+                }}
               >
-                ⏳ PENDING CLAUDE · STRIKE ANVIL TO FORGE
-              </div>
+                {submitLoading
+                  ? "⏱ CLAUDE REVIEWING · ATTRIBUTES FORGING"
+                  : "⏳ PENDING CLAUDE · STRIKE ANVIL TO FORGE"}
+              </motion.div>
             </div>
 
             <div className="glass-card-strong border-glow noise-bg rounded-xl border border-white/[0.06] p-6 overflow-hidden">
