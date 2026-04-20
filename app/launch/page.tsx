@@ -791,11 +791,37 @@ export default function LaunchPage() {
             {t("launch.badge")}
           </span>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
+        <h1
+          className="font-pixel text-[22px] sm:text-[30px] md:text-[36px]"
+          style={{
+            color: "#FFFCEB",
+            letterSpacing: 3,
+            lineHeight: 1.25,
+            textShadow:
+              "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 4px 4px 0 #000, 0 0 28px rgba(255,69,0,0.35)",
+          }}
+        >
           {t("launch.title")}{" "}
-          <span className="text-gradient">{t("launch.titleHighlight")}</span>
+          <span
+            style={{
+              background:
+                "linear-gradient(180deg, #FFE27D 0%, #FF4500 70%, #B8380B 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            {t("launch.titleHighlight")}
+          </span>
         </h1>
-        <p className="mt-3 text-muted-foreground max-w-md mx-auto text-sm leading-relaxed">
+        <p
+          className="font-retro mt-4 max-w-lg mx-auto text-[17px] sm:text-[20px]"
+          style={{
+            color: "rgba(232,232,236,0.85)",
+            lineHeight: 1.35,
+            textShadow: "0 2px 0 rgba(0,0,0,0.7)",
+          }}
+        >
           {t("launch.description")}
         </p>
       </motion.div>
