@@ -111,8 +111,9 @@ export function EvolutionProgress({ project, className = "" }: EvolutionProgress
             <div className="flex items-center justify-between mb-0.5">
               <span className="font-pixel text-[6px] text-muted-foreground uppercase">{cond.label}</span>
               <span className="font-pixel text-[7px]" style={{ color: cond.met ? "#39FF14" : nextConfig.color }}>
-                {cond.current.toLocaleString()}/{cond.target.toLocaleString()}
-                {cond.met && " ✓"}
+                {cond.met
+                  ? `${cond.current.toLocaleString()} ≥ ${cond.target.toLocaleString()} ✓`
+                  : `${cond.current.toLocaleString()}/${cond.target.toLocaleString()}`}
               </span>
             </div>
             <ProgressBar current={cond.current} target={cond.target} color={cond.met ? "#39FF14" : nextConfig.color} />

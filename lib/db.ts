@@ -16,6 +16,7 @@ import type {
 import type { AgentDefinition } from "./agent-types";
 import { agents as mockAgents } from "./mock-data/agents";
 import { validateEnv } from "./env";
+import { computeHeroStats } from "./rpg-utils";
 
 /**
  * Data access layer.
@@ -29,7 +30,7 @@ const { hasSupabase: USE_SUPABASE } = validateEnv();
 // ═══════════════════════════════════════════════════════════════
 
 function mapProject(row: Record<string, unknown>): Project {
-  return {
+  const base: Project = {
     id: row.id as string,
     title: row.title as string,
     tagline: row.tagline as string,
@@ -59,6 +60,17 @@ function mapProject(row: Record<string, unknown>): Project {
       ? mapAIReview(row.ai_reviews as Record<string, unknown>)
       : { originality: 0, clarity: 0, uxPotential: 0, viralityPotential: 0, investorCuriosity: 0, strengths: [], weaknesses: [], suggestions: [] },
   };
+
+  // Derive the RPG hero stats (level, class, attributes, evolutionStage,
+  // etc.) from the mapped Project data. Before 2026-04-17 this field
+  // was only populated on mock projects, so user-submitted rows had
+  // `project.hero === undefined` — the UI then fell through to
+  // "Seed" as the displayed stage even when the compound score was
+  // already past the Active threshold. computeHeroStats is pure and
+  // cheap so we run it on every map; the DB-stored evolution_stage
+  // column (from migration 033 trigger) is preserved in case it has
+  // been hand-tuned.
+  return { ...base, hero: computeHeroStats(base) };
 }
 
 function mapBehaviorScore(row: Record<string, unknown>): BehaviorScore {
