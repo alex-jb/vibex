@@ -761,9 +761,12 @@ export default function LaunchPage() {
 
   return (
     <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-16">
-      {/* Background gradient orbs */}
-      <div className="pointer-events-none absolute -top-40 left-1/4 h-[400px] w-[400px] rounded-full bg-violet-600/8 blur-[120px]" />
-      <div className="pointer-events-none absolute -top-20 right-1/4 h-[300px] w-[300px] rounded-full bg-fuchsia-600/6 blur-[100px]" />
+      {/* Forge ember glow — single orange pulse replaces the old violet/fuchsia orbs */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
+        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.18), transparent 70%)" }}
+      />
 
       {/* Page Hero */}
       <motion.div
@@ -772,9 +775,18 @@ export default function LaunchPage() {
         transition={{ duration: 0.5 }}
         className="relative text-center mb-14"
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 mb-5">
-          <Rocket className="size-3.5 text-violet-400" />
-          <span className="text-xs font-medium text-violet-400 tracking-wide">
+        <div
+          className="inline-flex items-center gap-2 px-4 py-1.5 mb-5"
+          style={{
+            border: "1px solid rgba(255,69,0,0.35)",
+            background: "rgba(255,69,0,0.08)",
+          }}
+        >
+          <Rocket className="size-3.5" style={{ color: "#FF4500" }} />
+          <span
+            className="font-ui text-[11px] tracking-[3px]"
+            style={{ color: "#FF4500" }}
+          >
             {t("launch.badge")}
           </span>
         </div>
@@ -1068,7 +1080,7 @@ export default function LaunchPage() {
                 }}
                 placeholder="https://your-ai-project.com"
                 disabled={scrapeLoading}
-                className="pl-10 bg-white/5 border-white/[0.12] focus-visible:border-violet-500/50 focus-visible:ring-violet-500/20 h-11"
+                className="pl-10 bg-white/5 border-white/[0.12] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30 h-11"
               />
             </div>
             <Button
@@ -1130,7 +1142,7 @@ export default function LaunchPage() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder={t("launch.titlePlaceholder")}
-                  className="bg-white/5 border-white/[0.08] focus-visible:border-violet-500/50 focus-visible:ring-violet-500/20"
+                  className="bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
                 />
               </FormField>
 
@@ -1139,7 +1151,7 @@ export default function LaunchPage() {
                   value={tagline}
                   onChange={(e) => setTagline(e.target.value)}
                   placeholder={t("launch.taglinePlaceholder")}
-                  className="bg-white/5 border-white/[0.08] focus-visible:border-violet-500/50 focus-visible:ring-violet-500/20"
+                  className="bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
                 />
               </FormField>
             </div>
@@ -1155,7 +1167,7 @@ export default function LaunchPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder={t("launch.descriptionPlaceholder")}
                   rows={6}
-                  className="bg-white/5 border-white/[0.08] focus-visible:border-violet-500/50 focus-visible:ring-violet-500/20"
+                  className="bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
                 />
               </FormField>
 
@@ -1164,7 +1176,7 @@ export default function LaunchPage() {
                   value={category}
                   onValueChange={(v) => setCategory(v ?? "")}
                 >
-                  <SelectTrigger className="w-full bg-white/5 border-white/[0.08] focus-visible:border-violet-500/50">
+                  <SelectTrigger className="w-full bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)]">
                     <SelectValue placeholder={t("launch.categoryPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
@@ -1184,7 +1196,7 @@ export default function LaunchPage() {
                   value={demoType}
                   onValueChange={(v) => setDemoType(v ?? "")}
                 >
-                  <SelectTrigger className="w-full bg-white/5 border-white/[0.08] focus-visible:border-violet-500/50">
+                  <SelectTrigger className="w-full bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)]">
                     <SelectValue placeholder={t("launch.demoTypePlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
@@ -1207,7 +1219,7 @@ export default function LaunchPage() {
                   value={demoLink}
                   onChange={(e) => setDemoLink(e.target.value)}
                   placeholder="https://..."
-                  className="bg-white/5 border-white/[0.08] focus-visible:border-violet-500/50 focus-visible:ring-violet-500/20"
+                  className="bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
                 />
               </FormField>
 
@@ -1225,7 +1237,7 @@ export default function LaunchPage() {
                   value={thumbnailUrl}
                   onChange={(e) => setThumbnailUrl(e.target.value)}
                   placeholder="https://..."
-                  className="bg-white/5 border-white/[0.08] focus-visible:border-violet-500/50 focus-visible:ring-violet-500/20"
+                  className="bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
                 />
               </FormField>
             </div>
@@ -1240,7 +1252,7 @@ export default function LaunchPage() {
                   value={creatorName}
                   onChange={(e) => setCreatorName(e.target.value)}
                   placeholder={t("launch.creatorPlaceholder")}
-                  className="bg-white/5 border-white/[0.08] focus-visible:border-violet-500/50 focus-visible:ring-violet-500/20"
+                  className="bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
                 />
               </FormField>
 
@@ -1249,7 +1261,7 @@ export default function LaunchPage() {
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder={t("launch.tagsPlaceholder")}
-                  className="bg-white/5 border-white/[0.08] focus-visible:border-violet-500/50 focus-visible:ring-violet-500/20"
+                  className="bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
                 />
               </FormField>
             </div>
