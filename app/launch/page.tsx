@@ -769,6 +769,90 @@ export default function LaunchPage() {
         style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.18), transparent 70%)" }}
       />
 
+      {/* Mobile sticky preview strip — lg:hidden so desktop uses the right-column
+          full HeroCard preview instead. Shows sprite + name + compound placeholder
+          + forge state label. Hidden when form is submitted (redirect incoming). */}
+      {!submitted && (filledFieldCount > 0 || showForm) && (
+        <div
+          className="lg:hidden sticky top-2 z-40 -mx-2 sm:-mx-4 mb-5"
+          style={{ backdropFilter: "blur(6px)" }}
+        >
+          <div
+            className="mx-2 sm:mx-4 flex items-center gap-3 px-3 py-2"
+            style={{
+              background: "rgba(13,13,13,0.88)",
+              border: submitLoading ? "2px solid #FF4500" : "2px solid #3A3A42",
+              boxShadow: submitLoading
+                ? "3px 3px 0 #000, 0 0 24px rgba(255,69,0,0.4)"
+                : "3px 3px 0 #000",
+              transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+            }}
+          >
+            <Image
+              src="/generated/evo-1-seed.png"
+              alt=""
+              width={44}
+              height={44}
+              style={{
+                imageRendering: "pixelated",
+                filter: submitLoading
+                  ? "drop-shadow(0 0 8px #FF4500)"
+                  : "drop-shadow(0 0 4px rgba(212,212,216,0.4))",
+                flexShrink: 0,
+              }}
+            />
+            <div className="flex-1 min-w-0">
+              <div
+                className="font-pixel truncate"
+                style={{
+                  fontSize: 10,
+                  letterSpacing: 0.5,
+                  color: "#FFFCEB",
+                  textShadow: "1px 1px 0 #000",
+                }}
+              >
+                {title || "—"}
+              </div>
+              <motion.div
+                className="font-ui"
+                style={{
+                  fontSize: 7,
+                  letterSpacing: 2,
+                  color: submitLoading ? "#FF4500" : "#8B7AA0",
+                  marginTop: 2,
+                }}
+                animate={submitLoading ? { opacity: [1, 0.5, 1] } : { opacity: 1 }}
+                transition={{ duration: 0.8, repeat: submitLoading ? Infinity : 0 }}
+              >
+                {submitLoading
+                  ? "🔨 FORGING · CLAUDE REVIEWING"
+                  : "SEED · PENDING CLAUDE"}
+              </motion.div>
+            </div>
+            <div className="flex flex-col items-end" style={{ flexShrink: 0 }}>
+              <span
+                className="font-ui"
+                style={{ fontSize: 7, letterSpacing: 1.5, color: "#8B7AA0" }}
+              >
+                COMPOUND
+              </span>
+              <span
+                className="font-pixel"
+                style={{
+                  fontSize: 18,
+                  color: "#FACC15",
+                  lineHeight: 0.9,
+                  textShadow: "1px 1px 0 #000, 0 0 6px rgba(250,204,21,0.4)",
+                  marginTop: 2,
+                }}
+              >
+                ??
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Page Hero */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
