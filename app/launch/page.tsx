@@ -1272,23 +1272,30 @@ export default function LaunchPage() {
               </div>
             )}
             {!submitted && (
-              <Button
+              <button
                 type="submit"
                 disabled={submitLoading}
-                className="w-full mt-8 h-12 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-base font-semibold shadow-lg shadow-violet-500/20 transition-all duration-200 hover:shadow-violet-500/30 glow-violet disabled:opacity-60"
+                className="font-pixel w-full mt-8 relative flex items-center justify-center transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+                style={{
+                  height: 60,
+                  fontSize: 14,
+                  letterSpacing: 3,
+                  color: "#1A0F00",
+                  background: "#FF4500",
+                  border: "4px solid #FFE27D",
+                  boxShadow: "6px 6px 0 #000, inset 0 0 0 1px rgba(0,0,0,0.3), inset 0 12px 0 rgba(255,255,255,0.15), inset 0 -12px 0 rgba(0,0,0,0.25)",
+                  textShadow: "0 1px 0 rgba(255,255,255,0.4)",
+                }}
               >
                 {submitLoading ? (
                   <>
-                    <Loader2 className="size-4 mr-2 animate-spin" />
-                    Forging…
+                    <Loader2 className="size-4 mr-3 animate-spin" />
+                    {t("launch.forging")}
                   </>
                 ) : (
-                  <>
-                    <Rocket className="size-4 mr-2" />
-                    {t("launch.submit")}
-                  </>
+                  t("launch.submit")
                 )}
-              </Button>
+              </button>
             )}
           </form>
         </motion.div>
