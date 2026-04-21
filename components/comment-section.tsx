@@ -154,7 +154,7 @@ function CommentItem({
             <button
               onClick={() => onReply(comment.id)}
               aria-label={`Reply to ${comment.user_name}`}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-violet-400 transition-colors"
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-[#FF4500] transition-colors"
             >
               <Reply className="size-3.5" />
               <span>Reply</span>
@@ -179,13 +179,19 @@ function CommentItem({
                     }}
                     placeholder={`Reply to ${comment.user_name}...`}
                     aria-label={`Reply to ${comment.user_name}`}
-                    className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-violet-500/50"
+                    className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#FF4500]/60"
                   />
                   <button
                     onClick={onSubmitReply}
                     disabled={!replyText.trim()}
                     aria-label="Send reply"
-                    className="rounded-lg bg-violet-600/80 px-3 py-2 text-sm text-white hover:bg-violet-500/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    className="font-pixel px-3 py-2 text-[10px] tracking-widest hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+                    style={{
+                      background: "#FF4500",
+                      border: "2px solid #FFE27D",
+                      color: "#1A0F00",
+                      boxShadow: "2px 2px 0 #000",
+                    }}
                   >
                     <Send className="size-3.5" />
                   </button>
@@ -319,7 +325,7 @@ export function CommentSection({ projectId }: { projectId: string }) {
     <div className="glass-card-strong rounded-2xl border border-white/[0.08] p-6 noise-bg">
       {/* Header */}
       <div className="flex items-center gap-2 mb-6">
-        <MessageSquare className="size-5 text-violet-400" />
+        <MessageSquare className="size-5" style={{ color: "#FF4500" }} />
         <h3 className="text-lg font-semibold text-foreground">
           {t("comment.comments")} ({comments.length})
         </h3>
@@ -352,13 +358,19 @@ export function CommentSection({ projectId }: { projectId: string }) {
               }}
               placeholder={t("comment.placeholder")}
               aria-label={t("comment.placeholder")}
-              className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-violet-500/50 transition-colors"
+              className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#FF4500]/60 transition-colors"
             />
             <button
               onClick={handleSubmit}
               disabled={!newComment.trim()}
               aria-label={t("comment.send")}
-              className="rounded-lg bg-violet-600/80 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
+              className="font-pixel flex items-center gap-1.5 px-4 py-2 text-[10px] tracking-widest hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+              style={{
+                background: "#FF4500",
+                border: "2px solid #FFE27D",
+                color: "#1A0F00",
+                boxShadow: "3px 3px 0 #000, inset 0 5px 0 rgba(255,255,255,0.12), inset 0 -5px 0 rgba(0,0,0,0.2)",
+              }}
             >
               <Send className="size-4" />
               <span>{t("comment.send")}</span>
@@ -370,7 +382,8 @@ export function CommentSection({ projectId }: { projectId: string }) {
           <p className="text-sm text-muted-foreground">
             <Link
               href="/login"
-              className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors"
+              className="underline underline-offset-2 transition-colors hover:opacity-80"
+              style={{ color: "#FF4500", textShadow: "0 0 4px rgba(255,69,0,0.4)" }}
             >
               {t("comment.signIn")}
             </Link>
