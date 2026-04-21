@@ -12,7 +12,11 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "audit:migrations": "node scripts/audit-migrations.mjs scripts/migration-inventory.json",
-    "audit:dump": "node scripts/dump-inventory.mjs scripts/migration-inventory.json"
+    "audit:dump": "node scripts/dump-inventory.mjs scripts/migration-inventory.json",
+    "screenshot:v3": "node scripts/screenshot-v3.mjs",
+    "remotion:dev": "remotion studio remotion/src/index.ts",
+    "remotion:render": "remotion render remotion/src/index.ts Vibex out/vibex-hero-v3.mp4 --codec=h264 --crf=18 --concurrency=4",
+    "remotion:render-zh": "remotion render remotion/src/index.ts Vibex out/vibex-hero-v3-zh.mp4 --props='{\"locale\":\"zh\"}' --codec=h264 --crf=18"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
@@ -48,6 +52,9 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
+    "remotion": "^4.0.320",
+    "@remotion/bundler": "^4.0.320",
+    "@remotion/cli": "^4.0.320",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.2"
