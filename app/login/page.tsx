@@ -82,8 +82,11 @@ export default function LoginPage() {
             "radial-gradient(ellipse at center, black 30%, transparent 80%)",
         }}
       />
-      <div className="pointer-events-none absolute -top-40 left-1/3 h-[500px] w-[500px] rounded-full bg-violet-600/12 blur-[140px]" />
-      <div className="pointer-events-none absolute bottom-0 right-1/4 h-[300px] w-[300px] rounded-full bg-fuchsia-600/10 blur-[100px]" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[400px] w-[560px] rounded-full"
+        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.16), transparent 70%)" }}
+      />
 
       {/* Viewport corner brackets */}
       {(["tl", "tr", "bl", "br"] as const).map((pos) => {

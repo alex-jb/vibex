@@ -205,7 +205,7 @@ export function FeedbackPanel({ projectId }: FeedbackPanelProps) {
     >
       {/* Header */}
       <header className="flex items-center gap-3 border-b border-white/[0.04] px-5 py-4">
-        <Sparkles className="h-4 w-4 text-violet-400" />
+        <Sparkles className="h-4 w-4" style={{ color: "var(--neon-green)", filter: "drop-shadow(0 0 4px rgba(57,255,20,0.5))" }} />
         <h2 className="font-pixel text-sm uppercase tracking-widest text-foreground">
           AI Launch Review
         </h2>
@@ -283,7 +283,7 @@ export function FeedbackPanel({ projectId }: FeedbackPanelProps) {
 
         {!loading && !error && visibleActions.length === 0 && (
           <div className="flex flex-col items-center justify-center gap-2 py-12">
-            <Sparkles className="h-6 w-6 text-violet-400/40" />
+            <Sparkles className="h-6 w-6" style={{ color: "rgba(57,255,20,0.4)" }} />
             <div className="font-pixel text-[10px] uppercase tracking-widest text-muted-foreground">
               {tab === "applied" ? "No actions applied yet" : "All clear in this bucket"}
             </div>

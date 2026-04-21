@@ -45,7 +45,11 @@ export default function NotFound() {
 
       {/* Background glow orbs */}
       <div className="pointer-events-none absolute top-1/4 left-1/4 h-[400px] w-[400px] rounded-full bg-red-600/15 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-1/4 right-1/4 h-[300px] w-[300px] rounded-full bg-violet-600/12 blur-[100px]" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-1/4 right-1/4 h-[300px] w-[300px] rounded-full"
+        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+      />
 
       {/* Viewport corner brackets */}
       {(["tl", "tr", "bl", "br"] as const).map((pos) => {
