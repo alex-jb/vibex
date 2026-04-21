@@ -1,4 +1,4 @@
-# VibeX — Twitter / X launch thread v3 (2026-04-21 refresh, post-Direction A)
+# VibeXForge — Twitter / X launch thread v3 (2026-04-21 refresh, post-Direction A)
 
 Supersedes v2 (2026-04-18). Key changes:
 
@@ -32,7 +32,7 @@ I spent 6 weeks rebuilding what Product Hunt should be for AI.
 The insight: AI projects shouldn't launch once and die on day 2.
 They should level up for months based on real usage.
 
-So every project on VibeX is a pixel-art RPG hero you forge.
+So every project on VibeXForge is a pixel-art RPG hero you forge.
 
 Seed → Active → Growing → Breakout → Legend → Myth.
 
@@ -88,7 +88,7 @@ Projects that improve compound in discoverability.
 Projects that stall fall down.
 
 Product Hunt rewards launch-day spike.
-VibeX rewards the work you put in after.
+VibeXForge rewards the work you put in after.
 ```
 
 ## 6 / 7  (the eng-honesty tweet — RT-bait)
@@ -126,7 +126,7 @@ vibexforge.com/launch
 ```
 PH is a 24-hour upvote contest. You launch, you spike, it's over.
 
-VibeX is continuous. A Seed today can hit Myth in 3 months of
+VibeXForge is continuous. A Seed today can hit Myth in 3 months of
 sustained traction — or regress if engagement dies.
 
 Also reviews are Claude against a published rubric, not anonymous
@@ -134,7 +134,7 @@ upvotes. Structured. You can see exactly what the 5 scores mean.
 
 And the submit itself is designed as a reward — forge plates,
 live preview, anvil strike, 3.5s unveil. PH is built for novelty;
-VibeX is built for the loop.
+VibeXForge is built for the loop.
 ```
 
 **"That STRIKE THE ANVIL button — is the forge animation real?"**
@@ -190,7 +190,7 @@ Source: github.com/alex-jb/vibex
   press → redirect, 8s). Shorter than clip 02, better for quote-tweets
   that also carry your own commentary.
 - Tag `@Shubhamsaboo` (awesome-llm-apps maintainer) in a reply asking
-  him to re-review the VibeX entry. Your prior PR got closed; a second
+  him to re-review the VibeXForge entry. Your prior PR got closed; a second
   ask with the new Direction A framing might stick.
 - Cross-post the #6 eng-honesty tweet to LinkedIn in longer form
   (~200 words, same story). LinkedIn over-indexes on postmortem

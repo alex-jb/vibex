@@ -1,4 +1,4 @@
-# VibeX Launch Kit — 2026-04-17
+# VibeXForge Launch Kit — 2026-04-17
 
 Ready-to-post copy for the first 10 real users.
 
@@ -12,7 +12,7 @@ Discord, HN. Let the data decide what to build next.
 
 **Title:**
 
-> Show HN: VibeX — Paste your AI project's URL, get 7 concrete improvements from Claude
+> Show HN: VibeXForge — Paste your AI project's URL, get 7 concrete improvements from Claude
 
 **Body (~180 words):**
 
@@ -24,7 +24,7 @@ buzzwords, no clear "what does this do" in the first 5 seconds.
 I wanted a senior product designer to glance at my page and tell me the
 3 things to fix. I couldn't find one who works at the speed I ship.
 
-VibeX is that reviewer, powered by Claude Sonnet 4.6.
+VibeXForge is that reviewer, powered by Claude Sonnet 4.6.
 
 Paste a URL → we scrape the page + README → Claude reads it like a
 stranger who just clicked in from Twitter → you get 5-7 structured

@@ -232,7 +232,7 @@ The broader lesson — the one I'd tell myself six weeks ago — is that **silen
 
 ---
 
-*[VibeX][2] is an AI-native launch platform I'm building where every project is a collectible RPG hero. Claude reviews every submission. Projects evolve on real traction. The evolution system is the thing that was completely broken in prod before yesterday. Now it works.*
+*[VibeXForge][2] is an AI-native launch platform I'm building where every project is a collectible RPG hero. Claude reviews every submission. Projects evolve on real traction. The evolution system is the thing that was completely broken in prod before yesterday. Now it works.*
 
 [1]: https://github.com/alex-jb/vibex/blob/master/scripts/audit-migrations.mjs
 [2]: https://www.vibexforge.com

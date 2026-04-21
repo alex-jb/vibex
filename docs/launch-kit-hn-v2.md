@@ -1,4 +1,4 @@
-# VibeX — HN Show Post v3 (2026-04-21 refresh, post-Direction A)
+# VibeXForge — HN Show Post v3 (2026-04-21 refresh, post-Direction A)
 
 Supersedes v2 (2026-04-17) after the two-day Direction A visual system
 rollout: 29 commits unifying a forge / pixel / RPG character sheet
@@ -25,7 +25,7 @@ Key differences from v2:
 **Title (68 chars — under the 80-char cutoff):**
 
 ```
-Show HN: VibeX – Turn your AI project into a collectible RPG hero
+Show HN: VibeXForge – Turn your AI project into a collectible RPG hero
 ```
 
 **Body (~240 words):**
@@ -96,7 +96,7 @@ Most submit buttons are gradient-purple "Submit Project" buttons
 that feel identical to "Subscribe to Newsletter." That button is
 where most AI tools kill their emotional payoff.
 
-VibeX's submit button is called STRIKE THE ANVIL. It's orange,
+VibeXForge's submit button is called STRIKE THE ANVIL. It's orange,
 cream-framed, 3D-shadowed, Press Start 2P font. While you're
 waiting for Claude (8 seconds), the live preview card shakes on
 a 0.45s loop like it's being hammered, and six pixel sparks radiate
@@ -123,17 +123,17 @@ the point.
 Three concrete differences.
 
 PH is a 24-hour upvote contest — you launch once, you spike, it's
-over. VibeX projects keep leveling up. A Seed today can be Myth in
+over. VibeXForge projects keep leveling up. A Seed today can be Myth in
 3 months if the product actually works.
 
-PH upvotes are anonymous and unstructured. VibeX reviews are Claude
+PH upvotes are anonymous and unstructured. VibeXForge reviews are Claude
 against a published rubric (5 dimensions, 0–100 each, with named
 strengths / weaknesses / suggestions).
 
 The submit flow itself is designed as a reward, not a chore. Forge
 plates heat up as you type. The submit button is called STRIKE THE
 ANVIL. Post-submit is a 3.5s unveil where Claude's verdict
-materializes piece by piece. PH is built for novelty; VibeX is
+materializes piece by piece. PH is built for novelty; VibeXForge is
 built for the loop.
 ```
 
