@@ -48,44 +48,13 @@ const SHOTS = [
   {
     name: "03-launch-filled",
     path: "/launch?seed=AgentForge",
-    // Forge plates lit orange, live preview populated, STRIKE THE ANVIL
-    // armed. Seed param pre-fills title + description (see
-    // app/launch/page.tsx useEffect for hydrate logic). Then we type into
-    // the remaining fields so all 9 plates are `filled` and the live
-    // HeroCard preview on the right shows a populated card.
-    settleMs: 2000,
+    // Forge plates lit orange, live preview populated. Seed pre-fills
+    // title + description via the page's useEffect (setShowForm(true)).
+    // Auth gate: /launch redirects to /login unless demo session is set,
+    // which context.addInitScript handles before any page JS runs.
+    waitFor: 'input, textarea', // first form field rendered
+    settleMs: 4000,
     async prepare(page) {
-      // Wait for the form to hydrate from the URL seed param.
-      await page.waitForTimeout(1200);
-
-      // Click through to show the full form (the URL Paste Hero default
-      // state has showForm=false; the useEffect that reads ?seed sets
-      // showForm=true, but we verify the form inputs are visible).
-      const taglineInput = page
-        .locator('input[placeholder*="tagline" i], textarea[placeholder*="tagline" i]')
-        .first();
-      try {
-        await taglineInput.fill("Claude reviews your AI project across 5 dimensions.", {
-          timeout: 2000,
-        });
-      } catch {
-        // If the placeholder doesn't match, skip — the seed has already
-        // populated title + description, which is enough to show forge
-        // plates in a mixed state (some filled, some grey).
-      }
-
-      // Pick a category — Playwright can click the shadcn Select trigger
-      // and then the item. Fall through silently if the DOM differs in prod.
-      try {
-        const categoryTrigger = page.locator('button[role="combobox"]').first();
-        await categoryTrigger.click({ timeout: 1500 });
-        await page.waitForTimeout(200);
-        const item = page.locator('[role="option"]').filter({ hasText: "AI Agent" }).first();
-        await item.click({ timeout: 1500 });
-      } catch {
-        /* optional */
-      }
-
       // Scroll back to top so the hero + first 3 forge plates are in frame.
       await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
     },
@@ -93,27 +62,29 @@ const SHOTS = [
   {
     name: "04-project-forged",
     path: "/project/2?forged=1",
-    // Landing on AgentForge (mock id 2) with the forge-unveil animation
+    // Landing on AgentForge (id=2 in DB) with the forge-unveil animation
     // running. The animation is 3.5s total (frame reveal 0.6→1.8s,
-    // compound roll 1.4→3.2s, attr bars 1.8→2.8s). We wait 4s so the
-    // sequence has fully resolved — screenshots that freeze mid-animation
-    // look broken. The ?forged=1 param is stripped by the page's useEffect
-    // after 3.6s, but by then the screenshot is captured.
-    settleMs: 4000,
+    // compound roll 1.4→3.2s, attr bars 1.8→2.8s). Wait for the article
+    // title, then 8s so mock→live data swap + animation both settle.
+    waitFor: 'h1:has-text("AgentForge")',
+    settleMs: 8000,
   },
   {
     name: "05-hunt",
     path: "/hunt",
-    // Realtime leaderboard. The new Direction A hero (pixel h1, green
-    // eyebrow, forge ember) shipped in 9e395ab.
-    settleMs: 2500,
+    // Realtime leaderboard. useRealtimeLeaderboard fetches async — wait
+    // for at least one leaderboard row to appear instead of the
+    // "Loading rankings..." skeleton.
+    waitFor: 'text=AgentForge',
+    settleMs: 4000,
   },
   {
     name: "06-creators",
     path: "/creators",
-    // Creator rankings. Hero was already Direction A before the sweep;
-    // the orb swap in 24af5e6 is the new element.
-    settleMs: 2000,
+    // Creator rankings (useCreators/useProjects/useWeeklyWinners).
+    // Wait for the podium champion card.
+    waitFor: 'text=SketchToApp',
+    settleMs: 4000,
   },
 ];
 
@@ -130,13 +101,62 @@ async function run() {
     reducedMotion: "no-preference",
   });
 
-  // Route intercept: block cookie consent banners, analytics beacons, and
-  // Sentry — these can pop up over the UI and wreck a screenshot.
+  // Pre-seed two things in every page context before page JS runs:
+  //   1. demo session → lib/auth.tsx hydrates DEMO_USER (client-side
+  //      gate for UI chrome)
+  //   2. onboarding state → components/onboarding/tutorial-overlay.tsx
+  //      doesn't render a "Welcome to VibeX!" modal over every capture
+  await context.addInitScript(() => {
+    try {
+      sessionStorage.setItem("vibex-demo-session", "1");
+    } catch {
+      // sessionStorage can throw in private / restricted contexts; ignore.
+    }
+    try {
+      localStorage.setItem(
+        "vibex-onboarding",
+        JSON.stringify({
+          tutorialCompleted: true,
+          questsCompleted: [],
+          viewMode: "simple",
+          firstVisit: false,
+        }),
+      );
+    } catch {
+      // ignore
+    }
+  });
+
+  // Dev-only cookie that proxy.ts (Next.js 16 middleware) checks before
+  // redirecting auth-gated routes to /login. Without it, /launch and
+  // /profile land on the login page. proxy.ts requires NODE_ENV=dev so
+  // this is inert against production.
+  if (BASE_URL.startsWith("http://localhost") || BASE_URL.startsWith("http://127.")) {
+    const { hostname } = new URL(BASE_URL);
+    await context.addCookies([
+      {
+        name: "vibex-screenshot-bypass",
+        value: "1",
+        domain: hostname,
+        path: "/",
+        httpOnly: false,
+        secure: false,
+      },
+    ]);
+  }
+
+  // Route intercept: block analytics beacons + Sentry, which can pop up
+  // over the UI and wreck a screenshot.
+  //
+  // DO NOT abort PostHog. The PostHog SDK awaits its `/decide` call
+  // during init, and aborting that request parks an unresolved promise
+  // that blocks downstream client modules — empirically, Supabase's
+  // realtime leaderboard hook on /hunt never fires its fetch. Let
+  // PostHog through; its own beacons are harmless in a screenshot.
   await context.route("**/*", (route) => {
     const url = route.request().url();
     if (
       url.includes("sentry.io") ||
-      url.includes("posthog") ||
       url.includes("vercel-insights") ||
       url.includes("vercel-analytics")
     ) {
@@ -158,6 +178,31 @@ async function run() {
       console.warn(`  networkidle timeout, falling back to load event (${e.message})`);
       await page.goto(target, { waitUntil: "load", timeout: 20000 });
     }
+
+    // Optional data-ready gate: wait for a key selector before timing
+    // out on settleMs. Handles cold dev server + client-side data hooks
+    // (useRealtimeLeaderboard, useProjects, etc.) that don't complete
+    // during the networkidle window.
+    if (shot.waitFor) {
+      try {
+        await page.locator(shot.waitFor).first().waitFor({ state: "visible", timeout: 15000 });
+      } catch (e) {
+        console.warn(`  waitFor "${shot.waitFor}" timed out: ${e.message}`);
+      }
+    }
+
+    // Hide floating chrome that's irrelevant to a marketing screenshot:
+    //   - Chat widget (floating bottom-right bubble)
+    //   - Toast notifications / Next.js dev indicator
+    await page.addStyleTag({
+      content: `
+        button[aria-label="Messaging"],
+        [data-nextjs-toast],
+        [data-next-badge-root] {
+          display: none !important;
+        }
+      `,
+    });
 
     if (shot.prepare) {
       try {

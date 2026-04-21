@@ -61,6 +61,18 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Dev-only bypass for screenshot/QA tooling. A request carrying
+  // `vibex-screenshot-bypass=1` skips the auth gate so Playwright can
+  // capture auth-only surfaces (/launch, /profile) against a localhost
+  // dev server. NODE_ENV is `production` on Vercel, so this is inert
+  // there. See scripts/screenshot-v3.mjs.
+  if (
+    process.env.NODE_ENV === "development" &&
+    request.cookies.get("vibex-screenshot-bypass")?.value === "1"
+  ) {
+    return NextResponse.next();
+  }
+
   // Graceful degradation when Supabase env isn't configured (local dev,
   // mock data mode). Let everything through.
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
