@@ -99,6 +99,8 @@ describe("translation key naming conventions", () => {
       "notFound", "about", "privacy", "terms", "workflows", "cat", "valuehero",
       // HQ (/home) hero banner — added 2026-04-15 during i18n migration
       "hq",
+      // HeroCard Direction A — added 2026-04-20 with c4d1528 (12 keys under heroCard.*)
+      "heroCard",
     ]);
     const unknownPrefixes = new Set<string>();
     for (const key of enKeys) {

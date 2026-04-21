@@ -410,6 +410,7 @@ function AIReviewPanel({
   const [compoundDisplay, setCompoundDisplay] = useState(forging ? 0 : compound);
   useEffect(() => {
     if (!forging) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCompoundDisplay(compound);
       return;
     }
