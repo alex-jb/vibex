@@ -17,11 +17,26 @@ export function SectionHeader({
     <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
       <div>
         {badge && (
-          <span className="mb-2 inline-block rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-400">
+          <span
+            className="font-pixel mb-2 inline-block px-3 py-1 text-[10px] tracking-widest"
+            style={{
+              background: "rgba(255,69,0,0.1)",
+              border: "1px solid rgba(255,69,0,0.35)",
+              color: "#FF4500",
+            }}
+          >
             {badge}
           </span>
         )}
-        <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+        <h2
+          className="font-pixel text-[18px] sm:text-[22px]"
+          style={{
+            letterSpacing: 2,
+            lineHeight: 1.3,
+            color: "#FFFCEB",
+            textShadow: "2px 2px 0 #000",
+          }}
+        >
           {title}
         </h2>
         {description && (

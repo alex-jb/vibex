@@ -42,7 +42,13 @@ export function LiveLeaderboard({
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Trophy className="size-3.5 text-amber-400" />
-          <span className="font-pixel text-[8px] uppercase tracking-widest text-violet-400">
+          <span
+            className="font-pixel text-[8px] uppercase tracking-widest"
+            style={{
+              color: "var(--neon-green)",
+              textShadow: "0 0 4px rgba(57,255,20,0.5)",
+            }}
+          >
             {title}
           </span>
         </div>
@@ -104,7 +110,13 @@ export function LiveLeaderboard({
                 </div>
 
                 {/* Score */}
-                <span className="font-pixel text-[9px] text-violet-400 shrink-0">
+                <span
+                  className="font-pixel text-[9px] shrink-0"
+                  style={{
+                    color: "var(--neon-yellow)",
+                    textShadow: "0 0 4px rgba(250,204,21,0.5)",
+                  }}
+                >
                   {entry.score}
                 </span>
 

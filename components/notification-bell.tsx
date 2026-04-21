@@ -187,7 +187,8 @@ export function NotificationBell() {
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllRead}
-                    className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+                    className="text-xs transition-colors hover:opacity-80"
+                    style={{ color: "#FF4500" }}
                   >
                     {t("notif.markAllRead")}
                   </button>
@@ -262,7 +263,10 @@ function NotificationItem({
         </p>
       </div>
       {!n.read && (
-        <span className="mt-1.5 size-2 rounded-full bg-violet-500 shrink-0" />
+        <span
+          className="mt-1.5 size-2 rounded-full shrink-0"
+          style={{ background: "#FF4500", boxShadow: "0 0 6px rgba(255,69,0,0.7)" }}
+        />
       )}
     </Wrapper>
   );
