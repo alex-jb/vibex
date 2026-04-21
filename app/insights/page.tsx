@@ -66,12 +66,12 @@ const typeConfig: Record<
   },
   opportunity: {
     icon: Target,
-    color: "text-violet-400",
-    barFrom: "from-violet-500",
-    barTo: "to-fuchsia-400/60",
-    bgColor: "bg-violet-500/10",
+    color: "text-[#FF4500]",
+    barFrom: "from-[#FF4500]",
+    barTo: "to-[#FFE27D]/60",
+    bgColor: "bg-[#FF4500]/10",
     label: "Opportunity",
-    dotColor: "bg-violet-400",
+    dotColor: "bg-[#FF4500]",
   },
   emerging: {
     icon: Zap,
@@ -452,7 +452,7 @@ function InsightsContent() {
           transition={{ duration: 0.4, delay: 0.1 }}
           className="mb-8 flex items-center gap-2.5 text-sm font-semibold uppercase tracking-widest text-muted-foreground/60"
         >
-          <Activity className="h-4 w-4 text-violet-400/80" />
+          <Activity className="h-4 w-4 text-[#FF4500]/80" />
           {t("insights.allSignals")}
         </motion.h2>
 
@@ -484,8 +484,15 @@ function InsightsContent() {
 
           <div className="relative flex flex-col items-center text-center">
             {/* Icon with gradient */}
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/20 to-cyan-500/20 ring-1 ring-white/[0.06]">
-              <BarChart3 className="h-7 w-7 text-violet-300/90" />
+            <div
+              className="flex h-16 w-16 items-center justify-center"
+              style={{
+                background: "#FF4500",
+                border: "2px solid #FFE27D",
+                boxShadow: "3px 3px 0 #000",
+              }}
+            >
+              <BarChart3 className="h-7 w-7" style={{ color: "#1A0F00" }} />
             </div>
 
             {/* Title */}
@@ -496,17 +503,17 @@ function InsightsContent() {
             {/* Description bullets */}
             <div className="mt-5 flex flex-col gap-2.5 text-sm text-muted-foreground/65">
               <div className="flex items-center gap-2.5">
-                <Signal className="h-3.5 w-3.5 text-violet-400/60 shrink-0" />
+                <Signal className="h-3.5 w-3.5 text-[#FF4500]/60 shrink-0" />
                 <span>{t("insights.analytic1")}</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Sparkles className="h-3.5 w-3.5 text-violet-400/60 shrink-0" />
+                <Sparkles className="h-3.5 w-3.5 text-[#FF4500]/60 shrink-0" />
                 <span>
                   {t("insights.analytic2")}
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
-                <TrendingUp className="h-3.5 w-3.5 text-violet-400/60 shrink-0" />
+                <TrendingUp className="h-3.5 w-3.5 text-[#FF4500]/60 shrink-0" />
                 <span>
                   {t("insights.analytic3")}
                 </span>
@@ -515,8 +522,16 @@ function InsightsContent() {
 
             {/* CTA */}
             <Button
-              className="mt-8 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-500/20 transition-all duration-300 hover:shadow-violet-500/40 hover:brightness-110 border-0 px-8"
+              className="font-pixel mt-8 border-0 px-8 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform"
               size="default"
+              style={{
+                background: "#FF4500",
+                border: "2px solid #FFE27D",
+                color: "#1A0F00",
+                boxShadow: "3px 3px 0 #000, inset 0 8px 0 rgba(255,255,255,0.12), inset 0 -8px 0 rgba(0,0,0,0.2)",
+                fontSize: 11,
+                letterSpacing: 2,
+              }}
             >
               <Sparkles className="mr-2 h-4 w-4" />
               {t("insights.joinWaitlist")}

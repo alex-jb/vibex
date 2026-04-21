@@ -64,7 +64,7 @@ const PROMPT_TEMPLATES: { label: string; prompt: string }[] = [
 
 function stepIcon(type: string) {
   switch (type) {
-    case "thinking": return <Brain className="size-3.5 text-violet-400" />;
+    case "thinking": return <Brain className="size-3.5 text-[#FF4500]" />;
     case "tool_call": return <Wrench className="size-3.5 text-amber-400" />;
     case "tool_result": return <Terminal className="size-3.5 text-emerald-400" />;
     case "response": return <MessageSquare className="size-3.5 text-cyan-400" />;
@@ -140,7 +140,11 @@ export default function AgentBuilderPage() {
   return (
     <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6">
       {/* Background */}
-      <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[480px] w-[480px] rounded-full bg-violet-600/8 blur-[120px]" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
+        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+      />
 
       {/* Back link */}
       <Link href="/discover?tab=agents" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8">
@@ -185,19 +189,19 @@ export default function AgentBuilderPage() {
                 <label className="text-xs text-muted-foreground mb-1 block">Agent {t("builder.name")}</label>
                 <input value={name} onChange={(e) => setName(e.target.value)}
                   placeholder={t("builder.namePlaceholder")}
-                  className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-violet-500/40" />
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#FF4500]/50" />
               </div>
               <div>
                 <label className="text-xs text-muted-foreground mb-1 block">{t("builder.desc")}</label>
                 <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3}
                   placeholder={t("builder.descPlaceholder")}
-                  className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-violet-500/40 resize-none" />
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#FF4500]/50 resize-none" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs text-muted-foreground mb-1 block">{t("builder.category")}</label>
                   <select value={category} onChange={(e) => setCategory(e.target.value as AgentCategory)}
-                    className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-violet-500/40">
+                    className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#FF4500]/50">
                     {CATEGORY_KEYS.map((key) => (
                       <option key={key} value={key}>{t(`agents.${key}`)}</option>
                     ))}
@@ -207,11 +211,11 @@ export default function AgentBuilderPage() {
                   <label className="text-xs text-muted-foreground mb-1 block">{t("builder.tags")}</label>
                   <input value={tags} onChange={(e) => setTags(e.target.value)}
                     placeholder={t("builder.tagsSeparator")}
-                    className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-violet-500/40" />
+                    className="w-full rounded-lg border border-white/[0.08] bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#FF4500]/50" />
                 </div>
               </div>
               <label className="flex items-center gap-3 cursor-pointer">
-                <div className={`relative w-10 h-5 rounded-full transition-colors ${isPublic ? "bg-violet-500" : "bg-white/10"}`}
+                <div className={`relative w-10 h-5 rounded-full transition-colors ${isPublic ? "bg-[#FF4500]" : "bg-white/10"}`}
                   onClick={() => setIsPublic(!isPublic)}>
                   <div className={`absolute top-0.5 size-4 rounded-full bg-white transition-transform ${isPublic ? "translate-x-5" : "translate-x-0.5"}`} />
                 </div>
@@ -230,15 +234,15 @@ export default function AgentBuilderPage() {
                 <button key={m.id} onClick={() => setModel(m.id)}
                   className={`rounded-xl border p-3 text-left transition-all ${
                     model === m.id
-                      ? "retro-border border-violet-500/50 bg-violet-500/10 shadow-md shadow-violet-500/10"
+                      ? "retro-border border-[#FFE27D] bg-[#FF4500]/10 shadow-[3px_3px_0_#000]"
                       : "border-white/[0.06] bg-white/[0.02] hover:border-white/10"
                   }`}>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <Cpu className="size-3.5 text-violet-400" />
+                    <Cpu className="size-3.5 text-[#FF4500]" />
                     <span className="text-sm font-semibold">{m.label}</span>
                   </div>
                   <p className="text-[10px] text-muted-foreground">{t(m.subKey)}</p>
-                  <p className="text-[10px] text-violet-400 mt-1">{m.price}</p>
+                  <p className="text-[10px] text-[#FF4500] mt-1">{m.price}</p>
                 </button>
               ))}
             </div>
@@ -314,7 +318,7 @@ export default function AgentBuilderPage() {
                       </div>
                     )}
                     <div className="flex items-center gap-2 mb-1">
-                      <Wrench className="size-3.5 text-violet-400" />
+                      <Wrench className="size-3.5 text-[#FF4500]" />
                       <span className="text-sm font-medium">{tool.name}</span>
                     </div>
                     <p className="text-[10px] text-muted-foreground line-clamp-2">{tool.description}</p>
@@ -351,10 +355,13 @@ export default function AgentBuilderPage() {
             </h3>
             <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
               <div className="flex items-center justify-between mb-3">
-                <Badge variant="outline" className="border-violet-500/30 bg-violet-500/10 text-violet-400 text-[10px] uppercase tracking-wider">
+                <Badge
+                  variant="outline"
+                  className="font-pixel border-[#FF4500]/40 bg-[#FF4500]/10 text-[#FF4500] text-[10px] uppercase tracking-widest"
+                >
                   {t(`agents.${category}`)}
                 </Badge>
-                <span className="inline-flex items-center gap-1 rounded-full bg-fuchsia-500/10 px-2 py-0.5 text-[10px] font-medium text-fuchsia-400">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[var(--neon-green)]/10 px-2 py-0.5 text-[10px] font-medium text-[var(--neon-green)]">
                   <Cpu className="size-2.5" />
                   {modelMeta.label}
                 </span>
@@ -439,7 +446,7 @@ export default function AgentBuilderPage() {
                           </motion.div>
                         ))}
                         {testRunning && (
-                          <div className="flex items-center gap-2 text-violet-400">
+                          <div className="flex items-center gap-2 text-[#FF4500]">
                             <Loader2 className="size-3.5 animate-spin" />
                             <span className="text-xs">{t("agents.thinking")}</span>
                           </div>

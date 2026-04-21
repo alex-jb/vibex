@@ -209,10 +209,10 @@ export default function AnalyticsPage() {
           <div className="rpgui-container framed" style={{ padding: 16 }}>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { label: t("analytics.totalRuns"), value: totalRuns.toLocaleString(), icon: Zap, accent: "text-violet-400" },
+                { label: t("analytics.totalRuns"), value: totalRuns.toLocaleString(), icon: Zap, accent: "text-[#FF4500]" },
                 { label: t("analytics.totalTokens"), value: "2.4M", icon: Cpu, accent: "text-cyan-400" },
-                { label: t("analytics.totalCost"), value: "$127.50", icon: DollarSign, accent: "text-emerald-400" },
-                { label: t("analytics.avgSuccess"), value: `${avgSuccess}%`, icon: CheckCircle, accent: "text-fuchsia-400" },
+                { label: t("analytics.totalCost"), value: "$127.50", icon: DollarSign, accent: "text-[var(--neon-yellow)]" },
+                { label: t("analytics.avgSuccess"), value: `${avgSuccess}%`, icon: CheckCircle, accent: "text-[var(--neon-green)]" },
               ].map((s) => (
                 <div key={s.label} className="glass-card-strong rounded-2xl p-5 space-y-2">
                   <div className="flex items-center gap-2">
@@ -229,15 +229,16 @@ export default function AnalyticsPage() {
         {/* ── Run Trend Chart ─────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
-            <TrendingUp className="size-5 text-violet-400" /> {">"} {t("analytics.runTrend")}
+            <TrendingUp className="size-5 text-[#FF4500]" /> {">"} {t("analytics.runTrend")}
           </h2>
           <div aria-label={t("analytics.runTrend")} className="flex items-end gap-[2px] h-48 overflow-x-auto" style={{ imageRendering: "pixelated" as const }}>
             {currentRuns.map((v, i) => (
               <div key={i} className="flex-1 min-w-[12px] flex flex-col items-center gap-1">
                 {range === 7 && <span className="font-pixel text-[8px] text-[color:var(--text-muted)]">{v}</span>}
                 <div
-                  className="w-full bg-gradient-to-t from-violet-600 to-fuchsia-500 transition-all duration-500"
+                  className="w-full transition-all duration-500"
                   style={{
+                    background: "var(--neon-purple)",
                     height: `${(v / currentMaxDaily) * 100}%`,
                     position: "relative",
                     overflow: "hidden",
@@ -285,7 +286,7 @@ export default function AnalyticsPage() {
                       <tr
                         key={a.id}
                         role="row"
-                        className={`border-b border-white/[0.03] ${highlight ? "bg-violet-500/5" : ""}`}
+                        className={`border-b border-white/[0.03] ${highlight ? "bg-[#FF4500]/5" : ""}`}
                       >
                         <td className="py-2.5 pr-4 font-mono text-[color:var(--text-muted)]">
                           {highlight ? (
@@ -350,7 +351,7 @@ export default function AnalyticsPage() {
         {/* ── Recent Runs ──────────────────────────────── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="glass-card-strong rounded-2xl p-6 space-y-4">
           <h2 className="font-pixel text-[12px] flex items-center gap-2">
-            <Clock className="size-5 text-violet-400" /> {">"} {t("analytics.recentRuns")}
+            <Clock className="size-5 text-[#FF4500]" /> {">"} {t("analytics.recentRuns")}
           </h2>
           <div className="space-y-2">
             {recentRuns.map((r, i) => (
