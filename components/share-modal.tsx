@@ -221,11 +221,20 @@ function ShareCardPreview({
             <button
               key={key}
               onClick={() => onCardSizeChange(key)}
-              className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all ${
+              className={`font-pixel flex items-center gap-1 px-2.5 py-1 text-[9px] tracking-widest transition-all ${
                 cardSize === key
-                  ? "bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white"
+                  ? "text-[#1A0F00]"
                   : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] border border-white/[0.06]"
               }`}
+              style={
+                cardSize === key
+                  ? {
+                      background: "#FF4500",
+                      border: "2px solid #FFE27D",
+                      boxShadow: "2px 2px 0 #000",
+                    }
+                  : undefined
+              }
             >
               <Icon className="h-2.5 w-2.5" />
               {label}
@@ -238,7 +247,7 @@ function ShareCardPreview({
       <div className="relative rounded-xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-10">
-            <Loader2 className="h-6 w-6 animate-spin text-violet-400" />
+            <Loader2 className="h-6 w-6 animate-spin" style={{ color: "#FF4500" }} />
           </div>
         )}
         <img
@@ -255,7 +264,15 @@ function ShareCardPreview({
         <Button
           variant="secondary"
           size="sm"
-          className="flex-1 bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white border-0 hover:from-violet-600 hover:to-fuchsia-600 gap-1.5"
+          className="font-pixel flex-1 border-0 gap-1.5 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+          style={{
+            background: "#FF4500",
+            border: "2px solid #FFE27D",
+            color: "#1A0F00",
+            boxShadow: "3px 3px 0 #000, inset 0 5px 0 rgba(255,255,255,0.12), inset 0 -5px 0 rgba(0,0,0,0.2)",
+            fontSize: 10,
+            letterSpacing: 2,
+          }}
           onClick={handleDownload}
           disabled={downloading}
         >
@@ -445,14 +462,21 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Decorative top gradient */}
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FF4500]/60 to-transparent" />
 
               <div className="max-h-[85vh] overflow-y-auto scrollbar-hide p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 border border-white/[0.06]">
-                      <Share2 className="h-4 w-4 text-violet-400" />
+                    <div
+                      className="flex h-8 w-8 items-center justify-center"
+                      style={{
+                        background: "#FF4500",
+                        border: "2px solid #FFE27D",
+                        boxShadow: "2px 2px 0 #000",
+                      }}
+                    >
+                      <Share2 className="h-4 w-4" style={{ color: "#1A0F00" }} />
                     </div>
                     <div>
                       <h2 className="text-base font-semibold">
@@ -487,7 +511,7 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                 {/* Playable Link */}
                 <div className="glass-card-strong rounded-xl p-4 mb-4">
                   <div className="flex items-center gap-2 mb-2.5">
-                    <Link className="h-3.5 w-3.5 text-violet-400" />
+                    <Link className="h-3.5 w-3.5" style={{ color: "#FF4500" }} />
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Playable Link
                     </span>
@@ -501,7 +525,7 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                       label="Copy"
                       variant="secondary"
                       size="sm"
-                      className="shrink-0 bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white border-0 hover:from-violet-600 hover:to-fuchsia-600"
+                      className="font-pixel shrink-0 border-2 border-[#FFE27D] bg-[#FF4500] text-[#1A0F00] text-[10px] tracking-widest shadow-[2px_2px_0_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform"
                       trackProjectId={project.id}
                       trackEvent="link_copy"
                     />
@@ -513,13 +537,20 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                 {/* AI-Generated Social Copy */}
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <Sparkles className="h-3.5 w-3.5 text-fuchsia-400" />
+                    <Sparkles className="h-3.5 w-3.5" style={{ color: "var(--neon-green)" }} />
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Social Copy
                     </span>
                     <Badge
                       variant="secondary"
-                      className="text-[9px] bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 text-violet-300 border-violet-500/20"
+                      className="font-pixel text-[9px] border-0"
+                      style={{
+                        background: "rgba(57,255,20,0.12)",
+                        border: "1px solid rgba(57,255,20,0.4)",
+                        color: "var(--neon-green)",
+                        letterSpacing: 1.5,
+                        textShadow: "0 0 4px rgba(57,255,20,0.5)",
+                      }}
                     >
                       AI Generated
                     </Badge>
@@ -534,14 +565,20 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                           key={key}
                           onClick={() => setActivePlatform(key)}
                           aria-label={`Share on ${label}`}
-                          className={`
-                            flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200
-                            ${
-                              isActive
-                                ? "bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white shadow-lg shadow-violet-500/15"
-                                : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground border border-white/[0.06]"
-                            }
-                          `}
+                          className={`font-pixel flex items-center gap-1.5 px-3 py-1.5 text-[10px] tracking-widest transition-all duration-200 ${
+                            isActive
+                              ? "text-[#1A0F00]"
+                              : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground border border-white/[0.06]"
+                          }`}
+                          style={
+                            isActive
+                              ? {
+                                  background: "#FF4500",
+                                  border: "2px solid #FFE27D",
+                                  boxShadow: "2px 2px 0 #000",
+                                }
+                              : undefined
+                          }
                         >
                           <Icon className="h-3 w-3" />
                           {label}
@@ -589,7 +626,8 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                         <Button
                           variant="ghost"
                           size="xs"
-                          className="text-fuchsia-400 hover:text-fuchsia-300 hover:bg-fuchsia-500/10 gap-1.5"
+                          className="gap-1.5 hover:bg-[var(--neon-green)]/10"
+                          style={{ color: "var(--neon-green)", textShadow: "0 0 4px rgba(57,255,20,0.5)" }}
                           disabled={!!aiLoading[activePlatform]}
                           onClick={() => handleGenerateAI(activePlatform)}
                         >
