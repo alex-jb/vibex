@@ -4,11 +4,12 @@
 
 <p align="center">
   <a href="https://www.vibexforge.com">
-    <img src="docs/screenshots-v2/01-landing.png" width="820" alt="VibeX — enter the portal" />
+    <img src="docs/screenshots-v2/01-landing.png" width="820" alt="VibeXForge — enter the portal" />
   </a>
 </p>
 
-<h1 align="center">VibeX</h1>
+<h1 align="center">VibeXForge</h1>
+<p align="center"><sub>formerly <strong>VibeX</strong></sub></p>
 
 <p align="center">
   <strong>Turn your AI project into a collectible RPG hero.</strong><br/>
@@ -49,7 +50,7 @@ Solo builders don't have a design team, a copywriter, or a growth advisor. They 
 
 ## The Loop
 
-VibeX is that advisor, powered by Claude.
+VibeXForge is that advisor, powered by Claude.
 
 ```
 Paste URL → Claude reviews like a stranger → 5-7 concrete fixes → Apply → Score climbs

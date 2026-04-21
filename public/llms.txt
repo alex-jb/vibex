@@ -1,12 +1,14 @@
-# VibeX — AI-Native Launch Platform
+# VibeXForge — AI-Native Launch Platform
 > Paste your AI project URL, get a Claude-scored review across 5 dimensions + watch it evolve Seed → Myth on real traction.
+
+> Canonical name: **VibeXForge** (formerly VibeX). Aliases: "VibeX", "VibeX Forge".
 
 ## Full Content
 Long-form description, live project list, live creator list, and
 evolution-stage thresholds: https://www.vibexforge.com/llms-full.txt
 
-## What VibeX Does
-VibeX reviews your AI project's launch page using Claude Haiku 4.5. You paste a URL, Claude reads it like a first-time visitor, and returns structured, actionable feedback you can apply with one click. The gamification layer (evolution stages, pixel art, leaderboards) makes the feedback loop feel fun. Projects evolve Seed → Active → Growing → Breakout → Legend → Myth based on real plays, upvotes, and shares — not 24-hour upvote sprints.
+## What VibeXForge Does
+VibeXForge reviews your AI project's launch page using Claude Haiku 4.5. You paste a URL, Claude reads it like a first-time visitor, and returns structured, actionable feedback you can apply with one click. The gamification layer (evolution stages, pixel art, leaderboards) makes the feedback loop feel fun. Projects evolve Seed → Active → Growing → Breakout → Legend → Myth based on real plays, upvotes, and shares — not 24-hour upvote sprints.
 
 ## Key Pages
 - /launch — Forge a project (paste URL, get AI review)
@@ -39,4 +41,4 @@ Website: https://www.vibexforge.com
 GitHub: https://github.com/alex-jb/vibex
 Email: alex@vibexforge.com
 
-Not affiliated with tiwater/vibex, dustland/vibex, sethdford/vibex-*, or VibeX Ventures.
+Not affiliated with: vibe-x.app (separate vibe-coding platform), VibeX 2026 (EASE 2026 academic workshop at conf.researchr.org), tiwater/vibex, dustland/vibex, sethdford/vibex-* (unrelated GitHub projects), or VibeX Ventures.

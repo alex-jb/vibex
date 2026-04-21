@@ -3,10 +3,11 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots-v2/01-landing.png" width="820" alt="VibeX — 进入传送门" />
+  <img src="docs/screenshots-v2/01-landing.png" width="820" alt="VibeXForge — 进入传送门" />
 </p>
 
-<h1 align="center">VibeX</h1>
+<h1 align="center">VibeXForge</h1>
+<p align="center"><sub>曾用名 <strong>VibeX</strong></sub></p>
 
 <p align="center">
   <strong>把你的 AI 项目变成一张可收藏的像素 RPG 英雄卡。</strong><br/>
@@ -45,7 +46,7 @@ https://github.com/alex-jb/vibex/releases/download/v0.1.0-demo/vibex-demo.mp4
 
 ## 这个 Loop
 
-VibeX 就是那个 advisor, 由 Claude 驱动.
+VibeXForge 就是那个 advisor, 由 Claude 驱动.
 
 **1. Forge** — 贴你的项目 URL. 我们抓页面, 解析 pitch, 索引 README.
 
@@ -178,7 +179,7 @@ vibex/
 
 ## License & 源代码模型
 
-VibeX 是 **source-available**, 不是完全意义上的开源.
+VibeXForge 是 **source-available**, 不是完全意义上的开源.
 
 ### 公开 (这个 repo)
 所有 UI, 页面, API route, 组件. 核心逻辑的公共 stub, 装完能跑 (用 demo 数据). Schema overview.

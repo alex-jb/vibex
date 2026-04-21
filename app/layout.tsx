@@ -80,15 +80,15 @@ export const viewport: Viewport = {
 // redirected host, costing each crawl one extra hop.
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.vibexforge.com"),
-  title: "VibeX — AI-Native Launch Platform",
+  title: "VibeXForge — AI-Native Launch Platform",
   description:
     "Discover, publish, and evolve playable AI-native vibe coding projects. The launch platform for the LLM era.",
   manifest: "/manifest.json",
   openGraph: {
-    title: "VibeX — Forge Your AI Hero",
+    title: "VibeXForge — Forge Your AI Hero",
     description:
       "Every AI project is a collectible hero. Paste a URL, forge a card, get real feedback, evolve with real traction.",
-    siteName: "VibeX",
+    siteName: "VibeXForge",
     type: "website",
     locale: "en_US",
     images: [
@@ -96,13 +96,13 @@ export const metadata: Metadata = {
         url: "/generated/og-vibex.png",
         width: 1200,
         height: 630,
-        alt: "VibeX — Forge Your AI Hero. Pixel art knight mascot in a neon mountain night scene.",
+        alt: "VibeXForge — Forge Your AI Hero. Pixel art knight mascot in a neon mountain night scene.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "VibeX — Forge Your AI Hero",
+    title: "VibeXForge — Forge Your AI Hero",
     description:
       "Every AI project is a collectible hero. Paste a URL, forge a card, get real feedback, evolve with real traction.",
     images: ["/generated/og-vibex.png"],
@@ -125,11 +125,15 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         {/* Structured data as @graph so Organization + WebSite are reusable
-            via @id from per-page schema on project/creator/about routes. The
-            `sameAs` array is what lets ChatGPT / Gemini / Copilot disambiguate
-            "VibeX" from the unrelated `tiwater/vibex`, `dustland/vibex`, and
-            `sethdford/vibex-*` GitHub projects that currently dominate the
-            namespace. Update the social URLs below as channels go live. */}
+            via @id from per-page schema on project/creator/about routes.
+            Primary name is "VibeXForge" (2026-04-21 rebrand) with
+            `alternateName` preserving the old "VibeX" + "VibeX Forge"
+            variants so the entity stays linkable. The `sameAs` array +
+            unique compound name disambiguate us from the crowded "VibeX"
+            namespace: `vibe-x.app` (same-name vibe-coding platform),
+            `VibeX 2026` (EASE 2026 academic workshop, conf.researchr.org),
+            `tiwater/vibex`, `dustland/vibex`, `sethdford/vibex-*` GitHub
+            projects, and VibeX Ventures. Update social URLs as channels go live. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -139,8 +143,8 @@ export default function RootLayout({
                 {
                   "@type": "Organization",
                   "@id": "https://www.vibexforge.com/#org",
-                  name: "VibeX",
-                  alternateName: "VibeX Forge",
+                  name: "VibeXForge",
+                  alternateName: ["VibeX", "VibeX Forge"],
                   url: "https://www.vibexforge.com",
                   logo: "https://www.vibexforge.com/generated/logo-vibex.png",
                   description:
@@ -154,7 +158,8 @@ export default function RootLayout({
                   "@type": "WebSite",
                   "@id": "https://www.vibexforge.com/#website",
                   url: "https://www.vibexforge.com",
-                  name: "VibeX",
+                  name: "VibeXForge",
+                  alternateName: ["VibeX", "VibeX Forge"],
                   publisher: { "@id": "https://www.vibexforge.com/#org" },
                   inLanguage: ["en", "zh-CN"],
                   potentialAction: {
@@ -175,7 +180,8 @@ export default function RootLayout({
                 },
                 {
                   "@type": "SoftwareApplication",
-                  name: "VibeX",
+                  name: "VibeXForge",
+                  alternateName: ["VibeX", "VibeX Forge"],
                   url: "https://www.vibexforge.com",
                   applicationCategory: "DeveloperApplication",
                   operatingSystem: "Web",

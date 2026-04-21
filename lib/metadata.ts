@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const SITE_NAME = "VibeX";
+const SITE_NAME = "VibeXForge";
 const SITE_URL = "https://vibexforge.com";
 const DEFAULT_OG_IMAGE = "/og-default.png";
 

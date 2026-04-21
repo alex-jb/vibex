@@ -79,29 +79,29 @@ export default function LandingPage() {
           viewport tall and can't carry visible body copy without pushing
           the CTAs below the fold. Citability agent measured `/` at 22/100
           before this block — LLMs need at least one answer-friendly
-          paragraph to cite the page when asked "what is VibeX?". */}
-      <section className="sr-only" aria-label="About VibeX">
-        <h1>VibeX — Launch your AI project. Watch it evolve.</h1>
+          paragraph to cite the page when asked "what is VibeXForge?". */}
+      <section className="sr-only" aria-label="About VibeXForge">
+        <h1>VibeXForge — Launch your AI project. Watch it evolve.</h1>
         <p>
-          VibeX is an AI-native launch platform where creators publish
-          projects and receive structured reviews from Claude across four
-          dimensions: originality, craft, market fit, and growth. Every
-          project becomes a collectible RPG hero that evolves through six
-          stages — Seed, Active, Growing, Breakout, Legend, and Myth —
-          based on real traction (plays, saves, shares) rather than
-          upvote sprints. Built for the LLM era as an alternative to
-          Product Hunt specifically for AI tools, agents, and vibe-coded
-          projects.
+          VibeXForge (formerly VibeX) is an AI-native launch platform where
+          creators publish projects and receive structured reviews from
+          Claude across four dimensions: originality, craft, market fit,
+          and growth. Every project becomes a collectible RPG hero that
+          evolves through six stages — Seed, Active, Growing, Breakout,
+          Legend, and Myth — based on real traction (plays, saves,
+          shares) rather than upvote sprints. Built for the LLM era as
+          an alternative to Product Hunt specifically for AI tools,
+          agents, and vibe-coded projects.
         </p>
-        <h2>How VibeX is different from Product Hunt</h2>
+        <h2>How VibeXForge is different from Product Hunt</h2>
         <p>
           Product Hunt is a 24-hour upvote contest optimized for
-          mainstream SaaS. VibeX is a long-running evolution system
+          mainstream SaaS. VibeXForge is a long-running evolution system
           optimized for AI-native projects. Reviews are written by
           Claude against a published rubric, not collected as vanity
           upvotes. Projects keep progressing after launch day.
         </p>
-        <h2>What you can do on VibeX</h2>
+        <h2>What you can do on VibeXForge</h2>
         <p>
           Submit an AI project (paste a URL), get a Claude-scored
           review, watch the project evolve based on real engagement,
@@ -117,16 +117,16 @@ export default function LandingPage() {
             30 fewer citability points than the dashboard page. Same
             answers, different URL context, allowed by schema.org. */}
         <h2>Frequently asked questions</h2>
-        <h3>What is VibeX?</h3>
+        <h3>What is VibeXForge?</h3>
         <p>
-          VibeX is an AI-native launch platform where every project is a
-          16-bit RPG hero. Creators submit AI projects (URL or GitHub
-          repo) and receive a Claude-scored review across five dimensions
-          (originality, clarity, UX potential, virality potential,
-          investor curiosity). Projects evolve through six stages — Seed,
-          Active, Growing, Breakout, Legend, Myth — based on real
-          engagement (plays, upvotes, shares), not 24-hour upvote
-          sprints.
+          VibeXForge (formerly VibeX) is an AI-native launch platform
+          where every project is a 16-bit RPG hero. Creators submit AI
+          projects (URL or GitHub repo) and receive a Claude-scored review
+          across five dimensions (originality, clarity, UX potential,
+          virality potential, investor curiosity). Projects evolve
+          through six stages — Seed, Active, Growing, Breakout, Legend,
+          Myth — based on real engagement (plays, upvotes, shares), not
+          24-hour upvote sprints.
         </p>
         <h3>How does the Claude review work?</h3>
         <p>
@@ -138,7 +138,7 @@ export default function LandingPage() {
           suggestions. The review is stored in the ai_reviews table and
           the compound score becomes the project&rsquo;s headline score.
         </p>
-        <h3>How is a project&rsquo;s VibeX score calculated?</h3>
+        <h3>How is a project&rsquo;s VibeXForge score calculated?</h3>
         <p>
           The compound score is the arithmetic mean of the five Claude
           dimensions: originality, clarity, UX potential, virality
@@ -147,7 +147,7 @@ export default function LandingPage() {
           its detail page and used as an aggregateRating when search
           engines index the page.
         </p>
-        <h3>What is VibeX&rsquo;s evolution system?</h3>
+        <h3>What is VibeXForge&rsquo;s evolution system?</h3>
         <p>
           Every project progresses through six evolution stages tied to
           real engagement thresholds. Seed is the starting stage (score
@@ -156,9 +156,9 @@ export default function LandingPage() {
           progressively higher play, upvote, and score gates. The
           progression is driven by a Postgres trigger — no cron needed.
         </p>
-        <h3>Is VibeX open source?</h3>
+        <h3>Is VibeXForge open source?</h3>
         <p>
-          VibeX is source-available on GitHub at
+          VibeXForge is source-available on GitHub at
           github.com/alex-jb/vibex under a custom VibeX Source Available
           License. Anyone can read, fork for personal use, and contribute
           back. Commercial hosting by third parties is restricted.
@@ -176,10 +176,10 @@ export default function LandingPage() {
             mainEntity: [
               {
                 "@type": "Question",
-                name: "What is VibeX?",
+                name: "What is VibeXForge?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "VibeX is an AI-native launch platform where every project is a 16-bit RPG hero. Creators submit AI projects (URL or GitHub repo) and receive a Claude-scored review across five dimensions (originality, clarity, UX potential, virality potential, investor curiosity). Projects evolve through six stages — Seed, Active, Growing, Breakout, Legend, Myth — based on real engagement (plays, upvotes, shares), not 24-hour upvote sprints.",
+                  text: "VibeXForge (formerly VibeX) is an AI-native launch platform where every project is a 16-bit RPG hero. Creators submit AI projects (URL or GitHub repo) and receive a Claude-scored review across five dimensions (originality, clarity, UX potential, virality potential, investor curiosity). Projects evolve through six stages — Seed, Active, Growing, Breakout, Legend, Myth — based on real engagement (plays, upvotes, shares), not 24-hour upvote sprints.",
                 },
               },
               {
@@ -192,7 +192,7 @@ export default function LandingPage() {
               },
               {
                 "@type": "Question",
-                name: "How is a project's VibeX score calculated?",
+                name: "How is a project's VibeXForge score calculated?",
                 acceptedAnswer: {
                   "@type": "Answer",
                   text: "The compound score is the arithmetic mean of the five Claude dimensions: originality, clarity, UX potential, virality potential, and investor curiosity. Each dimension is 0-100. The compound is displayed as the project's headline score on its detail page and used as an aggregateRating when search engines index the page.",
@@ -200,7 +200,7 @@ export default function LandingPage() {
               },
               {
                 "@type": "Question",
-                name: "What is VibeX's evolution system?",
+                name: "What is VibeXForge's evolution system?",
                 acceptedAnswer: {
                   "@type": "Answer",
                   text: "Every project progresses through six evolution stages tied to real engagement thresholds. Seed is the starting stage (score below 40 and low traction). Active requires 50+ plays or a compound score of 40+. Growing, Breakout, Legend, and Myth add progressively higher play, upvote, and score gates. The progression is driven by a Postgres trigger — no cron needed.",
@@ -208,10 +208,10 @@ export default function LandingPage() {
               },
               {
                 "@type": "Question",
-                name: "Is VibeX open source?",
+                name: "Is VibeXForge open source?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "VibeX is source-available on GitHub at github.com/alex-jb/vibex under a custom VibeX Source Available License. Anyone can read, fork for personal use, and contribute back. Commercial hosting by third parties is restricted.",
+                  text: "VibeXForge is source-available on GitHub at github.com/alex-jb/vibex under a custom VibeX Source Available License. Anyone can read, fork for personal use, and contribute back. Commercial hosting by third parties is restricted.",
                 },
               },
             ],
