@@ -130,7 +130,10 @@ export function MobileBottomNav() {
                 style={{
                   fontSize: 8,
                   letterSpacing: 1,
-                  color: isActive ? "#E9BDFF" : "#6B5A80",
+                  // Inactive matches the inactive icon color (#8B7AA0)
+                  // for consistency + WCAG AA contrast (5:1 against the
+                  // nav bg vs the old #6B5A80 which hit 3.17:1 on mobile).
+                  color: isActive ? "#E9BDFF" : "#8B7AA0",
                   textShadow: isActive
                     ? "0 0 4px rgba(157,0,255,0.5)"
                     : "none",
