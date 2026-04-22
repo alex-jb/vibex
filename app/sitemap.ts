@@ -48,6 +48,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/buddy/trade", priority: 0.6, changeFrequency: "weekly" },
     { path: "/developers", priority: 0.7, changeFrequency: "weekly" },
     // VC / investor surface
+    { path: "/investors", priority: 0.85, changeFrequency: "monthly" },
     { path: "/vc/dashboard", priority: 0.6, changeFrequency: "daily" },
     { path: "/analytics", priority: 0.6, changeFrequency: "daily" },
     // User pages

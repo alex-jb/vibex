@@ -93,6 +93,10 @@ pipeline fetches the real README via api.github.com and passes a
 - /ideas         — Pre-build idea incubator (AI-scored viability)
 - /insights      — Trend data and category heat maps
 - /developers    — Public API documentation and rate limits
+- /investors     — VC-facing page: 2:20 pitch video inline, 3-ask block
+                   (seed / design partner / advisor), contact CTA. Built
+                   to replace MP4-attachment cold email so the pitch can
+                   be linked and previewed inline.
 - /about         — Product + tech stack overview
 - /privacy /terms /contact — Legal and contact surface
 - /project/{id}  — Individual project detail with full review
