@@ -25,6 +25,7 @@
     "remotion:demo-vertical-zh": "remotion render remotion/src/index.ts DemoVertical out/vibex-demo-vertical-v1-zh.mp4 --props='{\"locale\":\"zh\"}' --codec=h264 --crf=18 --concurrency=4",
     "remotion:og-image": "remotion still remotion/src/index.ts OgImage out/vibex-og-image.png --frame=0",
     "demo:sync-blob": "node scripts/sync-demo-blob.mjs",
+    "compress:pngs": "node scripts/compress-pngs.mjs public/demo-assets/ public/generated/",
     "gen:pitch-pptx": "node scripts/gen-pitch-pptx.mjs both"
   },
   "dependencies": {
