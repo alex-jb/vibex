@@ -107,6 +107,22 @@ const PRESETS = {
     crop: { width: 1200, height: 630 },
     notes: "OG 1200x630 pixel-art alt (complements the existing forge Direction A)",
   },
+  "ph-launch-hero": {
+    prompt:
+      "16-bit pixel art celebration scene for Product Hunt launch day. " +
+      "Pixel-art knight mascot (same style as Shovel Knight, dark armor " +
+      "with cream cape) holding a glowing forge-hammer raised high in " +
+      "victory, standing on a pedestal. Confetti of orange + cream + " +
+      "purple pixel squares falling from above. A cat-mascot Product Hunt " +
+      "inspired silhouette pixel-style flies by in background with trail " +
+      "of spark pixels. Dark charcoal starfield bg. Empty upper-right " +
+      "corner for '#1 Product of the Day' badge overlay. Wide 16:9 " +
+      "cinematic composition. NES/SNES aesthetic, crisp pixels.",
+    size: "1536x1024",
+    file: "ph-launch-hero-v1.png",
+    crop: { width: 1280, height: 720 },
+    notes: "Product Hunt launch day hero — for Twitter announce + PH gallery slot 1",
+  },
   "evolution-ladder": {
     prompt:
       "16-bit pixel art horizontal infographic showing 6 evolution stages. " +
