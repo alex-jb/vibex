@@ -47,6 +47,7 @@
     "lucide-react": "^1.7.0",
     "nes.css": "^2.2.1",
     "next": "16.2.4",
+    "openai": "^6.34.0",
     "pngjs": "^7.0.0",
     "posthog-js": "^1.365.4",
     "pptxgenjs": "^4.0.1",
