@@ -39,7 +39,10 @@ const COLOR = {
   FORGE_CREAM: "#FFE27D",
   TEXT: "#E8E8EC",
   TEXT_MUTED: "#8B7AA0",
-  TEXT_DIM: "#4A4050",
+  // Bumped from #4A4050 2026-04-22 to pass WCAG AA (4.5:1) contrast on
+  // the dark BG. Used in 3 spots: top nav label, "中文版" helper, footer
+  // signature. Mobile Lighthouse flagged the old value at 2.6:1.
+  TEXT_DIM: "#857596",
   GREEN: "#39FF14",
 };
 
