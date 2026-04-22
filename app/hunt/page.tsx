@@ -411,9 +411,14 @@ function RankItem({ entry }: { entry: LeaderboardEntry }) {
         {/* Link arrow */}
         <Link
           href={`/project/${entry.projectId}`}
+          aria-label={`View ${entry.title}`}
           className="shrink-0 rounded-lg p-2 transition-all hover:bg-white/10 hover:scale-105"
         >
-          <ArrowUpRight className="size-4 group-hover:text-[var(--neon-yellow)] transition-colors" style={{ color: "var(--text-muted)" }} />
+          <ArrowUpRight
+            className="size-4 group-hover:text-[var(--neon-yellow)] transition-colors"
+            style={{ color: "var(--text-muted)" }}
+            aria-hidden="true"
+          />
         </Link>
       </div>
     </motion.div>
