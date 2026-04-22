@@ -26,6 +26,7 @@ import {
 } from "remotion";
 import { COLORS, FONT_PIXEL, FONT_RETRO } from "./tokens";
 import type { Locale } from "./Demo";
+import { demoBlobUrl } from "@/lib/blob-urls";
 
 const COPY = {
   en: {
@@ -47,11 +48,9 @@ const COPY = {
 export const DemoVertical = ({ locale }: { locale: Locale }) => {
   const frame = useCurrentFrame();
   const copy = COPY[locale];
-  const BLOB = "https://cgavxkhdjifwxoaw.public.blob.vercel-storage.com/demo";
-  const videoSrc =
-    locale === "zh"
-      ? `${BLOB}/vibex-demo-v1-zh.mp4`
-      : `${BLOB}/vibex-demo-v1.mp4`;
+  const videoSrc = demoBlobUrl(
+    locale === "zh" ? "vibex-demo-v1-zh.mp4" : "vibex-demo-v1.mp4",
+  );
 
   // mascot bob for bottom element
   const mascotBob = Math.sin(frame * 0.15) * 4;

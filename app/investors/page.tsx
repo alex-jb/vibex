@@ -11,12 +11,13 @@
  * Repo-clean: MP4s are NOT committed (keeps clone size under ~5 MB).
  */
 
-const BLOB = "https://cgavxkhdjifwxoaw.public.blob.vercel-storage.com/demo";
 
 import type { Metadata } from "next";
 import Link from "next/link";
 import { TrackedVideo } from "@/components/investors/tracked-video";
 import { TrackedLink } from "@/components/investors/tracked-link";
+import { demoBlobUrl } from "@/lib/blob-urls";
+import { ASKS_EN, CONTACT } from "@/lib/investor-ask";
 
 export const metadata: Metadata = {
   title: "VibeXForge for Investors — 2-minute pitch",
@@ -48,23 +49,7 @@ const COLOR = {
   GREEN: "#39FF14",
 };
 
-const ASK = [
-  {
-    icon: "◉",
-    tag: "SEED",
-    body: "pre-seed to seed · $250K–$1M · 6-9 month runway",
-  },
-  {
-    icon: "⬢",
-    tag: "DESIGN PARTNER",
-    body: "AI maker willing to submit their project as a cohort-0 design partner",
-  },
-  {
-    icon: "✦",
-    tag: "ADVISOR",
-    body: "growth / community / gamification mechanics expertise",
-  },
-];
+const ASK = ASKS_EN;
 
 const STATS = [
   { label: "DB TABLES", value: "43" },
@@ -72,16 +57,6 @@ const STATS = [
   { label: "REACT COMPONENTS", value: "119" },
   { label: "BILINGUAL i18n KEYS", value: "925+" },
 ];
-
-// When you set up Cal.com / Calendly, swap `cal` to that URL and the
-// CTA button auto-upgrades from "email to schedule" to "book directly".
-// Swap `email` to a branded alias (alex@vibexforge.com) once the
-// domain email is configured.
-const CONTACT = {
-  email: "xji1@mail.yu.edu",
-  cal: "mailto:xji1@mail.yu.edu?subject=VibeXForge%20%E2%80%94%2015%20min%20chat&body=Hi%20Alex%2C%0A%0AI%27d%20like%20to%20chat%20about%20VibeXForge.%20A%2015-minute%20slot%20that%20works%20for%20you%3F%0A%0AThanks%2C",
-  github: "https://github.com/alex-jb/vibex",
-};
 
 export default function VCPage() {
   return (
@@ -175,7 +150,7 @@ export default function VCPage() {
             }}
           >
             <TrackedVideo
-              src={`${BLOB}/vibex-demo-vc-v1.mp4`}
+              src={demoBlobUrl("vibex-demo-vc-v1.mp4")}
               poster="/generated/investor-hero-pixel-v1.png"
               style={{
                 width: "100%",
@@ -193,7 +168,7 @@ export default function VCPage() {
             }}
           >
             中文版: <TrackedLink
-              href={`${BLOB}/vibex-demo-vc-v1-zh.mp4`}
+              href={demoBlobUrl("vibex-demo-vc-v1-zh.mp4")}
               event="investor_zh_video"
               style={{ color: COLOR.FORGE_CREAM }}
             >
