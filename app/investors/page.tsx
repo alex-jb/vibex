@@ -15,6 +15,8 @@ const BLOB = "https://cgavxkhdjifwxoaw.public.blob.vercel-storage.com/demo";
 
 import type { Metadata } from "next";
 import Link from "next/link";
+import { TrackedVideo } from "@/components/investors/tracked-video";
+import { TrackedLink } from "@/components/investors/tracked-link";
 
 export const metadata: Metadata = {
   title: "VibeXForge for Investors — 2-minute pitch",
@@ -172,13 +174,9 @@ export default function VCPage() {
               overflow: "hidden",
             }}
           >
-            <video
+            <TrackedVideo
               src={`${BLOB}/vibex-demo-vc-v1.mp4`}
-              controls
-              preload="metadata"
-              playsInline
               poster="/generated/investor-hero-pixel-v1.png"
-              crossOrigin="anonymous"
               style={{
                 width: "100%",
                 height: "auto",
@@ -194,7 +192,13 @@ export default function VCPage() {
               marginTop: 8,
             }}
           >
-            中文版: <a href={`${BLOB}/vibex-demo-vc-v1-zh.mp4`} style={{ color: COLOR.FORGE_CREAM }}>vibex-demo-vc-v1-zh.mp4</a>
+            中文版: <TrackedLink
+              href={`${BLOB}/vibex-demo-vc-v1-zh.mp4`}
+              event="investor_zh_video"
+              style={{ color: COLOR.FORGE_CREAM }}
+            >
+              vibex-demo-vc-v1-zh.mp4
+            </TrackedLink>
           </p>
         </section>
 
@@ -357,8 +361,9 @@ export default function VCPage() {
             ▸ BOOK 15 MINUTES
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
-            <a
+            <TrackedLink
               href={CONTACT.cal}
+              event="investor_cta_book"
               style={{
                 display: "inline-block",
                 padding: "18px 36px",
@@ -373,9 +378,10 @@ export default function VCPage() {
               }}
             >
               ▶ BOOK A CALL
-            </a>
-            <a
+            </TrackedLink>
+            <TrackedLink
               href={`mailto:${CONTACT.email}`}
+              event="investor_cta_email"
               style={{
                 padding: "18px 32px",
                 border: `2px solid ${COLOR.FORGE}66`,
@@ -387,9 +393,12 @@ export default function VCPage() {
               }}
             >
               ✉ {CONTACT.email}
-            </a>
-            <Link
+            </TrackedLink>
+            <TrackedLink
               href={CONTACT.github}
+              event="investor_cta_github"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 padding: "18px 32px",
                 border: `2px solid ${COLOR.BORDER}`,
@@ -401,7 +410,7 @@ export default function VCPage() {
               }}
             >
               ★ GITHUB · alex-jb/vibex
-            </Link>
+            </TrackedLink>
           </div>
           <p
             className="font-retro"
