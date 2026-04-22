@@ -100,8 +100,12 @@ export const metadata: Metadata = {
     description:
       "Every AI project is a collectible hero. Paste a URL, forge a card, get real feedback, evolve with real traction.",
   },
+  // Root canonical is the bare apex. Child routes can (and should)
+  // override this via their own metadata.alternates.canonical so each
+  // page advertises the correct URL — otherwise every subpage would
+  // advertise "/" and search engines wouldn't index them individually.
   alternates: {
-    canonical: "https://www.vibexforge.com",
+    canonical: "/",
   },
 };
 

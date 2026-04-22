@@ -23,7 +23,12 @@ export function LangToggle() {
         cursor: "pointer",
       }}
       title={lang === "en" ? "Switch to Chinese" : "Switch to English"}
-      aria-label={lang === "en" ? "Switch to Chinese" : "Switch to English"}
+      // Accessible name must contain the visible text per WCAG
+      // 2.5.3 (label-content-name-mismatch). Prefix with the
+      // language code ("EN" / "中文") then describe the action.
+      aria-label={
+        lang === "en" ? "EN — switch to Chinese" : "中文 — switch to English"
+      }
     >
       {langLabels[lang]}
     </button>

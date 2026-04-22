@@ -41,9 +41,9 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h3 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-foreground/80">
+            <h2 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-foreground/80">
               {t("footer.platform")}
-            </h3>
+            </h2>
             <div className="flex flex-col gap-2.5">
               <Link href="/home" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.home")}</Link>
               <Link href="/hunt" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.hunt")}</Link>
@@ -56,9 +56,9 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <h3 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-foreground/80">
+            <h2 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-foreground/80">
               {t("footer.resources")}
-            </h3>
+            </h2>
             <div className="flex flex-col gap-2.5">
               <Link href="/insights" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("footer.trendsInsights")}</Link>
               <Link href="/investors" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>For Investors</Link>
@@ -68,9 +68,9 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <h3 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-foreground/80">
+            <h2 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-foreground/80">
               {t("footer.community")}
-            </h3>
+            </h2>
             <div className="flex flex-col gap-2.5">
               <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>Discord (Coming Soon)</span>
               <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>Twitter / X</span>
