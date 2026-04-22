@@ -142,6 +142,42 @@ const PRESETS = {
     file: "evolution-ladder-v1.png",
     notes: "6-stage progression visual for /about page, pitch deck, blog posts",
   },
+  "not-found-404": {
+    prompt:
+      "16-bit pixel art scene of a confused knight (cream cape, dark " +
+      "armor, pixel mascot style) standing at the edge of a broken " +
+      "pixel-stone bridge that falls into a dark void. A '?' pixel " +
+      "cloud floats above the knight's head. Purple mountain silhouette " +
+      "in distance. Dark starry sky. Centered composition, emotive " +
+      "'nothing here' feel. NES/SNES aesthetic. No text.",
+    size: "1024x1024",
+    file: "not-found-404-v1.png",
+    notes: "404 illustration — for app/not-found.tsx",
+  },
+  "empty-feed": {
+    prompt:
+      "16-bit pixel art scene: pixel-art knight mascot sitting next to " +
+      "an empty unlit campfire, holding a scroll. Dark starry forest " +
+      "background with faint pixel trees. Calm 'nothing brewing yet, " +
+      "forge something' atmosphere. No spark action. Centered composition. " +
+      "NES/SNES aesthetic, crisp pixels.",
+    size: "1024x1024",
+    file: "empty-feed-v1.png",
+    notes: "Empty-state illustration for /feed when no posts exist",
+  },
+  "level-up-burst": {
+    prompt:
+      "16-bit pixel art burst scene. Centered pixel creature egg " +
+      "cracking open, bright forge-orange and cream light rays shooting " +
+      "outward in 8 directions (like a starburst pattern). Small " +
+      "particles of purple and cream pixels exploding outward. Pure " +
+      "dark charcoal background, no scenery. Transparent-feel, tile-like " +
+      "composition suitable for overlaying on-screen when a project " +
+      "evolves to the next tier. NES/SNES aesthetic.",
+    size: "1024x1024",
+    file: "level-up-burst-v1.png",
+    notes: "Evolution celebration burst — overlay when projects level up",
+  },
   "xhs-cover-pixel": {
     prompt:
       "16-bit pixel art portrait composition. Centered pixel-art knight " +
