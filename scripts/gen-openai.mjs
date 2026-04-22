@@ -45,8 +45,11 @@ const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 // Brand style suffix appended to every preset. Keeps all outputs
 // visually cohesive without hand-prompting the same descriptors each time.
 //
-// PIXEL — strict NES / SNES aesthetic (default, matches rest of brand)
-const BRAND_SUFFIX_PIXEL = [
+// PIXEL — strict NES / SNES aesthetic. Default brand direction.
+// If a painterly variant is ever needed, restore from commit 46cec70
+// which added BRAND_SUFFIX_PAINTERLY (archived along with the 4 v1 outputs
+// in public/generated-gpt/_archived-painterly/).
+const BRAND_SUFFIX = [
   "STYLE: strict 16-bit pixel art, NES/SNES retro game aesthetic.",
   "Crisp hard-edged pixels, no anti-aliasing, no smooth gradients.",
   "Limited palette: forge-orange (#FF4500) + cream (#FFE27D) highlights,",
@@ -55,15 +58,6 @@ const BRAND_SUFFIX_PIXEL = [
   "'Octopath Traveler' HD-2D sprite art.",
   "No text, no logos, no watermarks, no UI chrome.",
 ].join(" ");
-
-// PAINTERLY — hi-res cinematic (kept for rare VC-facing photographic contexts)
-const BRAND_SUFFIX_PAINTERLY = [
-  "aesthetic: dark neon arcade-rpg, forge-orange (#FF4500) and cream (#FFE27D)",
-  "accents, deep charcoal bg, subtle grain, painterly hi-res illustration,",
-  "no text, no logos, no watermarks, no UI chrome, cinematic lighting",
-].join(" ");
-
-const BRAND_SUFFIX = BRAND_SUFFIX_PIXEL; // default
 
 // Presets — named image generation jobs. Add entries as needed.
 const PRESETS = {

@@ -19,6 +19,7 @@ import { useAuth } from "@/lib/auth";
 import { useProjects } from "@/lib/use-data";
 import type { AIReview, EvolutionStage } from "@/lib/types";
 import { EVOLUTION_CONFIG } from "@/lib/rpg-utils";
+import { hashString } from "@/lib/hash";
 import { HeroCard } from "@/components/home/hero-card";
 import { projectsToCards } from "@/components/home/hero-card-grid";
 import { FeedbackPanel } from "@/components/launch-feedback/feedback-panel";
@@ -44,14 +45,6 @@ function formatProjectDate(raw: string): string {
   const d = new Date(raw);
   if (Number.isNaN(d.getTime())) return raw;
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
-
-// Deterministic 32-bit string hash (djb2-ish). Used for seeding stable
-// shuffles that would otherwise use Math.random (impure during render).
-function hashString(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
-  return h;
 }
 
 const fadeIn = {

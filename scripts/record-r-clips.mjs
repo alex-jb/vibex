@@ -34,7 +34,7 @@ import { chromium } from "playwright";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
-import { mkdirSync, renameSync, readdirSync } from "node:fs";
+import { mkdirSync, readdirSync } from "node:fs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
@@ -161,12 +161,7 @@ for (const clip of toRun) {
   );
   console.log(`  ✓ out/${clip.id}.mp4`);
 
-  // cleanup tmp
-  try {
-    for (const f of readdirSync(tmpDir)) {
-      renameSync(resolve(tmpDir, f), resolve(tmpDir, f)); // no-op; we'll just leave it
-    }
-  } catch {}
+  // (tmpDir left in place — cleaned up manually when needed)
 }
 
 await browser.close();

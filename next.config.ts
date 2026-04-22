@@ -46,8 +46,10 @@ const nextConfig: NextConfig = {
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://api.anthropic.com https://*.vercel-insights.com",
-      // <video> / <audio> sources — Vercel Blob hosts /investors VC pitch MP4
-      "media-src 'self' https://*.blob.vercel-storage.com",
+      // <video> / <audio> sources — only our vibex-marketing Blob store, not
+      // wildcard *.blob.vercel-storage.com (that would allow any Vercel tenant's
+      // store). Security review 2026-04-22: tighten wildcard.
+      "media-src 'self' https://cgavxkhdjifwxoaw.public.blob.vercel-storage.com",
       "frame-src 'self'",
       "frame-ancestors 'self'",
       "object-src 'none'",
