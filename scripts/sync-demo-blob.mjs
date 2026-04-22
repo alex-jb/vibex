@@ -12,9 +12,11 @@
  * Prereq: BLOB_READ_WRITE_TOKEN in env (from `vercel env pull .env.production.local --environment production`)
  *
  * Usage:
- *   npm run demo:sync-blob              # uploads all 4 MP4s from out/
+ *   npm run demo:sync-blob              # uploads 60s + VC cuts
  *   npm run demo:sync-blob -- --vc      # only the 2 VC cuts
  *   npm run demo:sync-blob -- --demo    # only the 2 60s cuts
+ *   npm run demo:sync-blob -- --r       # only the 4 R-clips (R1-R4 from Phase 2)
+ *   npm run demo:sync-blob -- --all     # everything (60s + VC + R-clips)
  */
 
 import { readFileSync, existsSync } from "node:fs";
@@ -37,14 +39,18 @@ if (!token) {
 
 const FILES_VC = ["vibex-demo-vc-v1.mp4", "vibex-demo-vc-v1-zh.mp4"];
 const FILES_DEMO = ["vibex-demo-v1.mp4", "vibex-demo-v1-zh.mp4"];
+const FILES_R = ["R1.mp4", "R2.mp4", "R3.mp4", "R4.mp4"];
 
 const args = process.argv.slice(2);
-const wantVC = args.length === 0 || args.includes("--vc");
-const wantDemo = args.length === 0 || args.includes("--demo");
+const all = args.includes("--all");
+const wantR = all || args.includes("--r");
+const wantVC = all || args.includes("--vc") || args.length === 0;
+const wantDemo = all || args.includes("--demo") || args.length === 0;
 
 const files = [
   ...(wantVC ? FILES_VC : []),
   ...(wantDemo ? FILES_DEMO : []),
+  ...(wantR ? FILES_R : []),
 ];
 
 for (const file of files) {
