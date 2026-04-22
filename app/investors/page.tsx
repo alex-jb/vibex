@@ -20,11 +20,11 @@ export const metadata: Metadata = {
   title: "VibeXForge for Investors — 2-minute pitch",
   description:
     "A forge for AI creators with live Claude critiques and public evolution. 2-minute pitch video + ask + booking link. Solo-built, open source, live in open beta.",
+  // OG image auto-resolved from app/investors/opengraph-image.tsx — VC-specific.
   openGraph: {
     title: "VibeXForge for Investors",
     description:
       "A 2-minute pitch on the growth layer for AI creators.",
-    images: ["/generated/og-vibex.png"],
   },
 };
 

@@ -84,6 +84,8 @@ export const metadata: Metadata = {
   description:
     "Discover, publish, and evolve playable AI-native vibe coding projects. The launch platform for the LLM era.",
   manifest: "/manifest.json",
+  // OG image is auto-resolved from app/opengraph-image.tsx (Next.js convention).
+  // Don't hardcode `images` here — it would override the dynamic render.
   openGraph: {
     title: "VibeXForge — Forge Your AI Hero",
     description:
@@ -91,21 +93,12 @@ export const metadata: Metadata = {
     siteName: "VibeXForge",
     type: "website",
     locale: "en_US",
-    images: [
-      {
-        url: "/generated/og-vibex.png",
-        width: 1200,
-        height: 630,
-        alt: "VibeXForge — Forge Your AI Hero. Pixel art knight mascot in a neon mountain night scene.",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "VibeXForge — Forge Your AI Hero",
     description:
       "Every AI project is a collectible hero. Paste a URL, forge a card, get real feedback, evolve with real traction.",
-    images: ["/generated/og-vibex.png"],
   },
   alternates: {
     canonical: "https://www.vibexforge.com",
