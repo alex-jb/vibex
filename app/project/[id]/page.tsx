@@ -122,7 +122,7 @@ function ClaudeSigil({ color = "var(--neon-green)" }: { color?: string }) {
 }
 
 /* ---------- Pixel bar (solid purple fill, no gradient) ---------- */
-function PixelBar({ value, animate, delay = 0 }: { value: number; animate: boolean; delay?: number }) {
+function PixelBar({ value, animate, delay = 0, label }: { value: number; animate: boolean; delay?: number; label?: string }) {
   const v = Math.max(0, Math.min(100, value));
   return (
     <div
@@ -130,6 +130,7 @@ function PixelBar({ value, animate, delay = 0 }: { value: number; animate: boole
       aria-valuenow={v}
       aria-valuemin={0}
       aria-valuemax={100}
+      aria-label={label ?? `Attribute ${v}`}
       style={{
         height: 10,
         background: "var(--bg-deep)",
@@ -196,7 +197,7 @@ function AttrRow({
       <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <span
           className="font-ui"
-          style={{ fontSize: 14, color: "var(--neon-purple)", letterSpacing: 1, lineHeight: 1 }}
+          style={{ fontSize: 14, color: "var(--neon-purple-text)", letterSpacing: 1, lineHeight: 1 }}
         >
           {code}
         </span>
@@ -207,12 +208,12 @@ function AttrRow({
           {label}
         </span>
       </div>
-      <PixelBar value={value} animate={inView} delay={delay} />
+      <PixelBar value={value} animate={inView} delay={delay} label={`${label} ${value} of 100`} />
       <span
         className="font-pixel"
         style={{
           fontSize: 12,
-          color: "var(--neon-purple)",
+          color: "var(--neon-purple-text)",
           textAlign: "right",
           textShadow: "0 0 6px rgba(157,0,255,0.5)",
           lineHeight: 1,
@@ -689,7 +690,7 @@ function AIReviewPanel({
           glyph="▸"
           label={t("project.nextQuests")}
           items={review.suggestions}
-          color="var(--neon-purple)"
+          color="var(--neon-purple-text)"
           itemAttrs={() =>
             ({ "data-quest": "pending" } as React.LiHTMLAttributes<HTMLLIElement>)
           }
@@ -942,8 +943,8 @@ export default function ProjectPage({
               className="flex items-center gap-1.5"
               style={{ color: "var(--text-muted)" }}
             >
-              <ChevronUp className="size-3.5" style={{ color: "var(--neon-purple)" }} />
-              <b style={{ color: "var(--neon-purple)", fontWeight: "normal" }}>
+              <ChevronUp className="size-3.5" style={{ color: "var(--neon-purple-text)" }} />
+              <b style={{ color: "var(--neon-purple-text)", fontWeight: "normal" }}>
                 {project.upvotes.toLocaleString()}
               </b>{" "}
               UPVOTES

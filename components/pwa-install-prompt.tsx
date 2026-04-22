@@ -174,7 +174,7 @@ export function PwaInstallPrompt() {
                 <Smartphone className="size-4" style={{ color: "#FFF" }} />
               </div>
               <div className="flex-1 min-w-0">
-                <h3
+                <h2
                   id="pwa-install-title"
                   className="font-pixel"
                   style={{
@@ -186,7 +186,7 @@ export function PwaInstallPrompt() {
                   }}
                 >
                   LOAD VIBEX ONTO DEVICE
-                </h3>
+                </h2>
                 <p
                   id="pwa-install-desc"
                   className="font-retro mt-1"

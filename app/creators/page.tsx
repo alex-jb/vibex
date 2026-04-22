@@ -117,9 +117,9 @@ export default function CreatorsPage() {
               <p className="text-xs font-medium text-amber-400 tracking-wide uppercase mb-1">
                 {t("creators.weeklyChampion")}
               </p>
-              <h3 className="text-xl sm:text-2xl font-bold text-foreground truncate">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground truncate">
                 {weeklyWinners[0]?.projectTitle}
-              </h3>
+              </h2>
               <p className="text-sm text-muted-foreground mt-0.5">
                 by <span className="text-foreground font-medium">{weeklyWinners[0]?.creatorName}</span>
               </p>
