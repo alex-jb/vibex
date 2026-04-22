@@ -443,7 +443,7 @@ function ArenaShot() {
                 className="font-ui mt-1"
                 style={{
                   fontSize: 7,
-                  color: "var(--neon-purple)",
+                  color: "var(--neon-purple-text)",
                   letterSpacing: 1,
                 }}
               >

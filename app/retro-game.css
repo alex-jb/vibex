@@ -22,7 +22,11 @@
      which is a background token). Use these for all hq-* component copy. */
   --text: #E8E8EC;
   --text-muted: #8B7AA0;
-  --text-dim: #4A4050;
+  /* Bumped from #4A4050 2026-04-22 — old value hit 1.98:1 contrast on
+     #0D0D0D (well below WCAG AA 4.5:1). New value is ~4.7:1. Still
+     noticeably dimmer than --text-muted (#8B7AA0 ~6:1) so the visual
+     hierarchy is preserved. */
+  --text-dim: #857596;
   --neon-green: #39FF14;
   --neon-green-dim: #39FF1440;
   --neon-orange: #FF4500;

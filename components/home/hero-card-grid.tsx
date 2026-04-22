@@ -75,7 +75,12 @@ export function HeroCardGrid({
           {subLabel ? (
             <span
               className="text-[9px] sm:text-[11px]"
-              style={{ color: "var(--text-muted)", marginLeft: 10 }}
+              style={{
+                color: "var(--text)",
+                marginLeft: 10,
+                textShadow: "none",
+                opacity: 0.7,
+              }}
             >
               {subLabel}
             </span>
