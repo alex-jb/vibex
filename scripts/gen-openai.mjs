@@ -44,54 +44,74 @@ const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Brand style suffix appended to every preset. Keeps all outputs
 // visually cohesive without hand-prompting the same descriptors each time.
-const BRAND_SUFFIX = [
-  "aesthetic: dark neon arcade-rpg, forge-orange (#FF4500) and cream (#FFE27D)",
-  "accents, deep charcoal bg, subtle grain, 16-bit pixel-art influence",
-  "on hi-res painterly form (NOT pixelated), no text, no logos, no watermarks,",
-  "no UI chrome, cinematic lighting",
+//
+// PIXEL — strict NES / SNES aesthetic (default, matches rest of brand)
+const BRAND_SUFFIX_PIXEL = [
+  "STYLE: strict 16-bit pixel art, NES/SNES retro game aesthetic.",
+  "Crisp hard-edged pixels, no anti-aliasing, no smooth gradients.",
+  "Limited palette: forge-orange (#FF4500) + cream (#FFE27D) highlights,",
+  "deep charcoal (#0D0D0D) bg, muted purple (#9D00FF) accents.",
+  "Visible pixel grid. Blocky silhouettes. Think 'Shovel Knight' or",
+  "'Octopath Traveler' HD-2D sprite art.",
+  "No text, no logos, no watermarks, no UI chrome.",
 ].join(" ");
+
+// PAINTERLY — hi-res cinematic (kept for rare VC-facing photographic contexts)
+const BRAND_SUFFIX_PAINTERLY = [
+  "aesthetic: dark neon arcade-rpg, forge-orange (#FF4500) and cream (#FFE27D)",
+  "accents, deep charcoal bg, subtle grain, painterly hi-res illustration,",
+  "no text, no logos, no watermarks, no UI chrome, cinematic lighting",
+].join(" ");
+
+const BRAND_SUFFIX = BRAND_SUFFIX_PIXEL; // default
 
 // Presets — named image generation jobs. Add entries as needed.
 const PRESETS = {
-  "investor-hero": {
+  "investor-hero-pixel": {
     prompt:
-      "A mystical blacksmith forge at night on a neon mountain range. " +
-      "Warm orange embers glowing from the anvil, sparks trailing upward, " +
-      "silhouette of a figure hammering glowing metal. Futuristic RPG atmosphere. " +
-      "Wide cinematic composition with negative space on the left for overlay text.",
+      "16-bit pixel art scene: a tiny pixel blacksmith swinging a hammer " +
+      "at a glowing anvil on the right side of the frame. Orange spark " +
+      "pixels flying. Left half is a distant pixel-mountain silhouette " +
+      "at night with a starfield of single-pixel stars. Empty left third " +
+      "of frame for overlay text. Wide composition.",
     size: "1536x1024",
-    file: "investor-hero-v1.png",
-    notes: "/investors page hero / background candidate",
+    file: "investor-hero-pixel-v1.png",
+    notes: "/investors page hero — pixel version (replaces painterly v1)",
   },
-  "twitter-header": {
+  "twitter-header-pixel": {
     prompt:
-      "Panoramic night scene of a forge-mountain at dusk. Orange flames " +
-      "bursting from a distant anvil silhouette, neon-cyan sky gradient, " +
-      "jagged pixel-mountain silhouette below. Empty sky on right 2/3 for " +
-      "brand wordmark overlay.",
+      "16-bit pixel art panoramic scene. Left third: distant pixel-mountain " +
+      "silhouette in purple against a dark starry sky. Right third: a " +
+      "small pixel anvil with orange spark pixels bursting upward. " +
+      "Middle and upper two thirds are empty dark sky with scattered " +
+      "single-pixel stars — that empty space is for a brand wordmark " +
+      "overlay. Crisp pixels, no anti-aliasing.",
     size: "1536x1024",
-    file: "twitter-header-v1.png",
+    file: "twitter-header-pixel-v1.png",
     crop: { width: 1500, height: 500 },
-    notes: "1500x500 Twitter header",
+    notes: "1500x500 Twitter header — pixel",
   },
-  "og-photographic": {
+  "og-pixel-alt": {
     prompt:
-      "An arcade-futuristic anvil with molten orange metal being forged, " +
-      "neon-lit workshop environment, deep blacks, cream highlights. " +
-      "Centered composition, shallow depth of field. Nothing written anywhere.",
+      "16-bit pixel art square-ish tile: a single pixel anvil centered, " +
+      "forge-orange molten-metal glow on top, cream-colored hammer pixel " +
+      "frozen mid-swing above. 4-5 spark pixels. Dark charcoal background. " +
+      "NES aesthetic. No text anywhere. Minimal composition.",
     size: "1536x1024",
-    file: "og-photographic-v1.png",
+    file: "og-pixel-alt-v1.png",
     crop: { width: 1200, height: 630 },
-    notes: "Photographic 1200x630 OG variant (complements the pixel one)",
+    notes: "OG 1200x630 pixel-art alt (complements the existing forge Direction A)",
   },
-  "xhs-cover": {
+  "xhs-cover-pixel": {
     prompt:
-      "A tall portrait-orientation forge scene: pixel-art knight mascot " +
-      "holding a glowing hammer in front of a forge, orange sparks. " +
-      "Negative space on top third for overlay title in Chinese.",
+      "16-bit pixel art portrait composition. Centered pixel-art knight " +
+      "in 32x32 sprite-style holding a glowing hammer, standing in front " +
+      "of a stone forge with forge-orange flames. Purple-mountain silhouette " +
+      "background. Top one-third of canvas is empty starfield — that area " +
+      "is reserved for a Chinese-character headline overlay. Crisp pixels.",
     size: "1024x1536",
-    file: "xhs-cover-v1.png",
-    notes: "小红书 cover 3:4 ratio",
+    file: "xhs-cover-pixel-v1.png",
+    notes: "小红书 cover 3:4 — pixel",
   },
 };
 
