@@ -46,6 +46,8 @@ const nextConfig: NextConfig = {
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://api.anthropic.com https://*.vercel-insights.com",
+      // <video> / <audio> sources — Vercel Blob hosts /investors VC pitch MP4
+      "media-src 'self' https://*.blob.vercel-storage.com",
       "frame-src 'self'",
       "frame-ancestors 'self'",
       "object-src 'none'",
