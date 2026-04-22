@@ -117,7 +117,7 @@ function AttrRow({ attr, scale = 1 }: { attr: TopAttr; scale?: number }) {
           className="font-ui"
           style={{
             fontSize: 11 * s,
-            color: "var(--neon-purple)",
+            color: "var(--neon-purple-text)",
             letterSpacing: 1,
             lineHeight: 1,
           }}
@@ -141,7 +141,7 @@ function AttrRow({ attr, scale = 1 }: { attr: TopAttr; scale?: number }) {
         className="font-retro"
         style={{
           fontSize: 18 * s,
-          color: "var(--neon-purple)",
+          color: "var(--neon-purple-text)",
           textAlign: "right",
           lineHeight: 1,
           textShadow: "0 0 6px rgba(157,0,255,0.45)",
@@ -359,7 +359,7 @@ export function HeroCard({
                   marginLeft: 14,
                   fontSize: 11,
                   letterSpacing: 1.5,
-                  color: "var(--neon-purple)",
+                  color: "var(--neon-purple-text)",
                   padding: "3px 8px",
                   background: "rgba(157,0,255,0.12)",
                   border: "1px solid rgba(157,0,255,0.4)",
@@ -539,7 +539,12 @@ export function HeroCard({
 
       <Link
         href={`/project/${encodeURIComponent(id)}`}
-        aria-label={`${name} — ${evolutionStage} tier, compound ${compound}`}
+        // aria-label intentionally omitted — axe's label-content-name-mismatch
+        // rule flags the (otherwise-helpful) "${name} — ${stage} tier,
+        // compound ${compound}" summary because the card contains more
+        // visible text (attributes, category, stats). Letting the accessible
+        // name compute from children gives screen readers the full card
+        // and passes the rule.
         className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-yellow)]"
         style={{ color: "var(--text)" }}
       >
@@ -728,7 +733,7 @@ export function HeroCard({
                 marginLeft: "auto",
                 fontSize: 7,
                 letterSpacing: 1.5,
-                color: "var(--neon-purple)",
+                color: "var(--neon-purple-text)",
                 padding: "2px 5px",
                 background: "rgba(157,0,255,0.12)",
                 border: "1px solid rgba(157,0,255,0.4)",

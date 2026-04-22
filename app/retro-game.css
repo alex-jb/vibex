@@ -29,6 +29,12 @@
   --neon-orange-dim: #FF450040;
   --neon-purple: #9D00FF;
   --neon-purple-dim: #9D00FF40;
+  /* Brighter variant for TEXT use only — #9D00FF hits 3.48:1 on the
+     dark panel bg, below WCAG AA 4.5. This value is ~6:1. Keep
+     --neon-purple for borders/glows/backgrounds so the brand identity
+     stays; swap to --neon-purple-text anywhere that color is applied
+     to small body/caption text. */
+  --neon-purple-text: #C077FF;
   --neon-yellow: #FACC15;
   --neon-cyan: #06B6D4;
   --neon-pink: #EC4899;
