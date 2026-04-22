@@ -5,14 +5,11 @@ export default defineConfig({
   test: {
     globals: true,
     exclude: ["e2e/**", "node_modules/**"],
-    // Per-file DOM env is opt-in via /** @vitest-environment happy-dom */
-    // pragma at the top of test files that need window/document.
-    // Default stays node so unrelated tests don't pay the JSDOM cost.
-    environmentMatchGlobs: [
-      // analytics + future tracked-* component tests need a window object
-      ["lib/__tests__/analytics.test.ts", "happy-dom"],
-      ["components/**/__tests__/**", "happy-dom"],
-    ],
+    // Per-file DOM env is opt-in via @vitest-environment pragma at the
+    // top of test files that need window/document (e.g. analytics.test.ts
+    // uses happy-dom). Default stays node so unrelated tests don't pay
+    // the DOM cost. vitest v4 removed environmentMatchGlobs — pragma
+    // approach works across all versions.
   },
   resolve: {
     alias: {
