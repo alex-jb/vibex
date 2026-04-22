@@ -6,9 +6,12 @@
  * Gmail limits at 25 MB and clips previews of), link recipients here.
  * Page is fully static server-rendered — no auth, no DB calls.
  *
- * Locale toggle at top swaps the video source without a page
- * reload — both MP4s are in /public/demo-assets/.
+ * Video source: Vercel Blob (store: vibex-marketing). Re-render locally,
+ * then upload via `npm run demo:sync-blob` to refresh the asset.
+ * Repo-clean: MP4s are NOT committed (keeps clone size under ~5 MB).
  */
+
+const BLOB = "https://cgavxkhdjifwxoaw.public.blob.vercel-storage.com/demo";
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -164,11 +167,12 @@ export default function VCPage() {
             }}
           >
             <video
-              src="/demo-assets/vibex-demo-vc-v1.mp4"
+              src={`${BLOB}/vibex-demo-vc-v1.mp4`}
               controls
               preload="metadata"
               playsInline
               poster="/generated/og-vibex.png"
+              crossOrigin="anonymous"
               style={{
                 width: "100%",
                 height: "auto",
@@ -184,7 +188,7 @@ export default function VCPage() {
               marginTop: 8,
             }}
           >
-            中文版: <a href="/demo-assets/vibex-demo-vc-v1-zh.mp4" style={{ color: COLOR.FORGE_CREAM }}>vibex-demo-vc-v1-zh.mp4</a>
+            中文版: <a href={`${BLOB}/vibex-demo-vc-v1-zh.mp4`} style={{ color: COLOR.FORGE_CREAM }}>vibex-demo-vc-v1-zh.mp4</a>
           </p>
         </section>
 

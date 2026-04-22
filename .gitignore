@@ -48,3 +48,9 @@ next-env.d.ts
 # ═══ PROPRIETARY (private core — not tracked) ═══
 # Real implementations stored locally, public repo has stubs only.
 .private/
+.env*.local
+
+# ═══ DEMO MP4s — served from Vercel Blob, not committed ═══
+# /investors + DemoVertical reference Blob URLs. Re-render locally,
+# upload with `npm run demo:sync-blob`. PNG screenshots stay tracked.
+public/demo-assets/*.mp4

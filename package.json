@@ -24,6 +24,7 @@
     "remotion:demo-vertical": "remotion render remotion/src/index.ts DemoVertical out/vibex-demo-vertical-v1.mp4 --codec=h264 --crf=18 --concurrency=4",
     "remotion:demo-vertical-zh": "remotion render remotion/src/index.ts DemoVertical out/vibex-demo-vertical-v1-zh.mp4 --props='{\"locale\":\"zh\"}' --codec=h264 --crf=18 --concurrency=4",
     "remotion:og-image": "remotion still remotion/src/index.ts OgImage out/vibex-og-image.png --frame=0",
+    "demo:sync-blob": "node scripts/sync-demo-blob.mjs",
     "gen:pitch-pptx": "node scripts/gen-pitch-pptx.mjs both"
   },
   "dependencies": {
@@ -35,9 +36,11 @@
     "@supabase/supabase-js": "^2.101.1",
     "@types/pngjs": "^6.0.5",
     "@types/qrcode": "^1.5.6",
+    "@vercel/blob": "^2.3.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cobe": "^2.0.1",
+    "dotenv": "^17.4.2",
     "framer-motion": "^12.38.0",
     "gif-encoder-2": "^1.0.5",
     "lucide-react": "^1.7.0",

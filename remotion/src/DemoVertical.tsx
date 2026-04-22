@@ -13,9 +13,8 @@
  *   npm run remotion:demo-vertical     → EN (uses vibex-demo-v1.mp4 source)
  *   npm run remotion:demo-vertical-zh  → ZH (uses vibex-demo-v1-zh.mp4)
  *
- * Prereq: public/demo-assets/vibex-demo-v1{,-zh}.mp4 must exist. Re-run
- * `npm run remotion:demo && npm run remotion:demo-zh` then copy to
- * public/demo-assets/ if you update the source 60s demos.
+ * Source: Vercel Blob (store: vibex-marketing). If you re-render the 60s
+ * demos, upload with `npm run demo:sync-blob` before running this.
  */
 
 import {
@@ -49,10 +48,11 @@ const COPY = {
 export const DemoVertical = ({ locale }: { locale: Locale }) => {
   const frame = useCurrentFrame();
   const copy = COPY[locale];
+  const BLOB = "https://cgavxkhdjifwxoaw.public.blob.vercel-storage.com/demo";
   const videoSrc =
     locale === "zh"
-      ? "demo-assets/vibex-demo-v1-zh.mp4"
-      : "demo-assets/vibex-demo-v1.mp4";
+      ? `${BLOB}/vibex-demo-v1-zh.mp4`
+      : `${BLOB}/vibex-demo-v1.mp4`;
 
   // mascot bob for bottom element
   const mascotBob = Math.sin(frame * 0.15) * 4;
@@ -134,7 +134,7 @@ export const DemoVertical = ({ locale }: { locale: Locale }) => {
         }}
       >
         <OffthreadVideo
-          src={staticFile(videoSrc)}
+          src={videoSrc}
           style={{
             width: "100%",
             height: "100%",
