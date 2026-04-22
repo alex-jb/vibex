@@ -107,6 +107,25 @@ const PRESETS = {
     crop: { width: 1200, height: 630 },
     notes: "OG 1200x630 pixel-art alt (complements the existing forge Direction A)",
   },
+  "evolution-ladder": {
+    prompt:
+      "16-bit pixel art horizontal infographic showing 6 evolution stages. " +
+      "Left-to-right progression: " +
+      "1) tiny seedling sprite glowing faint gray-white, " +
+      "2) small green leaf creature, " +
+      "3) medium cyan crystalline blob, " +
+      "4) purple-pink bird-like creature with wings, " +
+      "5) red fiery dragon creature, " +
+      "6) pink-magenta legendary crowned creature. " +
+      "Each sprite sits on a pixel pedestal with its stage name below: " +
+      "SEED · ACTIVE · GROWING · BREAKOUT · LEGEND · MYTH. " +
+      "A faint glowing pixel arrow chain connects them. " +
+      "Dark charcoal bg, star field. NES/SNES aesthetic, crisp pixels, " +
+      "no anti-aliasing. Wide cinematic composition.",
+    size: "1536x1024",
+    file: "evolution-ladder-v1.png",
+    notes: "6-stage progression visual for /about page, pitch deck, blog posts",
+  },
   "xhs-cover-pixel": {
     prompt:
       "16-bit pixel art portrait composition. Centered pixel-art knight " +
