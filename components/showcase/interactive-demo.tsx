@@ -91,6 +91,11 @@ export function InteractiveDemo({ onIdeaSubmit }: InteractiveDemoProps) {
   const [revealedTitle, setRevealedTitle] = useState("");
   const [userInput, setUserInput] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
+  // Animated progress bar length during `generating` phase. Previously
+  // `Math.random()` was called inline during render — impure + would produce
+  // different values on every parent re-render. Driven by a setInterval here
+  // so the animation is visible without violating react-hooks/purity.
+  const [progressBarLen, setProgressBarLen] = useState(5);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const cancelRef = useRef(false);
 
@@ -192,10 +197,17 @@ export function InteractiveDemo({ onIdeaSubmit }: InteractiveDemoProps) {
     mode === "auto" ? "> VIBEX TERMINAL v1.0" : "> USER MODE · ENTER YOUR IDEA";
   const terminalBody = mode === "auto" ? displayText : userInput;
 
+  // Pulse progressBarLen while generating (drives the "▓▓▓▓▓░░░" terminal feel).
+  useEffect(() => {
+    if (phase !== "generating") return;
+    const t = setInterval(() => {
+      setProgressBarLen(Math.floor(Math.random() * 4) + 3);
+    }, 200);
+    return () => clearInterval(t);
+  }, [phase]);
+
   const progressBar =
-    phase === "generating"
-      ? "▓".repeat(Math.floor(Math.random() * 4) + 3).padEnd(8, "░")
-      : "";
+    phase === "generating" ? "▓".repeat(progressBarLen).padEnd(8, "░") : "";
 
   return (
     <div

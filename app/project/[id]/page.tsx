@@ -46,6 +46,14 @@ function formatProjectDate(raw: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
+// Deterministic 32-bit string hash (djb2-ish). Used for seeding stable
+// shuffles that would otherwise use Math.random (impure during render).
+function hashString(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return h;
+}
+
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -775,12 +783,18 @@ export default function ProjectPage({
 
   const relatedProjects = useMemo(() => {
     if (!project) return [];
+    // Deterministic shuffle seeded by current project id — avoids Math.random
+    // in a useMemo (would produce a different order on every re-render + cause
+    // SSR hydration mismatch). Pairs each candidate with a stable hash of
+    // `(candidate.id ^ project.id)` and sorts by that hash.
+    const seed = hashString(project.id);
     return projects
       .filter((p) => p.id !== project.id)
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 3);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, projects]);
+      .map((p) => ({ p, k: hashString(p.id) ^ seed }))
+      .sort((a, b) => a.k - b.k)
+      .slice(0, 3)
+      .map((x) => x.p);
+  }, [project, projects]);
 
   if (!project) {
     // Still fetching — show a lightweight skeleton instead of the 404 flash.
