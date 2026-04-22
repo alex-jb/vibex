@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://www.vibexforge.com">
-    <img src="docs/screenshots-v2/01-landing.png" width="820" alt="VibeXForge — enter the portal" />
+    <img src="docs/screenshots-v3/01-landing.png" width="820" alt="VibeXForge — enter the portal" />
   </a>
 </p>
 
@@ -70,12 +70,12 @@ The gamification (pixel art cards, evolution stages, realtime leaderboard) makes
 
 |  |  |
 |---|---|
-| ![Landing](docs/screenshots-v2/01-landing.png) | ![HQ](docs/screenshots-v2/02-home.png) |
+| ![Landing](docs/screenshots-v3/01-landing.png) | ![HQ](docs/screenshots-v3/02-home.png) |
 | **Portal** — every session starts here | **HQ** — your projects + 3D globe + leaderboard |
-| ![Project](docs/screenshots-v2/04-project.png) | ![Hunt](docs/screenshots-v2/03-hunt.png) |
-| **Project detail** — Claude review + stats | **Hunt** — daily/weekly live rankings |
-| ![Ideas](docs/screenshots-v2/05-ideas.png) | ![Creators](docs/screenshots-v2/06-creators.png) |
-| **Idea Lab** — AI scores your concept before you build | **Creators** — ranked by what they shipped |
+| ![Launch](docs/screenshots-v3/03-launch-filled.png) | ![Project](docs/screenshots-v3/04-project-forged.png) |
+| **Launch** — paste URL, forge plates ignite, anvil strikes | **Project** — forge-unveil animation + Claude review panel |
+| ![Hunt](docs/screenshots-v3/05-hunt.png) | ![Creators](docs/screenshots-v3/06-creators.png) |
+| **Hunt** — realtime leaderboard, makers voting | **Creators** — ranked by what they shipped |
 
 ---
 
@@ -139,7 +139,7 @@ vibex/
 │   ├── project/[id]/         # Project detail + review history
 │   ├── ideas/                # Idea Lab (pre-build scoring)
 │   ├── creators/             # Builder profiles + rankings
-│   └── api/                  # 43 REST + streaming endpoints
+│   └── api/                  # 57 REST + streaming endpoints
 ├── components/
 │   ├── rpg/                  # Pixel chrome (cards, evolution badges)
 │   ├── cobe-globe.tsx        # Spinning 3D globe
@@ -147,7 +147,7 @@ vibex/
 ├── lib/
 │   ├── ai.ts                 # Claude tool_use wrapper
 │   ├── realtime.ts           # Supabase realtime hooks
-│   └── i18n.ts               # 708 strings (EN / zh)
+│   └── i18n.ts               # ~925 strings (EN / zh bilingual)
 ├── proxy.ts                  # Supabase SSR auth middleware
 ├── public/llms.txt           # AI search engine discoverability
 └── scripts/                  # QA, perf audit, demo recorder tools
@@ -173,7 +173,7 @@ vibex/
   color reveal + compound count-up + staggered bar fill
 - [x] Interactive 3D globe (cobe)
 - [x] GEO optimization (llms.txt, AI crawler rules)
-- [x] Bilingual UI (EN / zh, 708 strings)
+- [x] Bilingual UI (EN / zh, ~925 strings)
 - [x] Automated demo video recorder with TTS narration
 
 **Next**

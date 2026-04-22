@@ -61,6 +61,7 @@ export function Footer() {
             </h3>
             <div className="flex flex-col gap-2.5">
               <Link href="/insights" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("footer.trendsInsights")}</Link>
+              <Link href="/investors" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>For Investors</Link>
               <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>{t("footer.apiComingSoon")}</span>
               <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>{t("footer.documentation")}</span>
               <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>{t("footer.changelog")}</span>
