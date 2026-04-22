@@ -1,10 +1,10 @@
-# Contributing to VibeX
+# Contributing to VibeXForge
 
-Thanks for your interest in VibeX! We welcome contributions from the community.
+Thanks for your interest in VibeXForge! We welcome contributions from the community.
 
 ## Public vs. Private Split
 
-VibeX uses a **source-available dual-layer model**:
+VibeXForge uses a **source-available dual-layer model**:
 
 ### Public (this repo)
 - All UI components (`components/`, `app/`)
