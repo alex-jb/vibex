@@ -695,9 +695,13 @@ export function HeroCard({
                 style={{
                   marginLeft: "auto",
                   fontSize: 7,
-                  color: evoColor,
+                  // Foreground is near-white to pass WCAG AA on any stage
+                  // tile bg (Legend #3B1B1D fell 4.1:1 with pure red fg).
+                  // Stage identity is communicated via the evoColor glow
+                  // (textShadow) + the tile's own bg tint.
+                  color: "var(--text)",
                   letterSpacing: 1.5,
-                  textShadow: `0 0 4px ${evoColor}`,
+                  textShadow: `0 0 6px ${evoColor}, 0 0 2px ${evoColor}`,
                 }}
               >
                 {evolutionStage.toUpperCase()}
