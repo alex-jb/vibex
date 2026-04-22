@@ -35,6 +35,9 @@ export const STAGE_COLORS = {
   Myth: "#FF69B4",
 } as const;
 
-export const FONT_PIXEL = "'Press Start 2P', monospace";
-export const FONT_RETRO = "'VT323', monospace";
-export const FONT_UI = "'Silkscreen', 'Press Start 2P', monospace";
+// Family names from @remotion/google-fonts (renamed to avoid digit-prefix).
+// Keep the legacy Google-Fonts name in the fallback chain in case the
+// bundled font fails to load.
+export const FONT_PIXEL = "'Press Start TwoP', 'Press Start 2P', monospace";
+export const FONT_RETRO = "'VTThreeTwoThree', 'VT323', monospace";
+export const FONT_UI = "'Silkscreen', 'Press Start TwoP', monospace";

@@ -3,6 +3,7 @@
  * TypeScript path aliases, and what output format to render.
  */
 
+import path from "node:path";
 import { Config } from "@remotion/cli/config";
 
 Config.setEntryPoint("remotion/src/index.ts");
@@ -21,7 +22,7 @@ Config.overrideWebpackConfig((currentConfig) => {
       ...currentConfig.resolve,
       alias: {
         ...currentConfig.resolve?.alias,
-        "@": require("node:path").resolve(__dirname, ".."),
+        "@": path.resolve(__dirname, ".."),
       },
     },
   };
