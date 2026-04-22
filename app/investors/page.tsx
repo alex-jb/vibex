@@ -177,7 +177,7 @@ export default function VCPage() {
               controls
               preload="metadata"
               playsInline
-              poster="/generated/og-vibex.png"
+              poster="/generated/investor-hero-pixel-v1.png"
               crossOrigin="anonymous"
               style={{
                 width: "100%",

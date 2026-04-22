@@ -80,16 +80,21 @@ const PRESETS = {
   },
   "twitter-header-pixel": {
     prompt:
-      "16-bit pixel art panoramic scene. Left third: distant pixel-mountain " +
-      "silhouette in purple against a dark starry sky. Right third: a " +
-      "small pixel anvil with orange spark pixels bursting upward. " +
-      "Middle and upper two thirds are empty dark sky with scattered " +
-      "single-pixel stars — that empty space is for a brand wordmark " +
-      "overlay. Crisp pixels, no anti-aliasing.",
+      "16-bit pixel art panoramic landscape, WIDE 3:1 composition. " +
+      "Left third: layered pixel-mountain silhouettes in deep purple " +
+      "with a small glowing pixel campfire at base. " +
+      "Center: a pixel-art knight silhouette (same style as Shovel Knight) " +
+      "walking toward a distant forge on the horizon. " +
+      "Right third: bright pixel anvil with big fountain of forge-orange " +
+      "spark pixels shooting up, glowing brick forge with fire inside. " +
+      "Across the top: starfield (single-pixel stars) — that upper band " +
+      "is the overlay area for brand wordmark. " +
+      "Bottom: ground-line of pixel grass tiles. Every pixel crisp, no " +
+      "anti-aliasing, NES/SNES palette. Dense with detail.",
     size: "1536x1024",
-    file: "twitter-header-pixel-v1.png",
+    file: "twitter-header-pixel-v2.png",
     crop: { width: 1500, height: 500 },
-    notes: "1500x500 Twitter header — pixel",
+    notes: "1500x500 Twitter header v2 — denser than v1 (v1 was too sparse)",
   },
   "og-pixel-alt": {
     prompt:
