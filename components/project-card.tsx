@@ -110,6 +110,7 @@ export function ProjectCard({ project }: { project: Project }) {
           >
             {/* GIF/Image thumbnail if available */}
             {project.thumbnail && (
+              // eslint-disable-next-line @next/next/no-img-element -- arbitrary user-submitted URL + often animated GIFs; next/image blocks those
               <img
                 src={project.thumbnail}
                 alt={project.title}

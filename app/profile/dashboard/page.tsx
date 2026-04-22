@@ -4,8 +4,8 @@ import { useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
-  Eye, ChevronUp, Play, Share2, TrendingUp, Users,
-  ArrowLeft, BarChart3, Zap, Star, GitFork,
+  Eye, ChevronUp, Play, Share2,
+  ArrowLeft, BarChart3, Zap, Star,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useLang } from "@/lib/i18n";
@@ -94,7 +94,7 @@ function ProjectRow({ project }: { project: { id: string; title: string; score: 
 }
 
 export default function CreatorDashboardPage() {
-  const { t, lang } = useLang();
+  const { lang } = useLang();
   const { user } = useAuth();
   const { data: allProjects } = useProjects();
 

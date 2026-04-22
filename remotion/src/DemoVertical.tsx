@@ -23,7 +23,6 @@ import {
   OffthreadVideo,
   staticFile,
   useCurrentFrame,
-  interpolate,
 } from "remotion";
 import { COLORS, FONT_PIXEL, FONT_RETRO } from "./tokens";
 import type { Locale } from "./Demo";

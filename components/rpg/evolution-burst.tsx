@@ -187,7 +187,6 @@ export function useEvolutionDetector(currentStage: EvolutionStage | undefined) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setBurstStage(currentStage);
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrevStage(currentStage);
   }, [currentStage, prevStage]);
 

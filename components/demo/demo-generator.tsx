@@ -167,8 +167,9 @@ export function DemoGenerator({ onGenerated, projectId, className = "" }: DemoGe
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
           >
-            {/* GIF Preview */}
+            {/* GIF Preview — generated GIF from user input, dynamic URL */}
             <div className="rounded-lg overflow-hidden border border-emerald-500/20 mb-3">
+              {/* eslint-disable-next-line @next/next/no-img-element -- dynamic blob URL, next/image can't optimize */}
               <img
                 src={gifUrl}
                 alt="Generated demo"

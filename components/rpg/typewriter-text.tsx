@@ -44,7 +44,6 @@ export function TypewriterText({
     }, speed);
     return () => clearInterval(timer);
     // Intentionally exclude onComplete — held in ref above
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, speed]);
 
   return (

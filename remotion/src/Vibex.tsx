@@ -9,7 +9,7 @@
  *   2100 – 2700 (70-90s) · CTA            · vibexforge.com + QR
  */
 
-import { AbsoluteFill, Sequence, Audio, staticFile } from "remotion";
+import { AbsoluteFill, Sequence } from "remotion";
 import { COLORS } from "./tokens";
 import { Hero } from "./scenes/Hero";
 import { LaunchFill } from "./scenes/LaunchFill";

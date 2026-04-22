@@ -18,7 +18,6 @@
 
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
-import { dirname } from "node:path";
 
 const BASE_URL = process.env.BASE_URL || "https://www.vibexforge.com";
 const OUT_DIR = "docs/screenshots-v3";

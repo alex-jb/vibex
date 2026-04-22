@@ -119,6 +119,7 @@ export function ImageUpload({
 
       {preview ? (
         <div className={`relative ${s.w} ${s.h} group`}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- local blob URL from user upload, not optimizable */}
           <img
             src={preview}
             alt={type === "avatar" ? "Avatar" : "Thumbnail"}

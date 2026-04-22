@@ -86,10 +86,6 @@ const autoReplies: Record<string, string[]> = {
 
 const QUICK_EMOJIS = ["\u{1F525}", "\u{1F44D}", "\u{2764}\u{FE0F}", "\u{1F680}"];
 
-function getInitials(name: string): string {
-  return name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
-}
-
 function TypingIndicator() {
   return (
     <div className="flex justify-start">

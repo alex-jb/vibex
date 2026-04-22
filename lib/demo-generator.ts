@@ -1,4 +1,4 @@
-import { chromium, type Browser, type Page } from "playwright-core";
+import { chromium, type Browser } from "playwright-core";
 import GIFEncoder from "gif-encoder-2";
 import { PNG } from "pngjs";
 

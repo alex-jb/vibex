@@ -20,8 +20,6 @@ import { COLORS, FONT_PIXEL, FONT_RETRO } from "../../tokens";
 import { Caption } from "./Caption";
 import type { Locale } from "../../Demo";
 
-const EASE = Easing.bezier(0.2, 0.8, 0.1, 1);
-
 const CARDS = {
   en: [
     { tag: "SOLO-BUILT", sub: "one dev · built in public", icon: "◉" },

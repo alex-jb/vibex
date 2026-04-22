@@ -34,7 +34,7 @@ import { chromium } from "playwright";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
-import { mkdirSync, renameSync, existsSync, readdirSync } from "node:fs";
+import { mkdirSync, renameSync, readdirSync } from "node:fs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");

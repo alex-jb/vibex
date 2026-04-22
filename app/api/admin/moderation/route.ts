@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { createServerSupabase, getAuthUser } from "@/lib/supabase-server";
+import { createServerSupabase } from "@/lib/supabase-server";
 import { requireRole } from "@/lib/rbac";
 import { USE_SUPABASE } from "@/lib/mock-adapter";
 

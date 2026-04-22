@@ -54,9 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== "undefined" && sessionStorage.getItem(DEMO_SESSION_KEY)) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(DEMO_USER);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSession({ user: DEMO_USER } as unknown as Session);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       return;
     }
