@@ -369,7 +369,7 @@ export default function ArenaPage() {
       <CriticalHitOverlay show={showCrit} />
       <FlashOverlay show={phase === "flash"} />
 
-      {/* READY? / FIGHT! splash */}
+      {/* READY? / FIGHT! splash with smith mascot */}
       <AnimatePresence>
         {showSplash && (
           <motion.div
@@ -377,9 +377,20 @@ export default function ArenaPage() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 2, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center"
+            className="pointer-events-none fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4"
             style={{ background: "rgba(0,0,0,0.6)" }}
           >
+            <Image
+              src={showSplash === "ready" ? "/generated/smith-idle.png" : "/generated/smith-happy.png"}
+              alt=""
+              width={192}
+              height={192}
+              unoptimized
+              style={{
+                imageRendering: "pixelated",
+                filter: `drop-shadow(0 0 16px ${showSplash === "ready" ? C.YELLOW : C.FORGE})`,
+              }}
+            />
             <div
               className="font-pixel"
               style={{

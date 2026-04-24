@@ -1395,10 +1395,41 @@ export default function LaunchPage() {
               </div>
             )}
             {submitted && (
-              <div className="mt-8 rpgui-container framed p-4 text-center" style={{ padding: 16 }}>
-                <p className="font-pixel text-emerald-400" style={{ fontSize: 12, textShadow: "0 0 10px rgba(57,255,20,0.3)" }}>
-                  <CheckCircle2 className="inline size-4 mr-2" />
-                  Hero forged! Taking you to your page…
+              <div
+                className="mt-8 flex flex-col items-center gap-3 p-6 text-center"
+                style={{
+                  background: "#0A0A0C",
+                  border: "3px solid #FF4500",
+                  boxShadow: "6px 6px 0 #000, 0 0 32px rgba(255,69,0,0.45)",
+                }}
+              >
+                <Image
+                  src="/generated/smith-happy.png"
+                  alt=""
+                  width={128}
+                  height={128}
+                  unoptimized
+                  style={{
+                    imageRendering: "pixelated",
+                    filter: "drop-shadow(0 0 12px rgba(255,69,0,0.6))",
+                  }}
+                />
+                <p
+                  className="font-pixel"
+                  style={{
+                    fontSize: 14,
+                    letterSpacing: 2,
+                    color: "#FFE27D",
+                    textShadow: "2px 2px 0 #000, 0 0 10px rgba(255,69,0,0.8)",
+                  }}
+                >
+                  ⚒ HERO FORGED ⚒
+                </p>
+                <p
+                  className="font-retro"
+                  style={{ fontSize: 13, color: "#8A7B9A", letterSpacing: 0.5 }}
+                >
+                  Taking you to your page…
                 </p>
               </div>
             )}

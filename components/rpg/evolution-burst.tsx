@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import type { EvolutionStage } from "@/lib/types";
 import { SPRITE_STAGES } from "@/lib/sprite-config";
@@ -136,13 +137,27 @@ export function EvolutionBurst({ stage, onComplete, className = "" }: EvolutionB
                 style={{ background: config.glowColor, transform: "scale(3)" }}
               />
 
-              <motion.span
-                animate={{ scale: [1, 1.1, 1] }}
+              {/* Smith-happy mascot celebrating the evolution, with the
+                  stage emoji floating to its right. The mascot anchors the
+                  moment on a familiar face; the emoji still conveys rarity. */}
+              <motion.div
+                animate={{ scale: [1, 1.08, 1], y: [0, -4, 0] }}
                 transition={{ duration: 1, repeat: 2, repeatType: "reverse" }}
-                style={{ fontSize: "64px", position: "relative", zIndex: 1 }}
+                style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: 12 }}
               >
-                {config.emoji}
-              </motion.span>
+                <Image
+                  src="/generated/smith-happy.png"
+                  alt=""
+                  width={96}
+                  height={96}
+                  unoptimized
+                  style={{
+                    imageRendering: "pixelated",
+                    filter: `drop-shadow(0 0 16px ${config.glowColor})`,
+                  }}
+                />
+                <span style={{ fontSize: "56px" }}>{config.emoji}</span>
+              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
