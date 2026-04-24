@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { upload } from "@vercel/blob/client";
 import {
   Rocket,
   Sparkles,
@@ -16,6 +17,8 @@ import {
   Loader2,
   Link2,
   ArrowRight,
+  Upload,
+  Film,
 } from "lucide-react";
 
 import { useLang } from "@/lib/i18n";
@@ -56,6 +59,9 @@ export default function LaunchPage() {
   const [demoLink, setDemoLink] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [demoVideoUrl, setDemoVideoUrl] = useState("");
+  const [videoUploading, setVideoUploading] = useState(false);
+  const [videoUploadError, setVideoUploadError] = useState<string | null>(null);
+  const videoFileInputRef = useRef<HTMLInputElement | null>(null);
   const [creatorName, setCreatorName] = useState("");
   const [tags, setTags] = useState("");
   const [aiResponse, setAiResponse] = useState("");
@@ -218,6 +224,7 @@ export default function LaunchPage() {
     setDemoType("");
     setDemoLink("");
     setThumbnailUrl("");
+    setDemoVideoUrl("");
     setCreatorName("");
     setTags("");
     setDraftLoaded(false);
@@ -227,6 +234,36 @@ export default function LaunchPage() {
       } catch {
         // ignore
       }
+    }
+  }, []);
+
+  const handleVideoUpload = useCallback(async (file: File) => {
+    // Client-side guards — the server route also enforces these, but
+    // failing fast here avoids a pointless round-trip for an obviously
+    // bad file.
+    if (!/^video\/(mp4|webm)$/i.test(file.type)) {
+      setVideoUploadError("MP4 or WebM only.");
+      return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+      setVideoUploadError("File must be 25 MB or less.");
+      return;
+    }
+    setVideoUploadError(null);
+    setVideoUploading(true);
+    try {
+      const suffix = file.name.replace(/[^a-zA-Z0-9.-]/g, "-").slice(-40);
+      const blob = await upload(`demo-videos/${Date.now()}-${suffix}`, file, {
+        access: "public",
+        handleUploadUrl: "/api/blob/upload-video",
+      });
+      setDemoVideoUrl(blob.url);
+    } catch (e) {
+      setVideoUploadError(
+        e instanceof Error ? e.message : "Upload failed — try again.",
+      );
+    } finally {
+      setVideoUploading(false);
     }
   }, []);
 
@@ -1366,20 +1403,87 @@ export default function LaunchPage() {
                 />
               </FormField>
 
-              {/* Optional demo video — looping MP4/WebM URL. Renders inside
-                  HeroCard in place of the static evo sprite (codedex-style
-                  animated card). Host anywhere (Vercel Blob / S3 / own CDN)
-                  that serves an https:// URL with correct Content-Type. */}
+              {/* Optional demo video — direct upload to Vercel Blob (MP4/WebM
+                  ≤25MB) or paste an existing https:// URL. Renders inside
+                  HeroCard in place of the static evo sprite. */}
               <FormField
-                label="Demo video URL (MP4/WebM, ≤30s, optional)"
+                label="Demo video (MP4/WebM, ≤25 MB, optional)"
                 filled={!!demoVideoUrl.trim()}
               >
-                <Input
-                  value={demoVideoUrl}
-                  onChange={(e) => setDemoVideoUrl(e.target.value)}
-                  placeholder="https://... .mp4 or .webm"
-                  className="bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
-                />
+                <div className="flex flex-col gap-2">
+                  <input
+                    ref={videoFileInputRef}
+                    type="file"
+                    accept="video/mp4,video/webm"
+                    className="sr-only"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleVideoUpload(f);
+                      // Reset so picking the same file again re-triggers.
+                      e.target.value = "";
+                    }}
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => videoFileInputRef.current?.click()}
+                      disabled={videoUploading}
+                      className="flex items-center gap-2 px-3 py-2 font-pixel text-xs transition-colors hover:bg-[color:var(--neon-orange)]/10 disabled:opacity-60"
+                      style={{
+                        background: "rgba(0,0,0,0.35)",
+                        border: "2px solid rgba(255,69,0,0.5)",
+                        color: "#FFE27D",
+                        letterSpacing: 1.5,
+                        minHeight: 40,
+                        cursor: videoUploading ? "wait" : "pointer",
+                      }}
+                    >
+                      {videoUploading ? (
+                        <>
+                          <Loader2 className="size-3.5 animate-spin" />
+                          UPLOADING…
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="size-3.5" />
+                          UPLOAD MP4
+                        </>
+                      )}
+                    </button>
+                    <Input
+                      value={demoVideoUrl}
+                      onChange={(e) => setDemoVideoUrl(e.target.value)}
+                      placeholder="https://... .mp4 or .webm (or use upload →)"
+                      className="flex-1 bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
+                    />
+                  </div>
+                  {videoUploadError && (
+                    <div
+                      className="font-retro text-xs px-2 py-1"
+                      style={{
+                        color: "#FF6B6B",
+                        background: "rgba(255,0,77,0.1)",
+                        border: "1px solid rgba(255,0,77,0.35)",
+                      }}
+                    >
+                      <AlertCircle className="inline size-3 mr-1" />
+                      {videoUploadError}
+                    </div>
+                  )}
+                  {demoVideoUrl.trim() && !videoUploading && (
+                    <div
+                      className="flex items-center gap-2 font-retro text-xs"
+                      style={{ color: "#FFE27D" }}
+                    >
+                      <Film className="size-3" style={{ color: "#FF4500" }} />
+                      <span className="truncate" title={demoVideoUrl}>
+                        {demoVideoUrl.length > 60
+                          ? demoVideoUrl.slice(0, 30) + "…" + demoVideoUrl.slice(-24)
+                          : demoVideoUrl}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </FormField>
             </div>
 
