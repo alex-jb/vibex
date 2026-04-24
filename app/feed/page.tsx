@@ -10,6 +10,7 @@ import { FeedTabs } from "@/components/feed/feed-tabs";
 import { NewPostsToast } from "@/components/feed/new-posts-toast";
 import { TrendingSidebar } from "@/components/feed/trending-sidebar";
 import Link from "next/link";
+import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 
 /* ─── Skeleton card for loading states ─── */
@@ -177,10 +178,24 @@ export default function FeedPage() {
 
   /* ─── Per-tab empty state messages ─── */
   function renderEmptyState() {
+    // Shared pixel illustration — knight by unlit campfire, reading a scroll.
+    // Conveys "nothing brewing yet, forge something" mood.
+    const illustration = (
+      <Image
+        src="/generated/empty-feed-v1.png"
+        alt=""
+        width={320}
+        height={320}
+        className="mx-auto mb-6"
+        style={{ imageRendering: "pixelated", opacity: 0.9 }}
+      />
+    );
+
     if (tab === "following") {
       return (
         <div style={{ textAlign: "center", padding: "40px 0" }}>
-          <div className="font-retro" style={{ fontSize: 14, color: "#555", marginBottom: 16 }}>
+          {illustration}
+          <div className="font-retro" style={{ fontSize: 14, color: "#8A7B9A", marginBottom: 16 }}>
             {t("feed.emptyFollowing")}
           </div>
           <Link href="/creators">
@@ -197,7 +212,8 @@ export default function FeedPage() {
     if (tab === "trending") {
       return (
         <div style={{ textAlign: "center", padding: "40px 0" }}>
-          <div className="font-retro" style={{ fontSize: 14, color: "#555" }}>
+          {illustration}
+          <div className="font-retro" style={{ fontSize: 14, color: "#8A7B9A" }}>
             {t("feed.emptyTrending")}
           </div>
         </div>
@@ -206,7 +222,8 @@ export default function FeedPage() {
     // latest
     return (
       <div style={{ textAlign: "center", padding: "40px 0" }}>
-        <div className="font-retro" style={{ fontSize: 14, color: "#555", marginBottom: 16 }}>
+        {illustration}
+        <div className="font-retro" style={{ fontSize: 14, color: "#8A7B9A", marginBottom: 16 }}>
           {t("feed.emptyLatest")}
         </div>
         <button
