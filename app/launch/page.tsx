@@ -62,6 +62,7 @@ export default function LaunchPage() {
   const [videoUploading, setVideoUploading] = useState(false);
   const [videoUploadPercent, setVideoUploadPercent] = useState(0);
   const [videoUploadError, setVideoUploadError] = useState<string | null>(null);
+  const [videoDropActive, setVideoDropActive] = useState(false);
   const videoFileInputRef = useRef<HTMLInputElement | null>(null);
   const [creatorName, setCreatorName] = useState("");
   const [tags, setTags] = useState("");
@@ -1416,7 +1417,48 @@ export default function LaunchPage() {
                 label="Demo video (MP4/WebM, ≤25 MB, optional)"
                 filled={!!demoVideoUrl.trim()}
               >
-                <div className="flex flex-col gap-2">
+                <div
+                  onDragOver={(e) => {
+                    if (videoUploading) return;
+                    // Only treat as a video drop if the drag carries a file
+                    // (prevents highlighting on stray text drags).
+                    if (!Array.from(e.dataTransfer.items).some((i) => i.kind === "file")) return;
+                    e.preventDefault();
+                    setVideoDropActive(true);
+                  }}
+                  onDragLeave={(e) => {
+                    // Only clear when the cursor leaves the outer box, not
+                    // when it crosses a child element.
+                    if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+                    setVideoDropActive(false);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setVideoDropActive(false);
+                    if (videoUploading) return;
+                    const f = e.dataTransfer.files?.[0];
+                    if (f) handleVideoUpload(f);
+                  }}
+                  className="flex flex-col gap-2 p-3 transition-colors"
+                  style={{
+                    border: videoDropActive
+                      ? "2px dashed #FF4500"
+                      : "2px dashed rgba(255,69,0,0.25)",
+                    background: videoDropActive ? "rgba(255,69,0,0.08)" : "transparent",
+                  }}
+                >
+                  <div
+                    className="font-pixel text-center"
+                    style={{
+                      fontSize: 8,
+                      letterSpacing: 2,
+                      color: videoDropActive ? "#FFE27D" : "rgba(255,226,125,0.55)",
+                      textShadow: videoDropActive ? "0 0 6px #FF4500" : "none",
+                      transition: "color 120ms, text-shadow 120ms",
+                    }}
+                  >
+                    {videoDropActive ? "▼ DROP TO FORGE ▼" : "▸ DRAG MP4 HERE OR PICK A FILE ◂"}
+                  </div>
                   <input
                     ref={videoFileInputRef}
                     type="file"
@@ -1459,7 +1501,7 @@ export default function LaunchPage() {
                     <Input
                       value={demoVideoUrl}
                       onChange={(e) => setDemoVideoUrl(e.target.value)}
-                      placeholder="https://... .mp4 or .webm (or use upload →)"
+                      placeholder="https://... .mp4 or .webm (or drop file above)"
                       className="flex-1 bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
                     />
                   </div>
