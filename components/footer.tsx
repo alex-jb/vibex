@@ -6,6 +6,34 @@ import { usePathname } from "next/navigation";
 import { useLang } from "@/lib/i18n";
 import { isFeatureEnabled } from "@/lib/feature-flags";
 
+// Small uptime badge linking to the public OpenStatus page. Renders
+// nothing if NEXT_PUBLIC_STATUS_PAGE_URL isn't set — that way dev + PRs
+// don't show a broken badge before the status page is provisioned.
+// Pulsing green dot is decorative; real liveness comes from click-through.
+function StatusBadge() {
+  const url = process.env.NEXT_PUBLIC_STATUS_PAGE_URL;
+  if (!url) return null;
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex items-center gap-1.5 font-pixel text-[9px] tracking-widest uppercase transition-colors hover:text-[var(--neon-green)]"
+      style={{ color: "var(--text-muted)" }}
+      aria-label="System status"
+    >
+      <span
+        aria-hidden
+        className="relative inline-flex h-1.5 w-1.5"
+      >
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--neon-green)] opacity-60" />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--neon-green)]" />
+      </span>
+      Status
+    </a>
+  );
+}
+
 export function Footer() {
   const { t } = useLang();
   const pathname = usePathname();
@@ -83,9 +111,12 @@ export function Footer() {
           <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
             &copy; {new Date().getFullYear()} {t("footer.copyright")}
           </p>
-          <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-            {t("footer.crafted")}
-          </p>
+          <div className="flex items-center gap-5">
+            <StatusBadge />
+            <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+              {t("footer.crafted")}
+            </p>
+          </div>
         </div>
       </div>
     </footer>
