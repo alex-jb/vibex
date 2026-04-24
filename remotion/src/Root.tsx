@@ -24,6 +24,7 @@ import { Demo } from "./Demo";
 import { DemoVC } from "./DemoVC";
 import { DemoVertical } from "./DemoVertical";
 import { OgImage } from "./OgImage";
+import { ProjectTrailer } from "./ProjectTrailer";
 
 const FPS = 30;
 const WIDTH = 1920;
@@ -87,6 +88,23 @@ export const RemotionRoot = () => (
       fps={30}
       width={1200}
       height={630}
+    />
+
+    {/* ProjectTrailer — parametric 10s seed-card trailer for /home.
+        Rendered 3x with different --props for DreamBoard / SketchToApp /
+        PixelMind. Square 720×720 to match HeroCard objectFit:cover. */}
+    <Composition
+      id="ProjectTrailer"
+      component={ProjectTrailer}
+      durationInFrames={FPS * 10}
+      fps={FPS}
+      width={720}
+      height={720}
+      defaultProps={{
+        name: "Project",
+        tagline: "A tagline goes here.",
+        stage: "Active" as const,
+      }}
     />
   </>
 );
