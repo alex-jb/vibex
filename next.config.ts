@@ -41,7 +41,7 @@ const nextConfig: NextConfig = {
     // Lighthouse baseline in docs/lighthouse/BASELINE.md).
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.vercel-insights.com https://*.sentry.io",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.vercel-insights.com https://*.sentry.io https://openpanel.dev",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
@@ -49,7 +49,11 @@ const nextConfig: NextConfig = {
       // from the /launch demo-video picker (@vercel/blob/client). Scoped to
       // our tenant subdomain rather than wildcarding *.blob.vercel-storage.com
       // for the same reason media-src is scoped below.
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://api.anthropic.com https://*.vercel-insights.com https://cgavxkhdjifwxoaw.public.blob.vercel-storage.com https://blob.vercel-storage.com",
+      // `api.openpanel.dev` + `*.hyperdx.io` added 2026-04-24 for analytics
+      // + session-replay ingestion. CSP is still report-only; these keep the
+      // console clean of violation noise that would otherwise clutter
+      // HyperDX's session capture.
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://api.anthropic.com https://*.vercel-insights.com https://cgavxkhdjifwxoaw.public.blob.vercel-storage.com https://blob.vercel-storage.com https://api.openpanel.dev https://*.hyperdx.io",
       // <video> / <audio> sources — only our vibex-marketing Blob store, not
       // wildcard *.blob.vercel-storage.com (that would allow any Vercel tenant's
       // store). Security review 2026-04-22: tighten wildcard.
