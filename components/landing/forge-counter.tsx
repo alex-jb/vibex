@@ -38,13 +38,26 @@ export function ForgeCounter({ delay = 5.0 }: { delay?: number }) {
             .gte("created_at", todayUtc.toISOString()),
         ]);
         if (!alive) return;
+        if (typeof window !== "undefined") {
+          // Diagnostic — surfaces the raw Supabase count/error on the
+          // browser console so we can tell whether a silent null count
+          // is causing the component to render nothing. Safe to leave in
+          // prod: it runs once per visit, costs <1ms.
+          // eslint-disable-next-line no-console
+          console.log("[ForgeCounter]",
+            { projects: p.count, creators: c.count, battles: b.count,
+              errors: { p: p.error?.message, c: c.error?.message, b: b.error?.message } });
+        }
         setCounts({
           forged: p.count ?? 0,
           creators: c.count ?? 0,
           battles: b.count ?? 0,
         });
-      } catch {
-        // Silent fail — landing page shouldn't break on a count error.
+      } catch (err) {
+        if (typeof window !== "undefined") {
+          // eslint-disable-next-line no-console
+          console.warn("[ForgeCounter] query threw:", err);
+        }
       }
     })();
     return () => {
@@ -52,9 +65,12 @@ export function ForgeCounter({ delay = 5.0 }: { delay?: number }) {
     };
   }, []);
 
-  // Don't render embarrassing "0 FORGED" on an empty deploy — wait until
-  // there's at least one project. Keeps landing clean pre-first-forge.
-  if (!counts || counts.forged < 1) return null;
+  // Render as soon as we got any response. Show zero-today (`0 TODAY`)
+  // honestly — it's real data, not embarrassing. Only the fresh-deploy
+  // case (forged==0 AND creators==0) should hide to avoid a blank
+  // "0 · 0 · 0" strip pre-first-forge.
+  if (!counts) return null;
+  if (counts.forged === 0 && counts.creators === 0) return null;
 
   return (
     <motion.div
