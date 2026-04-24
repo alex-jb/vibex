@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { ForgeCounter } from "@/components/landing/forge-counter";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    LANDING PAGE — v8 VibeXForge forge treatment.
@@ -867,6 +868,9 @@ export default function LandingPage() {
             </div>
           </motion.div>
         </div>
+
+        {/* === Live social-proof counter === */}
+        <ForgeCounter delay={5.0} />
 
         {/* === Headline === */}
         <motion.div

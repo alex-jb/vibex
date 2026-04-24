@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, X, Smartphone } from "lucide-react";
+import Image from "next/image";
+import { Download, X } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    PWA Install Prompt — shows a retro install card on 3rd visit for eligible
@@ -163,14 +164,22 @@ export function PwaInstallPrompt() {
               <div
                 className="flex items-center justify-center shrink-0"
                 style={{
-                  width: 36,
-                  height: 36,
-                  background: "var(--neon-orange)",
+                  width: 48,
+                  height: 48,
+                  background: "rgba(0,0,0,0.4)",
                   border: "2px solid #FFE27D",
                   boxShadow: "2px 2px 0 #000, 0 0 12px rgba(255,69,0,0.55)",
+                  imageRendering: "pixelated",
                 }}
               >
-                <Smartphone className="size-4" style={{ color: "#0A0A0C" }} />
+                <Image
+                  src="/generated/smith-idle.png"
+                  alt=""
+                  width={40}
+                  height={40}
+                  style={{ imageRendering: "pixelated" }}
+                  unoptimized
+                />
               </div>
               <div className="flex-1 min-w-0">
                 <h2

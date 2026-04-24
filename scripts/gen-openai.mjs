@@ -172,6 +172,39 @@ const PRESETS = {
     file: "level-up-burst-v1.png",
     notes: "Evolution celebration burst — overlay when projects level up",
   },
+  "smith-idle": {
+    prompt:
+      "A single 16-bit pixel-art mascot character centered on a plain solid " +
+      "charcoal background, full body view with empty space all around. " +
+      "The character is a friendly young blacksmith apprentice, 4-head-tall " +
+      "chibi pixel sprite style (like Shovel Knight or Octopath Traveler " +
+      "overworld sprite). Design: forge-orange bandana tied around head, " +
+      "cream tunic, dark leather apron with a tiny cream rivet, leather " +
+      "bracers, small smith hammer held casually in right hand resting on " +
+      "shoulder. Face: two small black dot eyes, a soft smile, a tiny soot " +
+      "smudge on one cheek. Standing in a relaxed idle pose, arms slightly " +
+      "out. Warm, welcoming expression. No text, no UI, no ground line, no " +
+      "shadow spill. Pure sprite on solid bg for later cut-out.",
+    size: "1024x1024",
+    file: "smith-idle-v1.png",
+    notes: "Smith mascot — idle pose (empty-feed, install prompt, onboarding)",
+  },
+  "smith-happy": {
+    prompt:
+      "A single 16-bit pixel-art mascot character centered on a plain solid " +
+      "charcoal background, full body view with empty space all around. " +
+      "The character is a friendly young blacksmith apprentice, 4-head-tall " +
+      "chibi pixel sprite style. Same design as the idle pose: forge-orange " +
+      "bandana, cream tunic, dark leather apron, leather bracers, soot " +
+      "smudge on cheek. But now in a celebration pose: smith hammer raised " +
+      "high above head in victory, mouth in a big open grin, eyes squinted " +
+      "happy. Two small forge-orange spark pixels jumping out from either " +
+      "side of the hammer. No text, no UI, no ground line. Pure sprite on " +
+      "solid bg for later cut-out.",
+    size: "1024x1024",
+    file: "smith-happy-v1.png",
+    notes: "Smith mascot — hammer-raised happy (404, submit success, level-up)",
+  },
   "xhs-cover-pixel": {
     prompt:
       "16-bit pixel art portrait composition. Centered pixel-art knight " +
