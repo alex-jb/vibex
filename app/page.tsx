@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ForgeCounter } from "@/components/landing/forge-counter";
+import { SeasonBanner } from "@/components/landing/season-banner";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    LANDING PAGE — v8 VibeXForge forge treatment.
@@ -290,6 +291,9 @@ export default function LandingPage() {
             "radial-gradient(ellipse at 50% 44%, rgba(255,69,0,0.28), transparent 60%), radial-gradient(ellipse at 50% 44%, rgba(255,226,125,0.07), transparent 75%), rgba(13,13,13,0.6)",
         }}
       />
+      {/* ═══ Season banner (top edge, above L-corners) ═══ */}
+      <SeasonBanner />
+
       {/* ═══ Scanline + vignette overlays ═══ */}
       <div
         aria-hidden="true"
@@ -318,7 +322,7 @@ export default function LandingPage() {
             aria-hidden="true"
             className="pointer-events-none fixed hidden sm:block z-50"
             style={{
-              [isTop ? "top" : "bottom"]: 14,
+              [isTop ? "top" : "bottom"]: isTop ? 28 : 14,
               [isLeft ? "left" : "right"]: 14,
               width: 28,
               height: 28,

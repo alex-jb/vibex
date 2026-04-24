@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Home, Compass } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   404 — GAME OVER screen.
-   Uses the same 16-bit arcade language as the landing: Press Start 2P,
-   pixel chromatic shadows, neon palette, corner brackets, scanlines.
+   404 — GAME OVER screen (forge edition 2026-04-23).
+   Swaps the v1 violet/fuchsia CTAs + violet scanlines to forge-orange and
+   introduces the smith-idle mascot above the headline so the "lost" moment
+   lands on a familiar face, not an abstract error. Viewport corner brackets
+   stay red (error signal) + "404" stays red; everything else aligns to the
+   forge palette used on /landing + /profile + /arena.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 const pixelEase = [0.22, 1, 0.36, 1] as const;
@@ -18,23 +22,23 @@ export default function NotFound() {
       className="relative min-h-screen overflow-hidden flex items-center justify-center px-4"
       style={{ background: "var(--bg-deep)" }}
     >
-      {/* Scanline overlay */}
+      {/* Scanline overlay (forge-orange) */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-30"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(157,0,255,0.06) 2px, rgba(157,0,255,0.06) 3px)",
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,69,0,0.06) 2px, rgba(255,69,0,0.06) 3px)",
         }}
       />
 
-      {/* Pixel grid texture */}
+      {/* Pixel grid texture (forge-orange) */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-[0.05]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(157,0,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(157,0,255,0.4) 1px, transparent 1px)",
+            "linear-gradient(rgba(255,69,0,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,69,0,0.4) 1px, transparent 1px)",
           backgroundSize: "32px 32px",
           maskImage:
             "radial-gradient(ellipse at center, black 30%, transparent 80%)",
@@ -43,15 +47,15 @@ export default function NotFound() {
         }}
       />
 
-      {/* Background glow orbs */}
+      {/* Background glow orbs — red error + forge ember */}
       <div className="pointer-events-none absolute top-1/4 left-1/4 h-[400px] w-[400px] rounded-full bg-red-600/15 blur-[120px]" />
       <div
         aria-hidden
         className="pointer-events-none absolute bottom-1/4 right-1/4 h-[300px] w-[300px] rounded-full"
-        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.18), transparent 70%)" }}
       />
 
-      {/* Viewport corner brackets */}
+      {/* Viewport corner brackets (stay red — error signal) */}
       {(["tl", "tr", "bl", "br"] as const).map((pos) => {
         const isTop = pos.startsWith("t");
         const isLeft = pos.endsWith("l");
@@ -100,16 +104,51 @@ export default function NotFound() {
         transition={{ duration: 0.7, ease: pixelEase }}
         className="relative z-10 max-w-2xl w-full text-center"
       >
-        {/* Error code eyebrow */}
+        {/* Smith-idle mascot — looks lost, introduces the empty-path moment
+            with a familiar face rather than an abstract error. */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: pixelEase }}
+          className="mx-auto mb-4 relative"
+          style={{ width: 160, height: 160 }}
+        >
+          <Image
+            src="/generated/smith-idle.png"
+            alt=""
+            width={160}
+            height={160}
+            priority
+            style={{ imageRendering: "pixelated" }}
+            unoptimized
+          />
+          {/* Question-mark cloud above the mascot's head */}
+          <div
+            aria-hidden="true"
+            className="absolute font-pixel"
+            style={{
+              top: -6,
+              right: 16,
+              fontSize: 20,
+              color: "#FFE27D",
+              textShadow: "0 0 10px rgba(255,226,125,0.85), 2px 2px 0 #000",
+              animation: "pulse 1.6s ease-in-out infinite",
+            }}
+          >
+            ?
+          </div>
+        </motion.div>
+
+        {/* Error code eyebrow (forge-orange) */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
           className="inline-flex items-center gap-2 mb-6 px-3 py-1.5"
           style={{
-            border: "2px solid #FF004D",
-            background: "rgba(255,0,77,0.08)",
-            boxShadow: "3px 3px 0 #000, 0 0 16px rgba(255,0,77,0.25)",
+            border: "2px solid var(--neon-orange)",
+            background: "rgba(255,69,0,0.08)",
+            boxShadow: "3px 3px 0 #000, 0 0 16px rgba(255,69,0,0.25)",
           }}
         >
           <span
@@ -117,8 +156,8 @@ export default function NotFound() {
             style={{
               width: 6,
               height: 6,
-              background: "#FF004D",
-              boxShadow: "0 0 6px #FF004D",
+              background: "var(--neon-orange)",
+              boxShadow: "0 0 6px var(--neon-orange)",
               animation: "pulse 1.5s ease-in-out infinite",
             }}
           />
@@ -127,7 +166,7 @@ export default function NotFound() {
             style={{
               fontSize: 8,
               letterSpacing: 3,
-              color: "#FFB3C5",
+              color: "#FFE27D",
             }}
           >
             VIBEXFORGE://ERROR_404
@@ -145,13 +184,13 @@ export default function NotFound() {
             color: "#FFF",
             lineHeight: 1.2,
             textShadow:
-              "3px 3px 0 #FF004D, -2px -2px 0 rgba(6,182,212,0.5), 0 0 36px rgba(255,0,77,0.35)",
+              "3px 3px 0 #FF004D, -2px -2px 0 rgba(255,69,0,0.6), 0 0 36px rgba(255,0,77,0.35)",
           }}
         >
           GAME OVER
         </motion.h1>
 
-        {/* 404 big number */}
+        {/* 404 big number (stays red — error signal) */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -178,8 +217,8 @@ export default function NotFound() {
           className="inline-flex items-center gap-2 px-4 py-2.5 mb-8"
           style={{
             background: "rgba(0,0,0,0.5)",
-            border: "1px solid rgba(255,0,77,0.3)",
-            boxShadow: "inset 0 0 12px rgba(255,0,77,0.1)",
+            border: "1px solid rgba(255,69,0,0.4)",
+            boxShadow: "inset 0 0 12px rgba(255,69,0,0.12)",
           }}
         >
           <span
@@ -222,13 +261,12 @@ export default function NotFound() {
           <Link href="/">
             <button
               type="button"
-              className="group flex items-center justify-center gap-2 px-5 py-3 font-pixel text-xs tracking-wider transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-500/50 w-full sm:w-auto"
+              className="group flex items-center justify-center gap-2 px-5 py-3 font-pixel text-xs tracking-wider transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--neon-orange)]/50 w-full sm:w-auto"
               style={{
-                background:
-                  "linear-gradient(135deg, var(--neon-purple), #C026D3)",
-                border: "2px solid #FFF",
-                boxShadow: "4px 4px 0 #000, 0 0 20px rgba(157,0,255,0.5)",
-                color: "#FFF",
+                background: "var(--neon-orange)",
+                border: "2px solid #FFE27D",
+                boxShadow: "4px 4px 0 #000, 0 0 20px rgba(255,69,0,0.55)",
+                color: "#0A0A0C",
                 minHeight: "48px",
                 cursor: "pointer",
               }}
@@ -256,7 +294,7 @@ export default function NotFound() {
           </Link>
         </motion.div>
 
-        {/* Insert coin hint */}
+        {/* Insert coin hint (forge-orange) */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -268,8 +306,8 @@ export default function NotFound() {
             style={{
               fontSize: 8,
               letterSpacing: 4,
-              color: "rgba(157,0,255,0.6)",
-              textShadow: "0 0 8px rgba(157,0,255,0.4)",
+              color: "rgba(255,69,0,0.75)",
+              textShadow: "0 0 8px rgba(255,69,0,0.5)",
               animation: "pulse 2s ease-in-out infinite",
             }}
           >

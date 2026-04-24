@@ -178,16 +178,18 @@ export default function FeedPage() {
 
   /* ─── Per-tab empty state messages ─── */
   function renderEmptyState() {
-    // Shared pixel illustration — knight by unlit campfire, reading a scroll.
-    // Conveys "nothing brewing yet, forge something" mood.
+    // Smith apprentice mascot standing idle — replaces the old knight-by-
+    // campfire scene. Mascot is the site-wide character used on the install
+    // prompt + 404, so reusing here keeps the brand voice consistent.
     const illustration = (
       <Image
-        src="/generated/empty-feed-v1.png"
+        src="/generated/smith-idle.png"
         alt=""
-        width={320}
-        height={320}
+        width={200}
+        height={200}
         className="mx-auto mb-6"
-        style={{ imageRendering: "pixelated", opacity: 0.9 }}
+        style={{ imageRendering: "pixelated" }}
+        unoptimized
       />
     );
 
