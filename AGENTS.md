@@ -4,6 +4,17 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
+## 🔴 RED-LINE: Build cost discipline
+
+**Every `git push` to master is a ~$0.60 Vercel build charge** (5-6 min × $0.12/min). This billing cycle already cost $131.92 in Build Minutes alone — 99% of the total bill. This rule is escalated from the global `~/.claude/CLAUDE.md` version:
+
+1. **Always `npm run build` locally before `git push`**. No exceptions. If build fails, fix locally — do NOT push and rely on CI. Failed remote builds still cost $0.60 each.
+2. **Batch small commits before pushing.** If you're going to make 5 related commits in the next 10 minutes, don't push after each one. Push once at the end.
+3. **Docs-only and non-code commits can push freely** — `vercel.json` `ignoreCommand` already skips builds for `*.md`, `docs/**`, `.github/**`, `remotion/**`, `out/**`, `scripts/screenshot-*.mjs`, `scripts/_probe*.mjs`. Anything else triggers a $0.60 build.
+4. **If the user explicitly says "just push" or "skip build"**, obey. Otherwise assume this rule is in effect.
+
+Preview deploys are already disabled via `deploymentEnabled.master: true`. Only master triggers builds.
+
 ## Preferred skills for VibeX work
 
 This repo is a solo indie project. When an obvious workflow match exists, **invoke the skill rather than re-deriving the steps from first principles.** These are known-good, known-usable in this repo.

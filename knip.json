@@ -1,0 +1,47 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "app/**/{page,layout,loading,error,not-found,route,template,default}.{ts,tsx}",
+    "app/**/{sitemap,robots,manifest,opengraph-image,twitter-image,icon,apple-icon}.{ts,tsx}",
+    "middleware.ts",
+    "next.config.{ts,js,mjs}",
+    "next-env.d.ts",
+    "postcss.config.{ts,js,mjs}",
+    "tailwind.config.{ts,js,mjs}",
+    "vercel.json",
+    "remotion.config.ts",
+    "remotion/remotion.config.ts",
+    "remotion/src/index.ts",
+    "remotion/src/Root.tsx",
+    "scripts/**/*.{mjs,ts}",
+    "public/sw.js"
+  ],
+  "project": [
+    "app/**/*.{ts,tsx}",
+    "components/**/*.{ts,tsx}",
+    "lib/**/*.{ts,tsx}",
+    "hooks/**/*.{ts,tsx}",
+    "remotion/src/**/*.{ts,tsx}"
+  ],
+  "ignore": [
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "public/generated/**",
+    "public/generated-gpt/**",
+    "public/demo-assets/**",
+    "docs/**",
+    ".private/**"
+  ],
+  "ignoreDependencies": [
+    "@remotion/bundler",
+    "@remotion/google-fonts",
+    "remotion",
+    "openai",
+    "@google/genai",
+    "playwright",
+    "playwright-core",
+    "sharp",
+    "postcss"
+  ]
+}

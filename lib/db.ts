@@ -123,46 +123,6 @@ export async function getProjectById(id: string): Promise<Project | undefined> {
   return mapProject(data);
 }
 
-export async function getFeaturedProjects(): Promise<Project[]> {
-  if (!USE_SUPABASE) return mock.projects.filter((p) => p.featured);
-
-  const { data, error } = await supabase
-    .from("projects")
-    .select("*, behavior_scores(*), ai_reviews(*), creators(name)")
-    .eq("featured", true)
-    .order("score", { ascending: false });
-
-  if (error || !data) return [];
-  return data.map(mapProject);
-}
-
-export async function incrementUpvote(projectId: string): Promise<void> {
-  if (!USE_SUPABASE) return;
-  await supabase.rpc("increment_upvote", { p_id: projectId });
-}
-
-export async function incrementView(projectId: string): Promise<void> {
-  if (!USE_SUPABASE) return;
-  const { data } = await supabase
-    .from("projects")
-    .select("views")
-    .eq("id", projectId)
-    .single();
-  if (data) {
-    await supabase
-      .from("projects")
-      .update({ views: data.views + 1 })
-      .eq("id", projectId);
-  }
-}
-
-export async function incrementPlay(projectId: string): Promise<void> {
-  if (!USE_SUPABASE) return;
-  // Uses the increment_play RPC added in migration 040. Atomic +1 with
-  // SECURITY DEFINER so anonymous visitors bumping plays on a project
-  // page don't need an RLS UPDATE policy on projects.
-  await supabase.rpc("increment_play", { p_id: projectId });
-}
 
 /**
  * Insert or update the ai_reviews row for a project + refresh
@@ -591,30 +551,6 @@ export async function saveBattleResult(result: BattleResult): Promise<void> {
   });
 }
 
-export async function getBattleHistory(limit = 20): Promise<BattleResult[]> {
-  if (!USE_SUPABASE) return [];
-
-  const { data, error } = await supabase
-    .from("battle_history")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(limit);
-
-  if (error || !data) return [];
-  return data.map((row) => ({
-    id: row.id,
-    challengerId: row.challenger_id,
-    defenderId: row.defender_id,
-    winner: row.winner_id,
-    rounds: row.rounds,
-    expGained: {
-      challenger: row.exp_gained_challenger,
-      defender: row.exp_gained_defender,
-    },
-    timestamp: row.created_at,
-  }));
-}
-
 // ═══════════════════════════════════════════════════════════════
 // AGENTS
 // ═══════════════════════════════════════════════════════════════
@@ -671,14 +607,6 @@ export async function getAgentById(id: string): Promise<AgentDefinition | undefi
 
   if (error || !data) return mockAgents.find((a) => a.id === id);
   return mapAgent(data);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// CATEGORIES (static)
-// ═══════════════════════════════════════════════════════════════
-
-export function getCategories(): readonly string[] {
-  return mock.categories;
 }
 
 // ═══════════════════════════════════════════════════════════════
