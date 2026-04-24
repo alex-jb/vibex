@@ -145,24 +145,42 @@ function TodaysForges({ projects }: { projects: Project[] }) {
                 }}
               >
                 <div
-                  className="flex items-center justify-center mb-2"
+                  className="flex items-center justify-center mb-2 overflow-hidden"
                   style={{
                     width: "100%",
                     height: 64,
                     background: "rgba(255,69,0,0.06)",
                   }}
                 >
-                  <Image
-                    src={EVO_SPRITE[stage]}
-                    alt=""
-                    width={48}
-                    height={48}
-                    unoptimized
-                    style={{
-                      imageRendering: "pixelated",
-                      filter: "drop-shadow(0 0 6px rgba(255,69,0,0.5))",
-                    }}
-                  />
+                  {p.demoVideoUrl ? (
+                    <video
+                      src={p.demoVideoUrl}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      aria-hidden
+                      style={{
+                        width: "100%",
+                        height: 64,
+                        objectFit: "cover",
+                        filter: "drop-shadow(0 0 6px rgba(255,69,0,0.5))",
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      src={EVO_SPRITE[stage]}
+                      alt=""
+                      width={48}
+                      height={48}
+                      unoptimized
+                      style={{
+                        imageRendering: "pixelated",
+                        filter: "drop-shadow(0 0 6px rgba(255,69,0,0.5))",
+                      }}
+                    />
+                  )}
                 </div>
                 <div
                   className="font-pixel truncate"

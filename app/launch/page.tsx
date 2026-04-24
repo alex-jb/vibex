@@ -60,6 +60,7 @@ export default function LaunchPage() {
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [demoVideoUrl, setDemoVideoUrl] = useState("");
   const [videoUploading, setVideoUploading] = useState(false);
+  const [videoUploadPercent, setVideoUploadPercent] = useState(0);
   const [videoUploadError, setVideoUploadError] = useState<string | null>(null);
   const videoFileInputRef = useRef<HTMLInputElement | null>(null);
   const [creatorName, setCreatorName] = useState("");
@@ -251,13 +252,18 @@ export default function LaunchPage() {
     }
     setVideoUploadError(null);
     setVideoUploading(true);
+    setVideoUploadPercent(0);
     try {
       const suffix = file.name.replace(/[^a-zA-Z0-9.-]/g, "-").slice(-40);
       const blob = await upload(`demo-videos/${Date.now()}-${suffix}`, file, {
         access: "public",
         handleUploadUrl: "/api/blob/upload-video",
+        onUploadProgress: (event) => {
+          setVideoUploadPercent(Math.max(0, Math.min(100, Math.round(event.percentage))));
+        },
       });
       setDemoVideoUrl(blob.url);
+      setVideoUploadPercent(100);
     } catch (e) {
       setVideoUploadError(
         e instanceof Error ? e.message : "Upload failed — try again.",
@@ -1457,6 +1463,34 @@ export default function LaunchPage() {
                       className="flex-1 bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
                     />
                   </div>
+                  {videoUploading && (
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="relative flex-1 overflow-hidden"
+                        style={{
+                          height: 10,
+                          background: "#0A0A0C",
+                          border: "1.5px solid rgba(255,69,0,0.5)",
+                        }}
+                      >
+                        <div
+                          className="absolute top-0 left-0 h-full"
+                          style={{
+                            width: `${videoUploadPercent}%`,
+                            background: "linear-gradient(90deg, #FF4500, #FFE27D)",
+                            boxShadow: "0 0 8px rgba(255,69,0,0.8)",
+                            transition: "width 160ms ease-out",
+                          }}
+                        />
+                      </div>
+                      <span
+                        className="font-pixel"
+                        style={{ fontSize: 8, color: "#FFE27D", letterSpacing: 1.5, minWidth: 36 }}
+                      >
+                        {videoUploadPercent}%
+                      </span>
+                    </div>
+                  )}
                   {videoUploadError && (
                     <div
                       className="font-retro text-xs px-2 py-1"
@@ -1471,16 +1505,37 @@ export default function LaunchPage() {
                     </div>
                   )}
                   {demoVideoUrl.trim() && !videoUploading && (
-                    <div
-                      className="flex items-center gap-2 font-retro text-xs"
-                      style={{ color: "#FFE27D" }}
-                    >
-                      <Film className="size-3" style={{ color: "#FF4500" }} />
-                      <span className="truncate" title={demoVideoUrl}>
-                        {demoVideoUrl.length > 60
-                          ? demoVideoUrl.slice(0, 30) + "…" + demoVideoUrl.slice(-24)
-                          : demoVideoUrl}
-                      </span>
+                    <div className="flex flex-col gap-2">
+                      <div
+                        className="flex items-center gap-2 font-retro text-xs"
+                        style={{ color: "#FFE27D" }}
+                      >
+                        <Film className="size-3" style={{ color: "#FF4500" }} />
+                        <span className="truncate" title={demoVideoUrl}>
+                          {demoVideoUrl.length > 60
+                            ? demoVideoUrl.slice(0, 30) + "…" + demoVideoUrl.slice(-24)
+                            : demoVideoUrl}
+                        </span>
+                      </div>
+                      {/* Render a small looping preview so the creator sees
+                          exactly what's about to be embedded on their card. */}
+                      <video
+                        src={demoVideoUrl}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        style={{
+                          width: 160,
+                          height: 96,
+                          objectFit: "cover",
+                          background: "#0A0A0C",
+                          border: "2px solid rgba(255,69,0,0.6)",
+                          boxShadow: "2px 2px 0 #000",
+                          imageRendering: "pixelated",
+                        }}
+                      />
                     </div>
                   )}
                 </div>
