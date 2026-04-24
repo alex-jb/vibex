@@ -126,7 +126,9 @@ Run the SQL migrations in `supabase/migrations/*.sql` through the Supabase Dashb
 | Auth | Supabase Auth (GitHub + Google OAuth + PKCE) | Cookies, not localStorage |
 | AI | Claude Sonnet 4.6 with tool_use | Structured JSON reviews, not prose |
 | Visual | [cobe](https://github.com/shuding/cobe) 3D globe | 5KB, zero deps, global community feel |
-| Monitoring | Sentry + PostHog | Errors + product analytics |
+| Monitoring | Sentry + HyperDX | Server errors + browser session replay |
+| Analytics | OpenPanel | Cookieless product analytics + funnel events |
+| Video | Remotion + gpt-image-1 | Per-project trailers rendered from parametric compositions |
 | Deploy | Vercel + GitHub Actions | `git push` = prod |
 
 ---
@@ -179,6 +181,10 @@ vibex/
 - [x] GEO optimization (llms.txt, AI crawler rules)
 - [x] Bilingual UI (EN / zh, ~925 strings)
 - [x] Automated demo video recorder with TTS narration
+- [x] Parametric Remotion `ProjectTrailer` — 720×720 10s loops rendered
+  per seed project with forge-style mockup frames (gpt-image-1 pipeline)
+- [x] OpenPanel funnel analytics + HyperDX session replay (both env-gated,
+  no-op silently on preview deploys)
 
 **Next**
 - [ ] First 10 real users through the feedback loop
