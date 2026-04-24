@@ -68,7 +68,7 @@ export default function IdeasPage() {
           }}
         >
           <Lightbulb className="size-3.5" />
-          ▸ VIBEX://IDEAS · {t("ideas.badge").toUpperCase()}
+          ▸ VIBEXFORGE://IDEAS · {t("ideas.badge").toUpperCase()}
         </div>
         <h1
           className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"

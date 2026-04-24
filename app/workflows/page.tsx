@@ -63,7 +63,7 @@ export default function WorkflowsPage() {
             className="font-pixel"
             style={{ fontSize: 10, color: "#555", letterSpacing: 2 }}
           >
-            {">"} VIBEX://WORKFLOWS v1.0
+            {">"} VIBEXFORGE://WORKFLOWS v1.0
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
             {t("workflows.marketplace")}

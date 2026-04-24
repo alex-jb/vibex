@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | VibeX",
-  description: "VibeX platform privacy policy",
+  description: "VibeXForge platform privacy policy",
 };
 
 export default function PrivacyLayout({ children }: { children: React.ReactNode }) {

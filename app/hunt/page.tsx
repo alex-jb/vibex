@@ -157,7 +157,7 @@ export default function HuntPage() {
                 textShadow: "0 0 4px rgba(57,255,20,0.8)",
               }}
             >
-              ▸ VIBEX://HUNT · {t("hunt.badge").toUpperCase()}
+              ▸ VIBEXFORGE://HUNT · {t("hunt.badge").toUpperCase()}
               <LiveBadge connected={connected} />
             </div>
             <h1

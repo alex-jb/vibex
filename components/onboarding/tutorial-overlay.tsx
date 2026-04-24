@@ -14,7 +14,7 @@ interface TutorialStep {
 const STEPS: TutorialStep[] = [
   {
     emoji: "\uD83C\uDFAE",
-    title: "Welcome to VibeX!",
+    title: "Welcome to VibeXForge!",
     description: "This is the launch and growth platform for AI creators. Explore projects, join battles, summon Buddies, and publish your AI creations.",
   },
   {

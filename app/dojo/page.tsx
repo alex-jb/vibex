@@ -145,7 +145,7 @@ export default function DojoPage() {
               textShadow: "0 0 8px rgba(57,255,20,0.4)",
             }}
           >
-            VIBEX://DOJO v1.0
+            VIBEXFORGE://DOJO v1.0
           </span>
         </div>
       </motion.div>
@@ -161,7 +161,7 @@ export default function DojoPage() {
           className="font-pixel text-[14px] tracking-widest mb-3"
           style={{ color: "#39FF14", textShadow: "0 0 12px rgba(57,255,20,0.3)" }}
         >
-          {"> VIBEX://DOJO"}
+          {"> VIBEXFORGE://DOJO"}
         </h1>
         <h2
           className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"

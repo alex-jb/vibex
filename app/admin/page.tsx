@@ -63,7 +63,7 @@ export default function AdminPage() {
         <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
         <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2, marginLeft: 8 }}>
-          VIBEX://ADMIN v1.0
+          VIBEXFORGE://ADMIN v1.0
         </span>
       </div>
 

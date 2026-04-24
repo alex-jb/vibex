@@ -153,7 +153,7 @@ export default function AnalyticsPage() {
               textShadow: "0 0 4px rgba(57,255,20,0.8)",
             }}
           >
-            ▸ VIBEX://ANALYTICS · v2.0
+            ▸ VIBEXFORGE://ANALYTICS · v2.0
           </div>
           <h1
             className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"

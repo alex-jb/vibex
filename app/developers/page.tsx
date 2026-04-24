@@ -40,7 +40,7 @@ export default function DevelopersPage() {
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>
         <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>
-          VIBEX://DEV-PORTAL v2.0
+          VIBEXFORGE://DEV-PORTAL v2.0
         </span>
         <span className="font-pixel" style={{ fontSize: 7, color: "#333" }}>
           ━━━
@@ -70,7 +70,7 @@ export default function DevelopersPage() {
           <h1 className="sr-only">{t("dev.title")}</h1>
           {/* Title */}
           <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
-            <span className="font-pixel" style={{ fontSize: 7, color: "#555" }}>$ vibex --dev-portal</span>
+            <span className="font-pixel" style={{ fontSize: 7, color: "#555" }}>$ vibexforge --dev-portal</span>
           </motion.div>
           <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
             <span

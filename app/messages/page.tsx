@@ -162,7 +162,7 @@ export default function MessagesPage() {
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>
         <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>
-          VIBEX://MESSAGES v1.0
+          VIBEXFORGE://MESSAGES v1.0
         </span>
       </div>
 

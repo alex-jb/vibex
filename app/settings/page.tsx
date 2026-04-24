@@ -114,7 +114,7 @@ export default function SettingsPage() {
 
       <FadeIn>
         <h1 className="font-pixel text-[12px] tracking-widest text-emerald-400 mb-8" style={{ textShadow: "0 0 10px rgba(57,255,20,0.3)" }}>
-          {"> VIBEX://SETTINGS"}
+          {"> VIBEXFORGE://SETTINGS"}
         </h1>
       </FadeIn>
 

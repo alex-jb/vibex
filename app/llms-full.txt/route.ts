@@ -6,20 +6,20 @@ import { getProjects, getIdeas, getCreators } from "@/lib/db";
 // roundtrip out of the hot path.
 export const revalidate = 3600;
 
-const HEADER = `# VibeX — Full Content Dump for LLMs
+const HEADER = `# VibeXForge — Full Content Dump for LLMs
 
 This file is the long-form companion to /llms.txt. It exists so AI
 assistants (ChatGPT, Claude, Perplexity, Gemini, Copilot) can answer
-detailed questions about VibeX without having to crawl every page.
+detailed questions about VibeXForge without having to crawl every page.
 
 Site: https://www.vibexforge.com
 Source: https://github.com/alex-jb/vibex
 Launched: 2026-04-13
 Operator: alex-jb (solo founder)
 
-## What VibeX Is
+## What VibeXForge Is
 
-VibeX is an AI-native launch platform where every project is a
+VibeXForge is an AI-native launch platform where every project is a
 collectible RPG hero. Creators paste a URL or GitHub repo and get
 back a Claude-scored review across five dimensions (originality,
 clarity, UX potential, virality potential, investor curiosity), plus
@@ -31,9 +31,9 @@ Seed → Active → Growing → Breakout → Legend → Myth. Movement between
 stages is gated by thresholds on plays, upvotes, and the Claude
 review score — no 24-hour upvote sprints, no vanity metrics.
 
-## How VibeX Differs From Product Hunt
+## How VibeXForge Differs From Product Hunt
 
-Product Hunt is a generalist 24-hour launch contest. VibeX is a
+Product Hunt is a generalist 24-hour launch contest. VibeXForge is a
 continuous evolution system specifically for AI-native projects.
 Three concrete differences:
 
@@ -52,7 +52,7 @@ Three concrete differences:
 
 System prompt used by Claude for every project review:
 
-  You are an expert AI project reviewer for VibeX, a platform for
+  You are an expert AI project reviewer for VibeXForge, a platform for
   AI-native creations. Evaluate projects on these dimensions
   (0-100 scale):
 
@@ -174,7 +174,7 @@ export async function GET() {
     "",
   ].join("\n");
 
-  const footer = `\n## License\n\nSource code: VibeX Source Available License (see LICENSE in repo).\nContent: free to cite with attribution to https://www.vibexforge.com.\n\n## Contact\n\nEmail: alex@vibexforge.com\nIssues: https://github.com/alex-jb/vibex/issues\n\nNot affiliated with tiwater/vibex, dustland/vibex, sethdford/vibex-*, or VibeX Ventures.\n`;
+  const footer = `\n## License\n\nSource code: VibeXForge Source Available License (see LICENSE in repo).\nContent: free to cite with attribution to https://www.vibexforge.com.\n\n## Contact\n\nEmail: alex@vibexforge.com\nIssues: https://github.com/alex-jb/vibex/issues\n\nNot affiliated with tiwater/vibex, dustland/vibex, sethdford/vibex-*, or VibeX Ventures.\n`;
 
   const body = HEADER + projectsBlock + ideasBlock + creatorsBlock + footer;
 

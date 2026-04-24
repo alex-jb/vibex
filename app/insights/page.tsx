@@ -342,7 +342,7 @@ function InsightsContent() {
             textShadow: "0 0 4px rgba(57,255,20,0.8)",
           }}
         >
-          ▸ VIBEX://INSIGHTS · {t("insights.badge").toUpperCase()}
+          ▸ VIBEXFORGE://INSIGHTS · {t("insights.badge").toUpperCase()}
         </div>
         <h1
           className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"

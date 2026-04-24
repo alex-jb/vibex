@@ -147,7 +147,7 @@ function AiReviewShot() {
           marginBottom: 8,
         }}
       >
-        ▸ VIBEX://AI_REVIEW · AGENTCRAFT
+        ▸ VIBEXFORGE://AI_REVIEW · AGENTCRAFT
       </div>
       <div
         className="flex items-baseline gap-3.5 pb-3.5 mb-[18px]"
@@ -253,7 +253,7 @@ function EvolutionShot() {
         className="font-ui"
         style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: 2 }}
       >
-        ▸ VIBEX://EVOLUTION · VIBETRANSLATE
+        ▸ VIBEXFORGE://EVOLUTION · VIBETRANSLATE
       </div>
       <div className="flex items-center gap-1">
         {stages.map((s, i) => {
@@ -389,7 +389,7 @@ function ArenaShot() {
         className="font-ui mb-3.5"
         style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: 2 }}
       >
-        ▸ VIBEX://ARENA · ROUND 3
+        ▸ VIBEXFORGE://ARENA · ROUND 3
       </div>
       <div
         className="grid items-center gap-3.5"
@@ -623,7 +623,7 @@ function VcShot() {
         className="font-ui mb-3"
         style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: 2 }}
       >
-        ▸ VIBEX://VC · DEAL FLOW · WEEK 16
+        ▸ VIBEXFORGE://VC · DEAL FLOW · WEEK 16
       </div>
       <div className="flex flex-col gap-1.5">
         <div

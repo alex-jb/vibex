@@ -189,7 +189,7 @@ export function RealtimeChat({ projectId }: { projectId: string }) {
         </div>
 
         <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>
-          VIBEX://CHAT
+          VIBEXFORGE://CHAT
         </span>
 
         {/* LIVE badge */}

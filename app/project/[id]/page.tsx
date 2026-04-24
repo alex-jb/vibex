@@ -512,7 +512,7 @@ function AIReviewPanel({
           {/* Truncate long ids (e.g. proj-mo3bo8p1-i8k8 → proj-mo3b…)
               so the header doesn't wrap to 2 lines inside the ~380px
               sidebar. Seed ids like "2" stay untouched. */}
-          VIBEX://PROJECT/{projectId.length > 10 ? projectId.slice(0, 8) + "…" : projectId}
+          VIBEXFORGE://PROJECT/{projectId.length > 10 ? projectId.slice(0, 8) + "…" : projectId}
         </div>
       </div>
 
@@ -851,7 +851,7 @@ export default function ProjectPage({
               textShadow: "0 0 4px rgba(57,255,20,0.8)",
             }}
           >
-            ▸ VIBEX://PROJECT ·{" "}
+            ▸ VIBEXFORGE://PROJECT ·{" "}
             <span style={{ color: "var(--neon-cyan)" }}>
               {project.category.toUpperCase()}
             </span>

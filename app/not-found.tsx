@@ -130,7 +130,7 @@ export default function NotFound() {
               color: "#FFB3C5",
             }}
           >
-            VIBEX://ERROR_404
+            VIBEXFORGE://ERROR_404
           </span>
         </motion.div>
 

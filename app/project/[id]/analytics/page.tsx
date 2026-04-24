@@ -110,7 +110,7 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>
         <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>
-          VIBEX://PROJECT-ANALYTICS
+          VIBEXFORGE://PROJECT-ANALYTICS
         </span>
       </div>
 

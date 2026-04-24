@@ -255,7 +255,7 @@ export default function LoginPage() {
                 className="font-pixel"
                 style={{ fontSize: 7, letterSpacing: 2, color: "#E9BDFF" }}
               >
-                VIBEX://AUTH_V1
+                VIBEXFORGE://AUTH_V1
               </span>
             </div>
             <span

@@ -71,7 +71,7 @@ export default function PublicProfilePage({ params }: { params: Promise<{ id: st
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>
         <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>
-          VIBEX://PROFILE/{profile.name.toUpperCase()}
+          VIBEXFORGE://PROFILE/{profile.name.toUpperCase()}
         </span>
       </div>
 

@@ -236,7 +236,7 @@ export default function EventsPage() {
           }}
         >
           <Calendar className="size-3.5" />
-          ▸ VIBEX://EVENTS · {t("events.community").toUpperCase()}
+          ▸ VIBEXFORGE://EVENTS · {t("events.community").toUpperCase()}
         </div>
         <h1
           className="font-pixel font-pixel-hero text-[28px] sm:text-[38px] md:text-[48px]"

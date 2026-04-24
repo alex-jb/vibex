@@ -259,7 +259,7 @@ export default function FeedPage() {
         </div>
 
         <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>
-          VIBEX://FEED v1.0
+          VIBEXFORGE://FEED v1.0
         </span>
 
         {/* LIVE badge */}

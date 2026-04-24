@@ -20,7 +20,7 @@ const pixelEase = [0.22, 1, 0.36, 1] as const;
 
 /* ─── Boot log content ─── */
 const BOOT_LINES: { text: string; tone?: "accent" | "warn" | "ok" | "ready" }[] = [
-  { text: "$ vibex launch", tone: "accent" },
+  { text: "$ vibexforge launch", tone: "accent" },
   { text: "> growth.layer .... OK", tone: "accent" },
   { text: "> hero.cards ...... OK", tone: "accent" },
   { text: "> evo.engine ...... OK", tone: "accent" },

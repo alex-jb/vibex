@@ -2,7 +2,7 @@ import { createMetadata } from "@/lib/metadata";
 
 export const metadata = createMetadata({
   title: "Analytics Dashboard",
-  description: "VibeX platform analytics and growth metrics",
+  description: "VibeXForge platform analytics and growth metrics",
   path: "/admin/analytics",
 });
 

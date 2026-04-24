@@ -52,7 +52,7 @@ export default function CreatorGraphPage() {
           <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>
-        <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>VIBEX://CREATOR-GRAPH v1.0</span>
+        <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2 }}>VIBEXFORGE://CREATOR-GRAPH v1.0</span>
       </div>
 
       <div className="rpgui-container framed" style={{ padding: 20, minHeight: "70vh", position: "relative", overflow: "hidden" }}>
