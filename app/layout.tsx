@@ -7,6 +7,7 @@ import { Footer } from "@/components/footer";
 import { LangProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/lib/auth";
 import { AnalyticsProvider } from "@/components/analytics-provider";
+import { ObservabilityInit } from "@/components/observability-init";
 import { MainWrapper } from "@/components/main-wrapper";
 import { MotionProvider } from "@/components/motion-provider";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
@@ -195,6 +196,7 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col bg-background text-foreground">
+        <ObservabilityInit />
         <AuthProvider>
           <AnalyticsProvider>
           <LangProvider>

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 
 import { useLang } from "@/lib/i18n";
+import { trackEvent } from "@/lib/analytics";
 import type { LaunchPackage } from "@/lib/ai";
 import { LaunchPackageDisplay } from "@/components/launch/launch-package";
 import { categories } from "@/lib/mock-data";
@@ -417,6 +418,11 @@ export default function LaunchPage() {
     e.preventDefault();
     setSubmitError(null);
     setSubmitLoading(true);
+    trackEvent("project_submit_started", {
+      category,
+      hasVideo: Boolean(demoVideoUrl.trim()),
+      demoType: demoType || "preview",
+    });
     try {
       const tagList = tags
         .split(",")
@@ -441,10 +447,20 @@ export default function LaunchPage() {
 
       const data = await res.json();
       if (!res.ok) {
+        trackEvent("project_submit_failed", {
+          category,
+          reason: data?.error ?? `http_${res.status}`,
+        });
         setSubmitError(data?.error ?? "Submit failed");
         setSubmitLoading(false);
         return;
       }
+
+      trackEvent("project_submit_completed", {
+        projectId: data.id,
+        category,
+        persisted: Boolean(data.persisted),
+      });
 
       // Clear the autosaved draft so returning to /launch starts fresh.
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
@@ -469,6 +485,7 @@ export default function LaunchPage() {
       }, 650);
     } catch (err) {
       console.error("[launch] submit failed", err);
+      trackEvent("project_submit_failed", { category, reason: "network" });
       setSubmitError("Network error — please try again");
       setSubmitLoading(false);
     }
