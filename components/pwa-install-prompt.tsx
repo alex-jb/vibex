@@ -138,10 +138,10 @@ export function PwaInstallPrompt() {
             className="relative p-4"
             style={{
               background:
-                "linear-gradient(180deg, #15081f 0%, #1a0a25 50%, #12061a 100%)",
-              border: "3px solid var(--neon-purple)",
+                "linear-gradient(180deg, #120806 0%, #1a0c07 50%, #0e0604 100%)",
+              border: "3px solid var(--neon-orange)",
               boxShadow:
-                "4px 4px 0 #000, 0 0 24px rgba(157,0,255,0.35), 0 16px 40px rgba(0,0,0,0.8)",
+                "4px 4px 0 #000, 0 0 24px rgba(255,69,0,0.4), 0 16px 40px rgba(0,0,0,0.8)",
             }}
           >
             {/* Dismiss button */}
@@ -149,9 +149,9 @@ export function PwaInstallPrompt() {
               type="button"
               onClick={handleDismiss}
               aria-label="Dismiss install prompt"
-              className="absolute top-2 right-2 p-1 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+              className="absolute top-2 right-2 p-1 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-orange)]/60"
               style={{
-                color: "#C9B8E8",
+                color: "#FFE27D",
                 cursor: "pointer",
               }}
             >
@@ -165,13 +165,12 @@ export function PwaInstallPrompt() {
                 style={{
                   width: 36,
                   height: 36,
-                  background:
-                    "linear-gradient(135deg, var(--neon-purple), #C026D3)",
-                  border: "2px solid #FFF",
-                  boxShadow: "2px 2px 0 #000, 0 0 12px rgba(157,0,255,0.5)",
+                  background: "var(--neon-orange)",
+                  border: "2px solid #FFE27D",
+                  boxShadow: "2px 2px 0 #000, 0 0 12px rgba(255,69,0,0.55)",
                 }}
               >
-                <Smartphone className="size-4" style={{ color: "#FFF" }} />
+                <Smartphone className="size-4" style={{ color: "#0A0A0C" }} />
               </div>
               <div className="flex-1 min-w-0">
                 <h2
@@ -180,20 +179,21 @@ export function PwaInstallPrompt() {
                   style={{
                     fontSize: 11,
                     letterSpacing: 1.5,
-                    color: "#FFF",
-                    textShadow: "1px 1px 0 var(--neon-purple)",
+                    color: "#FFE27D",
+                    textShadow: "1px 1px 0 #000, 0 0 6px rgba(255,69,0,0.6)",
                     lineHeight: 1.3,
                   }}
                 >
-                  LOAD VIBEX ONTO DEVICE
+                  LOAD VIBEXFORGE ONTO DEVICE
                 </h2>
                 <p
                   id="pwa-install-desc"
                   className="font-retro mt-1"
                   style={{
                     fontSize: 13,
-                    color: "#C9B8E8",
+                    color: "#FFE27D",
                     lineHeight: 1.4,
+                    opacity: 0.88,
                   }}
                 >
                   One tap to launch. No browser. Pure arcade.
@@ -206,13 +206,12 @@ export function PwaInstallPrompt() {
               <button
                 type="button"
                 onClick={handleInstall}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 font-pixel transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-500/50"
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 font-pixel transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--neon-orange)]/50"
                 style={{
-                  background:
-                    "linear-gradient(135deg, var(--neon-purple), #C026D3)",
-                  border: "2px solid #FFF",
-                  boxShadow: "3px 3px 0 #000, 0 0 12px rgba(157,0,255,0.5)",
-                  color: "#FFF",
+                  background: "var(--neon-orange)",
+                  border: "2px solid #FFE27D",
+                  boxShadow: "3px 3px 0 #000, 0 0 12px rgba(255,69,0,0.55)",
+                  color: "#0A0A0C",
                   minHeight: 40,
                   fontSize: 10,
                   letterSpacing: 1.5,
@@ -225,12 +224,12 @@ export function PwaInstallPrompt() {
               <button
                 type="button"
                 onClick={handleDismiss}
-                className="px-3 py-2 font-pixel transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-500/30"
+                className="px-3 py-2 font-pixel transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--neon-orange)]/30"
                 style={{
                   background: "rgba(0,0,0,0.5)",
-                  border: "2px solid rgba(157,0,255,0.4)",
+                  border: "2px solid rgba(255,69,0,0.5)",
                   boxShadow: "3px 3px 0 #000",
-                  color: "#C9B8E8",
+                  color: "#FFE27D",
                   minHeight: 40,
                   fontSize: 10,
                   letterSpacing: 1.5,

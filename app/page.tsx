@@ -7,51 +7,101 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   LANDING PAGE — v7 cinematic "boot sequence" hero.
-   Replaces the earlier GameBoyFrame + InteractiveDemo showcase with a
-   cleaner three-zone composition:
-     • Left column : dark terminal boot log (VIBEXFORGE://BOOT_V1.4.2)
-     • Center stack: landscape hero card + glitch headline + CTAs
+   LANDING PAGE — v8 VibeXForge forge treatment.
+   Replaces the v7 Pokémon-TCG gold/purple/cyan hero card with an arcade/anvil
+   card that matches /profile + /arena V2 (forge-orange + cream + Game Boy
+   rhythm). Three-zone composition preserved:
+     • Left column : forge terminal boot log (VIBEXFORGE://BOOT_V1.5)
+     • Center stack: anvil hero card + glitch headline + CTAs
      • Chrome      : status bar top, L-corner brackets, scanline overlay
-   Approved via /design-shotgun on 2026-04-13, iterations v1→v7.
+   Approved 2026-04-23 (direct write path after V2 /profile+/arena shipped).
    ═══════════════════════════════════════════════════════════════════════════ */
 
 const pixelEase = [0.22, 1, 0.36, 1] as const;
 
+const C = {
+  FORGE: "#FF4500",
+  CREAM: "#FFE27D",
+  GREEN: "#39FF14",
+  YELLOW: "#FACC15",
+  RED: "#EF4444",
+} as const;
+
 /* ─── Boot log content ─── */
-const BOOT_LINES: { text: string; tone?: "accent" | "warn" | "ok" | "ready" }[] = [
-  { text: "$ vibexforge launch", tone: "accent" },
-  { text: "> growth.layer .... OK", tone: "accent" },
-  { text: "> hero.cards ...... OK", tone: "accent" },
-  { text: "> evo.engine ...... OK", tone: "accent" },
-  { text: "> rarity .......... OK", tone: "accent" },
-  { text: "> qr.codes ........ OK", tone: "accent" },
-  { text: "> shard.01 ........", tone: "accent" },
+const BOOT_LINES: { text: string; tone?: "forge" | "warn" | "ok" | "ready" }[] = [
+  { text: "$ vibexforge launch", tone: "forge" },
+  { text: "> forge.core ...... OK", tone: "ok" },
+  { text: "> hero.sprites .... OK", tone: "ok" },
+  { text: "> evo.engine ...... OK", tone: "ok" },
+  { text: "> anvil ........... OK", tone: "ok" },
+  { text: "> qr.stamps ....... OK", tone: "ok" },
+  { text: "> shard.01 ........", tone: "forge" },
   { text: "! purging legacy", tone: "warn" },
   { text: "> 48t 43r 105cx", tone: "ok" },
-  { text: ">> READY.", tone: "ready" },
+  { text: ">> FORGED.", tone: "ready" },
 ];
 
-const ASCII_LOGO = `  ██╗   ██╗██╗██████╗ ███████╗██╗  ██╗
-  ██║   ██║██║██╔══██╗██╔════╝╚██╗██╔╝
-  ██║   ██║██║██████╔╝█████╗   ╚███╔╝
-  ╚██╗ ██╔╝██║██╔══██╗██╔══╝   ██╔██╗
-   ╚████╔╝ ██║██████╔╝███████╗██╔╝ ██╗
-    ╚═══╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝`;
+/* Compact VIBEXFORGE title in block-shade characters — fits the 300px
+   left column at 7px monospace. Kept as ASCII so it reads as a terminal
+   banner, not a bitmap image. */
+const FORGE_LOGO = `██╗   ██╗██╗██████╗ ███████╗██╗  ██╗
+██║   ██║██║██╔══██╗██╔════╝╚██╗██╔╝
+██║   ██║██║██████╔╝█████╗   ╚███╔╝
+╚██╗ ██╔╝██║██╔══██╗██╔══╝   ██╔██╗
+ ╚████╔╝ ██║██████╔╝███████╗██╔╝ ██╗
+  ╚═══╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
+  ═══ F O R G E ═══════════════════`;
 
-function toneColor(tone?: "accent" | "warn" | "ok" | "ready"): string {
-  if (tone === "warn") return "var(--neon-yellow)";
-  if (tone === "accent") return "var(--neon-cyan)";
-  if (tone === "ready") return "var(--neon-yellow)";
-  return "var(--neon-green)";
+function toneColor(tone?: "forge" | "warn" | "ok" | "ready"): string {
+  if (tone === "warn") return C.YELLOW;
+  if (tone === "forge") return C.FORGE;
+  if (tone === "ready") return C.CREAM;
+  return C.GREEN;
 }
 
-/* ─── Bar data for mini hero card ─── */
-const STATS = [
-  { label: "HP", pct: 88, grad: "linear-gradient(180deg, #4AFF2A, #1E9C00)" },
-  { label: "MP", pct: 67, grad: "linear-gradient(180deg, #22D3EE, #0891B2)" },
-  { label: "XP", pct: 51, grad: "linear-gradient(180deg, #C77DFF, #7B2FBE)" },
-];
+/* ─── 16×16 pixel-art seed sprite, inline SVG, palette-locked.
+   Replaces public/generated/evo-*.png on this surface because those PNGs
+   have an opaque mauve background baked in (sampled 2026-04-23: all edges
+   = rgba(69,46,74,255)) that would bleed purple on black/forge surfaces.
+   Rendered at integer pixel grid so it reads as pixel art at any size. */
+function PixelSprite({ size = 40 }: { size?: number }) {
+  const F = C.FORGE;      // body
+  const D = "#A32A00";    // body shadow (darker forge)
+  const CR = C.CREAM;     // leaf / highlight
+  const K = "#0A0A0C";    // outline
+  const cmap: Record<string, string | null> = {
+    ".": null, F: F, D: D, C: CR, K: K,
+  };
+  // prettier-ignore
+  const rows = [
+    "................",
+    ".......C........",
+    "......CC........",
+    ".....CCC........",
+    "................",
+    "....KKFFFFKK....",
+    "...KFFFFFFFFK...",
+    "..KFFDFFFFDFFK..",
+    "..KFCFFFFFFCFK..",
+    "..KFFFFFFFFFFK..",
+    "..KFFFFDDFFFFK..",
+    "...KFFFFFFFFK...",
+    "....KKFFFFKK....",
+    ".....KK..KK.....",
+    "................",
+    "................",
+  ];
+  return (
+    <svg viewBox="0 0 16 16" width={size} height={size} style={{ imageRendering: "pixelated" }} aria-hidden="true">
+      {rows.flatMap((row, y) =>
+        [...row].map((ch, x) => {
+          const c = cmap[ch];
+          return c ? <rect key={`${x},${y}`} x={x} y={y} width="1" height="1" fill={c} /> : null;
+        })
+      )}
+    </svg>
+  );
+}
 
 export default function LandingPage() {
   const router = useRouter();
@@ -218,12 +268,9 @@ export default function LandingPage() {
           }),
         }}
       />
-      {/* Gemini-generated epic pixel landscape: swirling purple portal
-          over mountains, floating islands with lanterns, crystal spires,
-          cobblestone path leading toward the portal. Sits beneath all
-          the terminal boot log + AI HERO card + PRESS START overlays,
-          dimmed via the tint layer below so the foreground text stays
-          readable. */}
+      {/* Gemini-generated epic pixel landscape behind everything. Tint
+          swapped from violet-dominant to forge-orange so the art reads
+          as a forge/portal scene rather than a cyberpunk purple haze. */}
       <Image
         src="/generated/landing-bg.png"
         alt=""
@@ -234,15 +281,12 @@ export default function LandingPage() {
         className="object-cover z-0"
         style={{ imageRendering: "pixelated" }}
       />
-      {/* Darkening tint + neon glow layer on top of the image so the
-          foreground UI doesn't fight the art. Keeps the same gradient
-          colors as the old pure-gradient bg for brand continuity. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 44%, rgba(157,0,255,0.25), transparent 60%), radial-gradient(ellipse at 50% 44%, rgba(57,255,20,0.05), transparent 75%), rgba(13,13,13,0.55)",
+            "radial-gradient(ellipse at 50% 44%, rgba(255,69,0,0.28), transparent 60%), radial-gradient(ellipse at 50% 44%, rgba(255,226,125,0.07), transparent 75%), rgba(13,13,13,0.6)",
         }}
       />
       {/* ═══ Scanline + vignette overlays ═══ */}
@@ -263,7 +307,7 @@ export default function LandingPage() {
         }}
       />
 
-      {/* ═══ L-corner brackets (orange) ═══ */}
+      {/* ═══ L-corner brackets (forge-orange) ═══ */}
       {(["tl", "tr", "bl", "br"] as const).map((pos) => {
         const isTop = pos.startsWith("t");
         const isLeft = pos.endsWith("l");
@@ -277,7 +321,7 @@ export default function LandingPage() {
               [isLeft ? "left" : "right"]: 14,
               width: 28,
               height: 28,
-              filter: "drop-shadow(0 0 4px rgba(255,69,0,0.5))",
+              filter: `drop-shadow(0 0 4px ${C.FORGE}80)`,
             }}
           >
             <div
@@ -287,7 +331,7 @@ export default function LandingPage() {
                 [isLeft ? "left" : "right"]: 0,
                 width: 28,
                 height: 3,
-                background: "var(--neon-orange)",
+                background: C.FORGE,
               }}
             />
             <div
@@ -297,7 +341,7 @@ export default function LandingPage() {
                 [isLeft ? "left" : "right"]: 0,
                 width: 3,
                 height: 28,
-                background: "var(--neon-orange)",
+                background: C.FORGE,
               }}
             />
           </div>
@@ -319,26 +363,26 @@ export default function LandingPage() {
       >
         <div
           style={{
-            color: "var(--neon-purple)",
+            color: C.FORGE,
             fontSize: 17,
-            textShadow: "0 0 4px rgba(157,0,255,0.9)",
+            textShadow: `0 0 4px ${C.FORGE}E6, 2px 2px 0 #000`,
             letterSpacing: 3,
           }}
         >
-          ◆ VIBEX
+          ⚒ VIBEXFORGE
         </div>
         <div className="flex gap-[22px] hidden md:flex">
           <span>
-            SYS:<span style={{ color: "var(--neon-green)" }}>ONLINE</span>
+            FORGE:<span style={{ color: C.GREEN }}>HOT</span>
           </span>
           <span>
-            NET:<span style={{ color: "var(--neon-green)" }}>OK</span>
+            NET:<span style={{ color: C.GREEN }}>OK</span>
           </span>
           <span>
-            SHARD:<span style={{ color: "var(--neon-green)" }}>01</span>
+            SHARD:<span style={{ color: C.GREEN }}>01</span>
           </span>
           <motion.span
-            style={{ color: "var(--neon-green)" }}
+            style={{ color: C.FORGE }}
             animate={{ opacity: [1, 0, 1] }}
             transition={{ duration: 1, repeat: Infinity, times: [0, 0.5, 1] }}
           >
@@ -370,23 +414,23 @@ export default function LandingPage() {
             // Explicit monospace — Press Start 2P lacks box-drawing glyphs
             // and would fall back to a wider font, breaking width.
             fontFamily: "Menlo, Monaco, Consolas, 'Courier New', monospace",
-            fontSize: 8,
-            color: "var(--neon-purple)",
-            textShadow: "0 0 3px rgba(157,0,255,1)",
+            fontSize: 7.5,
+            color: C.FORGE,
+            textShadow: `0 0 3px ${C.FORGE}D9`,
             lineHeight: 1.1,
             marginBottom: 16,
             whiteSpace: "pre",
           }}
         >
-          {ASCII_LOGO}
+          {FORGE_LOGO}
         </motion.pre>
 
         <div
           style={{
             fontSize: 10,
             lineHeight: 2,
-            color: "var(--neon-green)",
-            textShadow: "0 0 2px rgba(57,255,20,0.9)",
+            color: C.GREEN,
+            textShadow: `0 0 2px ${C.GREEN}E6`,
           }}
         >
           {BOOT_LINES.map((line, i) => (
@@ -399,12 +443,12 @@ export default function LandingPage() {
                 color: toneColor(line.tone),
                 textShadow:
                   line.tone === "warn"
-                    ? "0 0 2px rgba(250,204,21,0.9)"
-                    : line.tone === "accent"
-                    ? "0 0 2px rgba(6,182,212,0.9)"
+                    ? `0 0 2px ${C.YELLOW}E6`
+                    : line.tone === "forge"
+                    ? `0 0 2px ${C.FORGE}E6`
                     : line.tone === "ready"
-                    ? "0 0 3px rgba(250,204,21,1)"
-                    : "0 0 2px rgba(57,255,20,0.9)",
+                    ? `0 0 4px ${C.CREAM}`
+                    : `0 0 2px ${C.GREEN}E6`,
                 fontSize: line.tone === "ready" ? 12 : 10,
                 marginTop: line.tone === "ready" ? 8 : 0,
                 whiteSpace: "nowrap",
@@ -418,9 +462,9 @@ export default function LandingPage() {
                   style={{
                     width: 10,
                     height: 14,
-                    background: "var(--neon-green)",
+                    background: C.CREAM,
                     marginLeft: 5,
-                    boxShadow: "0 0 4px var(--neon-green)",
+                    boxShadow: `0 0 4px ${C.CREAM}`,
                   }}
                   animate={{ opacity: [1, 0, 1] }}
                   transition={{ duration: 0.8, repeat: Infinity, times: [0, 0.5, 1] }}
@@ -431,7 +475,7 @@ export default function LandingPage() {
         </div>
       </motion.div>
 
-      {/* ═══ Center stack: hero card + headline + CTAs ═══ */}
+      {/* ═══ Center stack: anvil hero card + headline + CTAs ═══ */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -444,19 +488,18 @@ export default function LandingPage() {
           width: "min(620px, calc(100vw - 64px))",
         }}
       >
-        {/* === Landscape hero card === */}
+        {/* === Anvil hero card === */}
         <div
           className="relative mb-7 w-full"
           style={{ maxWidth: 560 }}
         >
-          {/* Static radial glow behind */}
+          {/* Forge ember glow behind */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute"
             style={{
               inset: -70,
-              background:
-                "radial-gradient(ellipse, rgba(157,0,255,0.4) 0%, rgba(6,182,212,0.2) 40%, transparent 72%)",
+              background: `radial-gradient(ellipse, ${C.FORGE}4D 0%, ${C.FORGE}1F 45%, transparent 72%)`,
               filter: "blur(34px)",
               zIndex: -1,
             }}
@@ -466,11 +509,9 @@ export default function LandingPage() {
             className="relative overflow-hidden"
             style={{
               aspectRatio: "5 / 3",
-              background:
-                "linear-gradient(135deg, rgba(157,0,255,0.16), rgba(6,182,212,0.16)), linear-gradient(180deg, var(--bg-card) 0%, var(--bg-panel) 100%)",
-              border: "4px solid #FFD700",
-              boxShadow:
-                "0 0 50px rgba(255,215,0,0.3), 0 0 100px rgba(157,0,255,0.25), inset 0 0 24px rgba(255,215,0,0.1), 8px 8px 0 #000",
+              background: "#0A0A0C",
+              border: `3px solid ${C.FORGE}`,
+              boxShadow: `6px 6px 0 #000, 0 0 48px ${C.FORGE}55, inset 2px 2px 0 rgba(255,255,255,0.04)`,
               padding: "20px 18px 16px",
               display: "flex",
               flexDirection: "column",
@@ -478,30 +519,58 @@ export default function LandingPage() {
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
           >
-            {/* Double pinstripe frame */}
+            {/* Cream inner rule */}
             <div
               aria-hidden="true"
               className="pointer-events-none absolute"
               style={{
                 inset: 6,
-                border: "1.5px solid rgba(255,215,0,0.55)",
+                border: `1px solid ${C.CREAM}40`,
               }}
             />
 
-            {/* Foil sweep */}
-            <motion.div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(115deg, transparent 20%, rgba(157,0,255,0.28) 35%, rgba(6,182,212,0.28) 50%, rgba(236,72,153,0.28) 65%, transparent 80%)",
-                mixBlendMode: "screen",
-              }}
-              animate={{ x: ["-100%", "100%"] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
-            />
+            {/* Corner brackets (cream) */}
+            {(["tl", "tr", "bl", "br"] as const).map((pos) => {
+              const isTop = pos.startsWith("t");
+              const isLeft = pos.endsWith("l");
+              return (
+                <div
+                  key={pos}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute"
+                  style={{
+                    [isTop ? "top" : "bottom"]: 12,
+                    [isLeft ? "left" : "right"]: 12,
+                    width: 16,
+                    height: 16,
+                    zIndex: 3,
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      [isTop ? "top" : "bottom"]: 0,
+                      [isLeft ? "left" : "right"]: 0,
+                      width: 16,
+                      height: 2,
+                      background: C.CREAM,
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      [isTop ? "top" : "bottom"]: 0,
+                      [isLeft ? "left" : "right"]: 0,
+                      width: 2,
+                      height: 16,
+                      background: C.CREAM,
+                    }}
+                  />
+                </div>
+              );
+            })}
 
-            {/* Header row */}
+            {/* Header row: FORGE TEMP + LV ∞ */}
             <div
               className="flex items-center justify-between mb-2"
               style={{ zIndex: 2, position: "relative" }}
@@ -510,53 +579,51 @@ export default function LandingPage() {
                 style={{
                   fontFamily: "var(--font-press-start), monospace",
                   fontSize: 8,
-                  color: "#FFD700",
+                  color: C.CREAM,
                   letterSpacing: 2,
+                  textShadow: `0 0 4px ${C.FORGE}66`,
                 }}
               >
-                ◆ BOSS ENCOUNTER ◆
+                ⚒ FORGE TEMP 1850°F · SHARD 01
               </span>
               <span
                 style={{
                   fontFamily: "var(--font-press-start), monospace",
                   fontSize: 9,
                   padding: "5px 8px",
-                  background:
-                    "linear-gradient(135deg, var(--neon-pink), var(--neon-purple))",
-                  color: "#FFF",
+                  background: C.FORGE,
+                  color: "#0A0A0C",
                   letterSpacing: 1,
-                  border: "1.5px solid #FFD700",
-                  boxShadow:
-                    "2px 2px 0 #000, 0 0 14px rgba(236,72,153,0.85)",
+                  border: `1.5px solid ${C.CREAM}`,
+                  boxShadow: `2px 2px 0 #000, 0 0 12px ${C.FORGE}AA`,
                 }}
               >
-                LEGENDARY
+                LV ∞
               </span>
             </div>
 
-            {/* Big landscape demo area */}
+            {/* Anvil scene */}
             <div
               className="relative flex-1 overflow-hidden"
               style={{
                 background:
-                  "radial-gradient(circle at 30% 30%, rgba(6,182,212,0.25), transparent 55%), radial-gradient(circle at 70% 70%, rgba(157,0,255,0.2), transparent 50%), #0A0A0C",
-                border: "2px solid rgba(255,215,0,0.5)",
-                boxShadow: "inset 0 0 24px rgba(0,0,0,0.6)",
+                  "radial-gradient(circle at 50% 72%, rgba(255,69,0,0.34), transparent 50%), radial-gradient(circle at 50% 50%, rgba(255,226,125,0.08), transparent 60%), #0A0A0C",
+                border: `2px solid ${C.FORGE}80`,
+                boxShadow: "inset 0 0 24px rgba(0,0,0,0.75)",
                 marginBottom: 10,
                 zIndex: 2,
               }}
             >
-              {/* Sun-ray bg (static) */}
+              {/* Ember rays anchored at anvil strike point */}
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0"
                 style={{
-                  background:
-                    "repeating-conic-gradient(from 0deg at center, rgba(255,215,0,0.06) 0deg 10deg, transparent 10deg 20deg)",
+                  background: `repeating-conic-gradient(from 0deg at 50% 75%, ${C.FORGE}17 0deg 10deg, transparent 10deg 20deg)`,
                 }}
               />
-              {/* CRT scanlines */}
-              <div
+              {/* Heat shimmer (vertical drift) */}
+              <motion.div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0"
                 style={{
@@ -564,25 +631,10 @@ export default function LandingPage() {
                     "repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px)",
                   zIndex: 5,
                 }}
+                animate={{ y: [0, -1.5, 0] }}
+                transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
               />
-              {/* Play button top-left */}
-              <div
-                className="absolute flex items-center justify-center"
-                style={{
-                  top: 12,
-                  left: 12,
-                  width: 22,
-                  height: 22,
-                  border: "2px solid var(--neon-yellow)",
-                  background: "rgba(0,0,0,0.5)",
-                  fontFamily: "var(--font-press-start), monospace",
-                  fontSize: 10,
-                  color: "var(--neon-yellow)",
-                  zIndex: 6,
-                }}
-              >
-                ▶
-              </div>
+
               {/* LIVE badge top-right */}
               <div
                 className="absolute flex items-center gap-1.5"
@@ -591,7 +643,7 @@ export default function LandingPage() {
                   right: 14,
                   fontFamily: "var(--font-press-start), monospace",
                   fontSize: 8,
-                  color: "var(--neon-pink)",
+                  color: C.FORGE,
                   letterSpacing: 1.5,
                   zIndex: 6,
                 }}
@@ -602,8 +654,8 @@ export default function LandingPage() {
                   style={{
                     width: 6,
                     height: 6,
-                    background: "var(--neon-pink)",
-                    boxShadow: "0 0 6px var(--neon-pink)",
+                    background: C.FORGE,
+                    boxShadow: `0 0 6px ${C.FORGE}`,
                   }}
                   animate={{ opacity: [1, 0, 1] }}
                   transition={{ duration: 1, repeat: Infinity, times: [0, 0.5, 1] }}
@@ -611,151 +663,207 @@ export default function LandingPage() {
                 LIVE
               </div>
 
-              {/* 3 ambient sparkles */}
+              {/* Anvil silhouette (pixel-art SVG) anchored center-bottom */}
+              <div
+                aria-hidden="true"
+                className="absolute pointer-events-none"
+                style={{
+                  left: "50%",
+                  bottom: 18,
+                  transform: "translateX(-50%)",
+                  width: 150,
+                  zIndex: 3,
+                }}
+              >
+                <svg
+                  viewBox="0 0 32 20"
+                  width="100%"
+                  preserveAspectRatio="xMidYMid meet"
+                  style={{ imageRendering: "pixelated" }}
+                >
+                  {/* Top slab */}
+                  <rect x="3" y="1" width="26" height="5" fill="#4a4a50" />
+                  <rect x="3" y="1" width="26" height="1" fill="#6a6a70" />
+                  <rect x="3" y="5" width="26" height="1" fill="#2a2a30" />
+                  {/* Heat glow on anvil face */}
+                  <rect x="11" y="2" width="10" height="2" fill={C.FORGE} opacity="0.65" />
+                  {/* Waist */}
+                  <rect x="12" y="6" width="8" height="7" fill="#3a3a40" />
+                  <rect x="12" y="6" width="1" height="7" fill="#5a5a60" />
+                  <rect x="19" y="6" width="1" height="7" fill="#2a2a30" />
+                  {/* Base */}
+                  <rect x="1" y="13" width="30" height="4" fill="#4a4a50" />
+                  <rect x="1" y="13" width="30" height="1" fill="#6a6a70" />
+                  <rect x="0" y="17" width="32" height="3" fill="#2a2a30" />
+                </svg>
+              </div>
+
+              {/* Evo sprite silhouette sitting on the anvil face */}
+              <div
+                className="absolute pointer-events-none"
+                style={{
+                  left: "50%",
+                  bottom: 70,
+                  transform: "translateX(-50%)",
+                  zIndex: 4,
+                  filter: `drop-shadow(0 0 6px ${C.FORGE}AA)`,
+                }}
+              >
+                <PixelSprite size={48} />
+              </div>
+
+              {/* Hammer — pixel-art, swings in from upper-right on 3.5s beat */}
+              <motion.div
+                aria-hidden="true"
+                className="absolute pointer-events-none"
+                style={{
+                  left: "50%",
+                  bottom: 100,
+                  marginLeft: -16,
+                  width: 32,
+                  height: 56,
+                  transformOrigin: "50% 90%",
+                  zIndex: 5,
+                }}
+                animate={{
+                  rotate: [-38, -38, 12, -38],
+                  y: [0, 0, 14, 0],
+                }}
+                transition={{
+                  duration: 3.5,
+                  times: [0, 0.68, 0.78, 1],
+                  repeat: Infinity,
+                  ease: "easeOut",
+                }}
+              >
+                <svg
+                  viewBox="0 0 20 32"
+                  width="100%"
+                  height="100%"
+                  style={{ imageRendering: "pixelated" }}
+                >
+                  {/* Handle */}
+                  <rect x="9" y="10" width="2" height="22" fill="#B89A50" />
+                  <rect x="8" y="10" width="1" height="22" fill={C.CREAM} />
+                  <rect x="11" y="10" width="1" height="22" fill="#8A6A30" />
+                  {/* Hammer head */}
+                  <rect x="2" y="2" width="16" height="9" fill="#4a4a50" />
+                  <rect x="2" y="2" width="16" height="1" fill="#6a6a70" />
+                  <rect x="2" y="10" width="16" height="1" fill="#2a2a30" />
+                  {/* Hot striking tip */}
+                  <rect x="14" y="3" width="4" height="7" fill={C.FORGE} />
+                  <rect x="15" y="4" width="2" height="5" fill="#FF7A30" />
+                </svg>
+              </motion.div>
+
+              {/* Ember sparks — cluster at anvil strike point, fire on the
+                  strike beat (delay ≈ 2.55s into the 3.5s cycle). */}
               {[
-                { top: "28%", left: "18%", color: "var(--neon-yellow)", delay: 0 },
-                { top: "38%", right: "22%", color: "var(--neon-cyan)", delay: 0.7 },
-                { bottom: "30%", left: "38%", color: "var(--neon-pink)", delay: 1.3 },
+                { left: "44%", dx: -4, dy: -14 },
+                { left: "48%", dx: 2, dy: -22 },
+                { left: "52%", dx: -2, dy: -18 },
+                { left: "56%", dx: 6, dy: -12 },
+                { left: "50%", dx: 0, dy: -28 },
+                { left: "46%", dx: -6, dy: -20 },
               ].map((s, i) => (
                 <motion.div
                   key={i}
                   aria-hidden="true"
                   className="absolute pointer-events-none"
                   style={{
-                    ...(s as Record<string, unknown>),
-                    width: 5,
-                    height: 5,
-                    background: s.color,
-                    boxShadow: `0 0 8px ${s.color}`,
+                    left: s.left,
+                    bottom: 70,
+                    width: 4,
+                    height: 4,
+                    background: C.FORGE,
+                    boxShadow: `0 0 6px ${C.FORGE}`,
                     zIndex: 7,
                   }}
-                  animate={{ opacity: [0, 1, 0], scale: [0.5, 1.3, 0.5] }}
+                  animate={{
+                    opacity: [0, 0, 1, 0],
+                    x: [0, 0, s.dx, s.dx],
+                    y: [0, 0, s.dy, s.dy - 6],
+                    scale: [0.2, 0.2, 1.3, 0.3],
+                  }}
                   transition={{
-                    duration: 2,
-                    delay: s.delay,
+                    duration: 3.5,
+                    times: [0, 0.7, 0.82, 1],
+                    delay: i * 0.04,
                     repeat: Infinity,
-                    ease: "easeInOut",
+                    ease: "easeOut",
                   }}
                 />
               ))}
 
-              {/* Timeline bottom */}
+              {/* Floor glow line below anvil */}
               <div
-                className="absolute flex items-center gap-2"
+                aria-hidden="true"
+                className="absolute pointer-events-none"
                 style={{
-                  bottom: 10,
-                  left: 12,
-                  right: 12,
-                  zIndex: 6,
+                  left: 0,
+                  right: 0,
+                  bottom: 14,
+                  height: 2,
+                  background: `linear-gradient(90deg, transparent 10%, ${C.FORGE}66 50%, transparent 90%)`,
+                  zIndex: 2,
                 }}
-              >
-                <span
-                  style={{
-                    fontFamily: "var(--font-press-start), monospace",
-                    fontSize: 7,
-                    color: "var(--neon-yellow)",
-                    letterSpacing: 1,
-                  }}
-                >
-                  00:12
-                </span>
-                <div
-                  className="relative flex-1"
-                  style={{
-                    height: 4,
-                    background: "rgba(255,255,255,0.15)",
-                    border: "1px solid rgba(255,215,0,0.4)",
-                  }}
-                >
-                  <div
-                    className="absolute top-0 left-0 h-full"
-                    style={{
-                      width: "28%",
-                      background: "linear-gradient(90deg, var(--neon-yellow), #FFD700)",
-                      boxShadow: "0 0 6px rgba(250,204,21,0.8)",
-                    }}
-                  />
-                </div>
-                <span
-                  style={{
-                    fontFamily: "var(--font-press-start), monospace",
-                    fontSize: 7,
-                    color: "var(--neon-yellow)",
-                    letterSpacing: 1,
-                  }}
-                >
-                  00:42
-                </span>
-              </div>
+              />
             </div>
 
-            {/* Info strip: name + HP/MP/XP bars */}
+            {/* FORGING progress bar (replaces HP/MP/ATK stats — stat bars
+                belong on the /home HeroCard list, not the landing hero
+                unit; brief anti-pattern #4). */}
             <div
-              className="flex items-center gap-4"
+              className="flex items-center gap-3"
               style={{ zIndex: 2, position: "relative" }}
             >
-              <div
+              <span
                 style={{
                   fontFamily: "var(--font-press-start), monospace",
-                  fontSize: 13,
-                  color: "var(--text)",
-                  letterSpacing: 1.5,
-                  textShadow: "0 0 4px rgba(255,215,0,0.9)",
+                  fontSize: 9,
+                  color: C.CREAM,
+                  letterSpacing: 2,
+                  textShadow: `0 0 6px ${C.FORGE}AA`,
                   whiteSpace: "nowrap",
-                  paddingRight: 14,
-                  borderRight: "1.5px solid var(--border-metal)",
                 }}
               >
-                AI HERO
+                FORGING...
+              </span>
+              <div
+                className="relative flex-1 overflow-hidden"
+                style={{
+                  height: 12,
+                  background: "#0A0A0C",
+                  border: `1.5px solid ${C.FORGE}80`,
+                }}
+              >
+                <motion.div
+                  className="absolute top-0 left-0 h-full"
+                  style={{
+                    width: "100%",
+                    background: `linear-gradient(90deg, ${C.FORGE}, ${C.CREAM})`,
+                    boxShadow: `0 0 10px ${C.FORGE}CC`,
+                    transformOrigin: "left center",
+                  }}
+                  animate={{ scaleX: [0, 1, 0] }}
+                  transition={{
+                    duration: 3.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
               </div>
-              <div className="flex-1 grid grid-cols-3 gap-2.5">
-                {STATS.map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="flex items-center gap-1.5"
-                    style={{
-                      fontFamily: "var(--font-press-start), monospace",
-                      fontSize: 7,
-                    }}
-                  >
-                    <span style={{ width: 16, color: "var(--text)" }}>
-                      {stat.label}
-                    </span>
-                    <div
-                      className="relative flex-1 overflow-hidden"
-                      style={{
-                        height: 10,
-                        background: "#0A0A0C",
-                        border: "1.5px solid var(--border-metal)",
-                      }}
-                    >
-                      <motion.div
-                        className="absolute top-0 left-0 h-full"
-                        style={{
-                          background: stat.grad,
-                          transformOrigin: "left center",
-                        }}
-                        initial={{ scaleX: 0, width: `${stat.pct}%` }}
-                        animate={{ scaleX: 1 }}
-                        transition={{
-                          duration: 1.2,
-                          delay: 5.2,
-                          ease: pixelEase,
-                        }}
-                      />
-                    </div>
-                    <span
-                      style={{
-                        width: 18,
-                        textAlign: "right",
-                        color: "var(--text-muted)",
-                      }}
-                    >
-                      {stat.pct}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <span
+                style={{
+                  fontFamily: "var(--font-press-start), monospace",
+                  fontSize: 8,
+                  color: C.CREAM,
+                  letterSpacing: 1,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                ⚒ FORGED
+              </span>
             </div>
           </motion.div>
         </div>
@@ -772,16 +880,15 @@ export default function LandingPage() {
             lineHeight: 1.5,
             color: "var(--text)",
             letterSpacing: 2,
-            textShadow:
-              "0 0 6px rgba(232,232,236,0.5), 0 0 20px rgba(157,0,255,0.3)",
+            textShadow: `0 0 6px rgba(232,232,236,0.5), 0 0 20px ${C.FORGE}55`,
           }}
         >
           LAUNCH YOUR AI PROJECT.
           <br />
           <span
             style={{
-              color: "var(--neon-yellow)",
-              textShadow: "0 0 8px rgba(250,204,21,0.9)",
+              color: C.FORGE,
+              textShadow: `0 0 8px ${C.FORGE}E6, 3px 3px 0 #000`,
             }}
           >
             WATCH IT EVOLVE.
@@ -798,16 +905,15 @@ export default function LandingPage() {
                 fontSize: 13,
                 padding: "16px 28px",
                 letterSpacing: 2,
-                border: "3px solid #FFF",
-                boxShadow: "5px 5px 0 #000, 0 0 24px rgba(157,0,255,0.6)",
-                color: "#FFF",
-                background:
-                  "linear-gradient(135deg, var(--neon-purple), #C026D3)",
+                border: `3px solid ${C.CREAM}`,
+                boxShadow: `5px 5px 0 #000, 0 0 24px ${C.FORGE}A6`,
+                color: "#0A0A0C",
+                background: C.FORGE,
               }}
               whileHover={{
                 x: -2,
                 y: -2,
-                boxShadow: "7px 7px 0 #000, 0 0 32px rgba(157,0,255,0.85)",
+                boxShadow: `7px 7px 0 #000, 0 0 32px ${C.FORGE}DD`,
               }}
               transition={{ type: "spring", stiffness: 400, damping: 26 }}
             >
@@ -823,14 +929,14 @@ export default function LandingPage() {
                 padding: "16px 28px",
                 letterSpacing: 2,
                 background: "transparent",
-                border: "3px solid var(--neon-green)",
-                color: "var(--neon-green)",
+                border: `3px solid ${C.CREAM}`,
+                color: C.CREAM,
                 boxShadow: "5px 5px 0 #000",
               }}
               whileHover={{
                 x: -2,
                 y: -2,
-                boxShadow: "7px 7px 0 #000, 0 0 20px rgba(57,255,20,0.45)",
+                boxShadow: `7px 7px 0 #000, 0 0 20px ${C.CREAM}66`,
               }}
               transition={{ type: "spring", stiffness: 400, damping: 26 }}
             >
@@ -853,17 +959,17 @@ export default function LandingPage() {
           fontFamily: "var(--font-press-start), monospace",
           fontSize: 8,
           letterSpacing: 3,
-          color: "rgba(157,0,255,0.7)",
-          textShadow: "0 0 6px rgba(157,0,255,0.4)",
+          color: `${C.FORGE}B3`,
+          textShadow: `0 0 6px ${C.FORGE}66`,
         }}
       >
         ▸ PRESS{" "}
         <kbd
           className="inline-block px-1.5 py-0.5 mx-0.5"
           style={{
-            background: "rgba(157,0,255,0.15)",
-            border: "1px solid rgba(157,0,255,0.6)",
-            color: "#E9BDFF",
+            background: `${C.FORGE}26`,
+            border: `1px solid ${C.FORGE}AA`,
+            color: C.CREAM,
             fontSize: 8,
           }}
         >
