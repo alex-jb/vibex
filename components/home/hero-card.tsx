@@ -25,6 +25,10 @@ export type HeroCardData = {
   topAttrs: TopAttr[];
   traction: { kind: "plays" | "upvotes" | "shares"; value: number };
   newChip?: boolean;
+  /** Short MP4/WebM preview. When present the grid-variant card renders
+      this looping in the sprite slot (codedex-style animated course card).
+      Falls back to the static evo sprite when absent. */
+  demoVideoUrl?: string;
 };
 
 export type HeroCardVariant = "grid" | "share";
@@ -201,7 +205,7 @@ export function HeroCard({
   const { t } = useLang();
   const {
     id, name, creator, category, evolutionStage,
-    compound, topAttrs, traction, newChip,
+    compound, topAttrs, traction, newChip, demoVideoUrl,
   } = data;
 
   const evoColor = EVOLUTION_CONFIG[evolutionStage].color;
@@ -623,16 +627,35 @@ export function HeroCard({
                 }}
               />
             ))}
-            <Image
-              src={spriteFor(evolutionStage)}
-              alt=""
-              width={88}
-              height={88}
-              style={{
-                imageRendering: "pixelated",
-                filter: `drop-shadow(0 0 10px ${evoColor}aa)`,
-              }}
-            />
+            {demoVideoUrl ? (
+              <video
+                src={demoVideoUrl}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-hidden
+                style={{
+                  width: 108,
+                  height: 108,
+                  objectFit: "cover",
+                  imageRendering: "pixelated",
+                  filter: `drop-shadow(0 0 10px ${evoColor}aa)`,
+                }}
+              />
+            ) : (
+              <Image
+                src={spriteFor(evolutionStage)}
+                alt=""
+                width={88}
+                height={88}
+                style={{
+                  imageRendering: "pixelated",
+                  filter: `drop-shadow(0 0 10px ${evoColor}aa)`,
+                }}
+              />
+            )}
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>

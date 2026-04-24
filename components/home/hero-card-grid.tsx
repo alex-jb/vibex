@@ -34,6 +34,7 @@ export function projectToHeroCardData(p: Project): HeroCardData {
     topAttrs: pickTopAttrs(p.aiReview, 2),
     traction: topTraction,
     newChip,
+    demoVideoUrl: p.demoVideoUrl,
   };
 }
 

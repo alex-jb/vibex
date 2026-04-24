@@ -55,6 +55,7 @@ export default function LaunchPage() {
   const [demoType, setDemoType] = useState("");
   const [demoLink, setDemoLink] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
+  const [demoVideoUrl, setDemoVideoUrl] = useState("");
   const [creatorName, setCreatorName] = useState("");
   const [tags, setTags] = useState("");
   const [aiResponse, setAiResponse] = useState("");
@@ -126,6 +127,7 @@ export default function LaunchPage() {
         demoType?: string;
         demoLink?: string;
         thumbnailUrl?: string;
+        demoVideoUrl?: string;
         creatorName?: string;
         tags?: string;
       };
@@ -136,6 +138,7 @@ export default function LaunchPage() {
       if (draft.demoType) setDemoType(draft.demoType);
       if (draft.demoLink) setDemoLink(draft.demoLink);
       if (draft.thumbnailUrl) setThumbnailUrl(draft.thumbnailUrl);
+      if (draft.demoVideoUrl) setDemoVideoUrl(draft.demoVideoUrl);
       if (draft.creatorName) setCreatorName(draft.creatorName);
       if (draft.tags) setTags(draft.tags);
       const hasAnyField =
@@ -172,6 +175,7 @@ export default function LaunchPage() {
             demoType,
             demoLink,
             thumbnailUrl,
+            demoVideoUrl,
             creatorName,
             tags,
           }),
@@ -189,6 +193,7 @@ export default function LaunchPage() {
     demoType,
     demoLink,
     thumbnailUrl,
+    demoVideoUrl,
     creatorName,
     tags,
     submitted,
@@ -386,6 +391,7 @@ export default function LaunchPage() {
           creatorName,
           demoType: demoType || "preview",
           demoUrl: demoLink,
+          demoVideoUrl: demoVideoUrl.trim() || undefined,
         }),
       });
 
@@ -1356,6 +1362,22 @@ export default function LaunchPage() {
                   value={thumbnailUrl}
                   onChange={(e) => setThumbnailUrl(e.target.value)}
                   placeholder="https://..."
+                  className="bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
+                />
+              </FormField>
+
+              {/* Optional demo video — looping MP4/WebM URL. Renders inside
+                  HeroCard in place of the static evo sprite (codedex-style
+                  animated card). Host anywhere (Vercel Blob / S3 / own CDN)
+                  that serves an https:// URL with correct Content-Type. */}
+              <FormField
+                label="Demo video URL (MP4/WebM, ≤30s, optional)"
+                filled={!!demoVideoUrl.trim()}
+              >
+                <Input
+                  value={demoVideoUrl}
+                  onChange={(e) => setDemoVideoUrl(e.target.value)}
+                  placeholder="https://... .mp4 or .webm"
                   className="bg-white/5 border-white/[0.08] focus-visible:border-[color:var(--neon-orange)] focus-visible:ring-[var(--neon-orange)]/30"
                 />
               </FormField>

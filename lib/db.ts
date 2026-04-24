@@ -50,6 +50,7 @@ function mapProject(row: Record<string, unknown>): Project {
     demoType: (row.demo_type as Project["demoType"]) || "preview",
     demoUrl: row.demo_url as string | undefined,
     demoContent: row.demo_content as string | undefined,
+    demoVideoUrl: row.demo_video_url as string | undefined,
     parentId: row.parent_id as string | undefined,
     viralBoosted: (row.viral_boosted as boolean) || false,
     createdAt: row.created_at as string,
@@ -242,6 +243,8 @@ export interface NewProjectInput {
   tags: string[];
   demoType?: "chat" | "sandbox" | "preview" | "embedded";
   demoUrl?: string;
+  /** Optional short-form MP4/WebM preview URL — stored in projects.demo_video_url. */
+  demoVideoUrl?: string;
   thumbnail?: string;
 }
 
@@ -344,6 +347,7 @@ export async function createProject(
       featured: false,
       demoType: input.demoType ?? "preview",
       demoUrl: input.demoUrl,
+      demoVideoUrl: input.demoVideoUrl,
       createdAt: new Date().toISOString(),
       behaviorScore: { plays: 0, avgStaySeconds: 0, shareRate: 0, remixCount: 0, aiScore: 0, compound: 0 },
       aiReview: { originality: 0, clarity: 0, uxPotential: 0, viralityPotential: 0, investorCuriosity: 0, strengths: [], weaknesses: [], suggestions: [] },
@@ -363,6 +367,7 @@ export async function createProject(
       thumbnail: input.thumbnail ?? "",
       demo_type: input.demoType ?? "preview",
       demo_url: input.demoUrl ?? null,
+      demo_video_url: input.demoVideoUrl ?? null,
     })
     .select("*, creators(name)")
     .single();

@@ -18,6 +18,7 @@ interface SubmitBody {
   creatorName?: string;
   demoType?: string;
   demoUrl?: string;
+  demoVideoUrl?: string;
 }
 
 const VALID_CATEGORIES: ProjectCategory[] = [
@@ -170,6 +171,7 @@ export async function POST(req: NextRequest) {
     tags: Array.isArray(body.tags) ? body.tags : [],
     demoType: (body.demoType as DemoType | undefined) ?? "preview",
     demoUrl: body.demoUrl,
+    demoVideoUrl: body.demoVideoUrl?.trim() || undefined,
   };
 
   // Try to persist to Supabase as the authenticated user. If the env isn't

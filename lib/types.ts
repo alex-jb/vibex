@@ -111,6 +111,9 @@ export interface Project {
   demoType: "chat" | "sandbox" | "preview" | "embedded";
   demoUrl?: string;
   demoContent?: string;
+  /** Optional short (≤30s) looping MP4/WebM preview URL. When present,
+      HeroCard renders this in place of the static evo sprite. */
+  demoVideoUrl?: string;
   parentId?: string; // remix parent
   parentTitle?: string;
   viralBoosted?: boolean;
