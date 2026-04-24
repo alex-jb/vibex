@@ -50,17 +50,26 @@ function formatUtcHm(iso: string): string {
 /* "Today's Forges" recency strip — sits above the leaderboard Tabs. The
    leaderboard ranks by upvotes / plays; this strip ranks by raw creation
    time. Gives re-visiting users a reason to drop in: "see what showed up
-   today" instead of "see what's been topping the board all day." */
+   today" instead of "see what's been topping the board all day."
+
+   When no project was forged today, falls back to the 6 most recent
+   ever — prevents the section from showing the "ANVIL COOL" empty state
+   on every day with no new submissions (which is most days during the
+   slow-growth pre-launch phase). Header label flips to `LATEST FORGES`
+   so the strip doesn't lie about what it's showing. */
 function TodaysForges({ projects }: { projects: Project[] }) {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
-  const todayList = useMemo(() => {
-    return projects
-      .filter((p) => typeof p.createdAt === "string" && p.createdAt.startsWith(today))
-      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
-      .slice(0, 6);
+  const { list, mode } = useMemo(() => {
+    const sorted = [...projects]
+      .filter((p) => typeof p.createdAt === "string" && p.createdAt.length > 0)
+      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+    const todayList = sorted.filter((p) => p.createdAt.startsWith(today));
+    if (todayList.length > 0) {
+      return { list: todayList.slice(0, 6), mode: "today" as const };
+    }
+    return { list: sorted.slice(0, 6), mode: "latest" as const };
   }, [projects, today]);
-
-  const count = todayList.length;
+  const count = list.length;
 
   return (
     <div className="mb-8">
@@ -74,7 +83,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
         }}
       >
         <span style={{ color: "#FF4500", textShadow: "0 0 4px #FF4500" }}>⚒</span>
-        <span>TODAY&rsquo;S FORGES</span>
+        <span>{mode === "today" ? "TODAY’S FORGES" : "LATEST FORGES"}</span>
         <span
           className="px-1.5 py-[1px]"
           style={{
@@ -131,7 +140,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-          {todayList.map((p) => {
+          {list.map((p) => {
             const stage = (p.hero?.evolutionStage as EvolutionStage | undefined) ?? computeEvolutionStage(p);
             return (
               <Link
@@ -156,6 +165,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
                   {p.demoVideoUrl ? (
                     <LazyVideo
                       src={p.demoVideoUrl}
+                      poster={EVO_SPRITE[stage]}
                       style={{
                         width: "100%",
                         height: 64,

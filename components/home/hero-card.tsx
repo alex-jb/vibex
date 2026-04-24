@@ -631,6 +631,7 @@ export function HeroCard({
             {demoVideoUrl ? (
               <LazyVideo
                 src={demoVideoUrl}
+                poster={spriteFor(evolutionStage)}
                 style={{
                   width: 108,
                   height: 108,

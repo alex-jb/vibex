@@ -21,10 +21,15 @@ export function LazyVideo({
   src,
   style,
   className,
+  poster,
 }: {
   src: string;
   style?: CSSProperties;
   className?: string;
+  /** Optional still image shown before the first frame decodes. Pass the
+      evo sprite URL so a card transitioning from sprite → video never
+      flashes black on first paint. */
+  poster?: string;
 }) {
   const ref = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
@@ -49,6 +54,7 @@ export function LazyVideo({
     <video
       ref={ref}
       src={src}
+      poster={poster}
       muted
       loop
       playsInline

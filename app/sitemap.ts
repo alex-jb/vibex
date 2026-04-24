@@ -106,5 +106,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.65,
   }));
 
-  return [...staticPages, ...projectPages];
+  // Category deep-links — added 2026-04-24. The landing page's BROWSE row
+  // and /home category pills both resolve to `/home?category=AI+AGENT`-
+  // style URLs; expose each one to crawlers as its own entry so Google
+  // + AI Overviews can index category pages separately from /home.
+  const CATEGORIES = [
+    "AI AGENT",
+    "AI TOOL",
+    "AI GAME",
+    "AI WORKFLOW",
+    "AI UTILITY",
+    "AI EXPERIMENT",
+  ];
+  const categoryPages: MetadataRoute.Sitemap = CATEGORIES.map((c) => ({
+    url: `${baseUrl}/home?category=${encodeURIComponent(c)}`,
+    lastModified: now,
+    changeFrequency: "daily" as const,
+    priority: 0.82,
+  }));
+
+  return [...staticPages, ...categoryPages, ...projectPages];
 }
