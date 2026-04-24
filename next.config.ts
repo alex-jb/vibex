@@ -45,7 +45,11 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://api.anthropic.com https://*.vercel-insights.com",
+      // `blob.vercel-storage.com` added 2026-04-24 to allow direct uploads
+      // from the /launch demo-video picker (@vercel/blob/client). Scoped to
+      // our tenant subdomain rather than wildcarding *.blob.vercel-storage.com
+      // for the same reason media-src is scoped below.
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://api.anthropic.com https://*.vercel-insights.com https://cgavxkhdjifwxoaw.public.blob.vercel-storage.com https://blob.vercel-storage.com",
       // <video> / <audio> sources — only our vibex-marketing Blob store, not
       // wildcard *.blob.vercel-storage.com (that would allow any Vercel tenant's
       // store). Security review 2026-04-22: tighten wildcard.
