@@ -516,15 +516,15 @@ export default function LaunchPage() {
         className="relative min-h-[calc(100vh-64px)] overflow-hidden flex items-center justify-center"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 45%, rgba(157,0,255,0.2), transparent 55%), radial-gradient(ellipse at 50% 45%, rgba(6,182,212,0.08), transparent 75%), var(--bg-deep)",
+            "radial-gradient(ellipse at 50% 45%, rgba(255,69,0,0.22), transparent 55%), radial-gradient(ellipse at 50% 45%, rgba(255,226,125,0.06), transparent 75%), var(--bg-deep)",
         }}
       >
-        {/* Floating ambient particles */}
+        {/* Floating ember particles — forge palette only */}
         {[
-          { top: "30%", left: "22%", color: "#FACC15", delay: 0 },
-          { top: "70%", left: "75%", color: "#06B6D4", delay: 1 },
-          { top: "22%", right: "25%", color: "#EC4899", delay: 2 },
-          { top: "68%", left: "20%", color: "#9D00FF", delay: 0.5 },
+          { top: "30%", left: "22%", color: "#FF4500", delay: 0 },
+          { top: "70%", left: "75%", color: "#FFE27D", delay: 1 },
+          { top: "22%", right: "25%", color: "#FF4500", delay: 2 },
+          { top: "68%", left: "20%", color: "#FFE27D", delay: 0.5 },
         ].map((p, i) => (
           <motion.div
             key={i}
@@ -555,14 +555,14 @@ export default function LaunchPage() {
           className="relative z-40 text-center px-6"
           style={{ width: "min(820px, calc(100vw - 48px))" }}
         >
-          {/* Portal glow behind */}
+          {/* Forge ember glow behind */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute"
             style={{
               inset: "-120px -80px",
               background:
-                "radial-gradient(ellipse, rgba(157,0,255,0.35) 0%, rgba(236,72,153,0.15) 35%, transparent 70%)",
+                "radial-gradient(ellipse, rgba(255,69,0,0.45) 0%, rgba(255,226,125,0.15) 35%, transparent 70%)",
               filter: "blur(40px)",
               zIndex: -1,
             }}
@@ -615,20 +615,68 @@ export default function LaunchPage() {
               letterSpacing: 3,
               lineHeight: 1.5,
               textShadow:
-                "0 0 14px rgba(232,232,236,0.35), 0 0 30px rgba(157,0,255,0.3)",
+                "0 0 14px rgba(232,232,236,0.35), 0 0 30px rgba(255,69,0,0.35)",
             }}
           >
             PASTE YOUR AI PROJECT.
             <br />
             <span
               style={{
-                color: "var(--neon-yellow)",
-                textShadow: "0 0 14px rgba(250,204,21,0.7)",
+                color: "#FF4500",
+                textShadow: "0 0 14px rgba(255,69,0,0.7), 3px 3px 0 #000",
               }}
             >
-              WE DO THE REST.
+              WE FORGE THE REST.
             </span>
           </h1>
+
+          {/* 3-step onboarding primer — only shows on empty hero (first-visit).
+              Smith-idle + three pixel-font tips so new creators see the
+              loop before they even paste a URL. */}
+          <div className="flex items-center justify-center gap-5 mb-6 sm:mb-8">
+            <Image
+              src="/generated/smith-idle.png"
+              alt=""
+              width={80}
+              height={80}
+              unoptimized
+              className="hidden sm:block shrink-0"
+              style={{
+                imageRendering: "pixelated",
+                filter: "drop-shadow(0 0 8px rgba(255,69,0,0.5))",
+              }}
+            />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 text-left">
+              {[
+                { step: "1", text: "DROP A URL" },
+                { step: "2", text: "CLAUDE SCORES 0–100" },
+                { step: "3", text: "WATCH IT EVOLVE" },
+              ].map((t, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-2"
+                  style={{
+                    fontFamily: "var(--font-press-start), monospace",
+                    fontSize: 9,
+                    letterSpacing: 1.5,
+                  }}
+                >
+                  <span
+                    style={{
+                      padding: "4px 7px",
+                      background: "#FF4500",
+                      color: "#0A0A0C",
+                      border: "1.5px solid #FFE27D",
+                      boxShadow: "2px 2px 0 #000",
+                    }}
+                  >
+                    {t.step}
+                  </span>
+                  <span style={{ color: "#FFE27D" }}>{t.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
           <p
             className="mb-8 sm:mb-10 text-[16px] sm:text-[19px] md:text-[22px]"
@@ -669,12 +717,12 @@ export default function LaunchPage() {
               className="w-full outline-none text-[16px] sm:text-[19px] md:text-[22px] py-4 sm:py-5 md:py-[26px] pl-12 sm:pl-[52px] md:pl-[60px] pr-16 sm:pr-[80px] md:pr-[90px]"
               style={{
                 background: "rgba(0,0,0,0.75)",
-                border: "3px solid rgba(157,0,255,0.6)",
+                border: "3px solid rgba(255,69,0,0.65)",
                 color: "var(--text)",
                 fontFamily: "var(--font-vt323), monospace",
                 letterSpacing: 0.5,
                 boxShadow:
-                  "inset 0 4px 8px rgba(0,0,0,0.7), 0 0 30px rgba(157,0,255,0.25), 0 0 60px rgba(157,0,255,0.15)",
+                  "inset 0 4px 8px rgba(0,0,0,0.7), 0 0 30px rgba(255,69,0,0.3), 0 0 60px rgba(255,69,0,0.15)",
               }}
             />
             <button
@@ -686,12 +734,11 @@ export default function LaunchPage() {
               style={{
                 top: "50%",
                 transform: "translateY(-50%)",
-                background:
-                  "linear-gradient(135deg, var(--neon-purple), #C026D3)",
-                color: "#FFF",
+                background: "#FF4500",
+                color: "#0A0A0C",
                 fontFamily: "var(--font-press-start), monospace",
-                border: "3px solid #FFF",
-                boxShadow: "3px 3px 0 #000, 0 0 20px rgba(157,0,255,0.7)",
+                border: "3px solid #FFE27D",
+                boxShadow: "3px 3px 0 #000, 0 0 20px rgba(255,69,0,0.7)",
                 cursor: scrapeLoading ? "wait" : "pointer",
               }}
             >
