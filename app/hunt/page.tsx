@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Trophy,
@@ -21,7 +22,178 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLang } from "@/lib/i18n";
 import { EvolutionBadge } from "@/components/rpg/evolution-badge";
-import type { EvolutionStage } from "@/lib/types";
+import { computeEvolutionStage } from "@/lib/rpg-utils";
+import type { EvolutionStage, Project } from "@/lib/types";
+
+const EVO_SPRITE: Record<EvolutionStage, string> = {
+  Seed: "/generated/evo-1-seed.png",
+  Active: "/generated/evo-2-active.png",
+  Growing: "/generated/evo-3-growing.png",
+  Breakout: "/generated/evo-4-breakout.png",
+  Legend: "/generated/evo-5-legend.png",
+  Myth: "/generated/evo-6-myth.png",
+};
+
+function formatUtcHm(iso: string): string {
+  try {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return "";
+    const h = d.getUTCHours().toString().padStart(2, "0");
+    const m = d.getUTCMinutes().toString().padStart(2, "0");
+    return `${h}:${m}`;
+  } catch {
+    return "";
+  }
+}
+
+/* "Today's Forges" recency strip — sits above the leaderboard Tabs. The
+   leaderboard ranks by upvotes / plays; this strip ranks by raw creation
+   time. Gives re-visiting users a reason to drop in: "see what showed up
+   today" instead of "see what's been topping the board all day." */
+function TodaysForges({ projects }: { projects: Project[] }) {
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const todayList = useMemo(() => {
+    return projects
+      .filter((p) => typeof p.createdAt === "string" && p.createdAt.startsWith(today))
+      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+      .slice(0, 6);
+  }, [projects, today]);
+
+  const count = todayList.length;
+
+  return (
+    <div className="mb-8">
+      <div
+        className="flex items-center gap-3 mb-3"
+        style={{
+          fontFamily: "var(--font-press-start), monospace",
+          fontSize: 9,
+          letterSpacing: 2.5,
+          color: "#FFE27D",
+        }}
+      >
+        <span style={{ color: "#FF4500", textShadow: "0 0 4px #FF4500" }}>⚒</span>
+        <span>TODAY&rsquo;S FORGES</span>
+        <span
+          className="px-1.5 py-[1px]"
+          style={{
+            background: count > 0 ? "#FF4500" : "rgba(0,0,0,0.4)",
+            color: count > 0 ? "#0A0A0C" : "#8A7B9A",
+            border: "1px solid #FFE27D",
+            fontSize: 9,
+          }}
+        >
+          {count}
+        </span>
+        <span style={{ color: "rgba(255,255,255,0.25)", flex: 1, height: 1, background: "rgba(255,69,0,0.25)" }} aria-hidden />
+      </div>
+
+      {count === 0 ? (
+        <div
+          className="flex items-center gap-4 p-4"
+          style={{
+            background: "#0A0A0C",
+            border: "2px solid rgba(255,69,0,0.4)",
+          }}
+        >
+          <Image
+            src="/generated/smith-idle.png"
+            alt=""
+            width={64}
+            height={64}
+            unoptimized
+            style={{ imageRendering: "pixelated", flexShrink: 0 }}
+          />
+          <div>
+            <div
+              className="font-pixel"
+              style={{
+                fontSize: 10,
+                letterSpacing: 2,
+                color: "#FFE27D",
+                marginBottom: 4,
+              }}
+            >
+              ANVIL COOL · FORGE IDLE
+            </div>
+            <div className="font-retro text-sm" style={{ color: "#8A7B9A" }}>
+              Be the first to forge today.{" "}
+              <Link
+                href="/launch"
+                className="underline"
+                style={{ color: "#FF4500", textDecorationColor: "#FF4500" }}
+              >
+                Forge a project →
+              </Link>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+          {todayList.map((p) => {
+            const stage = (p.hero?.evolutionStage as EvolutionStage | undefined) ?? computeEvolutionStage(p);
+            return (
+              <Link
+                key={p.id}
+                href={`/project/${encodeURIComponent(p.id)}`}
+                className="block group"
+                style={{
+                  background: "#0A0A0C",
+                  border: "2px solid rgba(255,69,0,0.4)",
+                  padding: 8,
+                  transition: "border-color 120ms ease-out",
+                }}
+              >
+                <div
+                  className="flex items-center justify-center mb-2"
+                  style={{
+                    width: "100%",
+                    height: 64,
+                    background: "rgba(255,69,0,0.06)",
+                  }}
+                >
+                  <Image
+                    src={EVO_SPRITE[stage]}
+                    alt=""
+                    width={48}
+                    height={48}
+                    unoptimized
+                    style={{
+                      imageRendering: "pixelated",
+                      filter: "drop-shadow(0 0 6px rgba(255,69,0,0.5))",
+                    }}
+                  />
+                </div>
+                <div
+                  className="font-pixel truncate"
+                  style={{
+                    fontSize: 8,
+                    letterSpacing: 1,
+                    color: "#E8E8EC",
+                    marginBottom: 2,
+                  }}
+                  title={p.title}
+                >
+                  {p.title}
+                </div>
+                <div
+                  className="font-code"
+                  style={{
+                    fontSize: 8,
+                    color: "#FF4500",
+                    letterSpacing: 1.5,
+                  }}
+                >
+                  {formatUtcHm(p.createdAt)} UTC
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 /** Map tab names to LeaderboardPeriod */
 function tabToPeriod(tab: string): LeaderboardPeriod {
@@ -214,6 +386,11 @@ export default function HuntPage() {
           </motion.div>
         </div>
       </div>
+
+      {/* Today's Forges — recency strip (distinct from upvote-ranked
+          leaderboard below). Gives re-visiting users a reason to check
+          back in: "what appeared today" vs. "what's been at the top". */}
+      <TodaysForges projects={projects} />
 
       {/* Tabs + List */}
       <div>
