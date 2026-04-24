@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { useProjects } from "@/lib/use-data";
 import { HqHeroBanner } from "@/components/home/hq-hero-banner";
@@ -52,10 +53,30 @@ import type { HeroCardData } from "@/components/home/hero-card";
    live on /discover. Per user decision 2026-04-14: one page, one catalog.
    ═══════════════════════════════════════════════════════════════════════════ */
 
+const VALID_CATEGORY_KEYS: CategoryKey[] = [
+  "ALL",
+  "AI AGENT",
+  "AI TOOL",
+  "AI GAME",
+  "AI WORKFLOW",
+  "AI UTILITY",
+  "AI EXPERIMENT",
+];
+
 export default function HomePage() {
   const { user } = useAuth();
   const { data: projects, loading: projectsLoading } = useProjects();
-  const [activeCategory, setActiveCategory] = useState<CategoryKey>("ALL");
+  const searchParams = useSearchParams();
+  // Initialize from ?category=... so landing-page pills deep-link straight
+  // to the filtered state. Tolerates missing / invalid params; falls back
+  // to ALL. URLSearchParams.get() decodes "+" → space, so `AI+AGENT`
+  // becomes "AI AGENT" which matches the CategoryKey enum.
+  const [activeCategory, setActiveCategory] = useState<CategoryKey>(() => {
+    const raw = searchParams?.get("category")?.toUpperCase() ?? "";
+    return VALID_CATEGORY_KEYS.includes(raw as CategoryKey)
+      ? (raw as CategoryKey)
+      : "ALL";
+  });
 
   // Prefer GitHub/Google handle if we have it, fall back to the local-part of
   // the email, fall back to "trainer" for logged-out visitors. Stripping to a

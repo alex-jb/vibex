@@ -952,6 +952,57 @@ export default function LandingPage() {
             </motion.button>
           </Link>
         </div>
+
+        {/* === Category browse pills (code ex "Popular / Web / Data Sci"
+            equivalent — give non-committed visitors a path into the app
+            without having to commit to the PRESS START CTA). Each pill
+            deep-links to /home with a pre-applied filter. */}
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 5.8, ease: pixelEase }}
+          className="mt-6 flex flex-wrap items-center justify-center gap-2"
+          aria-label="Browse by category"
+        >
+          <span
+            aria-hidden
+            style={{
+              fontFamily: "var(--font-press-start), monospace",
+              fontSize: 8,
+              letterSpacing: 2.5,
+              color: `${C.CREAM}B8`,
+              marginRight: 4,
+            }}
+          >
+            ▸ BROWSE
+          </span>
+          {[
+            { label: "AGENT", key: "AI AGENT" },
+            { label: "TOOL", key: "AI TOOL" },
+            { label: "GAME", key: "AI GAME" },
+            { label: "WORKFLOW", key: "AI WORKFLOW" },
+            { label: "UTILITY", key: "AI UTILITY" },
+            { label: "EXPERIMENT", key: "AI EXPERIMENT" },
+          ].map((pill) => (
+            <Link
+              key={pill.key}
+              href={`/home?category=${encodeURIComponent(pill.key)}`}
+              className="transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--neon-orange)]"
+              style={{
+                fontFamily: "var(--font-press-start), monospace",
+                fontSize: 8,
+                letterSpacing: 1.5,
+                padding: "6px 10px",
+                color: C.CREAM,
+                background: "rgba(0,0,0,0.35)",
+                border: `2px solid ${C.FORGE}66`,
+                boxShadow: `2px 2px 0 #000`,
+              }}
+            >
+              {pill.label}
+            </Link>
+          ))}
+        </motion.div>
       </motion.div>
 
       {/* ═══ Keyboard hint bottom (desktop only) ═══ */}
