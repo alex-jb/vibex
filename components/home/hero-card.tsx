@@ -1,66 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useLang, type TranslationKey } from "@/lib/i18n";
 import type { EvolutionStage } from "@/lib/types";
 import { EVOLUTION_CONFIG, RANK_BY_STAGE, type TopAttr } from "@/lib/rpg-utils";
-
-/* Viewport-gated autoplay. With demo videos landing on many /home cards,
-   a blanket `autoPlay` would start 20+ simultaneous decoders — mobile
-   Safari will tab-throttle, and desktop fans spin up. This wrapper only
-   plays the video when its card intersects the viewport (+100px margin),
-   and pauses it the moment it scrolls out. preload="none" so cards below
-   the fold don't even fetch the metadata HEAD. */
-function LazyVideo({
-  src,
-  size,
-  evoColor,
-}: {
-  src: string;
-  size: number;
-  evoColor: string;
-}) {
-  const ref = useRef<HTMLVideoElement | null>(null);
-  useEffect(() => {
-    const v = ref.current;
-    if (!v) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          void v.play().catch(() => {
-            /* autoplay rejection (iOS silent-mode strict) — acceptable */
-          });
-        } else {
-          v.pause();
-        }
-      },
-      { threshold: 0.01, rootMargin: "100px" },
-    );
-    io.observe(v);
-    return () => io.disconnect();
-  }, []);
-  return (
-    <video
-      ref={ref}
-      src={src}
-      muted
-      loop
-      playsInline
-      preload="none"
-      aria-hidden
-      style={{
-        width: size,
-        height: size,
-        objectFit: "cover",
-        imageRendering: "pixelated",
-        filter: `drop-shadow(0 0 10px ${evoColor}aa)`,
-      }}
-    />
-  );
-}
+import { LazyVideo } from "@/components/ui/lazy-video";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    HeroCard — Direction A "character sheet" (2026-04-20).
@@ -683,7 +629,16 @@ export function HeroCard({
               />
             ))}
             {demoVideoUrl ? (
-              <LazyVideo src={demoVideoUrl} size={108} evoColor={evoColor} />
+              <LazyVideo
+                src={demoVideoUrl}
+                style={{
+                  width: 108,
+                  height: 108,
+                  objectFit: "cover",
+                  imageRendering: "pixelated",
+                  filter: `drop-shadow(0 0 10px ${evoColor}aa)`,
+                }}
+              />
             ) : (
               <Image
                 src={spriteFor(evolutionStage)}

@@ -23,6 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLang } from "@/lib/i18n";
 import { EvolutionBadge } from "@/components/rpg/evolution-badge";
 import { computeEvolutionStage } from "@/lib/rpg-utils";
+import { LazyVideo } from "@/components/ui/lazy-video";
 import type { EvolutionStage, Project } from "@/lib/types";
 
 const EVO_SPRITE: Record<EvolutionStage, string> = {
@@ -153,14 +154,8 @@ function TodaysForges({ projects }: { projects: Project[] }) {
                   }}
                 >
                   {p.demoVideoUrl ? (
-                    <video
+                    <LazyVideo
                       src={p.demoVideoUrl}
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
-                      aria-hidden
                       style={{
                         width: "100%",
                         height: 64,
