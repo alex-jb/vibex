@@ -5,5 +5,5 @@
       "master": true
     }
   },
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ':(exclude)*.md' ':(exclude)docs/**' ':(exclude).github/**' ':(exclude)remotion/**' ':(exclude)out/**' ':(exclude)scripts/screenshot-*.mjs' ':(exclude)scripts/_probe*.mjs'"
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ':(exclude)*.md' ':(exclude)docs/**' ':(exclude).github/**' ':(exclude)remotion/**' ':(exclude)out/**' ':(exclude)scripts/screenshot-*.mjs' ':(exclude)scripts/_probe*.mjs' ':(exclude)scripts/gen*.mjs' ':(exclude)scripts/upload-*.mjs'"
 }
