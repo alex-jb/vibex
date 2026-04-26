@@ -100,6 +100,9 @@ npm run dev
 
 Open http://localhost:3000. The app runs in **mock mode** with built-in demo data.
 
+> ### 🎮 Got it running?
+> If the Direction A forge aesthetic + the Claude review flow caught your eye, **[⭐ star the repo](https://github.com/alex-jb/vibex)**. It costs you a click and helps us land on Product Hunt's "trending OSS" list on May 1.
+
 <details>
 <summary><strong>Want real data? Wire up Supabase + Claude (optional)</strong></summary>
 
@@ -199,6 +202,20 @@ vibex/
 - [ ] Multi-reviewer (Claude + GPT + Gemini cross-check)
 - [ ] Auto-apply low-risk copy changes (with diff preview)
 - [ ] Creator-to-creator peer review marketplace
+
+---
+
+## Star History
+
+<a href="https://star-history.com/#alex-jb/vibex&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=alex-jb/vibex&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=alex-jb/vibex&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=alex-jb/vibex&type=Date" width="640" />
+  </picture>
+</a>
+
+> **Why star this?** This is what an AI-native launch platform looks like when a solo dev ships daily for two weeks. The forge aesthetic, the Claude review flow, the bilingual i18n, the parametric Remotion trailer pipeline — all in the open. ⭐ this if you'd rather follow the live build than read another whitepaper.
 
 ---
 
