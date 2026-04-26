@@ -9,6 +9,7 @@ import { PostComposer } from "@/components/feed/post-composer";
 import { FeedTabs } from "@/components/feed/feed-tabs";
 import { NewPostsToast } from "@/components/feed/new-posts-toast";
 import { TrendingSidebar } from "@/components/feed/trending-sidebar";
+import { EventsBlock } from "@/components/feed/events-block";
 import Link from "next/link";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
@@ -442,7 +443,7 @@ export default function FeedPage() {
       `}</style>
     </div>
 
-    {/* Sidebar: trending hashtags (desktop only) */}
+    {/* Sidebar: trending hashtags + upcoming events (desktop only) */}
     <div className="hidden lg:block" style={{ width: 200, flexShrink: 0 }}>
       <div style={{ position: "sticky", top: 80 }}>
         <TrendingSidebar activeTag={activeTag ?? undefined} onTagClick={setActiveTag} />
@@ -464,6 +465,8 @@ export default function FeedPage() {
             {t("feed.filter")}: #{activeTag}
           </div>
         )}
+
+        <EventsBlock />
       </div>
     </div>
     </div>
