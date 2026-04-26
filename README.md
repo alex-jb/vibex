@@ -2,6 +2,10 @@
   <strong>English</strong> · <a href="./README.zh-CN.md">中文</a>
 </p>
 
+> ## 🚀 Launching on Product Hunt — **May 1, 2026**
+>
+> The forge ignites at **PST 12:01 AM** (Beijing 5/1 15:01). Star this repo so you don't miss it. [⭐ Notify me on GitHub](https://github.com/alex-jb/vibex/subscription) · [Try it now](https://www.vibexforge.com)
+
 <p align="center">
   <a href="https://www.vibexforge.com">
     <img src="docs/screenshots-v3/01-landing.png" width="820" alt="VibeXForge — enter the portal" />
