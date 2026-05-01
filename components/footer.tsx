@@ -113,6 +113,16 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-5">
             <StatusBadge />
+            <a
+              href="https://github.com/alex-jb/solo-founder-os"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-pixel text-[9px] tracking-widest uppercase transition-colors hover:text-[var(--neon-yellow)]"
+              style={{ color: "var(--text-muted)" }}
+              aria-label="Built with Solo Founder OS — open source agent stack"
+            >
+              Built with Solo Founder OS
+            </a>
             <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
               {t("footer.crafted")}
             </p>
