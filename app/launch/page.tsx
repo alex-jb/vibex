@@ -25,6 +25,7 @@ import { useLang } from "@/lib/i18n";
 import { trackEvent } from "@/lib/analytics";
 import type { LaunchPackage } from "@/lib/ai";
 import { LaunchPackageDisplay } from "@/components/launch/launch-package";
+import { PHDayBanner } from "@/components/launch/ph-day-banner";
 import { categories } from "@/lib/mock-data";
 import { HeroCard, type HeroCardData } from "@/components/home/hero-card";
 import { Button } from "@/components/ui/button";
@@ -882,6 +883,9 @@ export default function LaunchPage() {
         className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
         style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.18), transparent 70%)" }}
       />
+
+      {/* PH-day live banner — renders countdown / live state / nothing */}
+      <PHDayBanner />
 
       {/* Mobile sticky preview strip — lg:hidden so desktop uses the right-column
           full HeroCard preview instead. Shows sprite + name + compound placeholder
