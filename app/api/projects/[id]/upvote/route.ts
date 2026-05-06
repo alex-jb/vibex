@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase-server";
+import {
+  insertNotification,
+  getProjectOwnerAuthId,
+} from "@/lib/notifications";
 
 /**
  * POST /api/projects/:id/upvote
@@ -59,6 +63,31 @@ export async function POST(
   const row = data as { upvoted: boolean; upvotes: number } | null;
   if (!row) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
+  }
+
+  // Fire a notification to the project owner — but only when the
+  // upvote is being ADDED (row.upvoted === true), not toggled off,
+  // and only when the upvoter is not the owner. Fire-and-forget so
+  // a notification failure never blocks the upvote response.
+  if (row.upvoted) {
+    (async () => {
+      const owner = await getProjectOwnerAuthId(supabase, id);
+      if (!owner) return;
+      if (owner.authUserId === user.id) return;
+      const actorName =
+        (user.user_metadata?.full_name as string | undefined) ||
+        (user.user_metadata?.user_name as string | undefined) ||
+        user.email?.split("@")[0] ||
+        "someone";
+      await insertNotification(supabase, {
+        recipientUserId: owner.authUserId,
+        type: "upvote",
+        actorName,
+        actionText: `upvoted your project "${owner.projectTitle}"`,
+        targetUrl: `/project/${id}`,
+        projectId: id,
+      });
+    })().catch((err) => console.error("[upvote] notify path threw", err));
   }
 
   return NextResponse.json(row);

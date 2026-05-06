@@ -16,6 +16,7 @@ import {
 
 import { useLang } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
+import { trackEvent } from "@/lib/analytics";
 import { useProjects } from "@/lib/use-data";
 import type { AIReview, EvolutionStage } from "@/lib/types";
 import { EVOLUTION_CONFIG } from "@/lib/rpg-utils";
@@ -1025,6 +1026,43 @@ export default function ProjectPage({
             <Button variant="outline" className="gap-2 border-white/10 hover:bg-white/5" onClick={() => setShareOpen(true)}>
               <Share2 className="size-4" />
               {t("project.share")}
+            </Button>
+          </motion.div>
+
+          {/* Tweet my evolution stage — 1-tap social brag, the highest-
+              leverage organic distribution surface for a gallery product.
+              Attribution via ?ref=tw so the funnel-analytics agent can
+              measure twitter share → signup conversion. Logged-in
+              users tweet "their" project; anonymous viewers tweet a
+              discovery copy. Clicks track via OpenPanel. */}
+          <motion.div variants={fadeIn}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full gap-2 border-sky-500/30 bg-sky-500/5 hover:bg-sky-500/10 text-sky-300"
+              onClick={() => {
+                const stage = project.hero?.evolutionStage || "Seed";
+                const isOwner =
+                  !!user &&
+                  !!project.creatorName &&
+                  user.user_metadata?.user_name === project.creatorName;
+                const text = isOwner
+                  ? `My project "${project.title}" just hit ${stage} stage on @VibeXForge — Claude scored it ${project.score}/100. Watch it evolve:`
+                  : `"${project.title}" is at ${stage} stage on @VibeXForge — AI-scored ${project.score}/100. Check it out:`;
+                const url = `https://www.vibexforge.com/project/${project.id}?ref=tw`;
+                const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                trackEvent("share_twitter_intent", {
+                  project_id: project.id,
+                  stage,
+                  is_owner: isOwner,
+                });
+                window.open(intent, "_blank", "noopener,noreferrer");
+              }}
+            >
+              <span className="text-base leading-none">🐦</span>
+              <span className="font-pixel text-[9px] uppercase tracking-wider">
+                Tweet my stage
+              </span>
             </Button>
           </motion.div>
 

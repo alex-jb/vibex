@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { serverLog } from "@/lib/logger";
+import { insertNotification } from "@/lib/notifications";
 
 const SUPABASE_CONFIGURED =
   !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -100,6 +101,29 @@ export async function POST(request: Request) {
         .insert({ creator_id: creatorId, follower_id: userId });
 
       if (insErr) throw insErr;
+
+      // Notify the followed creator. creator_id in this schema IS the
+      // auth user id (lib/db.ts::getOrCreateCreator uses user.id as
+      // the creator id), so we can route the notification directly.
+      // Self-follow is a no-op (rare edge case but cheap to guard).
+      if (creatorId !== userId) {
+        (async () => {
+          const { data: actorRow } = await supabase
+            .from("creators")
+            .select("name")
+            .eq("auth_user_id", userId)
+            .maybeSingle();
+          const actorName =
+            (actorRow?.name as string | undefined) || "someone";
+          await insertNotification(supabase, {
+            recipientUserId: creatorId,
+            type: "follow",
+            actorName,
+            actionText: "started following you",
+            targetUrl: `/profile/${userId}`,
+          });
+        })().catch((err) => console.error("[follow] notify path threw", err));
+      }
     }
 
     // Return updated state
