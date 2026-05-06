@@ -24,6 +24,7 @@ import {
 
 import { useLang } from "@/lib/i18n";
 import { trackEvent } from "@/lib/analytics";
+import { triggerQuestComplete } from "@/lib/onboarding";
 import type { LaunchPackage } from "@/lib/ai";
 import { PHDayBanner } from "@/components/launch/ph-day-banner";
 import { categories } from "@/lib/mock-data";
@@ -477,6 +478,12 @@ export default function LaunchPage() {
 
       // Clear the autosaved draft so returning to /launch starts fresh.
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+
+      // Quest auto-complete: "First Post". Drops a self-notification
+      // that the realtime toast surfaces. Idempotent via localStorage
+      // dedup — re-submitting won't re-toast. Fire-and-forget so the
+      // submit redirect isn't blocked.
+      triggerQuestComplete("first_post").catch(() => {});
 
       setSubmitted(true);
 

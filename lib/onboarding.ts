@@ -46,6 +46,46 @@ export function completeQuest(questId: string): void {
   }
 }
 
+/**
+ * Mark a quest done AND drop a self-notification so the
+ * notification-toast surfaces a "Quest complete!" pop the user
+ * sees at the moment they did the thing. Idempotent at the
+ * localStorage level — won't double-toast on refresh.
+ *
+ * Why: 2026-05-06 retention diagnostic. The 5 starter quests
+ * exist in this file but nothing surfaces completion to the
+ * user. First-action feedback is the single biggest lever for
+ * Day-1 retention, and the toast plumbing is already wired.
+ */
+export async function triggerQuestComplete(questId: string): Promise<void> {
+  const state = getOnboardingState();
+  if (state.questsCompleted.includes(questId)) return; // dedup
+
+  const quest = STARTER_QUESTS.find((q) => q.id === questId);
+  if (!quest) return;
+
+  completeQuest(questId);
+
+  // Lazy-load supabase to keep this file in shared client/server space.
+  try {
+    const { supabase } = await import("@/lib/supabase");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return; // anonymous — toast skipped, only localStorage updated
+    await supabase.from("notifications").insert({
+      user_id: user.id,
+      type: "challenge",
+      actor_name: "VibeXForge",
+      action_text: `${quest.icon} Quest complete: ${quest.title} +${quest.xpReward} XP`,
+      target_url: "/profile",
+      read: false,
+    });
+  } catch {
+    // Toast failure is non-fatal — quest still locally marked done.
+  }
+}
+
 export function completeTutorial(): void {
   saveOnboardingState({ tutorialCompleted: true, firstVisit: false });
 }
