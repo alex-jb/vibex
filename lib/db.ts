@@ -257,6 +257,12 @@ export async function getOrCreateCreator(
       id: creatorId,
       name: displayName,
       auth_user_id: user.id,
+      // Denormalized so retention email paths (weekly-digest, welcome)
+      // can read it without service_role. Migration 049 added the
+      // column and backfilled existing rows from auth.users. Insert
+      // ignores the field on databases that haven't run 049 yet —
+      // Supabase silently drops unknown columns.
+      email: user.email ?? null,
       bio: "",
       rank: 0,
       weekly_growth: 0,
@@ -265,6 +271,32 @@ export async function getOrCreateCreator(
     .single();
 
   if (error || !inserted?.id) {
+    // If the email column doesn't exist yet (049 not applied), retry
+    // without it so signup keeps working. Tracked via the error code
+    // 42703 = undefined_column in Postgres.
+    if (
+      error &&
+      (error as { code?: string }).code === "42703" &&
+      String(error.message || "").includes("email")
+    ) {
+      const { data: retry, error: retryErr } = await client
+        .from("creators")
+        .insert({
+          id: creatorId,
+          name: displayName,
+          auth_user_id: user.id,
+          bio: "",
+          rank: 0,
+          weekly_growth: 0,
+        })
+        .select("id")
+        .single();
+      if (retryErr || !retry?.id) {
+        console.error("[getOrCreateCreator] retry without email failed", retryErr);
+        return null;
+      }
+      return retry.id as string;
+    }
     console.error("[getOrCreateCreator] insert failed", error);
     return null;
   }
