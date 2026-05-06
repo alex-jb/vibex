@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,7 +25,6 @@ import {
 import { useLang } from "@/lib/i18n";
 import { trackEvent } from "@/lib/analytics";
 import type { LaunchPackage } from "@/lib/ai";
-import { LaunchPackageDisplay } from "@/components/launch/launch-package";
 import { PHDayBanner } from "@/components/launch/ph-day-banner";
 import { categories } from "@/lib/mock-data";
 import { HeroCard, type HeroCardData } from "@/components/home/hero-card";
@@ -33,7 +33,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { DemoGenerator } from "@/components/demo/demo-generator";
 import {
   Select,
   SelectContent,
@@ -41,6 +40,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+// Lazy: only mounted after AI generation completes (LaunchPackageDisplay)
+// or after user picks a demoType (DemoGenerator). Both are far below the
+// fold and gated behind state — no point shipping their JS in the first
+// paint of a 2200-line page.
+const LaunchPackageDisplay = dynamic(
+  () => import("@/components/launch/launch-package").then((m) => ({ default: m.LaunchPackageDisplay })),
+  { ssr: false },
+);
+const DemoGenerator = dynamic(
+  () => import("@/components/demo/demo-generator").then((m) => ({ default: m.DemoGenerator })),
+  { ssr: false },
+);
 
 const CATEGORY_TRENDS: Record<string, { label: string; rising: boolean }> = {
   "AI Agent": { label: "Rising rapidly", rising: true },
