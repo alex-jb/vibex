@@ -7,6 +7,7 @@ import {
   type NewProjectInput,
 } from "@/lib/db";
 import { generateProjectReview } from "@/lib/ai";
+import { sendEmail, composeWelcomeEmail } from "@/lib/email";
 import type { ProjectCategory } from "@/lib/types";
 
 interface SubmitBody {
@@ -104,6 +105,56 @@ async function pingIndexNow(url: string): Promise<void> {
   } catch {
     // Any failure is swallowed — caller uses .catch(() => {}) and
     // submit flow shouldn't block on a third-party ping
+  }
+}
+
+/**
+ * Send a welcome email if and only if this is the creator's very
+ * first project. We detect "first" by counting projects belonging
+ * to creatorId after the insert: count == 1 means the row we just
+ * wrote is alone, so the previous count was zero, so this is the
+ * first ship. Fire-and-forget — must never throw to caller.
+ *
+ * Why count instead of a column flag: keeps the schema unchanged
+ * and the dedup logic visible inline. With 5 users we don't need
+ * a real outbox table; a count query is plenty.
+ */
+async function sendWelcomeEmailIfFirstProject(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  args: {
+    creatorId: string;
+    userEmail: string | undefined;
+    userName: string;
+    projectId: string;
+    projectTitle: string;
+    compoundScore: number;
+  },
+): Promise<void> {
+  if (!args.userEmail) return;
+  const { count, error } = await supabase
+    .from("projects")
+    .select("id", { count: "exact", head: true })
+    .eq("creator_id", args.creatorId);
+  if (error) {
+    console.error("[welcome-email] count query failed", error);
+    return;
+  }
+  if (count !== 1) return;
+
+  const { subject, html, text } = composeWelcomeEmail({
+    creatorName: args.userName,
+    projectId: args.projectId,
+    projectTitle: args.projectTitle,
+    compoundScore: args.compoundScore,
+  });
+  const result = await sendEmail({ to: args.userEmail, subject, html, text });
+  if (!result.ok) {
+    console.error(`[welcome-email] send failed: ${result.error}`);
+  } else if (result.dryRun) {
+    console.log(`[welcome-email] dry-run for ${args.userEmail}`);
+  } else {
+    console.log(`[welcome-email] sent to ${args.userEmail} (${result.resendId})`);
   }
 }
 
@@ -263,6 +314,28 @@ export async function POST(req: NextRequest) {
       pingIndexNow(`https://www.vibexforge.com/project/${project.id}`).catch(
         () => {},
       );
+
+      // First-submit welcome email. Fired once per creator, the moment
+      // their first project lands. 2026-05-06 funnel diagnostic showed
+      // 100% of real outside users posted then never came back — the
+      // platform had zero retention triggers. This catches them at
+      // peak engagement (just shipped) with a link they can share +
+      // a promise of the weekly digest. RESEND_API_KEY unset → dry-run
+      // (logs only, never sends), so this is safe pre-config.
+      sendWelcomeEmailIfFirstProject(supabase, {
+        creatorId,
+        userEmail: user.email,
+        userName:
+          (user.user_metadata?.full_name as string | undefined) ||
+          (user.user_metadata?.user_name as string | undefined) ||
+          user.email?.split("@")[0] ||
+          "creator",
+        projectId: project.id,
+        projectTitle: project.title,
+        compoundScore: compound,
+      }).catch((err) => {
+        console.error("[submit] welcome-email path threw", err);
+      });
 
       return NextResponse.json(
         {
