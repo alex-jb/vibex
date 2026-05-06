@@ -16,6 +16,19 @@ export const revalidate = 30;
 
 const PH_GRAPHQL = "https://api.producthunt.com/v2/api/graphql";
 
+type PhEdge = { node?: { slug?: string; votesCount?: number } };
+type PhResponse = {
+  data?: {
+    post?: {
+      votesCount?: number;
+      commentsCount?: number;
+      featuredAt?: string | null;
+      url?: string;
+    };
+    posts?: { edges?: PhEdge[] };
+  };
+};
+
 const QUERY = `
   query Launch($slug: String!) {
     post(slug: $slug) {
@@ -41,7 +54,7 @@ export async function GET(): Promise<NextResponse> {
     );
   }
 
-  let data: any;
+  let data: PhResponse;
   try {
     const r = await fetch(PH_GRAPHQL, {
       method: "POST",
@@ -71,7 +84,7 @@ export async function GET(): Promise<NextResponse> {
   }
 
   const edges = data?.data?.posts?.edges ?? [];
-  const rankIdx = edges.findIndex((e: any) => e?.node?.slug === slug);
+  const rankIdx = edges.findIndex((e: PhEdge) => e?.node?.slug === slug);
   const rank = rankIdx >= 0 ? rankIdx + 1 : null;
 
   return NextResponse.json(

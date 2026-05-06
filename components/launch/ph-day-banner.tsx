@@ -166,7 +166,7 @@ export function PHDayBanner() {
           <span className="relative inline-flex h-2 w-2 rounded-full bg-[#39FF14]" />
         </span>
         <span className="font-pixel text-[10px] tracking-widest uppercase" style={{ color: "#39FF14" }}>
-          We're {rankLabel}
+          We&apos;re {rankLabel}
         </span>
         <span className="font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>
           · {votes.toLocaleString()} upvotes

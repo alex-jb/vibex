@@ -110,7 +110,10 @@ jobs:
       - name: Check for required env references
         run: |
           echo "Checking for hardcoded secrets..."
-          if grep -rn "sk-ant-\|sk_live_\|SUPABASE_SERVICE_ROLE" --include="*.ts" --include="*.tsx" --include="*.js" --exclude-dir=node_modules .; then
+          # Match suspect substrings, then filter out legitimate
+          # `process.env.SUPABASE_SERVICE_ROLE_*` references — those read
+          # the secret from runtime env, they don't leak it.
+          if grep -rn "sk-ant-\|sk_live_\|SUPABASE_SERVICE_ROLE" --include="*.ts" --include="*.tsx" --include="*.js" --exclude-dir=node_modules . | grep -v "process\.env\."; then
             echo "ERROR: Potential hardcoded secrets found!"
             exit 1
           fi
