@@ -5,5 +5,11 @@
       "master": true
     }
   },
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ':(exclude)*.md' ':(exclude)docs/**' ':(exclude).github/**' ':(exclude)remotion/**' ':(exclude)out/**' ':(exclude)scripts/**'"
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ':(exclude)*.md' ':(exclude)docs/**' ':(exclude).github/**' ':(exclude)remotion/**' ':(exclude)out/**' ':(exclude)scripts/**'",
+  "crons": [
+    {
+      "path": "/api/cron/weekly-digest",
+      "schedule": "0 18 * * 0"
+    }
+  ]
 }
