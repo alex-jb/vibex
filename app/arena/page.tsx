@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useLang } from "@/lib/i18n";
+import { triggerQuestComplete } from "@/lib/onboarding";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useProjects } from "@/lib/use-data";
@@ -204,6 +205,13 @@ export default function ArenaPage() {
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [showSplash, setShowSplash] = useState<"ready" | "fight" | null>(null);
   const { t } = useLang();
+
+  // Quest auto-complete: watch_battle. Conservatively fires when the
+  // user lands on /arena — the spec says "watch a battle", so visiting
+  // is close enough for a +25 XP signal. Idempotent via localStorage.
+  useEffect(() => {
+    triggerQuestComplete("watch_battle").catch(() => {});
+  }, []);
 
   const available = projects.filter((p) => p.hero);
 

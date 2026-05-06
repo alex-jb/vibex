@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
+import { triggerQuestComplete } from "@/lib/onboarding";
 import { useProjects } from "@/lib/use-data";
 import { HqHeroBanner } from "@/components/home/hq-hero-banner";
 import {
@@ -67,6 +68,13 @@ export default function HomePage() {
   const { user } = useAuth();
   const { data: projects, loading: projectsLoading } = useProjects();
   const searchParams = useSearchParams();
+
+  // Quest auto-complete: visit_explore. Fires the first time a user
+  // lands on /home (which is the de-facto explore surface in this
+  // codebase). Idempotent via localStorage in triggerQuestComplete.
+  useEffect(() => {
+    triggerQuestComplete("visit_explore").catch(() => {});
+  }, []);
   // Initialize from ?category=... so landing-page pills deep-link straight
   // to the filtered state. Tolerates missing / invalid params; falls back
   // to ALL. URLSearchParams.get() decodes "+" → space, so `AI+AGENT`
