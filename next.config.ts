@@ -17,7 +17,14 @@ const nextConfig: NextConfig = {
   // Production source maps disabled by Sentry, but react prod mode is enforced
   reactStrictMode: true,
   // Image optimization
+  // 2026-05-06: `unoptimized: true` after Vercel free-tier 5k/mo
+  // transformation quota was hit, breaking multiple <Image> components
+  // simultaneously (hero mascot + creator avatars rendering as alt text).
+  // Static PNGs in /public are already pre-compressed by the 2026-04-22
+  // lossless sweep (-11.7 MB). Loss of AVIF/WebP transcoding is acceptable
+  // until traffic justifies Vercel Pro ($20/mo for 1M transformations).
   images: {
+    unoptimized: true,
     remotePatterns: [
       { protocol: "https", hostname: "**.supabase.co" },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
