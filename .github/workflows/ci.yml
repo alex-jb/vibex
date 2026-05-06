@@ -110,10 +110,16 @@ jobs:
       - name: Check for required env references
         run: |
           echo "Checking for hardcoded secrets..."
-          # Match suspect substrings, then filter out legitimate
-          # `process.env.SUPABASE_SERVICE_ROLE_*` references — those read
-          # the secret from runtime env, they don't leak it.
-          if grep -rn "sk-ant-\|sk_live_\|SUPABASE_SERVICE_ROLE" --include="*.ts" --include="*.tsx" --include="*.js" --exclude-dir=node_modules . | grep -v "process\.env\."; then
+          # Match the literal VALUE shapes of leaked secrets, not their env-var names.
+          #   sk-ant-…           : Anthropic API key prefix
+          #   sk_live_…          : Stripe live secret key prefix
+          #   eyJhbGciOiJI…      : JWT header `{"alg":"H...` b64-encoded — a
+          #                        leaked Supabase service-role key starts with
+          #                        this. (Matching the env-var NAME
+          #                        `SUPABASE_SERVICE_ROLE_KEY` produced false
+          #                        positives on legitimate `process.env.*` reads,
+          #                        comments, and error-message strings.)
+          if grep -rn "sk-ant-\|sk_live_\|eyJhbGciOiJI" --include="*.ts" --include="*.tsx" --include="*.js" --exclude-dir=node_modules .; then
             echo "ERROR: Potential hardcoded secrets found!"
             exit 1
           fi
