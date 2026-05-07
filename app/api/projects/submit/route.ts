@@ -7,7 +7,12 @@ import {
   type NewProjectInput,
 } from "@/lib/db";
 import { generateProjectReview } from "@/lib/ai";
-import { sendEmail, composeWelcomeEmail } from "@/lib/email";
+import {
+  sendEmail,
+  composeWelcomeEmail,
+  ensureUnsubscribeUrl,
+  withUnsubscribeFooter,
+} from "@/lib/email";
 import type { ProjectCategory } from "@/lib/types";
 
 interface SubmitBody {
@@ -142,13 +147,34 @@ async function sendWelcomeEmailIfFirstProject(
   }
   if (count !== 1) return;
 
-  const { subject, html, text } = composeWelcomeEmail({
+  // Respect opt-out — even though this is the user's first email,
+  // they could have opted out via an earlier dry-run flow or via the
+  // creator import path. Cheap to check.
+  const { data: creatorRow } = await supabase
+    .from("creators")
+    .select("email_opt_out")
+    .eq("id", args.creatorId)
+    .maybeSingle();
+  if (creatorRow?.email_opt_out) {
+    console.log(`[welcome-email] skipped (opt-out) for ${args.userEmail}`);
+    return;
+  }
+
+  const composed = composeWelcomeEmail({
     creatorName: args.userName,
     projectId: args.projectId,
     projectTitle: args.projectTitle,
     compoundScore: args.compoundScore,
   });
-  const result = await sendEmail({ to: args.userEmail, subject, html, text });
+  const unsubscribeUrl = await ensureUnsubscribeUrl(supabase, args.creatorId);
+  const { text, html } = withUnsubscribeFooter(composed.text, unsubscribeUrl);
+  const result = await sendEmail({
+    to: args.userEmail,
+    subject: composed.subject,
+    text,
+    html,
+    unsubscribeUrl: unsubscribeUrl || undefined,
+  });
   if (!result.ok) {
     console.error(`[welcome-email] send failed: ${result.error}`);
   } else if (result.dryRun) {
@@ -239,11 +265,21 @@ export async function POST(req: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (user) {
-      const creatorId = await getOrCreateCreator(supabase, {
-        id: user.id,
-        email: user.email,
-        user_metadata: user.user_metadata,
-      });
+      // Read the ?ref= cookie that components/ref-capture.tsx wrote
+      // when this user first landed on any vibex page. First-write-
+      // wins, so even if signup happened days later, we credit the
+      // original distribution channel.
+      const refCookie = req.cookies.get("vibex_ref")?.value || null;
+
+      const creatorId = await getOrCreateCreator(
+        supabase,
+        {
+          id: user.id,
+          email: user.email,
+          user_metadata: user.user_metadata,
+        },
+        refCookie,
+      );
       if (!creatorId) {
         return NextResponse.json(
           { error: "Could not establish creator profile" },

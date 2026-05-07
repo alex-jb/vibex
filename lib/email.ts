@@ -1,6 +1,6 @@
 /**
- * Resend send helper — shared by /api/cron/weekly-digest and the
- * first-submit welcome email path.
+ * Resend send helper — shared by /api/cron/weekly-digest, the
+ * first-submit welcome path, and /api/cron/daily-owner-summary.
  *
  * Behavior matrix:
  *   - RESEND_API_KEY unset    → dryRun: log subject+text, never POST
@@ -12,10 +12,18 @@
  * to start firing emails when the operator has only meant to push
  * code. Setting the key is a deliberate "go live" action.
  *
+ * CAN-SPAM: every send goes through composeFooterWithUnsubscribe
+ * which appends a one-click unsubscribe URL to body and sets the
+ * List-Unsubscribe header (RFC 8058) so mail clients render a
+ * native unsubscribe button. Tokens are generated lazily by
+ * ensureUnsubscribeToken (see migration 053).
+ *
  * Errors are returned, never thrown — callers in fire-and-forget
  * paths (welcome email after submit) cannot let an email failure
  * cascade into a user-facing 500.
  */
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { randomBytes } from "crypto";
 
 const RESEND_FROM = process.env.RESEND_FROM || "VibeXForge <onboarding@resend.dev>";
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -29,6 +37,8 @@ export async function sendEmail(args: {
   subject: string;
   html: string;
   text: string;
+  /** Optional unsubscribe URL — when present, sets List-Unsubscribe RFC 8058 header. */
+  unsubscribeUrl?: string;
   /** Force dry-run even if API key is set (operator preview path). */
   forceDryRun?: boolean;
 }): Promise<SendResult> {
@@ -40,6 +50,15 @@ export async function sendEmail(args: {
     return { ok: true, dryRun: true };
   }
   try {
+    // List-Unsubscribe header lets Gmail/Apple Mail/Outlook render a
+    // native one-click unsubscribe button next to the sender. RFC 8058
+    // adds the List-Unsubscribe-Post version which makes it true
+    // one-click (no GET-with-confirm form). Both safe to send together.
+    const headers: Record<string, string> = {};
+    if (args.unsubscribeUrl) {
+      headers["List-Unsubscribe"] = `<${args.unsubscribeUrl}>`;
+      headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click";
+    }
     const r = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -52,6 +71,7 @@ export async function sendEmail(args: {
         subject: args.subject,
         html: args.html,
         text: args.text,
+        headers,
       }),
     });
     if (!r.ok) {
@@ -63,6 +83,72 @@ export async function sendEmail(args: {
   } catch (err) {
     return { ok: false, error: (err as Error).message };
   }
+}
+
+/**
+ * Lazily generate creators.unsubscribe_token if NULL, return the
+ * unsubscribe URL. Idempotent — if a token already exists, returns
+ * the URL for that token without writing.
+ *
+ * Caller must pass a service-role-authenticated supabase client OR
+ * an authenticated session that owns the creator row (the column
+ * GRANT in migration 053 covers both).
+ */
+export async function ensureUnsubscribeUrl(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  client: SupabaseClient<any, "public", any>,
+  creatorId: string,
+): Promise<string | null> {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.vibexforge.com";
+  try {
+    const { data: row } = await client
+      .from("creators")
+      .select("unsubscribe_token")
+      .eq("id", creatorId)
+      .maybeSingle();
+    if (!row) return null;
+    let token = (row.unsubscribe_token as string | null) || null;
+    if (!token) {
+      // 32 bytes hex = 64-char token. Trivially non-guessable.
+      token = randomBytes(32).toString("hex");
+      const { error } = await client
+        .from("creators")
+        .update({ unsubscribe_token: token })
+        .eq("id", creatorId)
+        .is("unsubscribe_token", null); // race-safe: don't clobber concurrent insert
+      if (error) {
+        // If race lost, re-read.
+        const { data: re } = await client
+          .from("creators")
+          .select("unsubscribe_token")
+          .eq("id", creatorId)
+          .maybeSingle();
+        token = (re?.unsubscribe_token as string | null) || token;
+      }
+    }
+    return `${siteUrl}/api/email/unsubscribe?token=${token}`;
+  } catch (err) {
+    console.error("[email] ensureUnsubscribeUrl failed", err);
+    return null;
+  }
+}
+
+/**
+ * Append a CAN-SPAM-compliant footer to text + html. Replaces the
+ * earlier "Reply STOP" line which is not legally sufficient.
+ */
+export function withUnsubscribeFooter(
+  text: string,
+  unsubscribeUrl: string | null,
+): { text: string; html: string } {
+  const footer = unsubscribeUrl
+    ? `\n\n—\nDon't want these emails? One-click unsubscribe: ${unsubscribeUrl}\nVibeXForge · Built solo by Alex Ji · alex@vibexforge.com`
+    : `\n\n—\nReply STOP and I'll remove you manually.\nVibeXForge · alex@vibexforge.com`;
+  // Strip any existing "(Don't want these? Reply STOP...)" line from
+  // text so we don't double-footer when callers used the old format.
+  const cleaned = text.replace(/\(Don't want these\?[^)]*\)/g, "").trimEnd();
+  const fullText = cleaned + footer;
+  return { text: fullText, html: textToHtmlParas(fullText) };
 }
 
 export function escapeHtml(s: string): string {

@@ -226,6 +226,12 @@ type AuthUser = {
 export async function getOrCreateCreator(
   client: SupabaseClient,
   user: AuthUser,
+  /**
+   * Optional referral source captured from ?ref= cookie. Only written
+   * on the INSERT path (set once, never updated). See
+   * components/ref-capture.tsx + migration 052.
+   */
+  signupRef?: string | null,
 ): Promise<string | null> {
   if (!USE_SUPABASE) return `creator-${user.id.slice(0, 8)}`;
 
@@ -251,22 +257,28 @@ export async function getOrCreateCreator(
   // is a 1:1 mapping and we never create duplicates.
   const creatorId = user.id;
 
+  const insertPayload: Record<string, unknown> = {
+    id: creatorId,
+    name: displayName,
+    auth_user_id: user.id,
+    // Denormalized so retention email paths (weekly-digest, welcome)
+    // can read it without service_role. Migration 049 added the
+    // column and backfilled existing rows from auth.users. Insert
+    // ignores the field on databases that haven't run 049 yet —
+    // Supabase silently drops unknown columns.
+    email: user.email ?? null,
+    bio: "",
+    rank: 0,
+    weekly_growth: 0,
+  };
+  // Only include signup_ref when present so we don't overwrite NULL
+  // with NULL (and so column-not-exists databases get the same retry
+  // path as the email column).
+  if (signupRef) insertPayload.signup_ref = signupRef;
+
   const { data: inserted, error } = await client
     .from("creators")
-    .insert({
-      id: creatorId,
-      name: displayName,
-      auth_user_id: user.id,
-      // Denormalized so retention email paths (weekly-digest, welcome)
-      // can read it without service_role. Migration 049 added the
-      // column and backfilled existing rows from auth.users. Insert
-      // ignores the field on databases that haven't run 049 yet —
-      // Supabase silently drops unknown columns.
-      email: user.email ?? null,
-      bio: "",
-      rank: 0,
-      weekly_growth: 0,
-    })
+    .insert(insertPayload)
     .select("id")
     .single();
 

@@ -24,7 +24,12 @@
  */
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
-import { sendEmail, textToHtmlParas } from "@/lib/email";
+import {
+  sendEmail,
+  textToHtmlParas,
+  ensureUnsubscribeUrl,
+  withUnsubscribeFooter,
+} from "@/lib/email";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.vibexforge.com";
 
@@ -117,7 +122,8 @@ export async function GET(req: NextRequest) {
     .select("id, name, email")
     .in("id", creatorIds)
     .not("email", "is", null)
-    .neq("email", "");
+    .neq("email", "")
+    .eq("email_opt_out", false);
   if (cErr) {
     return NextResponse.json(
       { error: `creators query failed: ${cErr.message}` },
@@ -156,21 +162,24 @@ export async function GET(req: NextRequest) {
     );
     if (totalSignal === 0) continue; // pure-zero day — skip noise
 
-    const { subject, html, text } = compose(creator.name, entries, dayKey);
+    const composed = compose(creator.name, entries, dayKey);
+    const unsubscribeUrl = await ensureUnsubscribeUrl(supa, creator.id);
+    const { text, html } = withUnsubscribeFooter(composed.text, unsubscribeUrl);
     const sent = await sendEmail({
       to: creator.email,
-      subject,
+      subject: composed.subject,
       html,
       text,
+      unsubscribeUrl: unsubscribeUrl || undefined,
       forceDryRun: dryRunForced,
     });
     if (!sent.ok) {
-      results.push({ to: creator.email, subject, status: `error: ${sent.error}` });
+      results.push({ to: creator.email, subject: composed.subject, status: `error: ${sent.error}` });
       continue;
     }
     results.push({
       to: creator.email,
-      subject,
+      subject: composed.subject,
       status: sent.dryRun ? "dry-run" : `sent:${sent.resendId ?? ""}`,
     });
   }

@@ -27,6 +27,7 @@ const TutorialOverlay = dynamic(() => import("@/components/onboarding/tutorial-o
 const ServiceWorkerRegister = dynamic(() => import("@/components/sw-register").then((m) => ({ default: m.ServiceWorkerRegister })));
 const NotificationToastProvider = dynamic(() => import("@/components/notification-toast").then((m) => ({ default: m.NotificationToastProvider })));
 const PwaInstallPrompt = dynamic(() => import("@/components/pwa-install-prompt").then((m) => ({ default: m.PwaInstallPrompt })));
+const RefCapture = dynamic(() => import("@/components/ref-capture").then((m) => ({ default: m.RefCapture })));
 
 // Only preload the 3 fonts rendered above the fold on `/` (the entry
 // route most crawlers hit): Press Start 2P, VT323, Silkscreen. Sans and
@@ -211,6 +212,7 @@ export default function RootLayout({
               <NotificationToastProvider />
               <PwaInstallPrompt />
               <ServiceWorkerRegister />
+              <RefCapture />
             </MotionProvider>
           </LangProvider>
           </AnalyticsProvider>
