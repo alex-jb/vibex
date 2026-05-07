@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { triggerQuestComplete } from "@/lib/onboarding";
 import { useProjects } from "@/lib/use-data";
 import { HqHeroBanner } from "@/components/home/hq-hero-banner";
+import { RecentlyActive } from "@/components/home/recently-active";
 import {
   StatsStrip,
   HotRightNow,
@@ -170,6 +171,7 @@ export default function HomePage() {
     <div id="top" className="relative" style={{ background: "var(--bg-deep)" }}>
       <HqHeroBanner userName={userName} newEvolutionsToday={3} />
       <StatsStrip />
+      <RecentlyActive />
       <HotRightNow />
       <div id="features">
         <HqFeatureSections />
