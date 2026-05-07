@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useLang } from "@/lib/i18n";
+import { triggerQuestComplete } from "@/lib/onboarding";
 import {
   computeUserLevel,
   summonBuddy,
@@ -146,6 +147,9 @@ export default function BuddyPage() {
         setOwnedBuddyIds((prev) => [...prev, result.buddy.id]);
       }
       setSummonPhase("reveal");
+      // Quest auto-complete: summon_buddy fires after first successful
+      // summon. Idempotent via localStorage in triggerQuestComplete.
+      triggerQuestComplete("summon_buddy").catch(() => {});
     }, 1000);
   }, [userLevel, totalUpvotes, ownedBuddyIds]);
 

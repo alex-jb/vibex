@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useLang } from "@/lib/i18n";
+import { triggerQuestComplete } from "@/lib/onboarding";
 
 export type ReactionType = "fire" | "game" | "art" | "mindblown";
 
@@ -63,6 +64,13 @@ export function ReactionBar({ postId, counts, userReactions }: ReactionBarProps)
           const data = await res.json();
           if (data.counts) {
             setLocalCounts(data.counts);
+          }
+          // Quest auto-complete: first_reaction. Idempotent via
+          // localStorage. Only fires when adding a reaction (not
+          // removing) — wasReacted is true means the user is
+          // toggling OFF, not their first ON.
+          if (!wasReacted) {
+            triggerQuestComplete("first_reaction").catch(() => {});
           }
         } else {
           // Revert
