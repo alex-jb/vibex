@@ -236,7 +236,74 @@ const VARIANT_STYLE: Record<string, { en: string; zh: string }> = {
   },
 };
 
+/**
+ * Vibe-code stack detection — sniff the demo URL for known no-code /
+ * AI-builder hosts. When the creator is shipping from a recognizable
+ * stack we add a stack-aware nudge to the prompt so the draft leads
+ * with the right narrative ("built with Lovable in 2 days" lands
+ * harder on every platform than a generic "I built X").
+ *
+ * Returns null when the URL pattern doesn't match a known stack —
+ * caller should fall back to the generic prompt path.
+ */
+export type DetectedStack =
+  | "lovable"
+  | "v0"
+  | "replit"
+  | "bolt"
+  | "claude-artifacts"
+  | null;
+
+export function detectStack(demoUrl?: string): DetectedStack {
+  if (!demoUrl) return null;
+  let host: string;
+  try {
+    host = new URL(demoUrl).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+  if (host.endsWith(".lovable.app") || host === "lovable.app") return "lovable";
+  if (host.endsWith(".v0.dev") || host === "v0.dev") return "v0";
+  if (host.endsWith(".replit.app") || host.endsWith(".repl.co")) return "replit";
+  if (host.endsWith(".bolt.new") || host === "bolt.new") return "bolt";
+  if (host === "claude.ai" && /\/artifacts/.test(demoUrl))
+    return "claude-artifacts";
+  return null;
+}
+
+const STACK_HINT: Record<
+  Exclude<DetectedStack, null>,
+  { en: string; zh: string }
+> = {
+  lovable: {
+    en: " STACK CONTEXT: This was built with Lovable (no-code AI app builder). Lead with what's possible in 2-3 days of no-code building, NOT the tech stack. The audience cares about 'a non-engineer just shipped this'.",
+    zh: " 技术栈背景: 这个是用 Lovable(无代码 AI 应用构建器)做的。开头讲 2-3 天 no-code 能做出什么,不要讲技术栈。读者关心「一个不写代码的人就上线了这个」。",
+  },
+  v0: {
+    en: " STACK CONTEXT: This was built with Vercel v0 (AI UI generator). Audience reads as developer-leaning — feel free to mention the prompt → component → ship loop.",
+    zh: " 技术栈背景: 用 Vercel v0(AI UI 生成器)做的。读者偏开发者,可以提 prompt → 组件 → 上线 这条链路。",
+  },
+  replit: {
+    en: " STACK CONTEXT: Built on Replit. Audience is mostly indie devs and learners. Lean into 'shipped from the browser, no local setup'.",
+    zh: " 技术栈背景: Replit 上做的。读者多是独立开发者 + 学习者。可以强调「全程浏览器没本地环境」。",
+  },
+  bolt: {
+    en: " STACK CONTEXT: Built with Bolt.new. Audience overlaps with Lovable + v0 — emphasize speed (hours, not days).",
+    zh: " 技术栈背景: Bolt.new 做的。读者跟 Lovable / v0 重叠 —— 强调速度(小时级,不是天)。",
+  },
+  "claude-artifacts": {
+    en: " STACK CONTEXT: Built as a Claude Artifact. Audience is AI-curious — mention the conversation → artifact → live URL flow.",
+    zh: " 技术栈背景: Claude Artifact 做的。读者对 AI 感兴趣,可以讲对话 → artifact → 上线 这个流。",
+  },
+};
+
+const GAME_CATEGORY_HINT: { en: string; zh: string } = {
+  en: " GAME CATEGORY: This is an AI game, not a tool. Drafts MUST treat the demo URL as a 'play link' (not 'try link'). Lead with the gameplay hook, not the tech. Reference 'play / playable / try the demo' verbs. If a Reddit / HN platform, prefer indie-game subreddits + 'I made a game where...' opening. Skip business jargon (MAU, conversion).",
+  zh: " 游戏类目: 这是 AI 游戏不是工具。草稿要把 demo URL 当作「试玩链接」。开头讲玩法 hook 不讲技术。用「试玩 / 可玩 / 进游戏」这种动词。如果是 Reddit / HN,偏向独立游戏社区 + 「我做了个游戏,你...」式开场。不要讲商业指标(MAU、转化率)。",
+};
+
 function systemPromptFor(
+  project: ProjectInput,
   platform: Platform,
   language: Language,
   variantHint: string | null,
@@ -248,7 +315,11 @@ function systemPromptFor(
     variantHint && VARIANT_STYLE[variantHint]
       ? VARIANT_STYLE[variantHint][language]
       : "";
-  return base + extra + variant;
+  const stack = detectStack(project.demoUrl);
+  const stackHint = stack ? STACK_HINT[stack][language] : "";
+  const gameHint =
+    project.category === "AI Game" ? GAME_CATEGORY_HINT[language] : "";
+  return base + extra + variant + stackHint + gameHint;
 }
 
 function userPromptFor(
@@ -372,8 +443,17 @@ async function generateOne(
   variantHint: string | null,
   subreddit: string | null,
 ): Promise<{ body: string; title: string | null }> {
-  const system = systemPromptFor(platform, language, variantHint);
-  const user = userPromptFor(project, platform, language, subreddit);
+  // Game projects default to indie-game subreddit when caller didn't
+  // pass an explicit one. Reddit r/SideProject is fine for tools but
+  // r/IndieGaming gets game-aware engagement.
+  const effectiveSubreddit =
+    subreddit ||
+    (project.category === "AI Game" && platform === "reddit"
+      ? "IndieGaming"
+      : null);
+
+  const system = systemPromptFor(project, platform, language, variantHint);
+  const user = userPromptFor(project, platform, language, effectiveSubreddit);
   const resp = await client.messages.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
@@ -407,10 +487,18 @@ async function generateOne(
   }
 
   let title: string | null = null;
+  const isGame = project.category === "AI Game";
   if (platform === "reddit") {
-    title = `[Project] ${project.title}: ${project.tagline}`;
+    title = isGame
+      ? `[Game] ${project.title} — ${project.tagline}`
+      : `[Project] ${project.title}: ${project.tagline}`;
   } else if (platform === "hacker_news") {
-    title = `Show HN: ${project.title} – ${project.tagline}`;
+    // HN convention: "Show HN: I made [thing] that [does X]". Game
+    // category gets the "I made a game" framing which materially
+    // outperforms generic Show HN titles for game submissions.
+    title = isGame
+      ? `Show HN: I made a game — ${project.title}: ${project.tagline}`
+      : `Show HN: ${project.title} – ${project.tagline}`;
   }
 
   return { body: text, title };
