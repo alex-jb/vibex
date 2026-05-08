@@ -9,6 +9,13 @@ const translations = {
   en: {
     // Nav items
     "nav.home": "HQ",
+    // 2026-05-08 IA realignment — new primary nav items below
+    "nav.dashboard": "Dashboard",
+    "nav.howItWorks": "How it works",
+    "nav.showcase": "Showcase",
+    "nav.changelog": "Changelog",
+    "nav.arcade": "Arcade",
+    // — legacy RPG nav items still work via direct URL —
     "nav.feed": "The Wire",
     "nav.explore": "Explore",
     "nav.hunt": "Hunt",
@@ -889,6 +896,11 @@ const translations = {
   zh: {
     // Nav items
     "nav.home": "基地",
+    "nav.dashboard": "工作台",
+    "nav.howItWorks": "怎么用",
+    "nav.showcase": "案例",
+    "nav.changelog": "更新日志",
+    "nav.arcade": "街机",
     "nav.feed": "动态",
     "nav.explore": "探索",
     "nav.hunt": "狩猎",

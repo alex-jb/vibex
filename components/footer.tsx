@@ -4,7 +4,6 @@ import { Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLang } from "@/lib/i18n";
-import { isFeatureEnabled } from "@/lib/feature-flags";
 
 // Small uptime badge linking to the public OpenStatus page. Renders
 // nothing if NEXT_PUBLIC_STATUS_PAGE_URL isn't set — that way dev + PRs
@@ -37,7 +36,6 @@ function StatusBadge() {
 export function Footer() {
   const { t } = useLang();
   const pathname = usePathname();
-  const eventsOn = isFeatureEnabled("FEATURE_EVENTS");
   // Hide footer on chrome-less routes (landing + auth flows)
   const hideChrome = pathname === "/arcade" || pathname === "/login" || pathname === "/register";
   if (hideChrome) return null;
@@ -68,43 +66,43 @@ export function Footer() {
               {t("footer.description")}
             </p>
           </div>
+          {/* 2026-05-08 IA realignment: 22 links → 9. Cut every game
+              route (Hunt / Dojo / Buddy / Trade / Workflows / Events
+              / Insights / Creators / Newsletter-coming-soon /
+              Discord-coming-soon / Twitter / API-coming-soon /
+              Documentation-coming-soon). The Arcade portal link
+              consolidates the RPG layer into one entry point. */}
           <div>
-            <h2 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-foreground/80">
+            <h2 className="mb-4 text-[10px] font-medium uppercase tracking-[0.15em] text-foreground/60">
               {t("footer.platform")}
             </h2>
-            <div className="flex flex-col gap-2.5">
-              <Link href="/home" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.home")}</Link>
-              <Link href="/hunt" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.hunt")}</Link>
-              <Link href="/ideas" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("footer.ideaLab")}</Link>
-              <Link href="/creators" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.creators")}</Link>
-              <Link href="/launch" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.launch")}</Link>
-              {eventsOn && (
-                <Link href="/events" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("nav.events")}</Link>
-              )}
+            <div className="flex flex-col gap-2">
+              <Link href="/launch" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>{t("nav.launch")}</Link>
+              <Link href="/how-it-works" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>{t("nav.howItWorks")}</Link>
+              <Link href="/try" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>Try (no signup)</Link>
+              <Link href="/home" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>{t("nav.showcase")}</Link>
             </div>
           </div>
           <div>
-            <h2 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-foreground/80">
+            <h2 className="mb-4 text-[10px] font-medium uppercase tracking-[0.15em] text-foreground/60">
               {t("footer.resources")}
             </h2>
-            <div className="flex flex-col gap-2.5">
-              <Link href="/insights" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("footer.trendsInsights")}</Link>
-              <Link href="/investors" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>For Investors</Link>
-              <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>{t("footer.apiComingSoon")}</span>
-              <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>{t("footer.documentation")}</span>
-              <Link href="/changelog" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("footer.changelog")}</Link>
-              <Link href="/try" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>Try (no signup)</Link>
+            <div className="flex flex-col gap-2">
+              <Link href="/changelog" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>{t("nav.changelog")}</Link>
+              <Link href="/investors" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>For Investors</Link>
+              <a href="https://github.com/alex-jb/vibex" target="_blank" rel="noopener noreferrer" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>GitHub ↗</a>
+              <Link href="/arcade" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>Arcade →</Link>
             </div>
           </div>
           <div>
-            <h2 className="mb-4 font-pixel text-[8px] uppercase tracking-[0.2em] text-foreground/80">
+            <h2 className="mb-4 text-[10px] font-medium uppercase tracking-[0.15em] text-foreground/60">
               {t("footer.community")}
             </h2>
-            <div className="flex flex-col gap-2.5">
-              <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>Discord (Coming Soon)</span>
-              <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>Twitter / X</span>
-              <a href="https://github.com/alex-jb/vibex" target="_blank" rel="noopener noreferrer" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>GitHub</a>
-              <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>{t("footer.newsletter")} (Coming Soon)</span>
+            <div className="flex flex-col gap-2">
+              <Link href="/about" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>About</Link>
+              <Link href="/contact" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>Contact</Link>
+              <Link href="/privacy" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>Privacy</Link>
+              <Link href="/terms" className="flex items-center min-h-9 text-sm transition-colors hover:text-foreground" style={{ color: "var(--text-muted)" }}>Terms</Link>
             </div>
           </div>
         </div>
