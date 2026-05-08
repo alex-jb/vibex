@@ -39,6 +39,11 @@ interface ProjectRow {
     rejected: number;
     failed: number;
   };
+  cross_platform_reach?: {
+    views: number;
+    likes: number;
+    comments: number;
+  };
 }
 
 const STAGE_COLOR: Record<string, string> = {
@@ -84,11 +89,15 @@ export default function DashboardPage() {
     }
     const { data: drafts } = await supabase
       .from("project_drafts")
-      .select("project_id, status")
+      .select("project_id, status, views, likes, comments")
       .in("project_id", projectIds);
     const counts = new Map<
       string,
       { pending: number; approved: number; posted: number; rejected: number; failed: number }
+    >();
+    const reachByProject = new Map<
+      string,
+      { views: number; likes: number; comments: number }
     >();
     for (const d of drafts || []) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,6 +114,15 @@ export default function DashboardPage() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (cur as any)[row.status] = ((cur as any)[row.status] || 0) + 1;
       counts.set(row.project_id, cur);
+
+      if (row.status === "posted") {
+        const r =
+          reachByProject.get(row.project_id) || { views: 0, likes: 0, comments: 0 };
+        r.views += row.views || 0;
+        r.likes += row.likes || 0;
+        r.comments += row.comments || 0;
+        reachByProject.set(row.project_id, r);
+      }
     }
     const enriched = (pjs as ProjectRow[]).map((p) => ({
       ...p,
@@ -114,6 +132,11 @@ export default function DashboardPage() {
         posted: 0,
         rejected: 0,
         failed: 0,
+      },
+      cross_platform_reach: reachByProject.get(p.id) || {
+        views: 0,
+        likes: 0,
+        comments: 0,
       },
     }));
     setProjects(enriched);
@@ -171,11 +194,14 @@ export default function DashboardPage() {
       pending: acc.pending + (p.draft_counts?.pending || 0),
       approved: acc.approved + (p.draft_counts?.approved || 0),
       posted: acc.posted + (p.draft_counts?.posted || 0),
-      views: acc.views + (p.views || 0),
-      upvotes: acc.upvotes + (p.upvotes || 0),
+      reachViews: acc.reachViews + (p.cross_platform_reach?.views || 0),
+      reachLikes: acc.reachLikes + (p.cross_platform_reach?.likes || 0),
+      reachComments: acc.reachComments + (p.cross_platform_reach?.comments || 0),
     }),
-    { pending: 0, approved: 0, posted: 0, views: 0, upvotes: 0 },
+    { pending: 0, approved: 0, posted: 0, reachViews: 0, reachLikes: 0, reachComments: 0 },
   );
+  const totalEngagement =
+    totals.reachViews + totals.reachLikes + totals.reachComments;
 
   return (
     <main className="min-h-screen bg-[var(--bg-deep)] px-4 sm:px-8 py-10">
@@ -213,8 +239,13 @@ export default function DashboardPage() {
             accent="emerald"
           />
           <Stat
-            label={lang === "zh" ? "总曝光(浏览)" : "Total reach (views)"}
-            value={totals.views}
+            label={
+              lang === "zh"
+                ? "跨平台互动"
+                : "Cross-platform engagement"
+            }
+            value={totalEngagement}
+            accent={totalEngagement > 0 ? "emerald" : undefined}
           />
         </section>
 
@@ -399,11 +430,24 @@ function ProjectRow({
                 )}
               </>
             )}
+            {project.cross_platform_reach &&
+              (project.cross_platform_reach.views > 0 ||
+                project.cross_platform_reach.likes > 0 ||
+                project.cross_platform_reach.comments > 0) && (
+                <>
+                  <span className="text-foreground/40">·</span>
+                  <span className="text-emerald-300/80 font-mono text-[11px]">
+                    {lang === "zh"
+                      ? `跨平台 ${project.cross_platform_reach.views} 浏览 · ${project.cross_platform_reach.likes} 赞 · ${project.cross_platform_reach.comments} 评论`
+                      : `cross-platform ${project.cross_platform_reach.views} views · ${project.cross_platform_reach.likes} likes · ${project.cross_platform_reach.comments} comments`}
+                  </span>
+                </>
+              )}
             <span className="text-foreground/40">·</span>
             <span className="text-foreground/50">
               {lang === "zh"
-                ? `${project.views || 0} 浏览 · ${project.upvotes || 0} 点赞`
-                : `${project.views || 0} views · ${project.upvotes || 0} upvotes`}
+                ? `站内 ${project.views || 0} 浏览 · ${project.upvotes || 0} 点赞`
+                : `in-app ${project.views || 0} views · ${project.upvotes || 0} upvotes`}
             </span>
           </div>
         </div>
