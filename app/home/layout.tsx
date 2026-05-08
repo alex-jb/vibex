@@ -20,27 +20,27 @@ const FAQ = [
   {
     question: "What is VibeXForge?",
     answer:
-      "VibeXForge (formerly VibeX) is an AI-native launch platform where every project is a 16-bit RPG hero. Creators submit AI projects (URL or GitHub repo) and receive a Claude-scored review across originality, clarity, UX potential, virality potential, and investor curiosity. Projects evolve through six stages — Seed, Active, Growing, Breakout, Legend, Myth — based on real engagement (plays, upvotes, shares), not 24-hour upvote sprints. VibeXForge runs at https://www.vibexforge.com.",
+      "VibeXForge (formerly VibeX) is a distribution amplifier for solo AI creators. Submit your AI project URL or GitHub repo once and Claude Sonnet 4.6 generates 17 platform-native posts in roughly 10 seconds — covering X, Reddit, Hacker News, Dev.to, LinkedIn, Bluesky, Threads, Xiaohongshu (小红书), Jike (即刻), Zhihu (知乎), and Bilibili (B站). Each draft is written with platform-specific hook rules, length constraints, and tone — not the same text reformatted. Creators review inline, edit, and publish with one click. Bilingual EN ↔ ZH built in. Free during the beta. Live at https://www.vibexforge.com.",
   },
   {
-    question: "How does the Claude review work?",
+    question: "How does VibeXForge generate the 17 drafts?",
     answer:
-      "Every submitted project is reviewed by Claude Haiku 4.5 against a published rubric. Claude reads the title, tagline, description, and (if the demo URL is a GitHub repo) the README, then returns five 0-100 scores, two to three named strengths, two to three weaknesses, and two to three actionable suggestions. The review is stored in the ai_reviews table and the compound score becomes projects.score, which in turn determines the project's starting evolution stage.",
+      "Each draft is produced by a separate Claude Sonnet 4.6 call running in parallel, with a platform-specific system prompt and a hard output-language directive. Hook rules forbid 'I built…' / '我做了…' openings — drafts must lead with a specific number, contrast, question, or pain moment. A number rule caps each post at two distinct figures and forbids repeating the same number. A length rule targets 70-95 percent of each platform's character cap. Total wall time is about 10 seconds because the calls fan out in parallel. Total cost per submission is roughly 6 cents.",
   },
   {
-    question: "How is a project's VibeXForge score calculated?",
+    question: "How does the cross-platform engagement tracking work?",
     answer:
-      "The compound score is the arithmetic mean of the five Claude dimensions: originality, clarity, UX potential, virality potential, and investor curiosity. Each dimension is 0-100. The compound is displayed as the project's headline score on its detail page and used as an aggregateRating when search engines index the page. The evolution stage is a separate function (compute_evolution_stage) that combines the compound score with live traction metrics (plays, upvotes, views, shares).",
+      "After a creator marks a draft posted and pastes the published URL, a Vercel cron job runs every six hours and refreshes views, likes, and comments per draft using each platform's public read API. Reddit, Hacker News, Dev.to, Bluesky, and X are all supported via no-auth endpoints. Each scrape also writes an append-only snapshot row to draft_engagement_snapshots so the analytics page can render a 30-day curve, not just current totals. LinkedIn, Threads, Product Hunt, Xiaohongshu, Jike, Zhihu, and Bilibili require manual entry because they don't expose public engagement APIs.",
   },
   {
-    question: "What is VibeXForge's evolution system?",
+    question: "How is VibeXForge's bilingual support different from translation?",
     answer:
-      "Every project progresses through six evolution stages tied to real engagement thresholds. Seed is the starting stage (score below 40 and low traction). Active requires 50+ plays or a compound score of 40+. Growing adds plays-500 and score-60 gates. Breakout requires plays-1000, upvotes-100, score-85, and Claude originality-70. Legend adds plays-5000 and score-85. Myth caps the ladder at plays-10000, upvotes-1000, investor-curiosity-80, score-90. The progression is driven by a Postgres trigger so no cron is needed.",
+      "VibeXForge generates the EN and ZH drafts independently from one submit, not by translating one to the other. Platform conventions on Xiaohongshu, Jike, Zhihu, and Bilibili are structurally different from X, Reddit, and Hacker News — a translated tweet feels off on Xiaohongshu, and a translated 小红书笔记 feels off on Hacker News. So each (platform × language) tuple gets its own prompt. Creator-submitted English titles and descriptions also get translated to native Chinese via a daily Anthropic batch cron, with EN fallback rendering until the translation lands.",
   },
   {
     question: "Is VibeXForge open source?",
     answer:
-      "VibeXForge is source-available on GitHub at https://github.com/alex-jb/vibex under a custom VibeX Source Available License. Anyone can read, fork for personal use, and contribute back. Commercial hosting by third parties is restricted. The decision to use source-available instead of a permissive open-source license (MIT, Apache) was made by the solo founder (alex-jb) to preserve optionality during the early phase. The license may be revisited later.",
+      "VibeXForge is source-available on GitHub at https://github.com/alex-jb/vibex under a custom VibeX Source Available License. Anyone can read, fork for personal use, and contribute back. Commercial hosting by third parties is restricted. The decision to use source-available instead of a permissive open-source license (MIT, Apache) was made by the solo founder (alex-jb) to preserve optionality during the early phase. The marketing-agent draft generator, engagement scrapers, visual cover generator, and translator are all in the public repo; the production-tuned proprietary prompts and the full SQL migration history with RLS policies live in a private folder.",
   },
 ];
 

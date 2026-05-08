@@ -147,10 +147,24 @@ export default function RootLayout({
                   url: "https://www.vibexforge.com",
                   logo: "https://www.vibexforge.com/generated/logo-vibex.png",
                   description:
-                    "AI-native launch platform where every project is a collectible RPG hero that evolves Seed → Myth on real traction, reviewed by Claude.",
+                    "Distribution amplifier for solo AI creators. Submit your AI project once and get 17 platform-native posts in 10 seconds, ready to publish to X, Reddit, Hacker News, Dev.to, LinkedIn, Bluesky, Threads, Xiaohongshu, Jike, Zhihu, and Bilibili. Bilingual EN ↔ ZH built in. Free during beta.",
                   foundingDate: "2026-04-13",
+                  founder: { "@id": "https://www.vibexforge.com/#founder" },
                   sameAs: [
                     "https://github.com/alex-jb/vibex",
+                  ],
+                },
+                {
+                  "@type": "Person",
+                  "@id": "https://www.vibexforge.com/#founder",
+                  name: "Alex (alex-jb)",
+                  url: "https://github.com/alex-jb",
+                  jobTitle: "Founder",
+                  worksFor: { "@id": "https://www.vibexforge.com/#org" },
+                  description:
+                    "Solo indie AI creator. Built VibeXForge after shipping a personal AI gallery for 6 months and only reaching 5 users — the bottleneck was distribution, not the product.",
+                  sameAs: [
+                    "https://github.com/alex-jb",
                   ],
                 },
                 {
