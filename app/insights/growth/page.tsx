@@ -26,7 +26,7 @@ const TYPE_COLORS: Record<string, string> = {
   copy: "#39FF14",
   strategy: "#9D00FF",
   channel: "#06B6D4",
-  category: "#FF4500",
+  category: "#F97316",
 };
 
 const TYPE_EMOJI: Record<string, string> = {
@@ -60,7 +60,7 @@ export default function GrowthPatternsPage() {
       {/* Terminal Header */}
       <div style={{ background: "#0A0A0C", padding: "8px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "2px solid #2A2A30" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ width: 10, height: 10, background: "#FF4500", display: "inline-block" }} />
+          <span style={{ width: 10, height: 10, background: "#F97316", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>
@@ -120,7 +120,7 @@ export default function GrowthPatternsPage() {
                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                           <span className="font-pixel" style={{ fontSize: 7, color: "#888" }}>confidence</span>
                           <div style={{ width: 40, height: 4, background: "#1A1A1E" }}>
-                            <div style={{ width: `${p.confidence * 100}%`, height: "100%", background: p.confidence > 0.8 ? "#39FF14" : p.confidence > 0.6 ? "#FACC15" : "#FF4500" }} />
+                            <div style={{ width: `${p.confidence * 100}%`, height: "100%", background: p.confidence > 0.8 ? "#39FF14" : p.confidence > 0.6 ? "#FACC15" : "#F97316" }} />
                           </div>
                           <span className="font-pixel" style={{ fontSize: 7, color: "#888" }}>{Math.round(p.confidence * 100)}%</span>
                         </div>

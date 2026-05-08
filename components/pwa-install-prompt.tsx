@@ -142,7 +142,7 @@ export function PwaInstallPrompt() {
                 "linear-gradient(180deg, #120806 0%, #1a0c07 50%, #0e0604 100%)",
               border: "3px solid var(--neon-orange)",
               boxShadow:
-                "4px 4px 0 #000, 0 0 24px rgba(255,69,0,0.4), 0 16px 40px rgba(0,0,0,0.8)",
+                "4px 4px 0 #000, 0 0 24px rgba(249,115,22,0.4), 0 16px 40px rgba(0,0,0,0.8)",
             }}
           >
             {/* Dismiss button */}
@@ -168,7 +168,7 @@ export function PwaInstallPrompt() {
                   height: 48,
                   background: "rgba(0,0,0,0.4)",
                   border: "2px solid #FFE27D",
-                  boxShadow: "2px 2px 0 #000, 0 0 12px rgba(255,69,0,0.55)",
+                  boxShadow: "2px 2px 0 #000, 0 0 12px rgba(249,115,22,0.55)",
                   imageRendering: "pixelated",
                 }}
               >
@@ -189,7 +189,7 @@ export function PwaInstallPrompt() {
                     fontSize: 11,
                     letterSpacing: 1.5,
                     color: "#FFE27D",
-                    textShadow: "1px 1px 0 #000, 0 0 6px rgba(255,69,0,0.6)",
+                    textShadow: "1px 1px 0 #000, 0 0 6px rgba(249,115,22,0.6)",
                     lineHeight: 1.3,
                   }}
                 >
@@ -219,7 +219,7 @@ export function PwaInstallPrompt() {
                 style={{
                   background: "var(--neon-orange)",
                   border: "2px solid #FFE27D",
-                  boxShadow: "3px 3px 0 #000, 0 0 12px rgba(255,69,0,0.55)",
+                  boxShadow: "3px 3px 0 #000, 0 0 12px rgba(249,115,22,0.55)",
                   color: "#0A0A0C",
                   minHeight: 40,
                   fontSize: 10,
@@ -236,7 +236,7 @@ export function PwaInstallPrompt() {
                 className="px-3 py-2 font-pixel transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--neon-orange)]/30"
                 style={{
                   background: "rgba(0,0,0,0.5)",
-                  border: "2px solid rgba(255,69,0,0.5)",
+                  border: "2px solid rgba(249,115,22,0.5)",
                   boxShadow: "3px 3px 0 #000",
                   color: "#FFE27D",
                   minHeight: 40,

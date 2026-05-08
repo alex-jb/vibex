@@ -28,7 +28,7 @@ export default function NotFound() {
         className="pointer-events-none absolute inset-0 opacity-30"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,69,0,0.06) 2px, rgba(255,69,0,0.06) 3px)",
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(249,115,22,0.06) 2px, rgba(249,115,22,0.06) 3px)",
         }}
       />
 
@@ -38,7 +38,7 @@ export default function NotFound() {
         className="pointer-events-none absolute inset-0 opacity-[0.05]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,69,0,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,69,0,0.4) 1px, transparent 1px)",
+            "linear-gradient(rgba(249,115,22,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.4) 1px, transparent 1px)",
           backgroundSize: "32px 32px",
           maskImage:
             "radial-gradient(ellipse at center, black 30%, transparent 80%)",
@@ -52,7 +52,7 @@ export default function NotFound() {
       <div
         aria-hidden
         className="pointer-events-none absolute bottom-1/4 right-1/4 h-[300px] w-[300px] rounded-full"
-        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.18), transparent 70%)" }}
+        style={{ background: "radial-gradient(closest-side, rgba(249,115,22,0.18), transparent 70%)" }}
       />
 
       {/* Viewport corner brackets (stay red — error signal) */}
@@ -147,8 +147,8 @@ export default function NotFound() {
           className="inline-flex items-center gap-2 mb-6 px-3 py-1.5"
           style={{
             border: "2px solid var(--neon-orange)",
-            background: "rgba(255,69,0,0.08)",
-            boxShadow: "3px 3px 0 #000, 0 0 16px rgba(255,69,0,0.25)",
+            background: "rgba(249,115,22,0.08)",
+            boxShadow: "3px 3px 0 #000, 0 0 16px rgba(249,115,22,0.25)",
           }}
         >
           <span
@@ -184,7 +184,7 @@ export default function NotFound() {
             color: "#FFF",
             lineHeight: 1.2,
             textShadow:
-              "3px 3px 0 #FF004D, -2px -2px 0 rgba(255,69,0,0.6), 0 0 36px rgba(255,0,77,0.35)",
+              "3px 3px 0 #FF004D, -2px -2px 0 rgba(249,115,22,0.6), 0 0 36px rgba(255,0,77,0.35)",
           }}
         >
           GAME OVER
@@ -217,8 +217,8 @@ export default function NotFound() {
           className="inline-flex items-center gap-2 px-4 py-2.5 mb-8"
           style={{
             background: "rgba(0,0,0,0.5)",
-            border: "1px solid rgba(255,69,0,0.4)",
-            boxShadow: "inset 0 0 12px rgba(255,69,0,0.12)",
+            border: "1px solid rgba(249,115,22,0.4)",
+            boxShadow: "inset 0 0 12px rgba(249,115,22,0.12)",
           }}
         >
           <span
@@ -265,7 +265,7 @@ export default function NotFound() {
               style={{
                 background: "var(--neon-orange)",
                 border: "2px solid #FFE27D",
-                boxShadow: "4px 4px 0 #000, 0 0 20px rgba(255,69,0,0.55)",
+                boxShadow: "4px 4px 0 #000, 0 0 20px rgba(249,115,22,0.55)",
                 color: "#0A0A0C",
                 minHeight: "48px",
                 cursor: "pointer",
@@ -306,8 +306,8 @@ export default function NotFound() {
             style={{
               fontSize: 8,
               letterSpacing: 4,
-              color: "rgba(255,69,0,0.75)",
-              textShadow: "0 0 8px rgba(255,69,0,0.5)",
+              color: "rgba(249,115,22,0.75)",
+              textShadow: "0 0 8px rgba(249,115,22,0.5)",
               animation: "pulse 2s ease-in-out infinite",
             }}
           >

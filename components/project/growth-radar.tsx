@@ -15,7 +15,7 @@ const AXES = [
   { key: "remixCount", label: "RMX", color: "#9D00FF" },
   { key: "upvotes", label: "UPV", color: "#FACC15" },
   { key: "avgStay", label: "RET", color: "#EC4899" },
-  { key: "aiScore", label: "AI", color: "#FF4500" },
+  { key: "aiScore", label: "AI", color: "#F97316" },
 ] as const;
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {

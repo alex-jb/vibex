@@ -461,7 +461,7 @@ function ArenaShot() {
                   fontSize: 28,
                   color: "var(--neon-orange)",
                   textShadow:
-                    "0 0 16px rgba(255,69,0,0.9), 3px 3px 0 #000",
+                    "0 0 16px rgba(249,115,22,0.9), 3px 3px 0 #000",
                 }}
               >
                 VS

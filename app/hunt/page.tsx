@@ -82,12 +82,12 @@ function TodaysForges({ projects }: { projects: Project[] }) {
           color: "#FFE27D",
         }}
       >
-        <span style={{ color: "#FF4500", textShadow: "0 0 4px #FF4500" }}>⚒</span>
+        <span style={{ color: "#F97316", textShadow: "0 0 4px #F97316" }}>⚒</span>
         <span>{mode === "today" ? "TODAY’S FORGES" : "LATEST FORGES"}</span>
         <span
           className="px-1.5 py-[1px]"
           style={{
-            background: count > 0 ? "#FF4500" : "rgba(0,0,0,0.4)",
+            background: count > 0 ? "#F97316" : "rgba(0,0,0,0.4)",
             color: count > 0 ? "#0A0A0C" : "#8A7B9A",
             border: "1px solid #FFE27D",
             fontSize: 9,
@@ -95,7 +95,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
         >
           {count}
         </span>
-        <span style={{ color: "rgba(255,255,255,0.25)", flex: 1, height: 1, background: "rgba(255,69,0,0.25)" }} aria-hidden />
+        <span style={{ color: "rgba(255,255,255,0.25)", flex: 1, height: 1, background: "rgba(249,115,22,0.25)" }} aria-hidden />
       </div>
 
       {count === 0 ? (
@@ -103,7 +103,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
           className="flex items-center gap-4 p-4"
           style={{
             background: "#0A0A0C",
-            border: "2px solid rgba(255,69,0,0.4)",
+            border: "2px solid rgba(249,115,22,0.4)",
           }}
         >
           <Image
@@ -131,7 +131,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
               <Link
                 href="/launch"
                 className="underline"
-                style={{ color: "#FF4500", textDecorationColor: "#FF4500" }}
+                style={{ color: "#F97316", textDecorationColor: "#F97316" }}
               >
                 Forge a project →
               </Link>
@@ -149,7 +149,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
                 className="block group"
                 style={{
                   background: "#0A0A0C",
-                  border: "2px solid rgba(255,69,0,0.4)",
+                  border: "2px solid rgba(249,115,22,0.4)",
                   padding: 8,
                   transition: "border-color 120ms ease-out",
                 }}
@@ -159,7 +159,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
                   style={{
                     width: "100%",
                     height: 64,
-                    background: "rgba(255,69,0,0.06)",
+                    background: "rgba(249,115,22,0.06)",
                   }}
                 >
                   {p.demoVideoUrl ? (
@@ -170,7 +170,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
                         width: "100%",
                         height: 64,
                         objectFit: "cover",
-                        filter: "drop-shadow(0 0 6px rgba(255,69,0,0.5))",
+                        filter: "drop-shadow(0 0 6px rgba(249,115,22,0.5))",
                       }}
                     />
                   ) : (
@@ -182,7 +182,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
                       unoptimized
                       style={{
                         imageRendering: "pixelated",
-                        filter: "drop-shadow(0 0 6px rgba(255,69,0,0.5))",
+                        filter: "drop-shadow(0 0 6px rgba(249,115,22,0.5))",
                       }}
                     />
                   )}
@@ -203,7 +203,7 @@ function TodaysForges({ projects }: { projects: Project[] }) {
                   className="font-code"
                   style={{
                     fontSize: 8,
-                    color: "#FF4500",
+                    color: "#F97316",
                     letterSpacing: 1.5,
                   }}
                 >
@@ -334,7 +334,7 @@ export default function HuntPage() {
         <div
           aria-hidden
           className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 h-[320px] w-[480px] rounded-full"
-          style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+          style={{ background: "radial-gradient(closest-side, rgba(249,115,22,0.14), transparent 70%)" }}
         />
 
         <div className="relative text-center">

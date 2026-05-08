@@ -74,7 +74,7 @@ export function EventsBlock() {
                 gap: 8,
                 padding: "8px 10px",
                 background: "var(--bg-panel)",
-                border: "1px solid rgba(255,69,0,0.25)",
+                border: "1px solid rgba(249,115,22,0.25)",
                 boxShadow: "2px 2px 0 #000",
               }}
             >
@@ -85,7 +85,7 @@ export function EventsBlock() {
                   fontSize: 8,
                   color: "#FFE27D",
                   background: "#1A0F00",
-                  border: "1px solid #FF4500",
+                  border: "1px solid #F97316",
                   padding: "4px 4px 3px",
                   letterSpacing: 1,
                   alignSelf: "flex-start",

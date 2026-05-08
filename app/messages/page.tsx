@@ -157,7 +157,7 @@ export default function MessagesPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ width: 10, height: 10, background: "#FF4500", display: "inline-block" }} />
+          <span style={{ width: 10, height: 10, background: "#F97316", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>
@@ -233,7 +233,7 @@ export default function MessagesPage() {
                       style={{
                         fontSize: 7,
                         color: "#0D0D0D",
-                        background: "#FF4500",
+                        background: "#F97316",
                         padding: "0 4px",
                         minWidth: 14,
                         textAlign: "center",

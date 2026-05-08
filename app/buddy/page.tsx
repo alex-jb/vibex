@@ -719,7 +719,7 @@ export default function BuddyPage() {
             )}
 
             {!userLevel.canSummon && (
-              <div className="font-retro mt-3" style={{ fontSize: 14, color: "#FF4500" }}>
+              <div className="font-retro mt-3" style={{ fontSize: 14, color: "#F97316" }}>
                 {t("buddy.needLevel")}: {SUMMON_LEVELS.join(", ")}
               </div>
             )}
@@ -757,7 +757,7 @@ export default function BuddyPage() {
                           right: 12,
                           fontSize: 12,
                           color: "#fff",
-                          background: "#FF4500",
+                          background: "#F97316",
                           padding: "4px 12px",
                           borderRadius: 6,
                           zIndex: 3,
@@ -898,7 +898,7 @@ export default function BuddyPage() {
         <details className="group glass-card rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
           <summary
             className="font-pixel cursor-pointer flex items-center gap-3 px-6 py-4"
-            style={{ fontSize: 14, color: "#FF4500", listStyle: "none" }}
+            style={{ fontSize: 14, color: "#F97316", listStyle: "none" }}
           >
             <span>📖</span>
             <span>{t("buddy.pokedex")}</span>

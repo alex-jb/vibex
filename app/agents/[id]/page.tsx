@@ -117,7 +117,7 @@ export default function AgentDetailPage({
           <div
             className="size-14 flex items-center justify-center"
             style={{
-              background: "linear-gradient(135deg, #FF4500 0%, #B8380B 100%)",
+              background: "linear-gradient(135deg, #F97316 0%, #B8380B 100%)",
               border: "2px solid #FFE27D",
               boxShadow: "3px 3px 0 #000",
             }}
@@ -169,7 +169,7 @@ export default function AgentDetailPage({
               disabled={!input.trim() || running}
               className="font-pixel gap-2 border-0 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:hover:translate-x-0 disabled:hover:translate-y-0"
               style={{
-                background: "#FF4500",
+                background: "#F97316",
                 border: "2px solid #FFE27D",
                 color: "#1A0F00",
                 boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",

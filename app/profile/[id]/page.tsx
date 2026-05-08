@@ -27,7 +27,7 @@ const C = {
   TEXT: "#E8E8EC",
   MUTED: "#8B7AA0",
   DIM: "#8A7B9A",
-  FORGE: "#FF4500",
+  FORGE: "#F97316",
   CREAM: "#FFE27D",
   GREEN: "#39FF14",
   YELLOW: "#FACC15",
@@ -36,7 +36,7 @@ const C = {
   PURPLE_TEXT: "#C077FF",
   HP_GREEN: "#39FF14",
   MP_BLUE: "#06B6D4",
-  ATK_ORANGE: "#FF4500",
+  ATK_ORANGE: "#F97316",
   DEF_PURPLE: "#C077FF",
 };
 

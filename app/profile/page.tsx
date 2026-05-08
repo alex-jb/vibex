@@ -89,7 +89,7 @@ function StatCard({
   return (
     <FadeIn delay={delay}>
       <div className="glass-card-strong rounded-xl border border-white/[0.08] p-5 text-center transition-all duration-300 hover:border-white/15 hover:shadow-[0_4px_24px_-6px_rgba(139,92,246,0.25)]">
-        <Icon className="mx-auto mb-2 h-6 w-6 text-[#FF4500]" />
+        <Icon className="mx-auto mb-2 h-6 w-6 text-[#F97316]" />
         <p className="font-pixel text-2xl text-gradient">
           {suffix ? `Lv.${value}` : value.toLocaleString()}
         </p>
@@ -301,7 +301,7 @@ export default function ProfilePage() {
                         <div
                           className="flex h-full w-full items-center justify-center rounded-full text-xl font-bold"
                           style={{
-                            background: "linear-gradient(135deg, rgba(255,69,0,0.3) 0%, rgba(184,56,11,0.3) 100%)",
+                            background: "linear-gradient(135deg, rgba(249,115,22,0.3) 0%, rgba(184,56,11,0.3) 100%)",
                             border: "2px solid rgba(255,226,125,0.6)",
                             color: "rgba(26,15,0,0.6)",
                           }}
@@ -328,7 +328,7 @@ export default function ProfilePage() {
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
                         maxLength={40}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white/90 font-pixel placeholder:text-white/25 outline-none focus:border-[#FF4500]/50 focus:ring-1 focus:ring-[#FF4500]/30 transition-all"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white/90 font-pixel placeholder:text-white/25 outline-none focus:border-[#F97316]/50 focus:ring-1 focus:ring-[#F97316]/30 transition-all"
                         style={{ fontFamily: "var(--font-pixel), monospace" }}
                       />
                     </div>
@@ -344,7 +344,7 @@ export default function ProfilePage() {
                         maxLength={200}
                         rows={3}
                         placeholder={t("profile.bioPlaceholder")}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white/90 font-pixel placeholder:text-white/25 outline-none focus:border-[#FF4500]/50 focus:ring-1 focus:ring-[#FF4500]/30 transition-all resize-none"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white/90 font-pixel placeholder:text-white/25 outline-none focus:border-[#F97316]/50 focus:ring-1 focus:ring-[#F97316]/30 transition-all resize-none"
                         style={{ fontFamily: "var(--font-pixel), monospace" }}
                       />
                       <p className="mt-1 text-right font-pixel text-[10px] text-white/30">{editBio.length}/200</p>
@@ -395,7 +395,7 @@ export default function ProfilePage() {
                     <div
                       className="flex h-20 w-20 items-center justify-center rounded-full text-xl font-bold"
                       style={{
-                        background: "linear-gradient(135deg, #FF4500 0%, #B8380B 100%)",
+                        background: "linear-gradient(135deg, #F97316 0%, #B8380B 100%)",
                         border: "2px solid #FFE27D",
                         color: "#1A0F00",
                         boxShadow: "3px 3px 0 #000",
@@ -420,7 +420,7 @@ export default function ProfilePage() {
                         </motion.span>
                       )}
                       <span className="level-badge shrink-0 text-xs">
-                        <span className="text-[#FF4500]">Lv</span>
+                        <span className="text-[#F97316]">Lv</span>
                         <span className="ml-0.5">{userLevel.level}</span>
                       </span>
                       <span className="font-pixel text-[10px] text-amber-400">{userLevel.title}</span>
@@ -456,7 +456,7 @@ export default function ProfilePage() {
                     <button
                       type="button"
                       onClick={handleEditOpen}
-                      className="flex items-center gap-1.5 rounded-lg border border-[#FFE27D]/50 px-4 py-2 text-xs text-[#FFE27D] transition-all hover:border-[#FFE27D] hover:bg-[#FF4500]/10 hover:text-[#FFE27D]"
+                      className="flex items-center gap-1.5 rounded-lg border border-[#FFE27D]/50 px-4 py-2 text-xs text-[#FFE27D] transition-all hover:border-[#FFE27D] hover:bg-[#F97316]/10 hover:text-[#FFE27D]"
                     >
                       <Pencil className="h-3.5 w-3.5" />
                       {t("profile.editProfile")}
@@ -482,7 +482,7 @@ export default function ProfilePage() {
           <h2 className="font-pixel text-lg text-gradient mb-4">{t("profile.expProgress")}</h2>
           <div className="flex items-center gap-3">
             <div className="level-badge shrink-0">
-              <span className="text-[#FF4500]">Lv</span>
+              <span className="text-[#F97316]">Lv</span>
               <span className="ml-0.5">{userLevel.level}</span>
             </div>
             <div className="flex-1">
@@ -512,7 +512,7 @@ export default function ProfilePage() {
           <div className="rpgui-container framed rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-pixel text-lg text-gradient">{t("profile.myBuddies")}</h2>
-              <Link href="/buddy" className="font-pixel text-xs text-[#FF4500] hover:text-[#FFE27D] transition-colors">
+              <Link href="/buddy" className="font-pixel text-xs text-[#F97316] hover:text-[#FFE27D] transition-colors">
                 {t("profile.viewAll")}
               </Link>
             </div>
@@ -556,13 +556,13 @@ export default function ProfilePage() {
         <Link href="/profile/dashboard" className="group block">
           <div className="rpgui-container framed flex items-center justify-between" style={{ padding: "12px 16px" }}>
             <div className="flex items-center gap-3">
-              <BarChart3 className="size-5 text-[#FF4500]" />
+              <BarChart3 className="size-5 text-[#F97316]" />
               <div>
-                <span className="font-pixel text-[9px] text-[#FF4500]">{t("profile.creatorDashboard")}</span>
+                <span className="font-pixel text-[9px] text-[#F97316]">{t("profile.creatorDashboard")}</span>
                 <p className="text-xs text-muted-foreground">{t("profile.dashboardDesc")}</p>
               </div>
             </div>
-            <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-[#FF4500] transition-colors" />
+            <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-[#F97316] transition-colors" />
           </div>
         </Link>
       </FadeIn>
@@ -577,7 +577,7 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="font-medium text-white/90">{p.title}</span>
-                    <Badge variant="outline" className="text-[10px] text-[#FF4500] border-[#FF4500]/40">
+                    <Badge variant="outline" className="text-[10px] text-[#F97316] border-[#F97316]/40">
                       {p.category}
                     </Badge>
                   </div>
@@ -590,7 +590,7 @@ export default function ProfilePage() {
                       <ChevronUp className="h-3.5 w-3.5 text-emerald-400" />
                       {p.upvotes}
                     </span>
-                    <ArrowUpRight className="h-4 w-4 text-white/30 transition-colors group-hover:text-[#FF4500]" />
+                    <ArrowUpRight className="h-4 w-4 text-white/30 transition-colors group-hover:text-[#F97316]" />
                   </div>
                 </div>
               </div>

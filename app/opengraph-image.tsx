@@ -9,7 +9,7 @@ const C = {
   BG: "#0A0A0C",
   TEXT: "#E8E8EC",
   MUTED: "#8B7AA0",
-  FORGE: "#FF4500",
+  FORGE: "#F97316",
   CREAM: "#FFE27D",
   GREEN: "#39FF14",
   BORDER: "#3A3A42",

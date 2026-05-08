@@ -18,35 +18,23 @@ import { ExplorerChrome } from "@/components/explorer-chrome";
 
 // Primary nav items — same for guests and logged-in users
 // /discover was merged into /home (HQ) on 2026-04-14 — one page, one catalog.
-// 2026-05-08 IA realignment: navbar now reflects the locked
-// "distribution amplifier" positioning, not the legacy RPG era.
-// 6 items → 4. Game features live under /arcade (footer link).
-//
-// Guests see: How it works · Showcase · Changelog
-// Logged-in users see: Dashboard (replaces Showcase) · How it works · Changelog
-//
-// All legacy game routes (/dojo /hunt /arena /buddy /trade /messages
-// /creators /insights /ideas /developers) continue to work — they're
-// just not in the primary nav anymore. /arcade page lists them as a
-// portal for users who want the gamification layer.
-
-const guestNavItems = [
-  { href: "/how-it-works", key: "nav.howItWorks" as const },
-  { href: "/home", key: "nav.showcase" as const },
-  { href: "/changelog", key: "nav.changelog" as const },
+const fullNavItems = [
+  { href: "/home", key: "nav.home" as const },
+  { href: "/creators", key: "nav.creators" as const },
+  { href: "/dojo", key: "nav.dojo" as const },
+  { href: "/insights", key: "nav.insights" as const },
+  { href: "/ideas", key: "nav.ideas" as const },
+  { href: "/developers", key: "nav.developers" as const },
 ];
 
-const userNavItems = [
-  { href: "/dashboard", key: "nav.dashboard" as const },
-  { href: "/how-it-works", key: "nav.howItWorks" as const },
-  { href: "/changelog", key: "nav.changelog" as const },
-];
+// Guest nav = same as full nav (all features visible to visitors)
+const guestNavItems = fullNavItems;
 
-const fullNavItems = userNavItems; // back-compat alias
-
-// Game routes still in user menu but not primary nav
+// Dojo items (in user menu + mobile menu)
 const dojoNavItems = [
-  { href: "/arcade", key: "nav.arcade" as const },
+  { href: "/arena", key: "nav.arena" as const },
+  { href: "/hunt", key: "nav.hunt" as const },
+  { href: "/messages", key: "nav.messages" as const },
 ];
 
 export function Navbar() {
@@ -72,7 +60,7 @@ export function Navbar() {
   const hideChrome = pathname === "/arcade" || pathname === "/login" || pathname === "/register";
   if (hideChrome) return null;
 
-  const primaryNavItems = user ? userNavItems : guestNavItems;
+  const primaryNavItems = user ? fullNavItems : guestNavItems;
   const allNavItems = [...primaryNavItems, ...(user ? dojoNavItems : [])];
   const isCJK = lang === "zh";
   const navFont: React.CSSProperties = isCJK
@@ -152,7 +140,7 @@ export function Navbar() {
                 size="sm"
                 className="text-black hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform px-3 h-8 border-0"
                 style={{
-                  background: "#FF4500",
+                  background: "#F97316",
                   border: "2px solid #FFE27D",
                   color: "#1A0F00",
                   boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",
@@ -194,19 +182,8 @@ export function Navbar() {
       {/* Subtle gradient accent line */}
       <div className="h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
 
-      {/* Explorer chrome — adventure progress strip. 2026-05-08:
-          restricted to game routes only (was on every authed page).
-          On the main distribution funnel (dashboard / launch / drafts
-          / analytics / etc) the LV/XP/QUEST bar created cognitive
-          dissonance with the "distribution amplifier" positioning. */}
-      {user &&
-        (pathname.startsWith("/arcade") ||
-          pathname.startsWith("/dojo") ||
-          pathname.startsWith("/hunt") ||
-          pathname.startsWith("/arena") ||
-          pathname.startsWith("/buddy") ||
-          pathname.startsWith("/feed") ||
-          pathname.startsWith("/home")) && <ExplorerChrome />}
+      {/* Explorer chrome — adventure progress strip, authed users only */}
+      {user && <ExplorerChrome />}
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -245,7 +222,7 @@ export function Navbar() {
                   <Button
                     className="w-full font-pixel text-sm border-0"
                     style={{
-                      background: "#FF4500",
+                      background: "#F97316",
                       border: "2px solid #FFE27D",
                       color: "#1A0F00",
                       boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",

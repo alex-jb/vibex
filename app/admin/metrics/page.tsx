@@ -310,7 +310,7 @@ export default async function AdminMetricsPage() {
                     <td className="py-2 text-foreground/90">
                       {p.platform}
                       {idx === 0 && p.engagement > 0 ? (
-                        <span className="ml-2 text-[9px] px-1.5 py-0.5 rounded bg-[#FF4500]/20 text-[#FF6633] font-pixel uppercase tracking-wider">
+                        <span className="ml-2 text-[9px] px-1.5 py-0.5 rounded bg-[#F97316]/20 text-[#FB923C] font-pixel uppercase tracking-wider">
                           ▲ TOP
                         </span>
                       ) : null}
@@ -467,7 +467,7 @@ function Stat({
     accent === "emerald"
       ? "text-emerald-300"
       : accent === "orange"
-        ? "text-[#FF6633]"
+        ? "text-[#FB923C]"
         : accent === "violet"
           ? "text-violet-300"
           : "text-violet-200";

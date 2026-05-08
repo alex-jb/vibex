@@ -66,12 +66,12 @@ const typeConfig: Record<
   },
   opportunity: {
     icon: Target,
-    color: "text-[#FF4500]",
-    barFrom: "from-[#FF4500]",
+    color: "text-[#F97316]",
+    barFrom: "from-[#F97316]",
     barTo: "to-[#FFE27D]/60",
-    bgColor: "bg-[#FF4500]/10",
+    bgColor: "bg-[#F97316]/10",
     label: "Opportunity",
-    dotColor: "bg-[#FF4500]",
+    dotColor: "bg-[#F97316]",
   },
   emerging: {
     icon: Zap,
@@ -320,7 +320,7 @@ function InsightsContent() {
         <div
           aria-hidden
           className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
-          style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+          style={{ background: "radial-gradient(closest-side, rgba(249,115,22,0.14), transparent 70%)" }}
         />
         <div className="absolute top-64 right-1/4 h-56 w-56 rounded-full bg-cyan-600/6 blur-[100px]" />
         <div className="absolute bottom-48 left-1/5 h-48 w-48 rounded-full bg-emerald-600/4 blur-[90px]" />
@@ -452,7 +452,7 @@ function InsightsContent() {
           transition={{ duration: 0.4, delay: 0.1 }}
           className="mb-8 flex items-center gap-2.5 text-sm font-semibold uppercase tracking-widest text-muted-foreground/60"
         >
-          <Activity className="h-4 w-4 text-[#FF4500]/80" />
+          <Activity className="h-4 w-4 text-[#F97316]/80" />
           {t("insights.allSignals")}
         </motion.h2>
 
@@ -476,7 +476,7 @@ function InsightsContent() {
             <div
               aria-hidden
               className="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full"
-              style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.18), transparent 70%)" }}
+              style={{ background: "radial-gradient(closest-side, rgba(249,115,22,0.18), transparent 70%)" }}
             />
             <div className="absolute -bottom-12 -left-12 h-44 w-44 rounded-full bg-cyan-600/8 blur-[70px]" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-32 w-32 rounded-full bg-fuchsia-500/5 blur-[60px]" />
@@ -487,7 +487,7 @@ function InsightsContent() {
             <div
               className="flex h-16 w-16 items-center justify-center"
               style={{
-                background: "#FF4500",
+                background: "#F97316",
                 border: "2px solid #FFE27D",
                 boxShadow: "3px 3px 0 #000",
               }}
@@ -503,17 +503,17 @@ function InsightsContent() {
             {/* Description bullets */}
             <div className="mt-5 flex flex-col gap-2.5 text-sm text-muted-foreground/65">
               <div className="flex items-center gap-2.5">
-                <Signal className="h-3.5 w-3.5 text-[#FF4500]/60 shrink-0" />
+                <Signal className="h-3.5 w-3.5 text-[#F97316]/60 shrink-0" />
                 <span>{t("insights.analytic1")}</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Sparkles className="h-3.5 w-3.5 text-[#FF4500]/60 shrink-0" />
+                <Sparkles className="h-3.5 w-3.5 text-[#F97316]/60 shrink-0" />
                 <span>
                   {t("insights.analytic2")}
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
-                <TrendingUp className="h-3.5 w-3.5 text-[#FF4500]/60 shrink-0" />
+                <TrendingUp className="h-3.5 w-3.5 text-[#F97316]/60 shrink-0" />
                 <span>
                   {t("insights.analytic3")}
                 </span>
@@ -525,7 +525,7 @@ function InsightsContent() {
               className="font-pixel mt-8 border-0 px-8 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform"
               size="default"
               style={{
-                background: "#FF4500",
+                background: "#F97316",
                 border: "2px solid #FFE27D",
                 color: "#1A0F00",
                 boxShadow: "3px 3px 0 #000, inset 0 8px 0 rgba(255,255,255,0.12), inset 0 -8px 0 rgba(0,0,0,0.2)",

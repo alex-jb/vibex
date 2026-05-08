@@ -114,7 +114,7 @@ function FeaturedEventCard({
           className="font-pixel mt-6 w-full border-0 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform"
           size="default"
           style={{
-            background: "#FF4500",
+            background: "#F97316",
             border: "2px solid #FFE27D",
             color: "#1A0F00",
             boxShadow: "3px 3px 0 #000, inset 0 8px 0 rgba(255,255,255,0.12), inset 0 -8px 0 rgba(0,0,0,0.2)",
@@ -213,7 +213,7 @@ export default function EventsPage() {
         <div
           aria-hidden
           className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
-          style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+          style={{ background: "radial-gradient(closest-side, rgba(249,115,22,0.14), transparent 70%)" }}
         />
         <div className="absolute top-48 right-1/6 h-56 w-56 rounded-full bg-fuchsia-600/6 blur-[100px]" />
         <div className="absolute bottom-32 left-1/3 h-48 w-48 rounded-full bg-blue-600/5 blur-[100px]" />
@@ -328,7 +328,7 @@ export default function EventsPage() {
             <div
               aria-hidden
               className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full"
-              style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.18), transparent 70%)" }}
+              style={{ background: "radial-gradient(closest-side, rgba(249,115,22,0.18), transparent 70%)" }}
             />
             <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-fuchsia-600/8 blur-[70px]" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-32 w-32 rounded-full bg-violet-500/5 blur-[60px]" />
@@ -339,15 +339,15 @@ export default function EventsPage() {
             <div
               className="flex h-16 w-16 items-center justify-center"
               style={{
-                background: "rgba(255,69,0,0.12)",
-                border: "1px solid rgba(255,69,0,0.25)",
+                background: "rgba(249,115,22,0.12)",
+                border: "1px solid rgba(249,115,22,0.25)",
               }}
             >
               <div
                 className="flex h-11 w-11 items-center justify-center"
                 style={{
-                  background: "rgba(255,69,0,0.25)",
-                  border: "1px solid rgba(255,69,0,0.5)",
+                  background: "rgba(249,115,22,0.25)",
+                  border: "1px solid rgba(249,115,22,0.5)",
                 }}
               >
                 <Lock className="h-5 w-5" style={{ color: "#FFE27D" }} />
@@ -368,8 +368,8 @@ export default function EventsPage() {
             <Badge
               className="font-pixel mt-5 border-0 px-4 py-1"
               style={{
-                background: "rgba(255,69,0,0.18)",
-                border: "1px solid rgba(255,69,0,0.45)",
+                background: "rgba(249,115,22,0.18)",
+                border: "1px solid rgba(249,115,22,0.45)",
                 color: "#FFE27D",
                 fontSize: 10,
                 letterSpacing: 2,

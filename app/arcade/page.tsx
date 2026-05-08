@@ -23,7 +23,7 @@ import { useLang } from "@/lib/i18n";
 const pixelEase = [0.22, 1, 0.36, 1] as const;
 
 const C = {
-  FORGE: "#FF4500",
+  FORGE: "#F97316",
   CREAM: "#FFE27D",
   GREEN: "#39FF14",
   YELLOW: "#FACC15",
@@ -304,7 +304,7 @@ export default function LandingPage() {
         className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 44%, rgba(255,69,0,0.28), transparent 60%), radial-gradient(ellipse at 50% 44%, rgba(255,226,125,0.07), transparent 75%), rgba(13,13,13,0.6)",
+            "radial-gradient(ellipse at 50% 44%, rgba(249,115,22,0.28), transparent 60%), radial-gradient(ellipse at 50% 44%, rgba(255,226,125,0.07), transparent 75%), rgba(13,13,13,0.6)",
         }}
       />
       {/* ═══ Season banner (top edge, above L-corners) ═══ */}
@@ -628,7 +628,7 @@ export default function LandingPage() {
               className="relative flex-1 overflow-hidden"
               style={{
                 background:
-                  "radial-gradient(circle at 50% 72%, rgba(255,69,0,0.34), transparent 50%), radial-gradient(circle at 50% 50%, rgba(255,226,125,0.08), transparent 60%), #0A0A0C",
+                  "radial-gradient(circle at 50% 72%, rgba(249,115,22,0.34), transparent 50%), radial-gradient(circle at 50% 50%, rgba(255,226,125,0.08), transparent 60%), #0A0A0C",
                 border: `2px solid ${C.FORGE}80`,
                 boxShadow: "inset 0 0 24px rgba(0,0,0,0.75)",
                 marginBottom: 10,

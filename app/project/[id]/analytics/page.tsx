@@ -278,7 +278,7 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
   const EFFORT_COLORS: Record<string, string> = {
     "5min": "#39FF14",
     "30min": "#FACC15",
-    "1hr": "#FF4500",
+    "1hr": "#F97316",
     "1day": "#9D00FF",
   };
 
@@ -384,7 +384,7 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
                             {labelFor(p.platform)}
                           </span>
                           {isWinner && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#FF4500]/20 text-[#FF6633] font-pixel uppercase tracking-wider">
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#F97316]/20 text-[#FB923C] font-pixel uppercase tracking-wider">
                               {lang === "zh" ? "▲ 最强" : "▲ TOP"}
                             </span>
                           )}
@@ -487,7 +487,7 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
                     { label: lang === "zh" ? "点击" : "Clicks", value: data.totals.clicks, color: "#06B6D4" },
                     { label: lang === "zh" ? "分享" : "Shares", value: data.totals.shares, color: "#9D00FF" },
                     { label: lang === "zh" ? "点赞" : "Upvotes", value: data.totals.upvotes, color: "#FACC15" },
-                    { label: lang === "zh" ? "Demo" : "Demo", value: data.totals.demo_plays, color: "#FF4500" },
+                    { label: lang === "zh" ? "Demo" : "Demo", value: data.totals.demo_plays, color: "#F97316" },
                     { label: lang === "zh" ? "转化率" : "Conv.", value: `${data.conversionRate}%`, color: "#FF69B4" },
                   ].map((s) => (
                     <div
@@ -571,7 +571,7 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
                         color: "#0D0D0D",
                         background:
                           sug.priority === "high"
-                            ? "#FF4500"
+                            ? "#F97316"
                             : sug.priority === "medium"
                             ? "#FACC15"
                             : "#39FF14",
@@ -616,7 +616,7 @@ function Tile({
     accent === "emerald"
       ? "text-emerald-300"
       : accent === "orange"
-      ? "text-[#FF6633]"
+      ? "text-[#FB923C]"
       : "text-foreground";
   return (
     <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">

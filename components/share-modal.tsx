@@ -229,7 +229,7 @@ function ShareCardPreview({
               style={
                 cardSize === key
                   ? {
-                      background: "#FF4500",
+                      background: "#F97316",
                       border: "2px solid #FFE27D",
                       boxShadow: "2px 2px 0 #000",
                     }
@@ -247,7 +247,7 @@ function ShareCardPreview({
       <div className="relative rounded-xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-10">
-            <Loader2 className="h-6 w-6 animate-spin" style={{ color: "#FF4500" }} />
+            <Loader2 className="h-6 w-6 animate-spin" style={{ color: "#F97316" }} />
           </div>
         )}
         {/* eslint-disable-next-line @next/next/no-img-element -- dynamic OG URL with per-render size variant, next/image unsuitable */}
@@ -267,7 +267,7 @@ function ShareCardPreview({
           size="sm"
           className="font-pixel flex-1 border-0 gap-1.5 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:hover:translate-x-0 disabled:hover:translate-y-0"
           style={{
-            background: "#FF4500",
+            background: "#F97316",
             border: "2px solid #FFE27D",
             color: "#1A0F00",
             boxShadow: "3px 3px 0 #000, inset 0 5px 0 rgba(255,255,255,0.12), inset 0 -5px 0 rgba(0,0,0,0.2)",
@@ -464,7 +464,7 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Decorative top gradient */}
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FF4500]/60 to-transparent" />
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F97316]/60 to-transparent" />
 
               <div className="max-h-[85vh] overflow-y-auto scrollbar-hide p-6">
                 {/* Header */}
@@ -473,7 +473,7 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                     <div
                       className="flex h-8 w-8 items-center justify-center"
                       style={{
-                        background: "#FF4500",
+                        background: "#F97316",
                         border: "2px solid #FFE27D",
                         boxShadow: "2px 2px 0 #000",
                       }}
@@ -513,7 +513,7 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                 {/* Playable Link */}
                 <div className="glass-card-strong rounded-xl p-4 mb-4">
                   <div className="flex items-center gap-2 mb-2.5">
-                    <Link className="h-3.5 w-3.5" style={{ color: "#FF4500" }} />
+                    <Link className="h-3.5 w-3.5" style={{ color: "#F97316" }} />
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Playable Link
                     </span>
@@ -527,7 +527,7 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                       label="Copy"
                       variant="secondary"
                       size="sm"
-                      className="font-pixel shrink-0 border-2 border-[#FFE27D] bg-[#FF4500] text-[#1A0F00] text-[10px] tracking-widest shadow-[2px_2px_0_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform"
+                      className="font-pixel shrink-0 border-2 border-[#FFE27D] bg-[#F97316] text-[#1A0F00] text-[10px] tracking-widest shadow-[2px_2px_0_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform"
                       trackProjectId={project.id}
                       trackEvent="link_copy"
                     />
@@ -575,7 +575,7 @@ export function ShareModal({ open, onOpenChange, project }: ShareModalProps) {
                           style={
                             isActive
                               ? {
-                                  background: "#FF4500",
+                                  background: "#F97316",
                                   border: "2px solid #FFE27D",
                                   boxShadow: "2px 2px 0 #000",
                                 }

@@ -85,7 +85,7 @@ export default function LoginPage() {
       <div
         aria-hidden
         className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[400px] w-[560px] rounded-full"
-        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.16), transparent 70%)" }}
+        style={{ background: "radial-gradient(closest-side, rgba(249,115,22,0.16), transparent 70%)" }}
       />
 
       {/* Viewport corner brackets */}

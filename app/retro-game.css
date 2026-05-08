@@ -28,8 +28,8 @@
   --text-dim: #8A7B9A;
   --neon-green: #39FF14;
   --neon-green-dim: #39FF1440;
-  --neon-orange: #FF4500;
-  --neon-orange-dim: #FF450040;
+  --neon-orange: #F97316;
+  --neon-orange-dim: #F9731640;
   --neon-purple: #9D00FF;
   --neon-purple-dim: #9D00FF40;
   /* Brighter variant for TEXT use only — #9D00FF hits 3.48:1 on the
@@ -48,7 +48,7 @@
   --exp-purple: #9D00FF;
   --exp-purple-bg: #9D00FF33;
   --crit-yellow: #FACC15;
-  --crit-red: #FF4500;
+  --crit-red: #F97316;
   --corner-size: 14px;
 }
 
@@ -192,7 +192,7 @@
   text-shadow: 0 0 10px var(--neon-orange-dim);
 }
 .retro-button--danger:hover {
-  background: rgba(255,69,0,0.08);
+  background: rgba(249,115,22,0.08);
   box-shadow: 0 4px 0 #000, 0 0 20px var(--neon-orange-dim);
 }
 
@@ -327,8 +327,8 @@
   inset: -3px;
   background: linear-gradient(
     45deg,
-    #FF4500, #FF6B00, #FACC15, #FF6B00, #FF4500,
-    #FF6B00, #FACC15, #FF6B00, #FF4500
+    #F97316, #FF6B00, #FACC15, #FF6B00, #F97316,
+    #FF6B00, #FACC15, #FF6B00, #F97316
   );
   background-size: 400% 400%;
   animation: fire-dance 2s ease-in-out infinite;

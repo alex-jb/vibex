@@ -10,7 +10,7 @@ const C = {
   TEXT: "#E8E8EC",
   MUTED: "#8B7AA0",
   DIM: "#8A7B9A",
-  FORGE: "#FF4500",
+  FORGE: "#F97316",
   CREAM: "#FFE27D",
   GREEN: "#39FF14",
 };

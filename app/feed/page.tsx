@@ -256,7 +256,7 @@ export default function FeedPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ width: 10, height: 10, background: "#FF4500", display: "inline-block" }} />
+          <span style={{ width: 10, height: 10, background: "#F97316", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>
@@ -272,14 +272,14 @@ export default function FeedPage() {
               width: 6,
               height: 6,
               borderRadius: "50%",
-              background: connected ? "#FF4500" : "#555",
+              background: connected ? "#F97316" : "#555",
               display: "inline-block",
               animation: connected ? "pulse-live 1.5s ease-in-out infinite" : "none",
             }}
           />
           <span
             className="font-pixel"
-            style={{ fontSize: 7, color: connected ? "#FF4500" : "#555" }}
+            style={{ fontSize: 7, color: connected ? "#F97316" : "#555" }}
           >
             {connected ? "LIVE" : "OFFLINE"}
           </span>
@@ -352,7 +352,7 @@ export default function FeedPage() {
           {/* Error state */}
           {!showSkeleton && error && (
             <div style={{ textAlign: "center", padding: "40px 0" }}>
-              <div className="font-retro" style={{ fontSize: 14, color: "#FF4500", marginBottom: 16 }}>
+              <div className="font-retro" style={{ fontSize: 14, color: "#F97316", marginBottom: 16 }}>
                 {t("feed.loadFailed")}
               </div>
               <button

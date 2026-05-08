@@ -22,7 +22,7 @@ const PLATFORM_LABEL: Record<string, string> = {
 
 const PLATFORM_ACCENT: Record<string, string> = {
   x: "#000",
-  reddit: "#FF4500",
+  reddit: "#F97316",
   hacker_news: "#FF6600",
   linkedin: "#0A66C2",
   xiaohongshu: "#FE2C55",
@@ -36,14 +36,14 @@ export default function TryPage() {
       <section className="px-6 pt-24 pb-16 max-w-5xl mx-auto">
         <p
           className="font-pixel text-[10px] uppercase tracking-[0.28em] mb-4"
-          style={{ color: "#FF4500" }}
+          style={{ color: "#F97316" }}
         >
           ▸ NO SIGNUP · REAL DRAFTS · GENERATED FROM VIBEXFORGE.COM
         </p>
         <h1 className="text-3xl sm:text-5xl font-bold leading-tight mb-4 tracking-tight">
           See what you&apos;d get,
           <br />
-          <span style={{ color: "#FF4500" }}>before you sign in.</span>
+          <span style={{ color: "#F97316" }}>before you sign in.</span>
         </h1>
         <p className="text-lg text-foreground/70 max-w-2xl mb-6 leading-relaxed">
           Below are 6 actual drafts VibeXForge generated for itself
@@ -69,7 +69,7 @@ export default function TryPage() {
       <section className="px-6 py-16 max-w-5xl mx-auto border-t border-white/[0.06]">
         <div className="space-y-5">
           {DEMO_DRAFTS.map((d, i) => {
-            const accent = PLATFORM_ACCENT[d.platform] || "#FF4500";
+            const accent = PLATFORM_ACCENT[d.platform] || "#F97316";
             return (
               <article
                 key={i}

@@ -38,7 +38,7 @@ const COLOR = {
   BG: "#0A0A0C",
   PANEL: "#14141A",
   BORDER: "#2A2A30",
-  FORGE: "#FF4500",
+  FORGE: "#F97316",
   FORGE_CREAM: "#FFE27D",
   TEXT: "#E8E8EC",
   TEXT_MUTED: "#8B7AA0",

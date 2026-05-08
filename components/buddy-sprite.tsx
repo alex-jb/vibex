@@ -52,8 +52,8 @@ const OWL = {
 
 const DRAGON = {
   d: "#CC3300", // dark red
-  r: "#FF4500", // red
-  o: "#FF6633", // orange
+  r: "#F97316", // red
+  o: "#FB923C", // orange
   y: "#FACC15", // yellow belly
   l: "#FF8844", // light
   w: "#FFFFFF", // white
@@ -279,7 +279,7 @@ const SPRITE_DATA: Record<string, string[][]> = {
   })(),
 
   "terra-golem": (() => {
-    const d = "#8B6914", b = "#CD853F", l = "#DEB887", g = "#A0A0A0", w = "#E0E0E0", k = "#222222", r = "#FF6633", s = "#6B4400";
+    const d = "#8B6914", b = "#CD853F", l = "#DEB887", g = "#A0A0A0", w = "#E0E0E0", k = "#222222", r = "#FB923C", s = "#6B4400";
     return [
       [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
       [_,_,_,_,_,b,b,b,b,b,b,_,_,_,_,_],

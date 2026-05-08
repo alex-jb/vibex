@@ -313,9 +313,9 @@ export function InteractiveDemo({ onIdeaSubmit }: InteractiveDemoProps) {
                 style={{
                   fontFamily: "var(--font-pixel), monospace",
                   fontSize: 9,
-                  color: "#FF4500",
+                  color: "#F97316",
                   letterSpacing: 1,
-                  textShadow: "0 0 6px rgba(255,69,0,0.6)",
+                  textShadow: "0 0 6px rgba(249,115,22,0.6)",
                 }}
                 role="alert"
               >

@@ -59,7 +59,7 @@ export default function BuddyTradePage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ width: 10, height: 10, background: "#FF4500", display: "inline-block" }} />
+          <span style={{ width: 10, height: 10, background: "#F97316", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>

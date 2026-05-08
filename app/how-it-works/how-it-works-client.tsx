@@ -7,7 +7,7 @@ const PLATFORMS = [
   { name_en: "X", name_zh: "X", logo: "𝕏", color: "#000" },
   { name_en: "Xiaohongshu", name_zh: "小红书", logo: "📕", color: "#FE2C55" },
   { name_en: "Jike", name_zh: "即刻", logo: "💛", color: "#FFD200" },
-  { name_en: "Reddit", name_zh: "Reddit", logo: "🔶", color: "#FF4500" },
+  { name_en: "Reddit", name_zh: "Reddit", logo: "🔶", color: "#F97316" },
   { name_en: "Hacker News", name_zh: "Hacker News", logo: "Y", color: "#FF6600" },
   { name_en: "Dev.to", name_zh: "Dev.to", logo: "</>", color: "#0A0A0A" },
   { name_en: "LinkedIn", name_zh: "LinkedIn", logo: "in", color: "#0A66C2" },
@@ -123,16 +123,13 @@ export default function HowItWorksClient() {
     <main className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)]">
       {/* Hero */}
       <section className="px-6 pt-28 pb-24 max-w-4xl mx-auto text-center">
-        <p className="font-pixel text-[10px] uppercase tracking-[0.28em] text-[var(--ember,#FF4500)] mb-4">
+        <p className="font-pixel text-[10px] uppercase tracking-[0.28em] text-[var(--ember,#F97316)] mb-4">
           {t.eyebrow}
         </p>
-        <h1
-          className="text-3xl sm:text-5xl font-bold mb-6 leading-tight"
-          style={{ fontFamily: "var(--font-press-start), monospace" }}
-        >
+        <h1 className="text-4xl sm:text-6xl md:text-[80px] font-semibold mb-6 leading-[1.05] tracking-[-0.02em]">
           {t.h1Line1}
           <br />
-          <span style={{ color: "#FF4500" }}>{t.h1Line2}</span>
+          <span style={{ color: "#F97316" }}>{t.h1Line2}</span>
         </h1>
         <p className="text-lg sm:text-xl text-foreground/70 mb-10 max-w-2xl mx-auto">
           {t.sub}
@@ -140,7 +137,7 @@ export default function HowItWorksClient() {
         <div className="flex justify-center gap-4 flex-wrap">
           <Link
             href="/launch"
-            className="px-8 py-4 rounded-md text-sm font-semibold bg-[#FF4500] text-black hover:bg-[#FF6633] transition-colors"
+            className="px-8 py-4 rounded-md text-sm font-semibold bg-[#F97316] text-black hover:bg-[#FB923C] transition-colors"
             style={{ boxShadow: "5px 5px 0 #000" }}
           >
             {t.ctaPrimary}
@@ -215,16 +212,13 @@ export default function HowItWorksClient() {
 
       {/* CTA */}
       <section className="px-6 py-28 max-w-3xl mx-auto text-center">
-        <h2
-          className="text-2xl sm:text-3xl font-bold mb-4"
-          style={{ fontFamily: "var(--font-press-start), monospace" }}
-        >
+        <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-[-0.02em]">
           {t.ctaH2}
         </h2>
         <p className="text-foreground/60 mb-10">{t.ctaBody}</p>
         <Link
           href="/launch"
-          className="inline-block px-10 py-4 rounded-md text-base font-semibold bg-[#FF4500] text-black hover:bg-[#FF6633] transition-colors"
+          className="inline-block px-10 py-4 rounded-md text-base font-semibold bg-[#F97316] text-black hover:bg-[#FB923C] transition-colors"
           style={{ boxShadow: "6px 6px 0 #000" }}
         >
           {t.ctaButton}
@@ -278,11 +272,8 @@ function Step({ num, title, body }: { num: string; title: string; body: string }
   return (
     <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-6">
       <p
-        className="text-3xl mb-3"
-        style={{
-          fontFamily: "var(--font-press-start), monospace",
-          color: "#FF4500",
-        }}
+        className="font-mono text-3xl font-bold tabular-nums mb-3"
+        style={{ color: "#F97316" }}
       >
         {num}
       </p>

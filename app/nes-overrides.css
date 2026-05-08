@@ -56,7 +56,7 @@
 }
 .nes-container.with-title > .title {
   background: var(--bg-deep, #0D0D0D) !important;
-  color: var(--neon-orange, #FF4500) !important;
+  color: var(--neon-orange, #F97316) !important;
   font-family: var(--font-pixel) !important;
   font-size: 10px !important;
 }
@@ -94,9 +94,9 @@
   border-color: var(--neon-yellow, #FACC15) !important;
 }
 .nes-btn.is-error {
-  background: rgba(255,69,0,0.15) !important;
-  color: var(--neon-orange, #FF4500) !important;
-  border-color: var(--neon-orange, #FF4500) !important;
+  background: rgba(249,115,22,0.15) !important;
+  color: var(--neon-orange, #F97316) !important;
+  border-color: var(--neon-orange, #F97316) !important;
 }
 
 /* ─── NES Progress Bars: Neon HP/MP/EXP ─── */
@@ -201,7 +201,7 @@ button, input, textarea, select, a {
   bottom: 6px;
   right: 10px;
   font-size: 10px;
-  color: var(--neon-orange, #FF4500);
+  color: var(--neon-orange, #F97316);
   animation: dialog-arrow 0.8s ease-in-out infinite;
 }
 @keyframes dialog-arrow {

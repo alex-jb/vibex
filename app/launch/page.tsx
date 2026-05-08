@@ -551,14 +551,14 @@ export default function LaunchPage() {
         className="relative min-h-[calc(100vh-64px)] overflow-hidden flex items-center justify-center"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 45%, rgba(255,69,0,0.22), transparent 55%), radial-gradient(ellipse at 50% 45%, rgba(255,226,125,0.06), transparent 75%), var(--bg-deep)",
+            "radial-gradient(ellipse at 50% 45%, rgba(249,115,22,0.22), transparent 55%), radial-gradient(ellipse at 50% 45%, rgba(255,226,125,0.06), transparent 75%), var(--bg-deep)",
         }}
       >
         {/* Floating ember particles — forge palette only */}
         {[
-          { top: "30%", left: "22%", color: "#FF4500", delay: 0 },
+          { top: "30%", left: "22%", color: "#F97316", delay: 0 },
           { top: "70%", left: "75%", color: "#FFE27D", delay: 1 },
-          { top: "22%", right: "25%", color: "#FF4500", delay: 2 },
+          { top: "22%", right: "25%", color: "#F97316", delay: 2 },
           { top: "68%", left: "20%", color: "#FFE27D", delay: 0.5 },
         ].map((p, i) => (
           <motion.div
@@ -597,7 +597,7 @@ export default function LaunchPage() {
             style={{
               inset: "-120px -80px",
               background:
-                "radial-gradient(ellipse, rgba(255,69,0,0.45) 0%, rgba(255,226,125,0.15) 35%, transparent 70%)",
+                "radial-gradient(ellipse, rgba(249,115,22,0.45) 0%, rgba(255,226,125,0.15) 35%, transparent 70%)",
               filter: "blur(40px)",
               zIndex: -1,
             }}
@@ -652,15 +652,15 @@ export default function LaunchPage() {
               letterSpacing: 3,
               lineHeight: 1.5,
               textShadow:
-                "0 0 14px rgba(232,232,236,0.35), 0 0 30px rgba(255,69,0,0.35)",
+                "0 0 14px rgba(232,232,236,0.35), 0 0 30px rgba(249,115,22,0.35)",
             }}
           >
             {lang === "zh" ? "提交一次 AI 作品。" : "PASTE YOUR AI PROJECT."}
             <br />
             <span
               style={{
-                color: "#FF4500",
-                textShadow: "0 0 14px rgba(255,69,0,0.7), 3px 3px 0 #000",
+                color: "#F97316",
+                textShadow: "0 0 14px rgba(249,115,22,0.7), 3px 3px 0 #000",
               }}
             >
               {lang === "zh"
@@ -682,7 +682,7 @@ export default function LaunchPage() {
               className="hidden sm:block shrink-0"
               style={{
                 imageRendering: "pixelated",
-                filter: "drop-shadow(0 0 8px rgba(255,69,0,0.5))",
+                filter: "drop-shadow(0 0 8px rgba(249,115,22,0.5))",
               }}
             />
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 text-left">
@@ -710,7 +710,7 @@ export default function LaunchPage() {
                   <span
                     style={{
                       padding: "4px 7px",
-                      background: "#FF4500",
+                      background: "#F97316",
                       color: "#0A0A0C",
                       border: "1.5px solid #FFE27D",
                       boxShadow: "2px 2px 0 #000",
@@ -765,12 +765,12 @@ export default function LaunchPage() {
               className="w-full outline-none text-[16px] sm:text-[19px] md:text-[22px] py-4 sm:py-5 md:py-[26px] pl-12 sm:pl-[52px] md:pl-[60px] pr-16 sm:pr-[80px] md:pr-[90px]"
               style={{
                 background: "rgba(0,0,0,0.75)",
-                border: "3px solid rgba(255,69,0,0.65)",
+                border: "3px solid rgba(249,115,22,0.65)",
                 color: "var(--text)",
                 fontFamily: "var(--font-vt323), monospace",
                 letterSpacing: 0.5,
                 boxShadow:
-                  "inset 0 4px 8px rgba(0,0,0,0.7), 0 0 30px rgba(255,69,0,0.3), 0 0 60px rgba(255,69,0,0.15)",
+                  "inset 0 4px 8px rgba(0,0,0,0.7), 0 0 30px rgba(249,115,22,0.3), 0 0 60px rgba(249,115,22,0.15)",
               }}
             />
             <button
@@ -782,11 +782,11 @@ export default function LaunchPage() {
               style={{
                 top: "50%",
                 transform: "translateY(-50%)",
-                background: "#FF4500",
+                background: "#F97316",
                 color: "#0A0A0C",
                 fontFamily: "var(--font-press-start), monospace",
                 border: "3px solid #FFE27D",
-                boxShadow: "3px 3px 0 #000, 0 0 20px rgba(255,69,0,0.7)",
+                boxShadow: "3px 3px 0 #000, 0 0 20px rgba(249,115,22,0.7)",
                 cursor: scrapeLoading ? "wait" : "pointer",
               }}
             >
@@ -918,7 +918,7 @@ export default function LaunchPage() {
       <div
         aria-hidden
         className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
-        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.18), transparent 70%)" }}
+        style={{ background: "radial-gradient(closest-side, rgba(249,115,22,0.18), transparent 70%)" }}
       />
 
       {/* PH-day live banner — renders countdown / live state / nothing */}
@@ -936,9 +936,9 @@ export default function LaunchPage() {
             className="mx-2 sm:mx-4 flex items-center gap-3 px-3 py-2"
             style={{
               background: "rgba(13,13,13,0.88)",
-              border: submitLoading ? "2px solid #FF4500" : "2px solid #3A3A42",
+              border: submitLoading ? "2px solid #F97316" : "2px solid #3A3A42",
               boxShadow: submitLoading
-                ? "3px 3px 0 #000, 0 0 24px rgba(255,69,0,0.4)"
+                ? "3px 3px 0 #000, 0 0 24px rgba(249,115,22,0.4)"
                 : "3px 3px 0 #000",
               transition: "border-color 0.3s ease, box-shadow 0.3s ease",
             }}
@@ -951,7 +951,7 @@ export default function LaunchPage() {
               style={{
                 imageRendering: "pixelated",
                 filter: submitLoading
-                  ? "drop-shadow(0 0 8px #FF4500)"
+                  ? "drop-shadow(0 0 8px #F97316)"
                   : "drop-shadow(0 0 4px rgba(212,212,216,0.4))",
                 flexShrink: 0,
               }}
@@ -973,7 +973,7 @@ export default function LaunchPage() {
                 style={{
                   fontSize: 7,
                   letterSpacing: 2,
-                  color: submitLoading ? "#FF4500" : "#8B7AA0",
+                  color: submitLoading ? "#F97316" : "#8B7AA0",
                   marginTop: 2,
                 }}
                 animate={submitLoading ? { opacity: [1, 0.5, 1] } : { opacity: 1 }}
@@ -1018,14 +1018,14 @@ export default function LaunchPage() {
         <div
           className="inline-flex items-center gap-2 px-4 py-1.5 mb-5"
           style={{
-            border: "1px solid rgba(255,69,0,0.35)",
-            background: "rgba(255,69,0,0.08)",
+            border: "1px solid rgba(249,115,22,0.35)",
+            background: "rgba(249,115,22,0.08)",
           }}
         >
-          <Rocket className="size-3.5" style={{ color: "#FF4500" }} />
+          <Rocket className="size-3.5" style={{ color: "#F97316" }} />
           <span
             className="font-ui text-[11px] tracking-[3px]"
-            style={{ color: "#FF4500" }}
+            style={{ color: "#F97316" }}
           >
             {t("launch.badge")}
           </span>
@@ -1037,14 +1037,14 @@ export default function LaunchPage() {
             letterSpacing: 3,
             lineHeight: 1.25,
             textShadow:
-              "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 4px 4px 0 #000, 0 0 28px rgba(255,69,0,0.35)",
+              "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 4px 4px 0 #000, 0 0 28px rgba(249,115,22,0.35)",
           }}
         >
           {t("launch.title")}{" "}
           <span
             style={{
               background:
-                "linear-gradient(180deg, #FFE27D 0%, #FF4500 70%, #B8380B 100%)",
+                "linear-gradient(180deg, #FFE27D 0%, #F97316 70%, #B8380B 100%)",
               WebkitBackgroundClip: "text",
               backgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -1112,9 +1112,9 @@ export default function LaunchPage() {
                   style={{
                     fontSize: 10,
                     letterSpacing: 1,
-                    color: "#FF4500",
+                    color: "#F97316",
                     background: "transparent",
-                    border: "1px solid rgba(255,69,0,0.4)",
+                    border: "1px solid rgba(249,115,22,0.4)",
                     padding: "4px 8px",
                     cursor: "pointer",
                   }}
@@ -1354,7 +1354,7 @@ export default function LaunchPage() {
               disabled={scrapeLoading || !quickUrl.trim()}
               className="font-pixel h-11 px-6 shrink-0 border-0 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:hover:translate-x-0 disabled:hover:translate-y-0"
               style={{
-                background: "#FF4500",
+                background: "#F97316",
                 border: "2px solid #FFE27D",
                 color: "#1A0F00",
                 boxShadow: "3px 3px 0 #000, inset 0 8px 0 rgba(255,255,255,0.12), inset 0 -8px 0 rgba(0,0,0,0.2)",
@@ -1547,9 +1547,9 @@ export default function LaunchPage() {
                   className="flex flex-col gap-2 p-3 transition-colors"
                   style={{
                     border: videoDropActive
-                      ? "2px dashed #FF4500"
-                      : "2px dashed rgba(255,69,0,0.25)",
-                    background: videoDropActive ? "rgba(255,69,0,0.08)" : "transparent",
+                      ? "2px dashed #F97316"
+                      : "2px dashed rgba(249,115,22,0.25)",
+                    background: videoDropActive ? "rgba(249,115,22,0.08)" : "transparent",
                   }}
                 >
                   <div
@@ -1558,7 +1558,7 @@ export default function LaunchPage() {
                       fontSize: 8,
                       letterSpacing: 2,
                       color: videoDropActive ? "#FFE27D" : "rgba(255,226,125,0.55)",
-                      textShadow: videoDropActive ? "0 0 6px #FF4500" : "none",
+                      textShadow: videoDropActive ? "0 0 6px #F97316" : "none",
                       transition: "color 120ms, text-shadow 120ms",
                     }}
                   >
@@ -1584,7 +1584,7 @@ export default function LaunchPage() {
                       className="flex items-center gap-2 px-3 py-2 font-pixel text-xs transition-colors hover:bg-[color:var(--neon-orange)]/10 disabled:opacity-60"
                       style={{
                         background: "rgba(0,0,0,0.35)",
-                        border: "2px solid rgba(255,69,0,0.5)",
+                        border: "2px solid rgba(249,115,22,0.5)",
                         color: "#FFE27D",
                         letterSpacing: 1.5,
                         minHeight: 40,
@@ -1617,15 +1617,15 @@ export default function LaunchPage() {
                         style={{
                           height: 10,
                           background: "#0A0A0C",
-                          border: "1.5px solid rgba(255,69,0,0.5)",
+                          border: "1.5px solid rgba(249,115,22,0.5)",
                         }}
                       >
                         <div
                           className="absolute top-0 left-0 h-full"
                           style={{
                             width: `${videoUploadPercent}%`,
-                            background: "linear-gradient(90deg, #FF4500, #FFE27D)",
-                            boxShadow: "0 0 8px rgba(255,69,0,0.8)",
+                            background: "linear-gradient(90deg, #F97316, #FFE27D)",
+                            boxShadow: "0 0 8px rgba(249,115,22,0.8)",
                             transition: "width 160ms ease-out",
                           }}
                         />
@@ -1657,7 +1657,7 @@ export default function LaunchPage() {
                         className="flex items-center gap-2 font-retro text-xs"
                         style={{ color: "#FFE27D" }}
                       >
-                        <Film className="size-3" style={{ color: "#FF4500" }} />
+                        <Film className="size-3" style={{ color: "#F97316" }} />
                         <span className="truncate" title={demoVideoUrl}>
                           {demoVideoUrl.length > 60
                             ? demoVideoUrl.slice(0, 30) + "…" + demoVideoUrl.slice(-24)
@@ -1678,7 +1678,7 @@ export default function LaunchPage() {
                           height: 96,
                           objectFit: "cover",
                           background: "#0A0A0C",
-                          border: "2px solid rgba(255,69,0,0.6)",
+                          border: "2px solid rgba(249,115,22,0.6)",
                           boxShadow: "2px 2px 0 #000",
                           imageRendering: "pixelated",
                         }}
@@ -1727,8 +1727,8 @@ export default function LaunchPage() {
                 className="mt-8 flex flex-col items-center gap-3 p-6 text-center"
                 style={{
                   background: "#0A0A0C",
-                  border: "3px solid #FF4500",
-                  boxShadow: "6px 6px 0 #000, 0 0 32px rgba(255,69,0,0.45)",
+                  border: "3px solid #F97316",
+                  boxShadow: "6px 6px 0 #000, 0 0 32px rgba(249,115,22,0.45)",
                 }}
               >
                 <Image
@@ -1739,7 +1739,7 @@ export default function LaunchPage() {
                   unoptimized
                   style={{
                     imageRendering: "pixelated",
-                    filter: "drop-shadow(0 0 12px rgba(255,69,0,0.6))",
+                    filter: "drop-shadow(0 0 12px rgba(249,115,22,0.6))",
                   }}
                 />
                 <p
@@ -1748,7 +1748,7 @@ export default function LaunchPage() {
                     fontSize: 14,
                     letterSpacing: 2,
                     color: "#FFE27D",
-                    textShadow: "2px 2px 0 #000, 0 0 10px rgba(255,69,0,0.8)",
+                    textShadow: "2px 2px 0 #000, 0 0 10px rgba(249,115,22,0.8)",
                   }}
                 >
                   {lang === "zh" ? "✨ 17 张草稿生成中 ✨" : "✨ 17 DRAFTS GENERATING ✨"}
@@ -1773,7 +1773,7 @@ export default function LaunchPage() {
                   fontSize: 14,
                   letterSpacing: 3,
                   color: "#1A0F00",
-                  background: "#FF4500",
+                  background: "#F97316",
                   border: "4px solid #FFE27D",
                   boxShadow: "6px 6px 0 #000, inset 0 0 0 1px rgba(0,0,0,0.3), inset 0 12px 0 rgba(255,255,255,0.15), inset 0 -12px 0 rgba(0,0,0,0.25)",
                   textShadow: "0 1px 0 rgba(255,255,255,0.4)",
@@ -1811,13 +1811,13 @@ export default function LaunchPage() {
                 style={{
                   fontSize: 10,
                   letterSpacing: 3,
-                  color: "#FF4500",
-                  textShadow: "0 0 4px rgba(255,69,0,0.5)",
+                  color: "#F97316",
+                  textShadow: "0 0 4px rgba(249,115,22,0.5)",
                 }}
                 animate={
                   submitLoading
-                    ? { color: ["#FF4500", "#FACC15", "#FF4500"] }
-                    : { color: "#FF4500" }
+                    ? { color: ["#F97316", "#FACC15", "#F97316"] }
+                    : { color: "#F97316" }
                 }
                 transition={{
                   duration: 0.6,
@@ -1846,7 +1846,7 @@ export default function LaunchPage() {
                 }}
                 style={{
                   filter: submitLoading
-                    ? "drop-shadow(0 0 24px rgba(255,69,0,0.55))"
+                    ? "drop-shadow(0 0 24px rgba(249,115,22,0.55))"
                     : "none",
                   transition: "filter 0.3s ease",
                 }}
@@ -1878,9 +1878,9 @@ export default function LaunchPage() {
                   >
                     {[
                       { x: -80, y: -60, delay: 0, color: "#FFE27D" },
-                      { x: 70, y: -50, delay: 0.1, color: "#FF4500" },
+                      { x: 70, y: -50, delay: 0.1, color: "#F97316" },
                       { x: -50, y: 70, delay: 0.2, color: "#FACC15" },
-                      { x: 90, y: 40, delay: 0.3, color: "#FF4500" },
+                      { x: 90, y: 40, delay: 0.3, color: "#F97316" },
                       { x: -90, y: 10, delay: 0.4, color: "#FFE27D" },
                       { x: 60, y: -80, delay: 0.5, color: "#FACC15" },
                     ].map((s, i) => (
@@ -1943,7 +1943,7 @@ export default function LaunchPage() {
                 <div
                   className="flex size-9 items-center justify-center"
                   style={{
-                    background: "#FF4500",
+                    background: "#F97316",
                     border: "2px solid #FFE27D",
                     boxShadow: "2px 2px 0 #000",
                   }}
@@ -2023,7 +2023,7 @@ export default function LaunchPage() {
                   disabled={aiLoading}
                   className="font-pixel w-full h-10 border-0 hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform disabled:hover:translate-x-0 disabled:hover:translate-y-0"
                   style={{
-                    background: "#FF4500",
+                    background: "#F97316",
                     border: "2px solid #FFE27D",
                     color: "#1A0F00",
                     boxShadow: "3px 3px 0 #000, inset 0 6px 0 rgba(255,255,255,0.12), inset 0 -6px 0 rgba(0,0,0,0.2)",
@@ -2045,13 +2045,13 @@ export default function LaunchPage() {
                 <div
                   className="mt-4 p-4"
                   style={{
-                    border: "1px solid rgba(255,69,0,0.35)",
-                    background: "rgba(255,69,0,0.06)",
+                    border: "1px solid rgba(249,115,22,0.35)",
+                    background: "rgba(249,115,22,0.06)",
                   }}
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <Sparkles className="size-3.5" style={{ color: "#FF4500" }} />
-                    <span className="font-ui text-xs uppercase" style={{ color: "#FF4500", letterSpacing: 2 }}>
+                    <Sparkles className="size-3.5" style={{ color: "#F97316" }} />
+                    <span className="font-ui text-xs uppercase" style={{ color: "#F97316", letterSpacing: 2 }}>
                       AI Analysis Result
                     </span>
                   </div>
@@ -2146,7 +2146,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
         textShadow: "0 0 4px rgba(57,255,20,0.6)",
       }}
     >
-      <span aria-hidden style={{ display: "inline-block", width: 8, height: 8, background: "#FF4500", boxShadow: "0 0 6px rgba(255,69,0,0.8)" }} />
+      <span aria-hidden style={{ display: "inline-block", width: 8, height: 8, background: "#F97316", boxShadow: "0 0 6px rgba(249,115,22,0.8)" }} />
       <h3 className="m-0 uppercase">{children}</h3>
     </div>
   );
@@ -2174,7 +2174,7 @@ function FormField({
       className="relative rounded-lg transition-colors"
       style={{
         border: filled
-          ? "1px solid rgba(255,69,0,0.35)"
+          ? "1px solid rgba(249,115,22,0.35)"
           : "1px solid rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.015)",
       }}

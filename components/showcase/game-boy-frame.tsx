@@ -220,8 +220,8 @@ export function GameBoyFrame({ children, label, cta }: GameBoyFrameProps) {
                     width: 8,
                     height: 8,
                     borderRadius: "50%",
-                    background: "#FF4500",
-                    boxShadow: "0 0 6px #FF4500, inset 0 0 2px #fff",
+                    background: "#F97316",
+                    boxShadow: "0 0 6px #F97316, inset 0 0 2px #fff",
                     animation: "pulse 2s ease-in-out infinite",
                   }}
                 />

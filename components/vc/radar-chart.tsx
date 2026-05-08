@@ -21,7 +21,7 @@ const AXES = [
   { key: "aiInnovation", label: "AI", color: "#9D00FF" },
   { key: "marketTiming", label: "MKT", color: "#FACC15" },
   { key: "teamSignal", label: "TME", color: "#EC4899" },
-  { key: "revenuePotential", label: "REV", color: "#FF4500" },
+  { key: "revenuePotential", label: "REV", color: "#F97316" },
 ] as const;
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {

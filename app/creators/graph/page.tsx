@@ -20,7 +20,7 @@ interface SkillCount {
 }
 
 const SKILL_COLORS: Record<string, string> = {
-  AI: "#9D00FF", "Game Dev": "#FF4500", NLP: "#06B6D4", "Full-Stack": "#39FF14",
+  AI: "#9D00FF", "Game Dev": "#F97316", NLP: "#06B6D4", "Full-Stack": "#39FF14",
   Design: "#FF69B4", Security: "#FACC15", ML: "#06B6D4", React: "#61DAFB",
   Python: "#3776AB", "Pixel Art": "#FF6347", "AI Agent": "#9D00FF", "Fine-tuning": "#FACC15",
 };
@@ -48,7 +48,7 @@ export default function CreatorGraphPage() {
       {/* Terminal Header */}
       <div style={{ background: "#0A0A0C", padding: "8px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "2px solid #2A2A30" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ width: 10, height: 10, background: "#FF4500", display: "inline-block" }} />
+          <span style={{ width: 10, height: 10, background: "#F97316", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>
@@ -105,7 +105,7 @@ export default function CreatorGraphPage() {
                       <span className="font-pixel" style={{ fontSize: 7, color: "#39FF14" }}>{c.launches} launches</span>
                       <span className="font-pixel" style={{ fontSize: 7, color: "#FACC15" }}>{c.successRate}% success</span>
                       <span className="font-pixel" style={{ fontSize: 7, color: "#06B6D4" }}>{c.connections} connections</span>
-                      <span className="font-pixel" style={{ fontSize: 7, color: c.velocity > 10 ? "#FF4500" : "#888" }}>
+                      <span className="font-pixel" style={{ fontSize: 7, color: c.velocity > 10 ? "#F97316" : "#888" }}>
                         {c.velocity > 10 ? "\u2191" : ""}{c.velocity.toFixed(1)} velocity
                       </span>
                     </div>
@@ -130,13 +130,13 @@ export default function CreatorGraphPage() {
 
                 {/* Rising Creators */}
                 <div className="rpgui-container framed" style={{ padding: 12 }}>
-                  <div className="font-pixel" style={{ fontSize: 8, color: "#FF4500", marginBottom: 8 }}>
+                  <div className="font-pixel" style={{ fontSize: 8, color: "#F97316", marginBottom: 8 }}>
                     {"Rising Fastest"}
                   </div>
                   {rising.map((c) => (
                     <div key={c.name} style={{ padding: "4px 0", borderBottom: "1px solid #1A1A1E" }}>
                       <span className="font-pixel" style={{ fontSize: 8, color: "#E8E8EC" }}>{c.name}</span>
-                      <span className="font-pixel" style={{ fontSize: 7, color: "#FF4500", marginLeft: 6 }}>
+                      <span className="font-pixel" style={{ fontSize: 7, color: "#F97316", marginLeft: 6 }}>
                         +{c.velocity.toFixed(1)}/mo
                       </span>
                     </div>

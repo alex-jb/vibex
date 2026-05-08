@@ -22,7 +22,7 @@ const NEON_PURPLE = "#9D00FF";
 const NEON_YELLOW = "#FACC15";
 const NEON_CYAN = "#06B6D4";
 const NEON_PINK = "#EC4899";
-const NEON_ORANGE = "#FF4500";
+const NEON_ORANGE = "#F97316";
 const TEXT_DIM = "#71717a";
 const TEXT_LIGHT = "#d4d4d8";
 

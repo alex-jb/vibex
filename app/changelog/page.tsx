@@ -30,7 +30,7 @@ export default function ChangelogPage() {
       <div className="max-w-3xl mx-auto px-6 py-16">
         <p
           className="font-pixel text-[10px] uppercase tracking-[0.28em] mb-4"
-          style={{ color: "#FF4500" }}
+          style={{ color: "#F97316" }}
         >
           ▸ CHANGELOG · STRAIGHT FROM MASTER
         </p>

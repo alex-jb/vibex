@@ -12,7 +12,7 @@ const SEVERITY_STYLE: Record<
   must_fix: {
     label: "MUST FIX",
     color: "var(--neon-orange)",
-    bg: "rgba(255,69,0,0.08)",
+    bg: "rgba(249,115,22,0.08)",
     border: "var(--neon-orange)",
     accentBar: "var(--neon-orange)",
   },

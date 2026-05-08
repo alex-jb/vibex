@@ -80,7 +80,7 @@ export function UserMenu() {
           <div
             className="size-8 flex items-center justify-center text-[10px] font-bold"
             style={{
-              background: "linear-gradient(135deg, #FF4500 0%, #B8380B 100%)",
+              background: "linear-gradient(135deg, #F97316 0%, #B8380B 100%)",
               border: "2px solid #FFE27D",
               color: "#1A0F00",
               boxShadow: "2px 2px 0 #000",

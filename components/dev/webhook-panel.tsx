@@ -86,8 +86,8 @@ function StatusDot({ success }: { success: boolean }) {
         display: "inline-block",
         width: 8,
         height: 8,
-        background: success ? "#39FF14" : "#FF4500",
-        boxShadow: success ? "0 0 6px #39FF1480" : "0 0 6px #FF450080",
+        background: success ? "#39FF14" : "#F97316",
+        boxShadow: success ? "0 0 6px #39FF1480" : "0 0 6px #F9731680",
         flexShrink: 0,
       }}
     />
@@ -114,7 +114,7 @@ function WebhookCard({
       animate={{ opacity: 1, y: 0 }}
       style={{
         background: "#0A0A0C",
-        border: `2px solid ${webhook.is_active ? "#39FF1430" : "#FF450030"}`,
+        border: `2px solid ${webhook.is_active ? "#39FF1430" : "#F9731630"}`,
         padding: 14,
         marginBottom: 8,
       }}
@@ -126,7 +126,7 @@ function WebhookCard({
           style={{
             fontSize: 7,
             color: "#0D0D0D",
-            background: webhook.is_active ? "#39FF14" : "#FF4500",
+            background: webhook.is_active ? "#39FF14" : "#F97316",
             padding: "2px 6px",
           }}
         >
@@ -136,7 +136,7 @@ function WebhookCard({
           {truncateUrl(webhook.url)}
         </span>
         {webhook.failure_count > 0 && (
-          <span className="font-pixel" style={{ fontSize: 7, color: "#FF4500" }}>
+          <span className="font-pixel" style={{ fontSize: 7, color: "#F97316" }}>
             FAIL:{webhook.failure_count}
           </span>
         )}
@@ -292,7 +292,7 @@ function AddWebhookForm({ onAdd, onCancel }: { onAdd: (url: string, events: stri
       </div>
 
       {error && (
-        <div className="font-pixel" style={{ fontSize: 7, color: "#FF4500", marginTop: 8 }}>
+        <div className="font-pixel" style={{ fontSize: 7, color: "#F97316", marginTop: 8 }}>
           ERR: {error}
         </div>
       )}
@@ -394,9 +394,9 @@ export function WebhookPanel() {
                 fontSize: 7,
                 padding: "6px 10px",
                 marginBottom: 8,
-                color: testResult.ok ? "#39FF14" : "#FF4500",
-                background: testResult.ok ? "#39FF1410" : "#FF450010",
-                border: `1px solid ${testResult.ok ? "#39FF1430" : "#FF450030"}`,
+                color: testResult.ok ? "#39FF14" : "#F97316",
+                background: testResult.ok ? "#39FF1410" : "#F9731610",
+                border: `1px solid ${testResult.ok ? "#39FF1430" : "#F9731630"}`,
               }}
             >
               {testResult.ok ? `PING OK — ${testResult.ms}ms` : `PING FAIL — ${testResult.ms}ms`}
@@ -466,7 +466,7 @@ export function WebhookPanel() {
                 <span className="font-pixel" style={{ fontSize: 7, color: "#E8E8EC" }}>
                   {log.event}
                 </span>
-                <span className="font-pixel" style={{ fontSize: 7, color: log.success ? "#39FF14" : "#FF4500" }}>
+                <span className="font-pixel" style={{ fontSize: 7, color: log.success ? "#39FF14" : "#F97316" }}>
                   {log.response_status ?? "ERR"}
                 </span>
                 <span className="font-pixel" style={{ fontSize: 7, color: "#8888A0" }}>

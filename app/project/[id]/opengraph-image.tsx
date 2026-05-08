@@ -34,7 +34,7 @@ const C = {
   MUTED: "#8B7AA0",
   DIM: "#4A4050",
   GREEN: "#39FF14",
-  ORANGE: "#FF4500",
+  ORANGE: "#F97316",
   PURPLE: "#9D00FF",
   YELLOW: "#FACC15",
 };

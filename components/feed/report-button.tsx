@@ -89,11 +89,11 @@ export function ReportButton({ postId }: ReportButtonProps) {
             minWidth: 140,
           }}
         >
-          <div className="font-pixel" style={{ fontSize: 7, color: "#FF4500", marginBottom: 6 }}>
+          <div className="font-pixel" style={{ fontSize: 7, color: "#F97316", marginBottom: 6 }}>
             {t("feed.reportReason")}
           </div>
           {error && (
-            <div className="font-pixel" style={{ fontSize: 7, color: "#FF4500", marginBottom: 4 }}>
+            <div className="font-pixel" style={{ fontSize: 7, color: "#F97316", marginBottom: 4 }}>
               {error}
             </div>
           )}

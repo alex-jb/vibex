@@ -22,7 +22,7 @@ export function StackLanding({ cfg }: { cfg: StackPageConfig }) {
       <section className="px-6 pt-24 pb-16 max-w-4xl mx-auto">
         <p
           className="font-pixel text-[10px] uppercase tracking-[0.28em] mb-4"
-          style={{ color: cfg.brandColor === "#000000" ? "#FF4500" : cfg.brandColor }}
+          style={{ color: cfg.brandColor === "#000000" ? "#F97316" : cfg.brandColor }}
         >
           ▸ FOR{" "}
           <a
@@ -81,7 +81,7 @@ export function StackLanding({ cfg }: { cfg: StackPageConfig }) {
         </p>
         <div
           className="rounded-lg border-l-4 bg-white/[0.02] p-6"
-          style={{ borderLeftColor: cfg.brandColor === "#000000" ? "#FF4500" : cfg.brandColor }}
+          style={{ borderLeftColor: cfg.brandColor === "#000000" ? "#F97316" : cfg.brandColor }}
         >
           <p className="text-foreground/90 italic leading-relaxed">
             &ldquo;{cfg.sampleDraftQuote}&rdquo;

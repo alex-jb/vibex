@@ -21,7 +21,7 @@
 
      Don't add a 6th — if a status doesn't fit (success / warn / err
      / info / brand), reconsider why you need a new color first. */
-  --brand-forge: #FF4500;        /* primary brand orange */
+  --brand-forge: #F97316;        /* primary brand orange */
   --brand-cream: #FFE27D;        /* brand secondary accent */
   --brand-emerald: #10B981;      /* status: success / posted / amplified */
   --brand-violet: #8B5CF6;       /* secondary surface accent */
@@ -198,7 +198,7 @@
     transition: background-color 150ms, transform 150ms;
   }
   .btn-primary:hover {
-    background: #FF6633;
+    background: #FB923C;
   }
   .btn-primary:disabled {
     opacity: 0.5;

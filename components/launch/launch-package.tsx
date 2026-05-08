@@ -161,7 +161,7 @@ function ShareBar({ pkg }: { pkg: LaunchPackage }) {
             fontSize: 8,
             padding: "6px 10px",
             textDecoration: "none",
-            background: "#FF4500",
+            background: "#F97316",
             color: "#fff",
           }}
         >
@@ -288,7 +288,7 @@ export function LaunchPackageDisplay({ pkg }: LaunchPackageDisplayProps) {
               style={{
                 fontSize: 6,
                 color: "#0D0D0D",
-                background: ch.priority === "high" ? "#FF4500" : ch.priority === "medium" ? "#FACC15" : "#39FF14",
+                background: ch.priority === "high" ? "#F97316" : ch.priority === "medium" ? "#FACC15" : "#39FF14",
                 padding: "0 5px",
               }}
             >
@@ -309,10 +309,10 @@ export function LaunchPackageDisplay({ pkg }: LaunchPackageDisplayProps) {
       </Section>
 
       {/* Investor Pitch */}
-      <Section title={"Investor Pitch"} color="#FF4500">
+      <Section title={"Investor Pitch"} color="#F97316">
         {Object.entries(pkg.investorPitch).map(([key, val]) => (
           <div key={key} style={{ marginBottom: 6 }}>
-            <span className="font-pixel" style={{ fontSize: 7, color: "#FF4500" }}>
+            <span className="font-pixel" style={{ fontSize: 7, color: "#F97316" }}>
               {key.toUpperCase()}:
             </span>
             <div className="font-retro" style={{ fontSize: 12, color: "#E8E8EC", marginLeft: 8 }}>{val}</div>

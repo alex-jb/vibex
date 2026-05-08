@@ -292,7 +292,7 @@ export function HotRightNow() {
             fontSize: 12,
             color: "var(--neon-orange)",
             letterSpacing: 3,
-            textShadow: "0 0 5px rgba(255,69,0,0.8)",
+            textShadow: "0 0 5px rgba(249,115,22,0.8)",
           }}
         >
           ▸ HOT RIGHT NOW

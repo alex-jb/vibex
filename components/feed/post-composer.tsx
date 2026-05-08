@@ -120,11 +120,11 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
       style={{
         padding: 16,
         marginBottom: 16,
-        borderColor: successFlash ? "#39FF14" : errorMsg ? "#FF4500" : undefined,
+        borderColor: successFlash ? "#39FF14" : errorMsg ? "#F97316" : undefined,
         boxShadow: successFlash
           ? "0 0 12px #39FF1460"
           : errorMsg
-            ? "0 0 12px #FF450060"
+            ? "0 0 12px #F9731660"
             : undefined,
         transition: "border-color 0.3s, box-shadow 0.3s",
       }}
@@ -148,7 +148,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
       {errorMsg && (
         <div
           className="font-pixel"
-          style={{ fontSize: 8, color: "#FF4500", marginTop: 4 }}
+          style={{ fontSize: 8, color: "#F97316", marginTop: 4 }}
         >
           {errorMsg}
         </div>
@@ -160,7 +160,7 @@ export function PostComposer({ onNewPost }: PostComposerProps) {
           {/* Char counter */}
           <span
             className="font-pixel"
-            style={{ fontSize: 7, color: nearLimit ? "#FF4500" : "#555" }}
+            style={{ fontSize: 7, color: nearLimit ? "#F97316" : "#555" }}
           >
             {content.length}/{MAX_CHARS}
           </span>

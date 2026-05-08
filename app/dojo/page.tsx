@@ -120,7 +120,7 @@ export default function DojoPage() {
       <div
         aria-hidden
         className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
-        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+        style={{ background: "radial-gradient(closest-side, rgba(249,115,22,0.14), transparent 70%)" }}
       />
 
       {/* Terminal header bar */}
@@ -301,8 +301,8 @@ export default function DojoPage() {
                   <div
                     className="inline-flex items-center justify-center size-14 mb-4"
                     style={{
-                      background: "rgba(255,69,0,0.12)",
-                      border: "2px dashed rgba(255,69,0,0.35)",
+                      background: "rgba(249,115,22,0.12)",
+                      border: "2px dashed rgba(249,115,22,0.35)",
                     }}
                   >
                     <Lock className="size-7" style={{ color: "rgba(255,226,125,0.6)" }} />
@@ -332,7 +332,7 @@ export default function DojoPage() {
       >
         <div className="rpgui-container framed" style={{ padding: "1.5rem" }}>
           <div className="flex items-center gap-2 mb-4">
-            <Share2 className="size-4" style={{ color: "#FF4500" }} />
+            <Share2 className="size-4" style={{ color: "#F97316" }} />
             <span
               className="font-pixel text-[8px] uppercase tracking-widest"
               style={{ color: "#FACC15", textShadow: "0 0 8px rgba(250,204,21,0.3)" }}

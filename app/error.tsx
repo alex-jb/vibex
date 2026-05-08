@@ -48,7 +48,7 @@ export default function GlobalError({
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at center, rgba(255,69,0,0.12) 0%, transparent 60%)",
+            "radial-gradient(ellipse at center, rgba(249,115,22,0.12) 0%, transparent 60%)",
         }}
         animate={{ opacity: [0.4, 0.8, 0.4, 0.9, 0.5] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -67,9 +67,9 @@ export default function GlobalError({
           style={{
             background:
               "linear-gradient(180deg, #1a0000 0%, #2a0505 50%, #1a0000 100%)",
-            border: "3px solid #FF4500",
+            border: "3px solid #F97316",
             boxShadow:
-              "0 0 0 1px #000, 0 0 0 5px #2a0505, 0 0 40px rgba(255,69,0,0.35), 0 12px 40px rgba(0,0,0,0.8)",
+              "0 0 0 1px #000, 0 0 0 5px #2a0505, 0 0 40px rgba(249,115,22,0.35), 0 12px 40px rgba(0,0,0,0.8)",
           }}
         >
           {/* Top warning strip */}
@@ -77,7 +77,7 @@ export default function GlobalError({
             className="flex items-center justify-between mb-6 px-3 py-1.5"
             style={{
               background:
-                "repeating-linear-gradient(-45deg, #FF4500, #FF4500 8px, #1a0000 8px, #1a0000 16px)",
+                "repeating-linear-gradient(-45deg, #F97316, #F97316 8px, #1a0000 8px, #1a0000 16px)",
               border: "1px solid #FFB000",
             }}
           >
@@ -116,7 +116,7 @@ export default function GlobalError({
               fontSize: "clamp(24px, 7vw, 48px)",
               color: "#FFF",
               textShadow:
-                "3px 3px 0 #FF4500, -2px -2px 0 rgba(255,255,0,0.4), 0 0 24px rgba(255,69,0,0.6)",
+                "3px 3px 0 #F97316, -2px -2px 0 rgba(255,255,0,0.4), 0 0 24px rgba(249,115,22,0.6)",
               lineHeight: 1.2,
             }}
           >
@@ -128,8 +128,8 @@ export default function GlobalError({
             className="mb-6 p-3 sm:p-4"
             style={{
               background: "rgba(0,0,0,0.7)",
-              border: "1px solid rgba(255,69,0,0.4)",
-              boxShadow: "inset 0 0 20px rgba(255,69,0,0.08)",
+              border: "1px solid rgba(249,115,22,0.4)",
+              boxShadow: "inset 0 0 20px rgba(249,115,22,0.08)",
             }}
           >
             <div className="flex items-start gap-2">
@@ -137,9 +137,9 @@ export default function GlobalError({
                 className="font-pixel shrink-0"
                 style={{
                   fontSize: 9,
-                  color: "#FF4500",
+                  color: "#F97316",
                   marginTop: 2,
-                  textShadow: "0 0 6px rgba(255,69,0,0.6)",
+                  textShadow: "0 0 6px rgba(249,115,22,0.6)",
                 }}
               >
                 {">"}
@@ -215,8 +215,8 @@ export default function GlobalError({
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 font-pixel transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-500/50"
                 style={{
                   background: "rgba(0,0,0,0.6)",
-                  border: "2px solid #FF4500",
-                  boxShadow: "3px 3px 0 #000, 0 0 16px rgba(255,69,0,0.3)",
+                  border: "2px solid #F97316",
+                  boxShadow: "3px 3px 0 #000, 0 0 16px rgba(249,115,22,0.3)",
                   color: "#FFB8A3",
                   minHeight: "48px",
                   fontSize: 9,
@@ -237,7 +237,7 @@ export default function GlobalError({
               style={{
                 fontSize: 7,
                 letterSpacing: 3,
-                color: "rgba(255,69,0,0.5)",
+                color: "rgba(249,115,22,0.5)",
                 animation: "pulse 2s ease-in-out infinite",
               }}
             >

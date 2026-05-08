@@ -24,7 +24,7 @@ import { supabase } from "@/lib/supabase";
    separate count queries because we need both total + weekly-delta + sum.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-const FORGE = "#FF4500";
+const FORGE = "#F97316";
 const CREAM = "#FFE27D";
 
 type Counts = {

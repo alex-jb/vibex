@@ -18,7 +18,7 @@ function PixelBar({
 }) {
   const pct = Math.min(100, (value / max) * 100);
   const colors = {
-    hp: pct > 50 ? "#39FF14" : pct > 25 ? "#FACC15" : "#FF4500",
+    hp: pct > 50 ? "#39FF14" : pct > 25 ? "#FACC15" : "#F97316",
     mp: "#06B6D4",
     exp: "#9D00FF",
   };

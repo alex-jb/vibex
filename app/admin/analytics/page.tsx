@@ -62,7 +62,7 @@ export default function AnalyticsPage() {
     <div className="max-w-4xl mx-auto px-4 py-6">
       {/* Terminal Header */}
       <div style={{ background: "#0A0A0C", padding: "8px 12px", display: "flex", alignItems: "center", gap: 8, borderBottom: "2px solid #2A2A30" }}>
-        <span style={{ width: 10, height: 10, background: "#FF4500", display: "inline-block" }} />
+        <span style={{ width: 10, height: 10, background: "#F97316", display: "inline-block" }} />
         <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
         <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2, marginLeft: 8 }}>
@@ -125,7 +125,7 @@ export default function AnalyticsPage() {
                       key={key}
                       label={key.replace(/WeekOverWeek/, "").replace(/([A-Z])/g, " $1").trim()}
                       value={`${val > 0 ? "+" : ""}${val}%`}
-                      color={val > 0 ? "#39FF14" : "#FF4500"}
+                      color={val > 0 ? "#39FF14" : "#F97316"}
                     />
                   ))}
                 </div>

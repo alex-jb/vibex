@@ -39,7 +39,7 @@ export function BattlePhase({
       <div className="grid grid-cols-1 md:grid-cols-[1fr_40px_1fr] gap-3" style={{ marginBottom: 20 }}>
         <FighterPanel project={challenger} side="left" isAttacking={attackingSide === "left"} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span className="font-pixel" style={{ fontSize: 10, color: "#FF4500" }}>VS</span>
+          <span className="font-pixel" style={{ fontSize: 10, color: "#F97316" }}>VS</span>
         </div>
         <FighterPanel project={defender} side="right" isAttacking={attackingSide === "right"} />
       </div>
@@ -62,7 +62,7 @@ export function BattlePhase({
           if (line.includes("[SYSTEM]")) color = "#555";
           else if (line.includes("CRITICAL")) color = "#FACC15";
           else if (line.includes("WIN") || line.includes("defeats")) color = "#39FF14";
-          else if (line.includes("LOSE")) color = "#FF4500";
+          else if (line.includes("LOSE")) color = "#F97316";
           else if (line.includes("Round")) color = "#9D00FF";
           else if (line.includes("AI Battle Commentary")) color = "#06B6D4";
           else if (line.includes("═")) color = "#333";
@@ -87,7 +87,7 @@ export function BattlePhase({
               display: "inline-block",
               width: 8,
               height: 16,
-              background: "#FF4500",
+              background: "#F97316",
               animation: "blink-cursor 0.6s step-end infinite",
             }}
           />

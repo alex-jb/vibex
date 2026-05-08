@@ -19,7 +19,7 @@ function getInitials(name: string): string {
 
 function avatarColor(name: string): string {
   const palette = [
-    "#9D00FF", "#39FF14", "#FF4500", "#06B6D4",
+    "#9D00FF", "#39FF14", "#F97316", "#06B6D4",
     "#FACC15", "#FF69B4", "#00BFFF", "#FF6347",
   ];
   let h = 0;
@@ -183,7 +183,7 @@ export function RealtimeChat({ projectId }: { projectId: string }) {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ width: 10, height: 10, background: "#FF4500", display: "inline-block" }} />
+          <span style={{ width: 10, height: 10, background: "#F97316", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
           <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         </div>
@@ -199,14 +199,14 @@ export function RealtimeChat({ projectId }: { projectId: string }) {
               width: 6,
               height: 6,
               borderRadius: "50%",
-              background: connected ? "#FF4500" : "#555",
+              background: connected ? "#F97316" : "#555",
               display: "inline-block",
               animation: connected ? "pulse-live 1.5s ease-in-out infinite" : "none",
             }}
           />
           <span
             className="font-pixel"
-            style={{ fontSize: 7, color: connected ? "#FF4500" : "#555" }}
+            style={{ fontSize: 7, color: connected ? "#F97316" : "#555" }}
           >
             {connected ? "LIVE" : "OFFLINE"}
           </span>
@@ -365,7 +365,7 @@ export function RealtimeChat({ projectId }: { projectId: string }) {
           <span className="font-pixel" style={{ fontSize: 6, color: "#444" }}>
             MSG: {messages.length}
           </span>
-          <span className="font-pixel" style={{ fontSize: 6, color: connected ? "#39FF14" : "#FF4500" }}>
+          <span className="font-pixel" style={{ fontSize: 6, color: connected ? "#39FF14" : "#F97316" }}>
             {connected ? "CONNECTED" : "DISCONNECTED"}
           </span>
         </div>

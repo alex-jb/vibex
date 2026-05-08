@@ -73,7 +73,7 @@ export function PodiumCard({
       iconBg: "linear-gradient(135deg, #FF7A36, #C94A1E)",
       icon: <Medal className="size-5" style={{ color: "#FFF" }} />,
       rankColor: "var(--neon-orange)",
-      rankShadow: "0 0 10px rgba(255,69,0,0.6), 2px 2px 0 #000",
+      rankShadow: "0 0 10px rgba(249,115,22,0.6), 2px 2px 0 #000",
       borderColor: "var(--neon-orange)",
     },
   };

@@ -57,7 +57,7 @@ const STAGE_COLOR: Record<string, string> = {
   Active: "#39FF14",
   Growing: "#FACC15",
   Breakout: "#FF8800",
-  Legend: "#FF4500",
+  Legend: "#F97316",
   Myth: "#A855F7",
 };
 
@@ -304,7 +304,7 @@ export default function DashboardPage() {
         <div className="mb-8 flex flex-wrap gap-3">
           <Link
             href="/launch"
-            className="px-5 py-2.5 rounded-md bg-[#FF4500] hover:bg-[#FF6633] text-black text-sm font-semibold"
+            className="px-5 py-2.5 rounded-md bg-[#F97316] hover:bg-[#FB923C] text-black text-sm font-semibold"
             style={{ boxShadow: "4px 4px 0 #000" }}
           >
             {lang === "zh" ? "▶ 提交新项目" : "▶ Submit new project"}
@@ -678,12 +678,12 @@ function OnboardingQuest({
 
   return (
     <section
-      className="rounded-xl border border-[#FF4500]/40 bg-gradient-to-br from-[#FF4500]/10 to-violet-500/5 p-5 mb-8"
+      className="rounded-xl border border-[#F97316]/40 bg-gradient-to-br from-[#F97316]/10 to-violet-500/5 p-5 mb-8"
       style={{ boxShadow: "4px 4px 0 #000" }}
     >
       <div className="flex items-start justify-between mb-3 flex-wrap gap-2">
         <div>
-          <p className="font-pixel text-[10px] uppercase tracking-wider text-[#FF6633] mb-1">
+          <p className="font-pixel text-[10px] uppercase tracking-wider text-[#FB923C] mb-1">
             ▸ {lang === "zh" ? "新手任务" : "ONBOARDING QUEST"}
           </p>
           <h2 className="text-lg font-bold text-foreground">
@@ -709,7 +709,7 @@ function OnboardingQuest({
       {/* Progress bar */}
       <div className="h-1.5 bg-white/5 rounded-full mb-4 overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-[#FF4500] to-yellow-400 transition-all duration-500"
+          className="h-full bg-gradient-to-r from-[#F97316] to-yellow-400 transition-all duration-500"
           style={{ width: `${(doneCount / 3) * 100}%` }}
         />
       </div>

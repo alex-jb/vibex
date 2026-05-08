@@ -49,7 +49,7 @@ export default function IdeasPage() {
       <div
         aria-hidden
         className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full"
-        style={{ background: "radial-gradient(closest-side, rgba(255,69,0,0.14), transparent 70%)" }}
+        style={{ background: "radial-gradient(closest-side, rgba(249,115,22,0.14), transparent 70%)" }}
       />
 
       {/* Page Hero — pixel treatment matching /home + /creators */}

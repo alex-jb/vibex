@@ -163,7 +163,7 @@ export function ChatDemo({ projectTitle }: ChatDemoProps) {
             disabled={!input.trim() || isTyping}
             className="flex size-8 items-center justify-center transition-opacity hover:opacity-90 disabled:opacity-40"
             style={{
-              background: "#FF4500",
+              background: "#F97316",
               border: "2px solid #FFE27D",
               color: "#1A0F00",
               boxShadow: "2px 2px 0 #000",

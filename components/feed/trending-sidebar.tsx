@@ -67,7 +67,7 @@ export function TrendingSidebar({ activeTag, onTagClick }: TrendingSidebarProps)
             aria-label={t("feed.clearFilter")}
             style={{
               fontSize: 7,
-              color: "#FF4500",
+              color: "#F97316",
               background: "none",
               border: "none",
               cursor: "pointer",

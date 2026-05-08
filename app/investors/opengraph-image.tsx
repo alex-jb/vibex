@@ -13,8 +13,8 @@ const C = {
   BORDER: "#3A3A42",
   TEXT: "#E8E8EC",
   MUTED: "#8B7AA0",
-  FORGE: "#FF4500",
-  FORGE_DIM: "#FF450040",
+  FORGE: "#F97316",
+  FORGE_DIM: "#F9731640",
   CREAM: "#FFE27D",
   GREEN: "#39FF14",
 };

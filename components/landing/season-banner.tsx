@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
    the season ends the banner hides itself, no deploy needed.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-const FORGE = "#FF4500";
+const FORGE = "#F97316";
 const CREAM = "#FFE27D";
 
 // Season 1 end: 2026-04-30 23:59:59 UTC.
@@ -53,7 +53,7 @@ export function SeasonBanner() {
         letterSpacing: 2.2,
         color: "var(--text-muted)",
         borderBottom: `1px solid ${FORGE}66`,
-        background: "rgba(255,69,0,0.05)",
+        background: "rgba(249,115,22,0.05)",
         whiteSpace: "nowrap",
         overflow: "hidden",
       }}

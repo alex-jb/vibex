@@ -25,7 +25,7 @@ function getInitials(name: string): string {
 
 function avatarColor(name: string): string {
   const palette = [
-    "#9D00FF", "#39FF14", "#FF4500", "#06B6D4",
+    "#9D00FF", "#39FF14", "#F97316", "#06B6D4",
     "#FACC15", "#FF69B4", "#00BFFF", "#FF6347",
   ];
   let h = 0;

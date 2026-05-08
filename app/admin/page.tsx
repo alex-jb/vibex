@@ -59,7 +59,7 @@ export default function AdminPage() {
     <div className="max-w-4xl mx-auto px-4 py-6">
       {/* Terminal Header */}
       <div style={{ background: "#0A0A0C", padding: "8px 12px", display: "flex", alignItems: "center", gap: 8, borderBottom: "2px solid #2A2A30" }}>
-        <span style={{ width: 10, height: 10, background: "#FF4500", display: "inline-block" }} />
+        <span style={{ width: 10, height: 10, background: "#F97316", display: "inline-block" }} />
         <span style={{ width: 10, height: 10, background: "#FACC15", display: "inline-block" }} />
         <span style={{ width: 10, height: 10, background: "#39FF14", display: "inline-block" }} />
         <span className="font-pixel" style={{ fontSize: 8, color: "#555", letterSpacing: 2, marginLeft: 8 }}>
@@ -68,7 +68,7 @@ export default function AdminPage() {
       </div>
 
       <div className="rpgui-container framed" style={{ padding: 20, minHeight: "70vh" }}>
-        <div className="font-pixel" style={{ fontSize: 14, color: "#FF4500", marginBottom: 16 }}>
+        <div className="font-pixel" style={{ fontSize: 14, color: "#F97316", marginBottom: 16 }}>
           {"> Admin Panel"}
         </div>
 
@@ -95,10 +95,10 @@ export default function AdminPage() {
               {flaggedPosts.map((post) => {
                 const reports = pendingReports.filter((r) => r.post_id === post.id);
                 return (
-                  <div key={post.id} className="retro-card" style={{ padding: 12, marginBottom: 8, border: "1px solid #FF450040" }}>
+                  <div key={post.id} className="retro-card" style={{ padding: 12, marginBottom: 8, border: "1px solid #F9731640" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                       <span className="font-pixel" style={{ fontSize: 7, color: "#9D00FF" }}>{post.user_name}</span>
-                      <span className="font-pixel" style={{ fontSize: 7, color: "#FF4500" }}>{post.moderation_status.toUpperCase()}</span>
+                      <span className="font-pixel" style={{ fontSize: 7, color: "#F97316" }}>{post.moderation_status.toUpperCase()}</span>
                     </div>
                     <div className="font-retro" style={{ fontSize: 12, color: "#E8E8EC", marginBottom: 8, maxHeight: 60, overflow: "hidden" }}>
                       {post.content}

@@ -9,8 +9,8 @@
 //   Lv.16-20  Intermediate  #06B6D4
 //   Lv.21-25  Advanced      #9D00FF
 //   Lv.26-30  Senior        #9D00FF
-//   Lv.31-35  Expert        #FF4500
-//   Lv.36-40  Master        #FF4500
+//   Lv.31-35  Expert        #F97316
+//   Lv.36-40  Master        #F97316
 //   Lv.41-45  Grandmaster   #FACC15
 //   Lv.46-50  Legend         #FACC15
 // ═══════════════════════════════════════════════════════════════
@@ -42,8 +42,8 @@ const TIER_TITLES: { maxLevel: number; tier: CreatorLevel; title: string; titleZ
   { maxLevel: 20, tier: "Coder", title: "Intermediate", titleZh: "Intermediate", color: "#06B6D4" },
   { maxLevel: 25, tier: "Builder", title: "Advanced", titleZh: "Advanced", color: "#9D00FF" },
   { maxLevel: 30, tier: "Builder", title: "Senior", titleZh: "Senior", color: "#9D00FF" },
-  { maxLevel: 35, tier: "Master", title: "Expert", titleZh: "Expert", color: "#FF4500" },
-  { maxLevel: 40, tier: "Master", title: "Master", titleZh: "Master", color: "#FF4500" },
+  { maxLevel: 35, tier: "Master", title: "Expert", titleZh: "Expert", color: "#F97316" },
+  { maxLevel: 40, tier: "Master", title: "Master", titleZh: "Master", color: "#F97316" },
   { maxLevel: 45, tier: "Legend", title: "Grandmaster", titleZh: "Grandmaster", color: "#FACC15" },
   { maxLevel: 50, tier: "Legend", title: "Legend", titleZh: "Legend", color: "#FACC15" },
 ];

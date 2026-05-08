@@ -20,9 +20,9 @@ export function SectionHeader({
           <span
             className="font-pixel mb-2 inline-block px-3 py-1 text-[10px] tracking-widest"
             style={{
-              background: "rgba(255,69,0,0.1)",
-              border: "1px solid rgba(255,69,0,0.35)",
-              color: "#FF4500",
+              background: "rgba(249,115,22,0.1)",
+              border: "1px solid rgba(249,115,22,0.35)",
+              color: "#F97316",
             }}
           >
             {badge}
