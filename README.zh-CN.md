@@ -3,81 +3,62 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots-v2/01-landing.png" width="820" alt="VibeXForge — 进入传送门" />
+  <a href="https://www.vibexforge.com">
+    <img src="docs/screenshots-v3/01-landing.png" width="820" alt="VibeXForge — 给独立 AI 创作者的多渠道发行放大器" />
+  </a>
 </p>
 
 <h1 align="center">VibeXForge</h1>
-<p align="center"><sub>曾用名 <strong>VibeX</strong></sub></p>
 
 <p align="center">
-  <strong>把你的 AI 项目变成一张可收藏的像素 RPG 英雄卡。</strong><br/>
-  <sub>贴一个 URL 或 GitHub 仓库 → Claude 从 5 个维度打分(原创度、清晰度、UX 潜力、病毒潜力、投资人好奇心)→ 项目根据真实 plays / upvotes / shares 自动进化 <code>Seed → Active → Growing → Breakout → Legend → Myth</code>。不是 24 小时投票赛跑,是一个奖励"持续变好"的作品展。</sub>
+  <strong>给独立 AI 创作者的多渠道发行放大器。</strong><br/>
+  <sub>提交一次 AI 作品,我们的 agent 在 10 秒内自动生成 17 篇平台原生帖子 —— X、Reddit、Hacker News、Dev.to、LinkedIn、Bluesky、Threads、小红书、即刻、知乎、B 站。审核、修改、一键发布,跨平台 engagement 一个 dashboard 全看见。</sub>
 </p>
 
 <p align="center">
-  <a href="https://www.vibexforge.com/launch"><img src="https://img.shields.io/badge/▶_试试在线版-Forge_一个_Project-8b5cf6?style=for-the-badge" alt="试试在线版" /></a>
-  <a href="#-快速开始"><img src="https://img.shields.io/badge/⚡_本地运行-30秒-39FF14?style=for-the-badge" alt="本地运行" /></a>
-  <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/badge/⭐_Star-GitHub-FACC15?style=for-the-badge" alt="Star" /></a>
+  <a href="https://www.vibexforge.com/launch"><img src="https://img.shields.io/badge/▶_提交项目-Beta_期免费-FF4500?style=for-the-badge" alt="提交项目" /></a>
+  <a href="#-本地启动"><img src="https://img.shields.io/badge/⚡_本地启动-30_秒-39FF14?style=for-the-badge" alt="本地启动" /></a>
+  <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/badge/⭐_点亮-GitHub-FACC15?style=for-the-badge" alt="Star" /></a>
 </p>
 
-<p align="center">
-  <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/github/stars/alex-jb/vibex?style=flat-square&logo=github&color=9D00FF" alt="Stars" /></a>
-  <a href="https://github.com/alex-jb/vibex/commits"><img src="https://img.shields.io/github/commit-activity/m/alex-jb/vibex?style=flat-square&color=39FF14" alt="Commits" /></a>
-  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-000?style=flat-square&logo=next.js" alt="Next.js" /></a>
-  <a href="https://supabase.com"><img src="https://img.shields.io/badge/Supabase-Realtime-3ECF8E?style=flat-square&logo=supabase" alt="Supabase" /></a>
-  <a href="https://anthropic.com"><img src="https://img.shields.io/badge/Claude-Haiku_4.5-D97706?style=flat-square" alt="Claude" /></a>
-</p>
+---
+
+## 真实痛点
+
+你 vibe-coded 了一个 AI 作品。开发是简单的部分。
+
+接下来是分发。同一个产品,10 个平台 10 套规矩:X 限 270 字、Reddit 要不商业化的口吻、Hacker News 要技术深度、小红书要 emoji + 种草氛围、LinkedIn 要叙事、Dev.to 要长文。10 个版本认真写完,3-4 小时没了 —— 而那时你刚 ship 完产品,人已经空了。
+
+独立开发者最后只发一个最熟的平台。曝光直接坍塌。
+
+## 核心闭环
+
+```
+提交 URL  →  Claude 并行生成 17 张平台原生草稿(~10 秒)
+          →  逐张审核、内联编辑、批准
+          →  一键打开平台,文案已预填
+          →  标记已发布,粘贴 URL
+          →  Cron 每 6 小时抓 engagement
+          →  Dashboard 显示哪个渠道转化率最高
+```
+
+**原生中英双语。** 一次提交同时生成 EN + ZH 草稿 —— 西方独立黑客 + 国内 AI 创作者(小红书 / 即刻 / 知乎 / B 站)同时触达,不用重写。
+
+**平台专属 prompt。** 每张草稿都用平台专属 system prompt:hook 规则、长度上限、反营销腔、数字不重复、强制输出语言。所有规则都是 dogfood 跑出来调出来的。
+
+**真实 engagement 跟踪。** Reddit / HN / Dev.to / Bluesky / X 公共 API scraper。Cron 写 append-only snapshot,看到的是 30 天曲线,不是当前快照。
 
 ---
 
 ## Demo
 
-https://github.com/alex-jb/vibex/releases/download/v0.1.0-demo/vibex-demo.mp4
-
-> **在线版**: [vibexforge.com/launch](https://www.vibexforge.com/launch) — GitHub 登录, 贴任意 URL, 30 秒内看到真实的 Claude review.
+> **生产环境:** [vibexforge.com](https://www.vibexforge.com) —— GitHub / Google 登录,提交任意 URL,10 秒拿到 17 张平台原生草稿。
 
 ---
 
-## 要解决的问题
+## 本地启动
 
-所有人都在 vibe coding. **造东西容易, 被看见才是瓶颈.**
-
-你上线了一个 AI 项目, 发了链接, 没人点. 代码没问题, 但 landing page 标题弱, buzzword 太多, 陌生人 5 秒看不懂你是干嘛的. 独立开发者没有设计师, 没有文案, 也没有 growth advisor.
-
-## 这个 Loop
-
-VibeXForge 就是那个 advisor, 由 Claude 驱动.
-
-**1. Forge** — 贴你的项目 URL. 我们抓页面, 解析 pitch, 索引 README.
-
-**2. Review** — Claude 以第一次访客的视角读完, 返回 5-7 条结构化 action. 每条带清晰的标题, 为什么值得做, 和可以直接复制粘贴的建议.
-
-**3. Apply** — 点 Apply 入日志. 下周回来再跑一次, 看分数有没有涨.
-
-整个产品就这个闭环.
-
-游戏化的外壳 (进化阶段, 稀有度, 像素风 chrome) 是为了让审稿这件事感觉像游戏不像作业.
-
----
-
-## Demo
-
-**在线版**: [vibexforge.com/launch](https://www.vibexforge.com/launch) — GitHub 登录, 贴任意 URL, 30 秒内看到真实的 Claude review.
-
-|  |  |
-|---|---|
-| ![Landing](docs/screenshots-v2/01-landing.png) | ![HQ](docs/screenshots-v2/02-home.png) |
-| **传送门** — 每次进入的起点 | **HQ** — 你的项目 + 今日 leaderboard |
-| ![Project](docs/screenshots-v2/04-project.png) | ![Hunt](docs/screenshots-v2/03-hunt.png) |
-| **项目详情** — review 历史 + 数据 | **Hunt** — 每日 / 每周排行 |
-| ![Ideas](docs/screenshots-v2/05-ideas.png) | ![Creators](docs/screenshots-v2/06-creators.png) |
-| **Idea Lab** — 想法动手前先打个分 | **Creators** — 项目背后的人 |
-
----
-
-## 快速开始
-
-**30 秒起飞, 零配置.** 不需要 API key, 不需要数据库, 不需要注册.
+**30 秒跑起来。零配置。** 不用 API key,不用数据库,不用注册。
 
 ```bash
 git clone https://github.com/alex-jb/vibex.git
@@ -86,21 +67,25 @@ npm install
 npm run dev
 ```
 
-打开 http://localhost:3000. 默认跑在 **mock 模式**, 带内置的 demo 数据, 你可以完全不配 Supabase + Claude 就把每个页面看一遍.
+打开 http://localhost:3000。应用进入 **mock 模式**,内置示例数据。
 
 <details>
-<summary><strong>想跑真数据? 接一下 Supabase + Claude (可选)</strong></summary>
+<summary><strong>想跑真实数据?接 Supabase + Claude(可选)</strong></summary>
 
 ```bash
 cp .env.local.example .env.local
 # 填入:
 #   NEXT_PUBLIC_SUPABASE_URL
 #   NEXT_PUBLIC_SUPABASE_ANON_KEY
-#   ANTHROPIC_API_KEY
+#   ANTHROPIC_API_KEY        # Claude Sonnet 4.6 写草稿
+#   OPENAI_API_KEY           # gpt-image-2 生成小红书封面
+#   BLOB_READ_WRITE_TOKEN    # Vercel Blob 存封面图
+#   CRON_SECRET              # cron 路由的 Bearer token
+#   SUPABASE_SERVICE_ROLE_KEY # cron 写库
 npm run dev
 ```
 
-然后在 Supabase Dashboard 的 SQL Editor 里跑 `supabase/migrations/*.sql` 里的 migration. 详细流程见 [CONTRIBUTING.md](./CONTRIBUTING.md).
+`.private/migrations/*.sql` 里的 SQL 通过 Supabase Dashboard SQL 编辑器运行。完整步骤见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
 </details>
 
@@ -108,104 +93,62 @@ npm run dev
 
 ## 技术栈
 
-| 层 | 选型 | 为什么 |
+| 层 | 选择 | 原因 |
 |---|---|---|
-| 框架 | Next.js 16 (App Router, Turbopack) | Server Components + streaming |
-| 语言 | TypeScript 5 (strict) | 重构不慌 |
-| UI | React 19 + Tailwind v4 + Framer Motion | 零配置, 快, 动效顺 |
-| 设计 | nes-core.css + 本地 rpgui + 自定义像素 token | 16 位复古感, CSS ~50KB |
-| 数据库 | Supabase (Postgres + RLS + Realtime) | 一套栈, 一套 auth, realtime 开箱即用 |
-| Auth | Supabase Auth (GitHub + Google OAuth + PKCE) | Cookie, 不是 localStorage — SSR 友好 |
-| AI | Anthropic Claude Sonnet 4.6 + tool_use | 结构化 JSON review, 不是流水账 |
-| 监控 | Sentry + PostHog | 错误 + 产品数据 |
-| 部署 | Vercel + GitHub Actions | `git push` 就是 prod |
+| 框架 | Next.js 16(App Router + Turbopack)| RSC + streaming + 必要时 edge runtime |
+| 语言 | TypeScript 5(strict)| 大胆重构 |
+| UI | React 19 + Tailwind v4 + Framer Motion | 零配置、快、平滑 |
+| 数据库 | Supabase(Postgres + RLS + Realtime)| 一套栈、一套 auth、realtime 草稿 |
+| Auth | Supabase Auth(GitHub + Google + PKCE)| Cookies 不是 localStorage |
+| 草稿 | Claude Sonnet 4.6 + prompt cache | 并行调用,~10 秒 17 张 |
+| 翻译 | Claude Sonnet 4.6(每日 batch)| EN ↔ ZH 创作者内容自动翻译 |
+| 视觉 | OpenAI gpt-image-2 | 按需生成小红书封面 |
+| 存储 | Vercel Blob | 封面图 + demo 视频 |
+| 邮件 | Resend + Vercel Cron | 欢迎 / 草稿就绪 / 周报 / 每日总结 |
+| Engagement | 公共 scraper(Reddit/HN/Dev.to/Bluesky/X)| 每 6 小时跑,append-only 历史 |
+| 监控 | Sentry + HyperDX | 服务端错误 + 浏览器 session replay |
+| 分析 | OpenPanel | 无 cookie 的产品分析 |
+| 部署 | Vercel + GitHub Actions | `git push` = prod |
 
 ---
 
-## 架构
-
-```
-vibex/
-├── app/                      # Next.js 16 App Router
-│   ├── page.tsx              # Landing (传送门)
-│   ├── home/                 # HQ dashboard (登陆后)
-│   ├── hunt/                 # Realtime leaderboard
-│   ├── launch/               # Forge 一个 project → AI review
-│   ├── project/[id]/         # 项目详情 + review 历史
-│   ├── ideas/                # Idea Lab (动手前先打分)
-│   ├── creators/             # 创作者 profile + 排行
-│   └── api/                  # REST + streaming endpoint
-├── components/
-│   ├── ui/                   # shadcn 衍生的基础组件
-│   ├── rpg/                  # 像素外壳 (卡片, 进化 badge)
-│   ├── demo/                 # Embed/preview helper
-│   └── ideas/                # Idea Lab 组件
-├── lib/
-│   ├── ai.ts                 # Claude tool_use 封装
-│   ├── realtime.ts           # Supabase realtime hook (per-mount useId)
-│   ├── use-data.ts           # 数据 fetch (mock + 真数据)
-│   └── i18n.ts               # 双语 UI (EN / zh)
-├── proxy.ts                  # Next 16 middleware (Supabase SSR auth)
-├── supabase/migrations/      # 公开 schema 残桩
-└── .private/migrations/      # 真实 schema + RLS 策略 (不在 repo 里)
-```
-
-**数据流**: 浏览器 → Next.js proxy (auth) → API route → Supabase + Claude → 流式返回.
-
----
-
-## Roadmap
+## 路线图
 
 **已上线**
-- [x] GitHub + Google OAuth (PKCE + cookie)
-- [x] 项目提交 + URL scrape + cleanTitle
-- [x] Claude 结构化 review (每次 5-7 条 action)
-- [x] Apply / Skip / Reject action 落库持久化
-- [x] `postgres_changes` 订阅的实时 leaderboard
-- [x] nes-core + 自定义复古 token 的像素风 UI
-- [x] 中英双语 (EN / zh, 708 条 string)
+- [x] 提交 URL → Claude 写 17 张平台专属草稿,~10 秒
+- [x] HITL 审核 UI:内联编辑、单张 re-roll、状态筛选
+- [x] 一键发布 —— 文案自动复制 + 平台 intent URL 打开
+- [x] Engagement 跟踪 —— 6 小时 cron 抓 Reddit / HN / Dev.to / Bluesky / X
+- [x] 跨平台 analytics + 30 天 sparkline + 最强渠道徽章
+- [x] 原生中英双语(UI + 创作者内容每日 cron 自动翻译)
+- [x] 每日 Claude 配额(per-creator 原子 Postgres RPC)
+- [x] 小红书封面图生成(gpt-image-2 + Vercel Blob)
+- [x] PWA 可安装(manifest + 极简 SW、无 HTML 缓存)
+- [x] 邮件留存闭环(welcome / drafts-ready / daily summary / weekly digest)
+- [x] /admin/metrics launch-day 监控
 
-**在做**
-- [ ] 拉前 10 个真实用户走完 loop
-- [ ] 每周 re-review 提醒 (让人回来)
-- [ ] 创作者主页的 public review feed
-
-**以后**
-- [ ] 多模型互审 (Claude + GPT + Gemini 交叉检查)
-- [ ] 低风险文案自动 Apply (带 diff 预览)
-- [ ] Creator → creator 同行审稿市场
-
----
-
-## License & 源代码模型
-
-VibeXForge 是 **source-available**, 不是完全意义上的开源.
-
-### 公开 (这个 repo)
-所有 UI, 页面, API route, 组件. 核心逻辑的公共 stub, 装完能跑 (用 demo 数据). Schema overview.
-
-### 私有 (不在这个 repo)
-- Claude prompt 模板和 tool schema
-- 打分 + 进化 tuning
-- Growth intelligence 算法
-- 带 RLS 策略的完整 migration 历史
-
-**你可以**: fork, 学习, 本地跑, 给公开部分提 PR.
-**你不可以**: 不经许可商用. 见 [LICENSE](./LICENSE).
+**计划中**
+- [ ] Stripe Connect 收款分账(85/15)
+- [ ] v2 平台视觉(X OG card、B 站缩略图)
+- [ ] 真 OAuth 自动发布(X / Reddit / Bluesky API)
+- [ ] 多账号支持(creator 的个人 X + 品牌 X)
+- [ ] Engagement 突破阈值时推送通知
 
 ---
 
-## 当前状态
+## 参与贡献
 
-2026-04-16 上线了 Launch Feedback Loop. 首个真实用户提交 (一个 AI 交易 agent repo) 端到端跑通了: URL 抓取 → 标题清洗 → Claude 返回 7 条 action → 通过 RLS 保护写入 Supabase.
+PR 欢迎。本地开发、分支 / commit 规范、调试循环见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
-现在在找下一组 9 个用户, 验证 review 到底有没有用, 不是看它能不能跑.
+发现安全问题?请看 [SECURITY.md](./SECURITY.md) —— 不要直接开 public issue。
 
-**这周要上线 AI 项目的话**: [在你自己的 URL 上跑一下](https://www.vibexforge.com/launch), 把 Claude 给你的 action 发给我. 我想知道哪些真的落地了, 哪些没 get 到.
+## 开源协议
 
----
+Source Available —— [LICENSE](./LICENSE)。免费阅读、fork、自部署。
+商业转发需许可 —— DM [@alex-jb](https://github.com/alex-jb)。
 
-<p align="center">
-  由 <a href="https://github.com/alex-jb">Orallexa</a> 以 vibe coding 的能量打造<br/>
-  <a href="https://www.vibexforge.com"><img src="https://img.shields.io/badge/⭐_Star_一下-只需一秒-FACC15?style=for-the-badge" alt="Star" /></a>
-</p>
+## 独立开发者
+
+[Alex(@alex-jb)](https://github.com/alex-jb) —— solo indie AI 创作者。VibeXForge 这个工具的存在,是因为我自己 build 了 6 个月的 AI gallery 只拿到 5 个用户,distribution 把我搞死了。所以我做了一个我自己想要的工具。
+
+能用就[告诉我](https://www.vibexforge.com)(DM 开放)。不能用就大声告诉我。

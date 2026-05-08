@@ -2,26 +2,21 @@
   <strong>English</strong> · <a href="./README.zh-CN.md">中文</a>
 </p>
 
-> ## 🚀 Launching on Product Hunt — **May 1, 2026**
->
-> The forge ignites at **PST 12:01 AM** (Beijing 5/1 15:01). Star this repo so you don't miss it. [⭐ Notify me on GitHub](https://github.com/alex-jb/vibex/subscription) · [Try it now](https://www.vibexforge.com)
-
 <p align="center">
   <a href="https://www.vibexforge.com">
-    <img src="docs/screenshots-v3/01-landing.png" width="820" alt="VibeXForge — enter the portal" />
+    <img src="docs/screenshots-v3/01-landing.png" width="820" alt="VibeXForge — distribution amplifier for solo AI creators" />
   </a>
 </p>
 
 <h1 align="center">VibeXForge</h1>
-<p align="center"><sub>formerly <strong>VibeX</strong></sub></p>
 
 <p align="center">
-  <strong>Turn your AI project into a collectible RPG hero.</strong><br/>
-  <sub>Submit a URL or GitHub repo → Claude scores it across 5 dimensions (originality, clarity, UX, virality, investor curiosity) → it evolves <code>Seed → Active → Growing → Breakout → Legend → Myth</code> on real plays + upvotes + shares. Not a 24-hour upvote sprint. A gallery that rewards projects that <em>actually improve</em> after launch day.</sub>
+  <strong>Distribution amplifier for solo AI creators.</strong><br/>
+  <sub>Submit your AI project once. Our agents auto-write 17 platform-native posts in ~10 seconds — X, Reddit, Hacker News, Dev.to, LinkedIn, Bluesky, Threads, Xiaohongshu (小红书), Jike (即刻), and more. Edit inline, one-click publish, track engagement across all channels from one dashboard.</sub>
 </p>
 
 <p align="center">
-  <a href="https://www.vibexforge.com/launch"><img src="https://img.shields.io/badge/▶_STRIKE_THE_ANVIL-Forge_a_Project-FF4500?style=for-the-badge" alt="Strike the Anvil" /></a>
+  <a href="https://www.vibexforge.com/launch"><img src="https://img.shields.io/badge/▶_SUBMIT_PROJECT-Free_during_beta-FF4500?style=for-the-badge" alt="Submit project" /></a>
   <a href="#-quick-start"><img src="https://img.shields.io/badge/⚡_Run_Locally-30_seconds-39FF14?style=for-the-badge" alt="Quick Start" /></a>
   <a href="https://github.com/alex-jb/vibex"><img src="https://img.shields.io/badge/⭐_Star-GitHub-FACC15?style=for-the-badge" alt="Star" /></a>
 </p>
@@ -34,56 +29,42 @@
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" /></a>
   <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-000?style=flat-square&logo=next.js" alt="Next.js" /></a>
   <a href="https://supabase.com"><img src="https://img.shields.io/badge/Supabase-Realtime-3ECF8E?style=flat-square&logo=supabase" alt="Supabase" /></a>
-  <a href="https://anthropic.com"><img src="https://img.shields.io/badge/Claude-Haiku_4.5-D97706?style=flat-square" alt="Claude" /></a>
+  <a href="https://anthropic.com"><img src="https://img.shields.io/badge/Claude-Sonnet_4.6-D97706?style=flat-square" alt="Claude" /></a>
   <a href="./CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-FF4500?style=flat-square" alt="PRs Welcome" /></a>
 </p>
 
 ---
 
-## Demo
-
-https://github.com/alex-jb/vibex/releases/download/v0.1.0-demo/vibex-demo.mp4
-
-> **Live:** [vibexforge.com/launch](https://www.vibexforge.com/launch) — sign in with GitHub, paste any URL, get a real Claude review in ~30 seconds.
-
----
-
 ## The Problem
 
-Everyone's vibe coding now. Building is easy. **Getting seen is the bottleneck.**
+You vibe-coded an AI app. Building was the easy part.
 
-You ship an AI project, post the link, and hear nothing. The code is fine. The landing page is killing the click-through. Weak headline, too many buzzwords, no clear value in the first 5 seconds.
+Then comes distribution. Same product, 10 different platform conventions: X wants ≤ 270 chars, Reddit wants self-aware tone, Hacker News wants technical depth, Xiaohongshu wants emoji-led aesthetic notes, LinkedIn wants narrative, Dev.to wants long-form. Writing all 10 properly is 3-4 hours of context-switching that happens right when you're exhausted from shipping.
 
-Solo builders don't have a design team, a copywriter, or a growth advisor. They ship a README and hope.
+Solo founders skip platforms. The best one becomes the only one. Reach collapses.
 
 ## The Loop
 
-VibeXForge is that advisor, powered by Claude.
-
 ```
-Paste URL → Claude reviews like a stranger → 5-7 concrete fixes → Apply → Score climbs
+Submit URL  →  Claude writes 17 platform-native drafts (~10s)
+            →  Review inline, edit, approve
+            →  1-click open platform with text pre-filled
+            →  Mark posted, paste the URL
+            →  Cron scrapes engagement every 6h
+            →  Dashboard shows which channel converts best
 ```
 
-**1. Forge** — Paste your project URL. We scrape the page, parse the pitch, index your README.
+**Bilingual by default.** EN and ZH drafts generate from one submit — Western indie hackers + Chinese AI creators (小红书 / 即刻 / 知乎 / B站) reached without rewriting.
 
-**2. Review** — Claude reads it like a first-time visitor and returns 5-7 structured actions. Each has a clear headline, why it matters, and a copy-pasteable suggestion.
+**Platform-aware prompts.** Each draft is generated with platform-specific system prompts: hook rules, length constraints, anti-marketing-fluff voice, no repeated numbers, language-output directive. Tuned via dogfood eval on real launches.
 
-**3. Apply** — Click Apply on any action. Come back next week, rerun. Watch the score climb.
-
-The gamification (pixel art cards, evolution stages, realtime leaderboard) makes shipping feel like leveling up instead of shouting into the void.
+**Real engagement tracking.** Public-API scrapers for Reddit / HN / Dev.to / Bluesky / X. Cron writes append-only snapshots so you see the 30-day curve, not just current totals.
 
 ---
 
-## Screenshots
+## Demo
 
-|  |  |
-|---|---|
-| ![Landing](docs/screenshots-v3/01-landing.png) | ![HQ](docs/screenshots-v3/02-home.png) |
-| **Portal** — every session starts here | **HQ** — your projects + 3D globe + leaderboard |
-| ![Launch](docs/screenshots-v3/03-launch-filled.png) | ![Project](docs/screenshots-v3/04-project-forged.png) |
-| **Launch** — paste URL, forge plates ignite, anvil strikes | **Project** — forge-unveil animation + Claude review panel |
-| ![Hunt](docs/screenshots-v3/05-hunt.png) | ![Creators](docs/screenshots-v3/06-creators.png) |
-| **Hunt** — realtime leaderboard, makers voting | **Creators** — ranked by what they shipped |
+> **Live:** [vibexforge.com](https://www.vibexforge.com) — sign in with GitHub or Google, paste any URL, get 17 platform-native drafts in ~10 seconds.
 
 ---
 
@@ -100,9 +81,6 @@ npm run dev
 
 Open http://localhost:3000. The app runs in **mock mode** with built-in demo data.
 
-> ### 🎮 Got it running?
-> If the Direction A forge aesthetic + the Claude review flow caught your eye, **[⭐ star the repo](https://github.com/alex-jb/vibex)**. It costs you a click and helps us land on Product Hunt's "trending OSS" list on May 1.
-
 <details>
 <summary><strong>Want real data? Wire up Supabase + Claude (optional)</strong></summary>
 
@@ -111,11 +89,15 @@ cp .env.local.example .env.local
 # Fill in:
 #   NEXT_PUBLIC_SUPABASE_URL
 #   NEXT_PUBLIC_SUPABASE_ANON_KEY
-#   ANTHROPIC_API_KEY
+#   ANTHROPIC_API_KEY        # Claude Sonnet 4.6 for drafts
+#   OPENAI_API_KEY           # gpt-image-2 for Xiaohongshu covers
+#   BLOB_READ_WRITE_TOKEN    # Vercel Blob for cover storage
+#   CRON_SECRET              # Bearer token for cron routes
+#   SUPABASE_SERVICE_ROLE_KEY # Cron writes
 npm run dev
 ```
 
-Run the SQL migrations in `supabase/migrations/*.sql` through the Supabase Dashboard SQL editor. Full setup in [CONTRIBUTING.md](./CONTRIBUTING.md).
+Run the SQL migrations in `.private/migrations/*.sql` through the Supabase Dashboard SQL editor. Full setup in [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 </details>
 
@@ -125,17 +107,19 @@ Run the SQL migrations in `supabase/migrations/*.sql` through the Supabase Dashb
 
 | Layer | Choice | Why |
 |-------|--------|-----|
-| Framework | Next.js 16 (App Router, Turbopack) | Server Components + streaming |
+| Framework | Next.js 16 (App Router, Turbopack) | RSC + streaming + edge runtime where it helps |
 | Language | TypeScript 5 (strict) | Refactor fearlessly |
 | UI | React 19 + Tailwind v4 + Framer Motion | Zero-config, fast, smooth |
-| Design | nes-core.css + custom pixel tokens | 16-bit aesthetic, ~50KB CSS |
-| DB | Supabase (Postgres + RLS + Realtime) | One stack, one auth, realtime out of the box |
+| DB | Supabase (Postgres + RLS + Realtime) | One stack, one auth, realtime drafts |
 | Auth | Supabase Auth (GitHub + Google OAuth + PKCE) | Cookies, not localStorage |
-| AI | Claude Sonnet 4.6 with tool_use | Structured JSON reviews, not prose |
-| Visual | [cobe](https://github.com/shuding/cobe) 3D globe | 5KB, zero deps, global community feel |
+| Drafts | Claude Sonnet 4.6 + prompt caching | Parallel generation, ~10s for 17 drafts |
+| Translation | Claude Sonnet 4.6 (daily batch) | EN ↔ ZH for creator-submitted content |
+| Visual | OpenAI gpt-image-2 | On-demand Xiaohongshu cover generation |
+| Storage | Vercel Blob | Cover images + demo videos |
+| Email | Resend + Vercel Cron | Welcome / drafts-ready / weekly digest / daily summary |
+| Engagement | Public scrapers (Reddit, HN, Dev.to, Bluesky, X) | Cron every 6h, append-only history |
 | Monitoring | Sentry + HyperDX | Server errors + browser session replay |
-| Analytics | OpenPanel | Cookieless product analytics + funnel events |
-| Video | Remotion + gpt-image-1 | Per-project trailers rendered from parametric compositions |
+| Analytics | OpenPanel | Cookieless product analytics |
 | Deploy | Vercel + GitHub Actions | `git push` = prod |
 
 ---
@@ -144,26 +128,36 @@ Run the SQL migrations in `supabase/migrations/*.sql` through the Supabase Dashb
 
 ```
 vibex/
-├── app/                      # Next.js 16 App Router
-│   ├── page.tsx              # Landing (the portal)
-│   ├── home/                 # HQ dashboard
-│   ├── hunt/                 # Realtime leaderboard
-│   ├── launch/               # Forge a project → AI review
-│   ├── project/[id]/         # Project detail + review history
-│   ├── ideas/                # Idea Lab (pre-build scoring)
-│   ├── creators/             # Builder profiles + rankings
-│   └── api/                  # 57 REST + streaming endpoints
-├── components/
-│   ├── rpg/                  # Pixel chrome (cards, evolution badges)
-│   ├── cobe-globe.tsx        # Spinning 3D globe
-│   └── ideas/                # Idea Lab components
+├── app/                                  # Next.js 16 App Router
+│   ├── page.tsx                          # Landing — IH-style, 17 drafts pitch
+│   ├── arcade/                           # Original RPG splash (preserved)
+│   ├── how-it-works/                     # Marketing landing for inbound traffic
+│   ├── dashboard/                        # Creator's projects + drafts pipeline
+│   ├── launch/                           # Submit a project → 17 drafts in ~10s
+│   ├── project/[id]/
+│   │   ├── drafts/                       # HITL review UI: edit / re-roll / publish
+│   │   └── analytics/                    # Per-platform engagement + 30D sparklines
+│   ├── ideas/                            # Idea Lab (Claude-scored pre-build)
+│   ├── admin/metrics/                    # Launch-day monitoring (drafts + funnel)
+│   └── api/
+│       ├── projects/[id]/generate-drafts # Triggers parallel Claude calls
+│       ├── drafts/[id]/reroll            # Single-draft regen (cost-gated)
+│       ├── drafts/[id]/generate-cover    # Xiaohongshu cover via gpt-image-2
+│       └── cron/
+│           ├── scrape-engagement         # Every 6h: refresh views/likes/comments
+│           ├── translate-zh              # Daily: EN → ZH for ideas + projects
+│           ├── daily-owner-summary       # Daily: traction email per creator
+│           └── weekly-digest             # Weekly: rollup email
 ├── lib/
-│   ├── ai.ts                 # Claude tool_use wrapper
-│   ├── realtime.ts           # Supabase realtime hooks
-│   └── i18n.ts               # ~925 strings (EN / zh bilingual)
-├── proxy.ts                  # Supabase SSR auth middleware
-├── public/llms.txt           # AI search engine discoverability
-└── scripts/                  # QA, perf audit, demo recorder tools
+│   ├── draft-generator.ts                # Platform prompts + Anthropic client
+│   ├── engagement-scrapers.ts            # Reddit/HN/Dev.to/Bluesky/X public APIs
+│   ├── visual-generator.ts               # gpt-image-2 + Vercel Blob upload
+│   ├── translate-zh.ts                   # Claude bilingual translator
+│   ├── i18n.ts                           # ~925 strings + Lang context
+│   └── i18n-categories.ts                # Render-time category localization
+├── proxy.ts                              # Supabase SSR auth middleware
+├── public/llms.txt                       # AI search engine discoverability
+└── scripts/dogfood-vibex-launch.ts       # Eval harness for prompt quality
 ```
 
 ---
@@ -171,67 +165,41 @@ vibex/
 ## Roadmap
 
 **Shipped**
-- [x] GitHub + Google OAuth (PKCE, cookie-based)
-- [x] Project submission + URL scrape + auto title cleaning
-- [x] Claude structured review (5-7 actions per review)
-- [x] Apply / Skip / Reject action persistence
-- [x] Realtime leaderboard (Supabase `postgres_changes`)
-- [x] Direction A visual system — forge/pixel/RPG character sheet
-  vocabulary across every user-facing surface: AIReviewPanel,
-  HeroCard (grid + share + OG image), /launch (live preview +
-  forge plates + STRIKE THE ANVIL + post-submit "forging" animation),
-  /hunt, /creators, /ideas, /dojo, /events, /insights, /profile,
-  /workflows, /agents — single color token canon across 20+ components
-- [x] Forge-unveil animation on `/project/[id]?forged=1` — frame
-  color reveal + compound count-up + staggered bar fill
-- [x] Interactive 3D globe (cobe)
-- [x] GEO optimization (llms.txt, AI crawler rules)
-- [x] Bilingual UI (EN / zh, ~925 strings)
-- [x] Automated demo video recorder with TTS narration
-- [x] Parametric Remotion `ProjectTrailer` — 720×720 10s loops rendered
-  per seed project with forge-style mockup frames (gpt-image-1 pipeline)
-- [x] OpenPanel funnel analytics + HyperDX session replay (both env-gated,
-  no-op silently on preview deploys)
+- [x] Submit project → Claude writes 17 platform-native drafts in ~10s
+- [x] HITL review UI: inline edit, single-draft re-roll, status filter
+- [x] 1-click publish — text auto-copied + intent URL opened per platform
+- [x] Engagement tracking — 6h cron scrapes Reddit / HN / Dev.to / Bluesky / X
+- [x] Cross-platform analytics with 30-day sparklines + winning-channel call-out
+- [x] Bilingual EN ↔ ZH (UI + auto-translated creator content via daily cron)
+- [x] Daily Claude cost gate (per-creator quota, atomic Postgres RPC)
+- [x] Xiaohongshu cover image generation (gpt-image-2 + Vercel Blob)
+- [x] PWA installable (manifest + minimal SW, no HTML cache)
+- [x] Email retention loop (welcome + drafts-ready + daily summary + weekly digest)
+- [x] /admin/metrics launch-day dashboard
 
-**Next**
-- [ ] First 10 real users through the feedback loop
-- [ ] Weekly re-review reminders
-- [ ] Public review feed on creator profiles
-
-**Later**
-- [ ] Multi-reviewer (Claude + GPT + Gemini cross-check)
-- [ ] Auto-apply low-risk copy changes (with diff preview)
-- [ ] Creator-to-creator peer review marketplace
+**Roadmap**
+- [ ] Stripe Connect payouts (85/15 take rate)
+- [ ] Per-platform visual generation v2 (X OG cards, Bilibili thumbnails)
+- [ ] Real OAuth auto-publish (X / Reddit / Bluesky API)
+- [ ] Multi-account support (creator's personal X + brand X)
+- [ ] Push notifications for new engagement milestones
 
 ---
 
-## Star History
+## Contributing
 
-<a href="https://star-history.com/#alex-jb/vibex&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=alex-jb/vibex&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=alex-jb/vibex&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=alex-jb/vibex&type=Date" width="640" />
-  </picture>
-</a>
+PRs welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, branch / commit conventions, and the dev loop.
 
-> **Why star this?** This is what an AI-native launch platform looks like when a solo dev ships daily for two weeks. The forge aesthetic, the Claude review flow, the bilingual i18n, the parametric Remotion trailer pipeline — all in the open. ⭐ this if you'd rather follow the live build than read another whitepaper.
-
----
+Found a security issue? See [SECURITY.md](./SECURITY.md) — please don't file a public issue.
 
 ## License
 
-Source-available. All UI, pages, API routes, and components are public. Claude prompt templates, scoring tuning, and full migration history are private.
+Source Available — see [LICENSE](./LICENSE). Free to read, fork, and
+self-host. Commercial redistribution requires permission — DM
+[@alex-jb](https://github.com/alex-jb).
 
-**You can:** fork, study, run locally, contribute to the public parts.
-**You can't:** use it commercially without permission. See [LICENSE](./LICENSE).
+## Built solo by
 
----
+[Alex (@alex-jb)](https://github.com/alex-jb) — solo indie AI creator. VibeXForge exists because I shipped my own AI gallery for 6 months and got 5 users; distribution killed me. So I built the tool I wished existed.
 
-<p align="center">
-  <strong>If you're shipping an AI project this week:</strong><br/>
-  <a href="https://www.vibexforge.com/launch">Try the live loop on your own URL</a> and tell me which suggestions landed.<br/><br/>
-  <a href="https://www.vibexforge.com"><img src="https://img.shields.io/badge/⭐_Star_this_repo-It_takes_1_second-FACC15?style=for-the-badge" alt="Star" /></a>
-  <br/><br/>
-  Built with vibe coding energy by <a href="https://github.com/alex-jb">Orallexa</a>
-</p>
+If it works for you, [tell me](https://www.vibexforge.com) (DMs open). If it doesn't, tell me louder.
