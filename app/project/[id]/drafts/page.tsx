@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, use } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
@@ -113,6 +114,9 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [filter, setFilter] = useState<StatusFilter>("all");
+  const searchParams = useSearchParams();
+  const justForged = searchParams.get("forged") === "1";
+  const [pollAttempt, setPollAttempt] = useState(0);
 
   const loadDrafts = useCallback(async () => {
     const { data, error } = await supabase
@@ -154,10 +158,30 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
         () => loadDrafts(),
       )
       .subscribe();
+
+    // Belt-to-realtime suspenders: when ?forged=1 is in the URL the
+    // user just submitted and is expecting drafts to arrive within
+    // ~10s. Realtime usually catches it, but if subscribe() races
+    // the first INSERT we'd miss it. Poll every 4s for the first
+    // ~90s as a backup.
+    let pollTimer: ReturnType<typeof setInterval> | null = null;
+    if (justForged) {
+      pollTimer = setInterval(() => {
+        setPollAttempt((a) => a + 1);
+        loadDrafts();
+      }, 4000);
+      // Stop polling after 90s — at that point if drafts still aren't
+      // here, something's wrong and the manual button is the path.
+      setTimeout(() => {
+        if (pollTimer) clearInterval(pollTimer);
+      }, 90_000);
+    }
+
     return () => {
       channel.unsubscribe();
+      if (pollTimer) clearInterval(pollTimer);
     };
-  }, [id, authLoading, loadDrafts]);
+  }, [id, authLoading, loadDrafts, justForged]);
 
   const triggerGenerate = async () => {
     setGenerating(true);
@@ -231,32 +255,55 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
         </Link>
 
         <header className="mt-3 mb-6">
-          <p className="font-pixel text-[10px] uppercase tracking-wider text-violet-400/70 mb-1">
-            ▸ MARKETING DRAFTS · MULTI-CHANNEL DISTRIBUTION
+          <p className="font-pixel text-[10px] uppercase tracking-wider text-violet-400/70 mb-2">
+            ▸ MARKETING DRAFTS
           </p>
-          <h1 className="text-2xl font-bold text-foreground">{project?.title}</h1>
-          <p className="text-foreground/60 text-sm mt-1">{project?.tagline}</p>
-          <p className="text-foreground/40 text-xs mt-2">
-            Click <span className="text-emerald-400">Open {`{platform}`}</span> →
-            text auto-copies and the platform opens. For X / Reddit / HN /
-            Bluesky / Threads the compose form is pre-filled. For LinkedIn /
-            Dev.to / Xiaohongshu / Jike / Zhihu / Bilibili you paste once.
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight font-sans">
+            {project?.title}
+          </h1>
+          <p className="text-foreground/70 text-sm mt-1.5 font-sans leading-relaxed">
+            {project?.tagline}
+          </p>
+          <p className="text-foreground/45 text-xs mt-3 font-sans leading-relaxed">
+            Click <span className="text-emerald-300">Open {`{platform}`}</span> —
+            text auto-copies and the platform opens. X / Reddit / HN /
+            Bluesky / Threads pre-fill the compose form. LinkedIn / Dev.to /
+            Xiaohongshu / Jike / Zhihu / Bilibili you paste once.
           </p>
         </header>
 
         {drafts.length === 0 ? (
-          <section className="rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] p-10 text-center">
-            <p className="text-foreground/60 mb-4">
-              No drafts yet. Click below to generate.
-            </p>
-            <button
-              onClick={triggerGenerate}
-              disabled={generating}
-              className="px-4 py-2 rounded bg-violet-600 hover:bg-violet-500 text-white font-pixel text-[10px] uppercase tracking-wider disabled:opacity-50"
-            >
-              {generating ? "Generating..." : "Generate drafts"}
-            </button>
-          </section>
+          justForged && pollAttempt < 22 ? (
+            <section className="rounded-xl border border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-transparent p-10 text-center">
+              <div className="inline-flex items-center gap-3 mb-3">
+                <div className="w-3 h-3 rounded-full bg-violet-400 animate-pulse" />
+                <p className="font-pixel text-[10px] uppercase tracking-wider text-violet-300">
+                  Drafts generating
+                </p>
+              </div>
+              <p className="text-foreground/80 mb-1 text-base">
+                Claude is writing 17 platform-native drafts.
+              </p>
+              <p className="text-foreground/50 text-sm">
+                ~10 seconds · they'll appear below as they finish.
+              </p>
+            </section>
+          ) : (
+            <section className="rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] p-10 text-center">
+              <p className="text-foreground/60 mb-4">
+                {justForged
+                  ? "Drafts didn't arrive — quota check failed or generation errored. Try the button below."
+                  : "No drafts yet. Click below to generate."}
+              </p>
+              <button
+                onClick={triggerGenerate}
+                disabled={generating}
+                className="px-5 py-2.5 rounded bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium disabled:opacity-50"
+              >
+                {generating ? "Generating..." : "Generate drafts"}
+              </button>
+            </section>
+          )
         ) : (
           <>
             <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">

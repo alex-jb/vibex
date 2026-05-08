@@ -2153,11 +2153,12 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * FormField — Direction A "forge plate".
- * Grey/orange 2px frame, pixel eyebrow label, bottom heat-gradient strip that
- * glows orange when the input has content. Wraps existing shadcn primitives
- * so we don't have to restyle every Input/Textarea/Select internal — the plate
- * provides the chrome, the primitives provide the behavior.
+ * FormField — softened 2026-05-08 after Alex caught that the heavy
+ * 2px orange brackets + bright label + heat-gradient strip on every
+ * input made /launch look "messy". Now: 1px hairline border, muted
+ * label that brightens slightly when filled, no heat-gradient strip.
+ * Brand identity preserved via the orange filled-state accent —
+ * just dialed down from "every input screams" to "this one's done".
  */
 function FormField({
   label,
@@ -2170,38 +2171,27 @@ function FormField({
 }) {
   return (
     <div
-      className="relative transition-colors"
+      className="relative rounded-lg transition-colors"
       style={{
-        border: filled ? "2px solid rgba(255,69,0,0.55)" : "2px solid #3A3A42",
-        background: "#0D0D0D",
-        boxShadow: filled
-          ? "inset 0 0 24px rgba(255,69,0,0.08), 2px 2px 0 #000"
-          : "2px 2px 0 #000",
+        border: filled
+          ? "1px solid rgba(255,69,0,0.35)"
+          : "1px solid rgba(255,255,255,0.08)",
+        background: "rgba(255,255,255,0.015)",
       }}
     >
       <label
-        className="font-ui block"
+        className="block"
         style={{
+          fontFamily: "var(--font-press-start), monospace",
           fontSize: 9,
-          letterSpacing: 3,
-          color: filled ? "#FF4500" : "#8B7AA0",
+          letterSpacing: 2,
+          color: filled ? "rgba(255,105,50,0.85)" : "rgba(232,232,236,0.45)",
           padding: "10px 14px 2px",
-          textShadow: filled ? "0 0 4px rgba(255,69,0,0.4)" : "none",
         }}
       >
         ▸ {label.toUpperCase()}
       </label>
       <div className="px-2.5 pb-2.5 pt-1">{children}</div>
-      <div
-        aria-hidden
-        style={{
-          height: 2,
-          background: filled
-            ? "linear-gradient(90deg, transparent 0%, rgba(255,69,0,0.85) 50%, transparent 100%)"
-            : "linear-gradient(90deg, transparent 0%, rgba(139,122,160,0.3) 50%, transparent 100%)",
-          transition: "background 0.3s ease",
-        }}
-      />
     </div>
   );
 }

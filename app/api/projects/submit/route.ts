@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { createServerSupabase } from "@/lib/supabase-server";
 import {
   createProject,
@@ -373,28 +374,59 @@ export async function POST(req: NextRequest) {
         console.error("[submit] welcome-email path threw", err);
       });
 
-      // 2026-05-08 NEW: VibeXForge new positioning is "distribution
-      // amplifier". Auto-generate 10+ platform-specific drafts in the
-      // background so creator lands on /project/[id] with drafts
-      // already populated. Fire-and-forget — never block submit.
-      // See lib/draft-generator.ts + docs/MASTER_PLAN.md.
+      // 2026-05-08: Auto-generate 17 platform-specific drafts in the
+      // background so creator lands on /project/[id]/drafts with
+      // drafts already populated.
+      //
+      // Critical: use `after()` not bare fire-and-forget. Vercel
+      // Functions terminate the runtime when the response is sent;
+      // a detached Promise gets cut off mid-Claude-call. `after()`
+      // tells Vercel to keep the function alive up to maxDuration
+      // for background work.
+      //
+      // Also consume the cost-gate credits (21 per generation) so the
+      // creator's quota stays accurate vs manual /api/projects/[id]/
+      // generate-drafts calls. If consume fails (over cap), skip
+      // generation — creator can manually trigger from /drafts page
+      // tomorrow when their quota resets.
       if (process.env.ANTHROPIC_API_KEY) {
-        (async () => {
-          const { generateDraftsForProject } = await import(
-            "@/lib/draft-generator"
-          );
-          await generateDraftsForProject(supabase, {
-            id: project.id,
-            title: project.title,
-            tagline: project.tagline,
-            description: project.description,
-            category: project.category,
-            tags: project.tags,
-            demoUrl: project.demoUrl,
+        const { data: gateData } = await supabase.rpc(
+          "consume_draft_credits",
+          {
+            p_creator_id: project.creatorId,
+            p_cost: 21,
+            p_cap: 100,
+          },
+        );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const gate = gateData as any;
+        if (gate?.ok) {
+          after(async () => {
+            try {
+              const { generateDraftsForProject } = await import(
+                "@/lib/draft-generator"
+              );
+              const result = await generateDraftsForProject(supabase, {
+                id: project.id,
+                title: project.title,
+                tagline: project.tagline,
+                description: project.description,
+                category: project.category,
+                tags: project.tags,
+                demoUrl: project.demoUrl,
+              });
+              console.log(
+                `[submit] drafts ${project.id} → ${result.created} created, ${result.failed} failed`,
+              );
+            } catch (err) {
+              console.error("[submit] draft-generator path threw", err);
+            }
           });
-        })().catch((err) => {
-          console.error("[submit] draft-generator path threw", err);
-        });
+        } else {
+          console.warn(
+            `[submit] skipping auto-drafts: ${gate?.error || "quota check failed"}`,
+          );
+        }
       }
 
       return NextResponse.json(
