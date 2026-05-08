@@ -182,32 +182,10 @@ export default function DashboardPage() {
     };
   }, [authLoading, user, loadAll]);
 
-  if (authLoading || loading) {
-    return (
-      <main className="min-h-screen bg-[var(--bg-deep)] p-8">
-        <p className="text-foreground/60">Loading...</p>
-      </main>
-    );
-  }
-
-  if (!user) {
-    return (
-      <main className="min-h-screen bg-[var(--bg-deep)] p-8">
-        <div className="max-w-md mx-auto mt-20 text-center">
-          <p className="text-foreground/70 mb-4">
-            Sign in to view your creator dashboard.
-          </p>
-          <Link
-            href="/login"
-            className="inline-block px-6 py-3 rounded bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium"
-          >
-            Sign in
-          </Link>
-        </div>
-      </main>
-    );
-  }
-
+  // CRITICAL: derived state must be calculated BEFORE the early
+  // returns below. Otherwise the useMemo gets called conditionally,
+  // which trips React error #310 (hooks-order violation) when auth
+  // state transitions from loading to ready. Caught in prod 2026-05-09.
   const totals = projects.reduce(
     (acc, p) => ({
       pending: acc.pending + (p.draft_counts?.pending || 0),
@@ -237,6 +215,35 @@ export default function DashboardPage() {
     onboardingProgress.step1Done &&
     onboardingProgress.step2Done &&
     onboardingProgress.step3Done;
+
+  // Early returns AFTER all hooks have been called — moves of these
+  // before the useMemo above would re-introduce the hooks-order
+  // violation that produced React error #310.
+  if (authLoading || loading) {
+    return (
+      <main className="min-h-screen bg-[var(--bg-deep)] p-8">
+        <p className="text-foreground/60">Loading...</p>
+      </main>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main className="min-h-screen bg-[var(--bg-deep)] p-8">
+        <div className="max-w-md mx-auto mt-20 text-center">
+          <p className="text-foreground/70 mb-4">
+            Sign in to view your creator dashboard.
+          </p>
+          <Link
+            href="/login"
+            className="inline-block px-6 py-3 rounded bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium"
+          >
+            Sign in
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[var(--bg-deep)] px-4 sm:px-8 py-10">
