@@ -8,16 +8,18 @@ import { supabase } from "@/lib/supabase";
 /**
  * /project/[id]/drafts — Creator HITL UI for marketing-agent drafts.
  *
- * Shows drafts grouped by platform, inline edit, status (pending →
- * approved/posted/rejected). For platforms with API auto-post we'll
- * add a 1-click button later. For now: edit + copy + open-platform
- * helpers.
- *
  * Auth: project owner only (RLS enforces server-side, this is the
  * client-side render path).
  *
  * Realtime: subscribes to project_drafts INSERT so newly-generated
  * drafts animate in as marketing-agent finishes.
+ *
+ * Publish UX (the "1-click" promise):
+ *   - Platforms with text-intent URLs (X, Reddit, Bluesky, Threads, HN):
+ *     click → platform compose opens with text pre-filled.
+ *   - Platforms without text intent (LinkedIn, Dev.to, Product Hunt,
+ *     Xiaohongshu, Jike, Zhihu, Bilibili): click → text auto-copied to
+ *     clipboard, then platform compose opens. User pastes once.
  */
 
 interface Draft {
@@ -31,8 +33,10 @@ interface Draft {
   subreddit: string | null;
   status: "pending" | "approved" | "posted" | "rejected" | "failed";
   posted_url: string | null;
+  posted_at: string | null;
   views: number;
   likes: number;
+  comments: number;
   created_at: string;
   updated_at: string;
 }
@@ -46,19 +50,35 @@ const PLATFORM_LABEL: Record<string, string> = {
   bluesky: "Bluesky",
   threads: "Threads",
   producthunt: "Product Hunt",
-  xiaohongshu: "小红书",
-  jike: "即刻",
-  zhihu: "知乎",
-  bilibili: "B站",
+  xiaohongshu: "Xiaohongshu",
+  jike: "Jike",
+  zhihu: "Zhihu",
+  bilibili: "Bilibili",
 };
 
-const PLATFORM_INTENT_URL: Record<string, (text: string, title?: string | null, url?: string) => string> = {
+// Platforms where the intent URL pre-fills the compose text. The other
+// platforms still get an "Open" button but require a paste step — we
+// auto-copy the body to clipboard before opening so it's still ~1 click.
+const PLATFORMS_WITH_TEXT_INTENT = new Set([
+  "x",
+  "reddit",
+  "bluesky",
+  "threads",
+  "hacker_news",
+]);
+
+const PLATFORM_INTENT_URL: Record<
+  string,
+  (text: string, opts: { title?: string | null; url?: string; subreddit?: string | null }) => string
+> = {
   x: (text) =>
     `https://twitter.com/intent/tweet?text=${encodeURIComponent(text.slice(0, 270))}`,
-  reddit: (text, title) =>
-    `https://www.reddit.com/r/SideProject/submit?title=${encodeURIComponent(title || "")}&text=${encodeURIComponent(text)}`,
+  reddit: (text, { title, subreddit }) => {
+    const sub = subreddit && subreddit.trim() ? subreddit.trim() : "SideProject";
+    return `https://www.reddit.com/r/${encodeURIComponent(sub)}/submit?title=${encodeURIComponent(title || "")}&text=${encodeURIComponent(text)}`;
+  },
   linkedin: () => `https://www.linkedin.com/feed/?shareActive=true`,
-  hacker_news: (_, title, url) =>
+  hacker_news: (_, { title, url }) =>
     `https://news.ycombinator.com/submitlink?u=${encodeURIComponent(url || "")}&t=${encodeURIComponent(title || "")}`,
   dev_to: () => `https://dev.to/new`,
   bluesky: (text) =>
@@ -72,6 +92,16 @@ const PLATFORM_INTENT_URL: Record<string, (text: string, title?: string | null, 
   bilibili: () => `https://t.bilibili.com/`,
 };
 
+type StatusFilter = "all" | "pending" | "approved" | "posted" | "rejected";
+
+const FILTER_LABEL: Record<StatusFilter, string> = {
+  all: "All",
+  pending: "Pending",
+  approved: "Approved",
+  posted: "Posted",
+  rejected: "Rejected",
+};
+
 export default function DraftsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { user, loading: authLoading } = useAuth();
@@ -79,6 +109,7 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [filter, setFilter] = useState<StatusFilter>("all");
 
   const loadDrafts = useCallback(async () => {
     const { data, error } = await supabase
@@ -107,7 +138,6 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
       setLoading(false);
     })();
 
-    // Realtime: new drafts arriving as marketing-agent finishes.
     const channel = supabase
       .channel(`drafts-${id}`)
       .on(
@@ -142,8 +172,18 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
     await supabase.from("project_drafts").update(patch).eq("id", draftId);
   };
 
+  const counts: Record<StatusFilter, number> = {
+    all: drafts.length,
+    pending: drafts.filter((d) => d.status === "pending").length,
+    approved: drafts.filter((d) => d.status === "approved").length,
+    posted: drafts.filter((d) => d.status === "posted").length,
+    rejected: drafts.filter((d) => d.status === "rejected").length,
+  };
+
+  const visible = filter === "all" ? drafts : drafts.filter((d) => d.status === filter);
+
   const grouped: Record<string, Draft[]> = {};
-  for (const d of drafts) {
+  for (const d of visible) {
     if (!grouped[d.platform]) grouped[d.platform] = [];
     grouped[d.platform].push(d);
   }
@@ -178,16 +218,17 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
           ← Back to project
         </Link>
 
-        <header className="mt-3 mb-8">
+        <header className="mt-3 mb-6">
           <p className="font-pixel text-[10px] uppercase tracking-wider text-violet-400/70 mb-1">
             ▸ MARKETING DRAFTS · MULTI-CHANNEL DISTRIBUTION
           </p>
           <h1 className="text-2xl font-bold text-foreground">{project?.title}</h1>
           <p className="text-foreground/60 text-sm mt-1">{project?.tagline}</p>
           <p className="text-foreground/40 text-xs mt-2">
-            Drafts generated by VibeX marketing-agent. Edit inline, then copy
-            / open the target platform to post manually. Auto-post for
-            X / Reddit / Bluesky coming next.
+            Click <span className="text-emerald-400">Open {`{platform}`}</span> →
+            text auto-copies and the platform opens. For X / Reddit / HN /
+            Bluesky / Threads the compose form is pre-filled. For LinkedIn /
+            Dev.to / Xiaohongshu / Jike / Zhihu / Bilibili you paste once.
           </p>
         </header>
 
@@ -206,11 +247,22 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
           </section>
         ) : (
           <>
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-foreground/60 text-sm">
-                {drafts.length} drafts across {Object.keys(grouped).length}{" "}
-                platforms
-              </p>
+            <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+              <div className="flex items-center gap-1 flex-wrap">
+                {(Object.keys(FILTER_LABEL) as StatusFilter[]).map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    className={`px-3 py-1 text-xs rounded font-pixel uppercase tracking-wider transition-colors ${
+                      filter === f
+                        ? "bg-violet-600 text-white"
+                        : "border border-white/10 hover:bg-white/5 text-foreground/70"
+                    }`}
+                  >
+                    {FILTER_LABEL[f]} ({counts[f]})
+                  </button>
+                ))}
+              </div>
               <button
                 onClick={triggerGenerate}
                 disabled={generating}
@@ -220,33 +272,44 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
               </button>
             </div>
 
-            <div className="space-y-6">
-              {Object.entries(grouped).map(([platform, ds]) => (
-                <section
-                  key={platform}
-                  className="rounded-xl border border-white/[0.06] bg-white/[0.02]"
-                >
-                  <div className="px-4 py-3 border-b border-white/[0.06] flex items-center gap-2">
-                    <h2 className="font-pixel text-[11px] uppercase tracking-wider text-emerald-300">
-                      {PLATFORM_LABEL[platform] || platform}
-                    </h2>
-                    <span className="text-foreground/40 text-xs">
-                      ({ds.length} {ds.length === 1 ? "draft" : "drafts"})
-                    </span>
-                  </div>
-                  <div className="divide-y divide-white/[0.04]">
-                    {ds.map((d) => (
-                      <DraftCard
-                        key={d.id}
-                        draft={d}
-                        projectUrl={project?.demo_url || `https://www.vibexforge.com/project/${id}`}
-                        onUpdate={(patch) => updateDraft(d.id, patch)}
-                      />
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </div>
+            {visible.length === 0 ? (
+              <p className="text-foreground/40 italic text-sm py-12 text-center">
+                No drafts in {filter}.
+              </p>
+            ) : (
+              <div className="space-y-6">
+                {Object.entries(grouped).map(([platform, ds]) => (
+                  <section
+                    key={platform}
+                    className="rounded-xl border border-white/[0.06] bg-white/[0.02]"
+                  >
+                    <div className="px-4 py-3 border-b border-white/[0.06] flex items-center gap-2">
+                      <h2 className="font-pixel text-[11px] uppercase tracking-wider text-emerald-300">
+                        {PLATFORM_LABEL[platform] || platform}
+                      </h2>
+                      <span className="text-foreground/40 text-xs">
+                        ({ds.length} {ds.length === 1 ? "draft" : "drafts"})
+                      </span>
+                      {!PLATFORMS_WITH_TEXT_INTENT.has(platform) && (
+                        <span className="text-[9px] text-foreground/40 italic ml-auto">
+                          paste-required platform
+                        </span>
+                      )}
+                    </div>
+                    <div className="divide-y divide-white/[0.04]">
+                      {ds.map((d) => (
+                        <DraftCard
+                          key={d.id}
+                          draft={d}
+                          projectUrl={project?.demo_url || `https://www.vibexforge.com/project/${id}`}
+                          onUpdate={(patch) => updateDraft(d.id, patch)}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            )}
           </>
         )}
       </div>
@@ -266,17 +329,46 @@ function DraftCard({
   const [editing, setEditing] = useState(false);
   const [body, setBody] = useState(draft.body);
   const [copied, setCopied] = useState(false);
+  const [postedUrlInput, setPostedUrlInput] = useState(draft.posted_url || "");
 
   const intentBuilder = PLATFORM_INTENT_URL[draft.platform];
   const intentUrl = intentBuilder
-    ? intentBuilder(body, draft.title, projectUrl)
+    ? intentBuilder(body, {
+        title: draft.title,
+        url: projectUrl,
+        subreddit: draft.subreddit,
+      })
     : null;
 
-  const copy = async () => {
-    const full = draft.title ? `${draft.title}\n\n${body}` : body;
-    await navigator.clipboard.writeText(full);
+  const fullText = draft.title ? `${draft.title}\n\n${body}` : body;
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(fullText);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const copyAction = async () => {
+    const ok = await copyToClipboard();
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  // The "1-click publish" experience — auto-copy then open platform.
+  // For platforms without text-intent URLs the user still has to paste,
+  // but at least the text is already on their clipboard.
+  const openPlatform = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!intentUrl) return;
+    e.preventDefault();
+    await copyToClipboard();
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 2500);
+    window.open(intentUrl, "_blank", "noopener,noreferrer");
   };
 
   const save = () => {
@@ -285,10 +377,19 @@ function DraftCard({
   };
 
   const markPosted = () => {
-    onUpdate({ status: "posted", posted_at: new Date().toISOString() } as Partial<Draft>);
+    onUpdate({
+      status: "posted",
+      posted_at: new Date().toISOString(),
+    } as Partial<Draft>);
+  };
+
+  const savePostedUrl = () => {
+    if (postedUrlInput.trim() === (draft.posted_url || "")) return;
+    onUpdate({ posted_url: postedUrlInput.trim() || null });
   };
 
   const reject = () => onUpdate({ status: "rejected" });
+  const reopen = () => onUpdate({ status: "pending" });
 
   const statusColor =
     draft.status === "posted"
@@ -313,9 +414,13 @@ function DraftCard({
         <span className={`text-xs uppercase tracking-wider ${statusColor}`}>
           {draft.status}
         </span>
-        {draft.status === "posted" && draft.views > 0 && (
+        <span className="text-xs text-foreground/40 font-mono">
+          {body.length} chars
+        </span>
+        {draft.status === "posted" && (draft.views > 0 || draft.likes > 0) && (
           <span className="text-xs text-foreground/50">
             {draft.views} views · {draft.likes} likes
+            {draft.comments > 0 ? ` · ${draft.comments} comments` : ""}
           </span>
         )}
       </div>
@@ -354,7 +459,7 @@ function DraftCard({
           </button>
         )}
         <button
-          onClick={copy}
+          onClick={copyAction}
           className="px-3 py-1 text-xs rounded border border-white/10 hover:bg-white/5"
         >
           {copied ? "Copied ✓" : "Copy"}
@@ -364,17 +469,30 @@ function DraftCard({
             href={intentUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={openPlatform}
             className="px-3 py-1 text-xs rounded border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-300"
+            title={
+              PLATFORMS_WITH_TEXT_INTENT.has(draft.platform)
+                ? "Opens compose with text pre-filled"
+                : "Auto-copies text + opens platform — paste once"
+            }
           >
             Open {PLATFORM_LABEL[draft.platform] || draft.platform} →
           </a>
         )}
-        {draft.status !== "posted" && (
+        {draft.status !== "posted" ? (
           <button
             onClick={markPosted}
             className="px-3 py-1 text-xs rounded border border-yellow-500/30 bg-yellow-500/5 hover:bg-yellow-500/10 text-yellow-300"
           >
             Mark posted
+          </button>
+        ) : (
+          <button
+            onClick={reopen}
+            className="px-3 py-1 text-xs rounded border border-white/10 hover:bg-white/5 text-foreground/60"
+          >
+            Reopen
           </button>
         )}
         {draft.status !== "rejected" && (
@@ -386,6 +504,29 @@ function DraftCard({
           </button>
         )}
       </div>
+
+      {draft.status === "posted" && (
+        <div className="mt-3 flex items-center gap-2 flex-wrap">
+          <input
+            type="url"
+            placeholder="Paste the published URL (used to track engagement later)"
+            value={postedUrlInput}
+            onChange={(e) => setPostedUrlInput(e.target.value)}
+            onBlur={savePostedUrl}
+            className="flex-1 min-w-[240px] bg-black/30 border border-white/10 rounded px-3 py-1.5 text-xs text-foreground/90 font-mono placeholder:text-foreground/30"
+          />
+          {draft.posted_url && draft.posted_url === postedUrlInput && (
+            <a
+              href={draft.posted_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-emerald-400 hover:underline"
+            >
+              View ↗
+            </a>
+          )}
+        </div>
+      )}
     </div>
   );
 }
