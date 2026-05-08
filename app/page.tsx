@@ -114,6 +114,16 @@ type RecentProject = {
   tagline: string | null;
   tagline_zh: string | null;
   evolution_stage: string | null;
+  // W3 (2026-05-08): cross-platform engagement aggregated from
+  // project_drafts where status=posted. NULL when project has zero
+  // posted drafts — caller filters to "amplified" projects only.
+  cross_platform?: {
+    posted: number;
+    views: number;
+    likes: number;
+    comments: number;
+    platforms: string[];
+  };
 };
 
 export default function LandingPage() {
@@ -137,7 +147,7 @@ export default function LandingPage() {
             .from("projects")
             .select("id, title, title_zh, tagline, tagline_zh, evolution_stage")
             .order("created_at", { ascending: false })
-            .limit(6),
+            .limit(20),
         ]);
         if (!alive) return;
         const rows = (projectsRes.data ?? []) as Array<{
@@ -157,7 +167,71 @@ export default function LandingPage() {
           creators: creatorsRes.count ?? 0,
           engagement,
         });
-        setRecent((recentRes.data ?? []) as RecentProject[]);
+
+        // Pull cross-platform engagement for the recent project ids,
+        // then filter the list to "amplified" projects (≥ 1 posted
+        // draft). Fall back to title-only display if zero amplified.
+        const recentRaw = (recentRes.data ?? []) as RecentProject[];
+        const ids = recentRaw.map((p) => p.id);
+        if (ids.length > 0) {
+          const { data: draftRows } = await supabase
+            .from("project_drafts")
+            .select("project_id, platform, views, likes, comments")
+            .eq("status", "posted")
+            .in("project_id", ids);
+          const byProject = new Map<
+            string,
+            { posted: number; views: number; likes: number; comments: number; platforms: Set<string> }
+          >();
+          for (const d of draftRows || []) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const r = d as any;
+            const cur = byProject.get(r.project_id) || {
+              posted: 0,
+              views: 0,
+              likes: 0,
+              comments: 0,
+              platforms: new Set<string>(),
+            };
+            cur.posted += 1;
+            cur.views += r.views || 0;
+            cur.likes += r.likes || 0;
+            cur.comments += r.comments || 0;
+            cur.platforms.add(r.platform);
+            byProject.set(r.project_id, cur);
+          }
+          const enriched = recentRaw.map((p) => {
+            const e = byProject.get(p.id);
+            return e
+              ? {
+                  ...p,
+                  cross_platform: {
+                    posted: e.posted,
+                    views: e.views,
+                    likes: e.likes,
+                    comments: e.comments,
+                    platforms: Array.from(e.platforms),
+                  },
+                }
+              : p;
+          });
+          // Sort: amplified projects first (by total engagement DESC),
+          // then non-amplified by recency. Take top 6.
+          const sorted = enriched.sort((a, b) => {
+            const ea =
+              (a.cross_platform?.views || 0) +
+              (a.cross_platform?.likes || 0) +
+              (a.cross_platform?.comments || 0);
+            const eb =
+              (b.cross_platform?.views || 0) +
+              (b.cross_platform?.likes || 0) +
+              (b.cross_platform?.comments || 0);
+            return eb - ea;
+          });
+          setRecent(sorted.slice(0, 6));
+        } else {
+          setRecent(recentRaw);
+        }
       } catch {
         // silent fail — stats just render zero
       }
@@ -210,6 +284,14 @@ export default function LandingPage() {
             style={{ boxShadow: "4px 4px 0 #000" }}
           >
             {t.ctaPrimary} →
+          </Link>
+          <Link
+            href="/try"
+            className="px-7 py-3.5 rounded-md text-sm font-semibold border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-300"
+          >
+            {lang === "zh"
+              ? "看 6 个真实草稿(无需登录)"
+              : "See 6 sample drafts (no signup)"}
           </Link>
           <Link
             href="/how-it-works"
@@ -292,25 +374,44 @@ export default function LandingPage() {
           <p className="text-foreground/40 italic">{t.recentEmpty}</p>
         ) : (
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {recent.slice(0, 6).map((p) => (
-              <Link
-                key={p.id}
-                href={`/project/${p.id}`}
-                className="rounded-md border border-white/[0.08] bg-white/[0.02] p-5 hover:bg-white/[0.05] hover:border-white/[0.15] transition-colors block"
-              >
-                <h3 className="font-bold text-foreground mb-1 truncate">
-                  {lang === "zh" && p.title_zh ? p.title_zh : p.title}
-                </h3>
-                <p className="text-foreground/60 text-sm line-clamp-2 mb-3">
-                  {(lang === "zh" && p.tagline_zh ? p.tagline_zh : p.tagline) || ""}
-                </p>
-                {p.evolution_stage ? (
-                  <span className="font-pixel text-[9px] uppercase tracking-wider text-foreground/40">
-                    ▸ {p.evolution_stage}
-                  </span>
-                ) : null}
-              </Link>
-            ))}
+            {recent.slice(0, 6).map((p) => {
+              const cp = p.cross_platform;
+              const totalEng = cp ? cp.views + cp.likes + cp.comments : 0;
+              return (
+                <Link
+                  key={p.id}
+                  href={`/project/${p.id}`}
+                  className={`rounded-md border p-5 transition-colors block ${
+                    cp
+                      ? "border-emerald-500/20 bg-emerald-500/[0.03] hover:bg-emerald-500/[0.06] hover:border-emerald-500/40"
+                      : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/[0.15]"
+                  }`}
+                >
+                  <h3 className="font-bold text-foreground mb-1 truncate">
+                    {lang === "zh" && p.title_zh ? p.title_zh : p.title}
+                  </h3>
+                  <p className="text-foreground/60 text-sm line-clamp-2 mb-3">
+                    {(lang === "zh" && p.tagline_zh ? p.tagline_zh : p.tagline) || ""}
+                  </p>
+                  {cp ? (
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-pixel text-[9px] uppercase tracking-wider text-emerald-300">
+                        ▸ {lang === "zh" ? "已放大" : "AMPLIFIED"}
+                      </span>
+                      <span className="text-[11px] text-foreground/70 font-mono">
+                        {formatCount(totalEng)}{" "}
+                        {lang === "zh" ? "互动" : "engagement"} · {cp.platforms.length}{" "}
+                        {lang === "zh" ? "平台" : "platforms"}
+                      </span>
+                    </div>
+                  ) : p.evolution_stage ? (
+                    <span className="font-pixel text-[9px] uppercase tracking-wider text-foreground/40">
+                      ▸ {p.evolution_stage}
+                    </span>
+                  ) : null}
+                </Link>
+              );
+            })}
           </div>
         )}
         <div className="mt-6">

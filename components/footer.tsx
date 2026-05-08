@@ -92,7 +92,8 @@ export function Footer() {
               <Link href="/investors" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>For Investors</Link>
               <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>{t("footer.apiComingSoon")}</span>
               <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>{t("footer.documentation")}</span>
-              <span className="flex items-center min-h-11 font-pixel text-[10px]" style={{ color: "var(--text-muted)" }}>{t("footer.changelog")}</span>
+              <Link href="/changelog" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>{t("footer.changelog")}</Link>
+              <Link href="/try" className="flex items-center min-h-11 font-pixel text-[10px] transition-colors duration-200 hover:text-[var(--neon-yellow)]" style={{ color: "var(--text)" }}>Try (no signup)</Link>
             </div>
           </div>
           <div>
