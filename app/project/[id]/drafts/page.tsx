@@ -159,7 +159,16 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
   const triggerGenerate = async () => {
     setGenerating(true);
     try {
-      await fetch(`/api/projects/${id}/generate-drafts`, { method: "POST" });
+      const res = await fetch(`/api/projects/${id}/generate-drafts`, {
+        method: "POST",
+      });
+      if (res.status === 429) {
+        const body = await res.json().catch(() => ({}));
+        alert(
+          body.message ||
+            "Daily quota exhausted. Resets at UTC 00:00.",
+        );
+      }
     } finally {
       setTimeout(() => setGenerating(false), 3000);
     }
@@ -347,7 +356,11 @@ function DraftCard({
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        console.error("[reroll]", err);
+        if (res.status === 429) {
+          alert(err.message || "Daily quota exhausted. Resets at UTC 00:00.");
+        } else {
+          console.error("[reroll]", err);
+        }
       }
       // Realtime subscription on the parent page refreshes draft.body.
     } finally {

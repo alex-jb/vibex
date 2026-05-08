@@ -64,6 +64,37 @@ export async function POST(
     return NextResponse.json({ error: "not project owner" }, { status: 403 });
   }
 
+  // Daily cost gate (D5). 21 credits per full generation. Cap default 100.
+  const { data: gateData, error: gateErr } = await supabase.rpc(
+    "consume_draft_credits",
+    {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      p_creator_id: (project as any).creator_id,
+      p_cost: 21,
+      p_cap: 100,
+    },
+  );
+  if (gateErr) {
+    return NextResponse.json({ error: gateErr.message }, { status: 500 });
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const gate = gateData as any;
+  if (!gate?.ok) {
+    return NextResponse.json(
+      {
+        error: gate?.error || "quota_exceeded",
+        used: gate?.used,
+        cap: gate?.cap,
+        reset_at: gate?.reset_at,
+        message:
+          gate?.error === "over_cap"
+            ? `Daily quota exhausted (${gate.used}/${gate.cap}). Resets at ${gate.reset_at}.`
+            : "Quota check failed",
+      },
+      { status: 429 },
+    );
+  }
+
   let body: BodyOpts = {};
   try {
     body = (await req.json()) as BodyOpts;

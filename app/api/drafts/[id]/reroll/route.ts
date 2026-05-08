@@ -54,7 +54,7 @@ export async function POST(
   const { data: project, error: pErr } = await supabase
     .from("projects")
     .select(
-      "id, title, tagline, description, category, tags, demo_url, creators!inner(auth_user_id)",
+      "id, title, tagline, description, category, tags, demo_url, creator_id, creators!inner(auth_user_id)",
     )
     .eq("id", (draftRow as { project_id: string }).project_id)
     .maybeSingle();
@@ -65,6 +65,37 @@ export async function POST(
   const ownerAuthId = (project as any).creators?.auth_user_id;
   if (ownerAuthId !== user.id) {
     return NextResponse.json({ error: "not project owner" }, { status: 403 });
+  }
+
+  // Daily cost gate (D5). 1 credit per reroll.
+  const { data: gateData, error: gateErr } = await supabase.rpc(
+    "consume_draft_credits",
+    {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      p_creator_id: (project as any).creator_id,
+      p_cost: 1,
+      p_cap: 100,
+    },
+  );
+  if (gateErr) {
+    return NextResponse.json({ error: gateErr.message }, { status: 500 });
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const gate = gateData as any;
+  if (!gate?.ok) {
+    return NextResponse.json(
+      {
+        error: gate?.error || "quota_exceeded",
+        used: gate?.used,
+        cap: gate?.cap,
+        reset_at: gate?.reset_at,
+        message:
+          gate?.error === "over_cap"
+            ? `Daily quota exhausted (${gate.used}/${gate.cap}).`
+            : "Quota check failed",
+      },
+      { status: 429 },
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

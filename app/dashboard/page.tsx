@@ -65,6 +65,7 @@ export default function DashboardPage() {
   const [projects, setProjects] = useState<ProjectRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [creator, setCreator] = useState<{ name: string; id: string } | null>(null);
+  const [credits, setCredits] = useState<{ used: number; cap: number } | null>(null);
 
   const loadAll = useCallback(async () => {
     if (!user) return;
@@ -75,6 +76,18 @@ export default function DashboardPage() {
       .maybeSingle();
     if (!c) return;
     setCreator(c as { name: string; id: string });
+
+    // Pull today's credit usage (D5 cost gate). Lookup-only RPC, no
+    // credits consumed.
+    const { data: creditsData } = await supabase.rpc("get_draft_credits", {
+      p_creator_id: (c as { id: string }).id,
+      p_cap: 100,
+    });
+    if (creditsData && typeof creditsData === "object") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const cd = creditsData as any;
+      setCredits({ used: cd.used || 0, cap: cd.cap || 100 });
+    }
 
     const { data: pjs } = await supabase
       .from("projects")
@@ -248,6 +261,8 @@ export default function DashboardPage() {
           lang={lang}
           firstProjectId={projects[0]?.id}
         />
+
+        {credits ? <CreditsBar credits={credits} lang={lang} /> : null}
 
         {/* Stat tiles */}
         <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
@@ -521,6 +536,48 @@ function Pill({
     >
       {label}
     </span>
+  );
+}
+
+function CreditsBar({
+  credits,
+  lang,
+}: {
+  credits: { used: number; cap: number };
+  lang: "en" | "zh";
+}) {
+  const pct = Math.min(100, Math.round((credits.used / credits.cap) * 100));
+  const lowAndDangerous = pct >= 85;
+  return (
+    <div
+      className={`rounded-lg border p-3 mb-6 flex items-center gap-3 ${
+        lowAndDangerous
+          ? "border-yellow-500/40 bg-yellow-500/5"
+          : "border-white/[0.06] bg-white/[0.02]"
+      }`}
+    >
+      <span className="font-pixel text-[9px] uppercase tracking-wider text-foreground/50 shrink-0">
+        {lang === "zh" ? "今日额度" : "Daily quota"}
+      </span>
+      <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden min-w-[120px]">
+        <div
+          className={`h-full transition-all duration-500 ${
+            lowAndDangerous
+              ? "bg-yellow-400"
+              : "bg-gradient-to-r from-violet-500 to-emerald-400"
+          }`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <span className="text-xs text-foreground/70 font-mono shrink-0">
+        {credits.used}/{credits.cap}
+      </span>
+      {lowAndDangerous && (
+        <span className="text-[10px] text-yellow-300 italic shrink-0">
+          {lang === "zh" ? "UTC 0 点重置" : "resets at UTC 00:00"}
+        </span>
+      )}
+    </div>
   );
 }
 
