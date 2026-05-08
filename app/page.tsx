@@ -110,7 +110,9 @@ function formatCount(n: number): string {
 type RecentProject = {
   id: string;
   title: string;
+  title_zh: string | null;
   tagline: string | null;
+  tagline_zh: string | null;
   evolution_stage: string | null;
 };
 
@@ -133,7 +135,7 @@ export default function LandingPage() {
           supabase.from("creators").select("*", { count: "exact", head: true }),
           supabase
             .from("projects")
-            .select("id, title, tagline, evolution_stage")
+            .select("id, title, title_zh, tagline, tagline_zh, evolution_stage")
             .order("created_at", { ascending: false })
             .limit(6),
         ]);
@@ -297,10 +299,10 @@ export default function LandingPage() {
                 className="rounded-md border border-white/[0.08] bg-white/[0.02] p-5 hover:bg-white/[0.05] hover:border-white/[0.15] transition-colors block"
               >
                 <h3 className="font-bold text-foreground mb-1 truncate">
-                  {p.title}
+                  {lang === "zh" && p.title_zh ? p.title_zh : p.title}
                 </h3>
                 <p className="text-foreground/60 text-sm line-clamp-2 mb-3">
-                  {p.tagline || ""}
+                  {(lang === "zh" && p.tagline_zh ? p.tagline_zh : p.tagline) || ""}
                 </p>
                 {p.evolution_stage ? (
                   <span className="font-pixel text-[9px] uppercase tracking-wider text-foreground/40">

@@ -28,7 +28,9 @@ const ONBOARDING_DISMISSED_KEY = "vibex-onboarding-dismissed";
 interface ProjectRow {
   id: string;
   title: string;
+  title_zh: string | null;
   tagline: string;
+  tagline_zh: string | null;
   evolution_stage: string | null;
   score: number | null;
   views: number | null;
@@ -76,7 +78,7 @@ export default function DashboardPage() {
 
     const { data: pjs } = await supabase
       .from("projects")
-      .select("id, title, tagline, evolution_stage, score, views, upvotes, created_at")
+      .select("id, title, title_zh, tagline, tagline_zh, evolution_stage, score, views, upvotes, created_at")
       .eq("creator_id", c.id)
       .order("created_at", { ascending: false });
     if (!pjs) {
@@ -373,6 +375,10 @@ function ProjectRow({
   const totalDrafts = counts
     ? counts.pending + counts.approved + counts.posted + counts.rejected
     : 0;
+  const displayTitle =
+    lang === "zh" && project.title_zh ? project.title_zh : project.title;
+  const displayTagline =
+    lang === "zh" && project.tagline_zh ? project.tagline_zh : project.tagline;
 
   return (
     <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 hover:bg-white/[0.04] transition-colors">
@@ -383,7 +389,7 @@ function ProjectRow({
               href={`/project/${project.id}`}
               className="font-bold text-foreground hover:text-violet-200 truncate"
             >
-              {project.title}
+              {displayTitle}
             </Link>
             <span
               className="text-[9px] px-2 py-0.5 rounded font-pixel uppercase tracking-wider"
@@ -402,7 +408,7 @@ function ProjectRow({
             )}
           </div>
           <p className="text-foreground/60 text-sm mb-3 line-clamp-1">
-            {project.tagline}
+            {displayTagline}
           </p>
 
           {/* Draft pipeline */}

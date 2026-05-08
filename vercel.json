@@ -18,6 +18,10 @@
     {
       "path": "/api/cron/scrape-engagement",
       "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/translate-zh",
+      "schedule": "0 3 * * *"
     }
   ]
 }
