@@ -4,6 +4,7 @@ import { use } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useCreators, useProjects } from "@/lib/use-data";
+import { useLang } from "@/lib/i18n";
 import { AttributeRadar } from "@/components/rpg/attribute-radar";
 import { HeroCard } from "@/components/home/hero-card";
 import { projectsToCards } from "@/components/home/hero-card-grid";
@@ -129,6 +130,7 @@ export default function PublicProfilePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const { lang } = useLang();
   const { data: creators } = useCreators();
   const { data: projects } = useProjects();
 
@@ -144,7 +146,7 @@ export default function PublicProfilePage({
           className="font-pixel"
           style={{ fontSize: 12, color: C.FORGE, letterSpacing: 2 }}
         >
-          ▸ CREATOR NOT FOUND
+          ▸ {lang === "zh" ? "CREATOR 未找到" : "CREATOR NOT FOUND"}
         </div>
       </div>
     );
@@ -340,7 +342,7 @@ export default function PublicProfilePage({
                     marginBottom: 4,
                   }}
                 >
-                  ▸ TRAINER · RANK #{creator.rank}
+                  ▸ {lang === "zh" ? "创作者" : "TRAINER"} · {lang === "zh" ? "排名" : "RANK"} #{creator.rank}
                 </div>
                 <div
                   className="font-pixel"
@@ -421,7 +423,7 @@ export default function PublicProfilePage({
                   marginBottom: 6,
                 }}
               >
-                ▸ TRAINER STATS
+                ▸ {lang === "zh" ? "创作者数据" : "TRAINER STATS"}
               </div>
               <StatBar
                 label="HP"
@@ -673,7 +675,7 @@ export default function PublicProfilePage({
             textShadow: `0 0 8px ${C.GREEN}44`,
           }}
         >
-          ⬢ EVOLVED HEROES · {myProjects.length}
+          ⬢ {lang === "zh" ? "项目作品" : "EVOLVED HEROES"} · {myProjects.length}
         </div>
         {myProjects.length === 0 ? (
           <div
@@ -686,7 +688,7 @@ export default function PublicProfilePage({
               border: `1px dashed ${C.BORDER}`,
             }}
           >
-            No heroes forged yet.
+            {lang === "zh" ? "还没有上线的项目。" : "No heroes forged yet."}
           </div>
         ) : (
           <div
