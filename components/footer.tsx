@@ -39,7 +39,7 @@ export function Footer() {
   const pathname = usePathname();
   const eventsOn = isFeatureEnabled("FEATURE_EVENTS");
   // Hide footer on chrome-less routes (landing + auth flows)
-  const hideChrome = pathname === "/" || pathname === "/login" || pathname === "/register";
+  const hideChrome = pathname === "/arcade" || pathname === "/login" || pathname === "/register";
   if (hideChrome) return null;
   return (
     <footer aria-label="Footer navigation" className="relative border-t border-white/[0.04] bg-background" data-slot="footer">

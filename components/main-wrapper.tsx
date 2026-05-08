@@ -11,7 +11,7 @@ interface MainWrapperProps {
  * top padding. On chrome-less routes (landing + auth flows), the navbar
  * is hidden so we remove the 56px padding to avoid an empty strip.
  */
-const CHROMELESS_ROUTES = new Set(["/", "/login", "/register"]);
+const CHROMELESS_ROUTES = new Set(["/arcade", "/login", "/register"]);
 
 export function MainWrapper({ children }: MainWrapperProps) {
   const pathname = usePathname();

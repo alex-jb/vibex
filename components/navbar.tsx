@@ -57,7 +57,7 @@ export function Navbar() {
 
   // Hide navbar on chrome-less routes (landing + auth flows get their own full-bleed canvas)
   // MUST be after all hooks to obey rules of hooks
-  const hideChrome = pathname === "/" || pathname === "/login" || pathname === "/register";
+  const hideChrome = pathname === "/arcade" || pathname === "/login" || pathname === "/register";
   if (hideChrome) return null;
 
   const primaryNavItems = user ? fullNavItems : guestNavItems;
