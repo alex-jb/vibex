@@ -1029,6 +1029,22 @@ export default function ProjectPage({
             </Button>
           </motion.div>
 
+          {/* Marketing drafts — distribution amplifier core (2026-05-08
+              repositioning). Link to /project/[id]/drafts where the
+              creator sees 10+ platform-specific posts auto-generated
+              by marketing-agent. Owner-only — anon visitors don't
+              get the promotion to manage someone else's drafts. */}
+          {user && (
+            <motion.div variants={fadeIn}>
+              <Link
+                href={`/project/${project.id}/drafts`}
+                className="block w-full text-center gap-2 border border-violet-500/30 bg-violet-500/5 hover:bg-violet-500/10 text-violet-300 rounded-md px-3 py-2 font-pixel text-[10px] uppercase tracking-wider"
+              >
+                ✨ Marketing drafts (8 platforms)
+              </Link>
+            </motion.div>
+          )}
+
           {/* Tweet my evolution stage — 1-tap social brag, the highest-
               leverage organic distribution surface for a gallery product.
               Attribution via ?ref=tw so the funnel-analytics agent can

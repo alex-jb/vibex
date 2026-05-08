@@ -373,6 +373,30 @@ export async function POST(req: NextRequest) {
         console.error("[submit] welcome-email path threw", err);
       });
 
+      // 2026-05-08 NEW: VibeXForge new positioning is "distribution
+      // amplifier". Auto-generate 10+ platform-specific drafts in the
+      // background so creator lands on /project/[id] with drafts
+      // already populated. Fire-and-forget — never block submit.
+      // See lib/draft-generator.ts + docs/MASTER_PLAN.md.
+      if (process.env.ANTHROPIC_API_KEY) {
+        (async () => {
+          const { generateDraftsForProject } = await import(
+            "@/lib/draft-generator"
+          );
+          await generateDraftsForProject(supabase, {
+            id: project.id,
+            title: project.title,
+            tagline: project.tagline,
+            description: project.description,
+            category: project.category,
+            tags: project.tags,
+            demoUrl: project.demoUrl,
+          });
+        })().catch((err) => {
+          console.error("[submit] draft-generator path threw", err);
+        });
+      }
+
       return NextResponse.json(
         {
           id: project.id,
