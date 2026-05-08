@@ -109,20 +109,23 @@ export default function AboutPage() {
           The agent stack
         </h2>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 16 }}>
-          VibeXForge runs on top of <strong style={{ color: "#FFE27D" }}>Solo Founder OS</strong> — eight open-source Python agents that handle the boring 80% of launching: pre-push diff review, daily morning brief, real-time PH alerts, monthly bill audit, EN/ZH content sync, customer pain scanning, cold-email drafting, multi-platform marketing.
+          VibeXForge runs on top of <strong style={{ color: "#FFE27D" }}>Solo Founder OS</strong> — an 11-agent open-source Python stack covering the seven canonical layers of running a one-person company. The marketing-agent (layer 2) is the engine inside VibeXForge itself — every draft you see was written by the same code that is public on GitHub.
         </p>
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 16 }}>
-          Each is its own pip-installable package with a Claude Desktop MCP server. All MIT-licensed. Total cost to run them all: ~$3.70/month in Anthropic API.
+          Each agent is a pip-installable package with a Claude Desktop MCP server. All MIT-licensed. Total cost to run all 11 in production: under $5/month in Anthropic API.
+        </p>
+        <p style={{ color: "#8888A0", fontSize: 12, lineHeight: 1.6, marginBottom: 8, textTransform: "uppercase", letterSpacing: 1.5 }}>
+          ▸ 11 / 11 agents shipped · all open source
         </p>
         <ul style={{ color: "#8888A0", fontSize: 13, lineHeight: 1.8, marginBottom: 24, paddingLeft: 20, listStyle: "disc" }}>
-          <li><a href="https://github.com/alex-jb/solo-founder-os" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>solo-founder-os</a> — shared base library</li>
-          <li><a href="https://github.com/alex-jb/build-quality-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>build-quality-agent</a> — pre-push Claude review hook</li>
-          <li><a href="https://github.com/alex-jb/funnel-analytics-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>funnel-analytics-agent</a> — daily brief + real-time alerts</li>
-          <li><a href="https://github.com/alex-jb/customer-discovery-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>customer-discovery-agent</a> — Reddit pain scanning + clustering</li>
-          <li><a href="https://github.com/alex-jb/vc-outreach-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>vc-outreach-agent</a> — investor cold-email drafter</li>
-          <li><a href="https://github.com/alex-jb/cost-audit-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>cost-audit-agent</a> — monthly bill audit + waste finder</li>
-          <li><a href="https://github.com/alex-jb/bilingual-content-sync-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>bilingual-content-sync-agent</a> — EN/ZH i18n translator</li>
-          <li><a href="https://github.com/alex-jb/orallexa-marketing-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>marketing-agent</a> — multi-platform post drafts</li>
+          <li><a href="https://github.com/alex-jb/solo-founder-os" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>solo-founder-os</a> — shared base library: cron, eval, council, evolver, retro</li>
+          <li><strong style={{ color: "#39FF14" }}>L1 · Engineering quality</strong> — <a href="https://github.com/alex-jb/build-quality-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>build-quality-agent</a>: pre-push Claude diff review + local build runner</li>
+          <li><strong style={{ color: "#39FF14" }}>L2 · Marketing &amp; distribution</strong> — <a href="https://github.com/alex-jb/orallexa-marketing-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>marketing-agent</a>: 17 platform-native drafts in 10s (this powers VibeXForge); <a href="https://github.com/alex-jb/bilingual-content-sync-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>bilingual-content-sync-agent</a>: EN ↔ ZH i18n translator</li>
+          <li><strong style={{ color: "#39FF14" }}>L3 · Customer discovery</strong> — <a href="https://github.com/alex-jb/customer-discovery-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>customer-discovery-agent</a>: Reddit pain-point scraper + Claude clustering</li>
+          <li><strong style={{ color: "#39FF14" }}>L4 · Sales &amp; outreach</strong> — <a href="https://github.com/alex-jb/vc-outreach-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>vc-outreach-agent</a>: investor cold-email drafter; <a href="https://github.com/alex-jb/customer-outreach-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>customer-outreach-agent</a>: paid-customer cold email</li>
+          <li><strong style={{ color: "#39FF14" }}>L5 · Customer support</strong> — <a href="https://github.com/alex-jb/customer-support-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>customer-support-agent</a>: triage user messages → auto-draft replies → HITL queue</li>
+          <li><strong style={{ color: "#39FF14" }}>L6 · Payments &amp; finance</strong> — <a href="https://github.com/alex-jb/payments-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>payments-agent</a>: overdue-invoice reminder drafter (Stripe-shaped); <a href="https://github.com/alex-jb/cost-audit-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>cost-audit-agent</a>: monthly bill audit + waste finder (6 providers)</li>
+          <li><strong style={{ color: "#39FF14" }}>L7 · Analytics &amp; observability</strong> — <a href="https://github.com/alex-jb/funnel-analytics-agent" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>funnel-analytics-agent</a>: daily brief + real-time alerts (9 sources)</li>
         </ul>
 
         <h2 className="font-pixel" style={{ fontSize: 12, color: "#39FF14", marginBottom: 16 }}>
