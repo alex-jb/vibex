@@ -11,6 +11,29 @@
   --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
   --font-heading: var(--font-sans);
+
+  /* ── Brand color tokens (2026-05-08 design-system pass) ────────────
+     Single source of truth for brand colors. Components should use
+     these via Tailwind arbitrary class `bg-[var(--brand-forge)]` or
+     inline `style={{ color: 'var(--brand-forge)' }}` instead of
+     hardcoded hex literals. The 5-color limit enforces the 1
+     dominant + 1 supporting rule per surface.
+
+     Don't add a 6th — if a status doesn't fit (success / warn / err
+     / info / brand), reconsider why you need a new color first. */
+  --brand-forge: #FF4500;        /* primary brand orange */
+  --brand-cream: #FFE27D;        /* brand secondary accent */
+  --brand-emerald: #10B981;      /* status: success / posted / amplified */
+  --brand-violet: #8B5CF6;       /* secondary surface accent */
+  --brand-amber: #F59E0B;        /* status: pending / warning */
+  --brand-rose: #F43F5E;         /* status: error / rejected */
+
+  /* Background depth tokens — used by main wrappers + RPG surfaces.
+     bg-deep = neutral near-black for full-page surfaces;
+     bg-elev = slightly lighter tone for elevated cards. */
+  --bg-deep: #0A0A0C;
+  --bg-elev: #14141A;
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -85,19 +108,24 @@
 }
 
 .dark {
-  --background: oklch(0.09 0.005 270);
+  /* 2026-05-08: removed the violet hue tint (was 0.005 chroma at 270°
+     on background/card/secondary/muted/accent/sidebar). Pure neutral
+     dark now — Linear / Lovable / codedex pattern. The previous tint
+     was clashing with the warm forge orange brand color, making the
+     site feel "off" without an obvious cause. */
+  --background: oklch(0.07 0 0);
   --foreground: oklch(0.95 0 0);
-  --card: oklch(0.13 0.005 270);
+  --card: oklch(0.11 0 0);
   --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.13 0.005 270);
+  --popover: oklch(0.11 0 0);
   --popover-foreground: oklch(0.95 0 0);
   --primary: oklch(0.92 0 0);
   --primary-foreground: oklch(0.15 0 0);
-  --secondary: oklch(0.2 0.005 270);
+  --secondary: oklch(0.18 0 0);
   --secondary-foreground: oklch(0.95 0 0);
-  --muted: oklch(0.2 0.005 270);
+  --muted: oklch(0.18 0 0);
   --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.2 0.005 270);
+  --accent: oklch(0.18 0 0);
   --accent-foreground: oklch(0.95 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 8%);
@@ -108,11 +136,11 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.13 0.005 270);
+  --sidebar: oklch(0.11 0 0);
   --sidebar-foreground: oklch(0.95 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.2 0.005 270);
+  --sidebar-accent: oklch(0.18 0 0);
   --sidebar-accent-foreground: oklch(0.95 0 0);
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.556 0 0);
