@@ -342,6 +342,28 @@ export function planDrafts(
   return out;
 }
 
+/**
+ * Regenerate a single draft slot — used by /api/drafts/[id]/reroll
+ * so the creator can roll just one platform/lang/variant tuple
+ * without paying for the full 21-draft batch.
+ */
+export async function regenerateOneDraft(
+  project: ProjectInput,
+  platform: Platform,
+  language: Language,
+  variantKey: string | null,
+  subreddit: string | null = null,
+): Promise<{ body: string; title: string | null } | null> {
+  if (!process.env.ANTHROPIC_API_KEY) return null;
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  try {
+    return await generateOne(client, project, platform, language, variantKey, subreddit);
+  } catch (err) {
+    console.error("[draft-generator] regenerateOneDraft failed:", err);
+    return null;
+  }
+}
+
 async function generateOne(
   client: Anthropic,
   project: ProjectInput,

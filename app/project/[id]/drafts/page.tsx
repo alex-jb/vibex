@@ -330,6 +330,30 @@ function DraftCard({
   const [body, setBody] = useState(draft.body);
   const [copied, setCopied] = useState(false);
   const [postedUrlInput, setPostedUrlInput] = useState(draft.posted_url || "");
+  const [rerolling, setRerolling] = useState(false);
+
+  // Keep local body in sync if the row is updated externally (e.g. cron
+  // re-scrape, or a successful reroll that arrives via realtime).
+  useEffect(() => {
+    if (!editing) setBody(draft.body);
+  }, [draft.body, editing]);
+
+  const reroll = async () => {
+    if (rerolling) return;
+    setRerolling(true);
+    try {
+      const res = await fetch(`/api/drafts/${draft.id}/reroll`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error("[reroll]", err);
+      }
+      // Realtime subscription on the parent page refreshes draft.body.
+    } finally {
+      setRerolling(false);
+    }
+  };
 
   const intentBuilder = PLATFORM_INTENT_URL[draft.platform];
   const intentUrl = intentBuilder
@@ -463,6 +487,14 @@ function DraftCard({
           className="px-3 py-1 text-xs rounded border border-white/10 hover:bg-white/5"
         >
           {copied ? "Copied ✓" : "Copy"}
+        </button>
+        <button
+          onClick={reroll}
+          disabled={rerolling}
+          className="px-3 py-1 text-xs rounded border border-violet-500/30 bg-violet-500/5 hover:bg-violet-500/10 text-violet-300 disabled:opacity-50"
+          title="Regenerate just this draft (~$0.005)"
+        >
+          {rerolling ? "Rerolling…" : "🎲 Re-roll"}
         </button>
         {intentUrl && (
           <a
