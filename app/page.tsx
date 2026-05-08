@@ -244,7 +244,7 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)]">
       {/* Hero */}
-      <section className="px-6 pt-16 pb-20 max-w-5xl mx-auto">
+      <section className="px-6 pt-24 pb-32 max-w-5xl mx-auto">
         <motion.p
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
@@ -258,7 +258,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.05 }}
-          className="text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05] mb-6 tracking-tight"
+          className="text-5xl sm:text-7xl md:text-[88px] font-bold leading-[1.02] mb-8 tracking-tight"
         >
           {t.h1Pre}
           <br />
@@ -320,7 +320,7 @@ export default function LandingPage() {
       ) : null}
 
       {/* Platform strip */}
-      <section className="px-6 py-16 max-w-5xl mx-auto">
+      <section className="px-6 py-24 max-w-5xl mx-auto">
         <h2 className="text-2xl sm:text-3xl font-bold mb-3 tracking-tight">
           {t.platformsTitle}
         </h2>
@@ -343,7 +343,7 @@ export default function LandingPage() {
       </section>
 
       {/* 3-step */}
-      <section className="px-6 py-16 max-w-5xl mx-auto border-t border-white/[0.06]">
+      <section className="px-6 py-24 max-w-5xl mx-auto border-t border-white/[0.06]">
         <h2 className="text-2xl sm:text-3xl font-bold mb-10 tracking-tight">
           {t.stepsTitle}
         </h2>
@@ -366,7 +366,7 @@ export default function LandingPage() {
       </section>
 
       {/* Recent projects */}
-      <section className="px-6 py-16 max-w-5xl mx-auto border-t border-white/[0.06]">
+      <section className="px-6 py-24 max-w-5xl mx-auto border-t border-white/[0.06]">
         <h2 className="text-2xl sm:text-3xl font-bold mb-8 tracking-tight">
           {t.recentTitle}
         </h2>

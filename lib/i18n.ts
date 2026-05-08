@@ -44,6 +44,9 @@ const translations = {
     "nav.tab.launch": "Launch",
     "nav.tab.feed": "Feed",
     "nav.tab.profile": "Profile",
+    "nav.tab.submit": "Submit",
+    "nav.tab.drafts": "Drafts",
+    "nav.tab.notifications": "Inbox",
 
     // Discover page
     "discover.badge": "Discover what's next",
@@ -926,6 +929,9 @@ const translations = {
     "nav.tab.launch": "锻造",
     "nav.tab.feed": "动态",
     "nav.tab.profile": "档案",
+    "nav.tab.submit": "提交",
+    "nav.tab.drafts": "草稿",
+    "nav.tab.notifications": "通知",
 
     // Discover page
     "discover.badge": "发现下一个热门",

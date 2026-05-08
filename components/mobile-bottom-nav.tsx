@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, Rocket, MessageSquare, User } from "lucide-react";
+import { LayoutDashboard, Rocket, FileText, Bell, User } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useLang, type TranslationKey } from "@/lib/i18n";
 
@@ -11,12 +11,9 @@ import { useLang, type TranslationKey } from "@/lib/i18n";
    - 5 items max (Material Design cap)
    - Hidden on ≥md and on chrome-less routes (landing, auth)
    - Uses safe-area-inset-bottom for notched devices
-   - Active state: neon purple glow + filled icon + dot indicator
-   - Labels are i18n keys (nav.*) so /home reads "HQ" here and in the top nav
-     instead of diverging (was "HOME" vs "HQ" pre-2026-04-17).
    ═══════════════════════════════════════════════════════════════════════════ */
 
-const CHROMELESS_ROUTES = new Set(["/", "/login", "/register"]);
+const CHROMELESS_ROUTES = new Set(["/", "/login", "/register", "/arcade"]);
 
 interface NavItem {
   href: string;
@@ -25,13 +22,19 @@ interface NavItem {
   exactMatch?: boolean;
 }
 
-// /discover merged into /home 2026-04-14. Replaced EXPLORE tile with ARENA
-// to keep the 5-item cap (HQ · ARENA · LAUNCH · FEED · PROFILE).
+// 2026-05-09 IA realignment: was HQ · Arena · Launch · Feed · Profile
+// (3 of 5 RPG-era game routes). Now reflects the actual creator funnel:
+// Dashboard · Submit · Drafts · Notifications · Profile.
+//
+// Drafts tab can't link directly to a project's drafts (we don't know
+// which project), so it lands on /dashboard which has the per-project
+// drafts entry points. Once we ship a "latest project shortcut" route
+// we'll point Drafts there instead.
 const NAV_ITEMS: NavItem[] = [
-  { href: "/home", key: "nav.home", Icon: Home },
-  { href: "/arena", key: "nav.arena", Icon: Compass },
-  { href: "/launch", key: "nav.tab.launch", Icon: Rocket },
-  { href: "/feed", key: "nav.tab.feed", Icon: MessageSquare },
+  { href: "/dashboard", key: "nav.dashboard", Icon: LayoutDashboard },
+  { href: "/launch", key: "nav.tab.submit", Icon: Rocket },
+  { href: "/dashboard", key: "nav.tab.drafts", Icon: FileText },
+  { href: "/notifications", key: "nav.tab.notifications", Icon: Bell },
   { href: "/profile", key: "nav.tab.profile", Icon: User },
 ];
 

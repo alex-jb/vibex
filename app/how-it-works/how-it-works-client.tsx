@@ -122,7 +122,7 @@ export default function HowItWorksClient() {
   return (
     <main className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)]">
       {/* Hero */}
-      <section className="px-6 pt-20 pb-16 max-w-4xl mx-auto text-center">
+      <section className="px-6 pt-28 pb-24 max-w-4xl mx-auto text-center">
         <p className="font-pixel text-[10px] uppercase tracking-[0.28em] text-[var(--ember,#FF4500)] mb-4">
           {t.eyebrow}
         </p>
@@ -157,7 +157,7 @@ export default function HowItWorksClient() {
       </section>
 
       {/* 3-step explainer */}
-      <section className="px-6 py-16 bg-white/[0.02] border-y border-white/[0.06]">
+      <section className="px-6 py-24 bg-white/[0.02] border-y border-white/[0.06]">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-center font-pixel text-[11px] uppercase tracking-[1.5px] text-emerald-300 mb-12">
             {t.stepsTitle}
@@ -171,7 +171,7 @@ export default function HowItWorksClient() {
       </section>
 
       {/* Platforms grid */}
-      <section className="px-6 py-16 max-w-5xl mx-auto">
+      <section className="px-6 py-24 max-w-5xl mx-auto">
         <h2 className="text-center font-pixel text-[11px] uppercase tracking-[1.5px] text-violet-300 mb-3">
           {t.platformsTitle}
         </h2>
@@ -199,7 +199,7 @@ export default function HowItWorksClient() {
       </section>
 
       {/* Why us */}
-      <section className="px-6 py-16 bg-white/[0.02] border-y border-white/[0.06]">
+      <section className="px-6 py-24 bg-white/[0.02] border-y border-white/[0.06]">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-center font-pixel text-[11px] uppercase tracking-[1.5px] text-emerald-300 mb-10">
             {t.whyTitle}
@@ -214,7 +214,7 @@ export default function HowItWorksClient() {
       </section>
 
       {/* CTA */}
-      <section className="px-6 py-20 max-w-3xl mx-auto text-center">
+      <section className="px-6 py-28 max-w-3xl mx-auto text-center">
         <h2
           className="text-2xl sm:text-3xl font-bold mb-4"
           style={{ fontFamily: "var(--font-press-start), monospace" }}

@@ -19,7 +19,7 @@ export function StackLanding({ cfg }: { cfg: StackPageConfig }) {
   return (
     <main className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)]">
       {/* Hero */}
-      <section className="px-6 pt-16 pb-10 max-w-4xl mx-auto">
+      <section className="px-6 pt-24 pb-16 max-w-4xl mx-auto">
         <p
           className="font-pixel text-[10px] uppercase tracking-[0.28em] mb-4"
           style={{ color: cfg.brandColor === "#000000" ? "#FF4500" : cfg.brandColor }}
@@ -67,7 +67,7 @@ export function StackLanding({ cfg }: { cfg: StackPageConfig }) {
       </section>
 
       {/* Pain point */}
-      <section className="px-6 py-12 max-w-4xl mx-auto border-t border-white/[0.06]">
+      <section className="px-6 py-20 max-w-4xl mx-auto border-t border-white/[0.06]">
         <h2 className="text-2xl font-bold mb-4 tracking-tight">
           {lang === "zh" ? "真实痛点" : "The wall"}
         </h2>
@@ -75,7 +75,7 @@ export function StackLanding({ cfg }: { cfg: StackPageConfig }) {
       </section>
 
       {/* Sample draft preview */}
-      <section className="px-6 py-12 max-w-4xl mx-auto border-t border-white/[0.06]">
+      <section className="px-6 py-20 max-w-4xl mx-auto border-t border-white/[0.06]">
         <h2 className="text-2xl font-bold mb-2 tracking-tight">
           {lang === "zh"
             ? `${cfg.brand} 项目的草稿大概长这样`
@@ -102,7 +102,7 @@ export function StackLanding({ cfg }: { cfg: StackPageConfig }) {
       </section>
 
       {/* Stack-aware loop */}
-      <section className="px-6 py-12 max-w-4xl mx-auto border-t border-white/[0.06]">
+      <section className="px-6 py-20 max-w-4xl mx-auto border-t border-white/[0.06]">
         <h2 className="text-2xl font-bold mb-6 tracking-tight">
           {lang === "zh" ? "怎么用" : "The loop"}
         </h2>
@@ -135,7 +135,7 @@ export function StackLanding({ cfg }: { cfg: StackPageConfig }) {
       </section>
 
       {/* Bottom CTA */}
-      <section className="px-6 py-20 max-w-3xl mx-auto text-center border-t border-white/[0.06]">
+      <section className="px-6 py-28 max-w-3xl mx-auto text-center border-t border-white/[0.06]">
         <h2 className="text-2xl sm:text-3xl font-bold mb-4 tracking-tight">
           {lang === "zh"
             ? `给你的 ${cfg.brand} 项目写 17 张草稿,10 秒。`

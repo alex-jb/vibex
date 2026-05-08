@@ -33,7 +33,7 @@ export default function TryPage() {
   return (
     <main className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)]">
       {/* Hero */}
-      <section className="px-6 pt-16 pb-10 max-w-5xl mx-auto">
+      <section className="px-6 pt-24 pb-16 max-w-5xl mx-auto">
         <p
           className="font-pixel text-[10px] uppercase tracking-[0.28em] mb-4"
           style={{ color: "#FF4500" }}
@@ -73,7 +73,7 @@ export default function TryPage() {
       </section>
 
       {/* Sample drafts */}
-      <section className="px-6 py-10 max-w-5xl mx-auto border-t border-white/[0.06]">
+      <section className="px-6 py-16 max-w-5xl mx-auto border-t border-white/[0.06]">
         <div className="space-y-5">
           {DEMO_DRAFTS.map((d, i) => {
             const accent = PLATFORM_ACCENT[d.platform] || "#FF4500";
@@ -118,7 +118,7 @@ export default function TryPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="px-6 py-20 max-w-3xl mx-auto text-center border-t border-white/[0.06]">
+      <section className="px-6 py-28 max-w-3xl mx-auto text-center border-t border-white/[0.06]">
         <h2 className="text-2xl sm:text-3xl font-bold mb-4 tracking-tight">
           Like what you read? Get 17 of these for your project.
         </h2>
