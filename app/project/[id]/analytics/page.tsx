@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { useLang } from "@/lib/i18n";
+import { EmptyState } from "@/components/empty-state";
 import type { GrowthSuggestion } from "@/lib/ai";
 
 /**
@@ -317,24 +318,22 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
           </h2>
 
           {postedDrafts.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] p-8 text-center">
-              <p className="text-foreground/60 mb-3">
-                {lang === "zh"
-                  ? "还没有已发布的草稿。"
-                  : "No drafts posted yet."}
-              </p>
-              <p className="text-foreground/40 text-sm mb-4">
-                {lang === "zh"
-                  ? "去 drafts 页面发布几条,粘贴 URL 后我们会自动追踪 engagement。"
-                  : "Head to drafts, post a few, paste the URLs, and we'll track engagement."}
-              </p>
-              <Link
-                href={`/project/${projectId}/drafts`}
-                className="inline-block px-4 py-2 rounded-md text-sm font-medium bg-violet-600 hover:bg-violet-500 text-white"
-              >
-                {lang === "zh" ? "去 drafts" : "Go to drafts"}
-              </Link>
-            </div>
+            <EmptyState
+              kind="engagement"
+              accent="emerald"
+              title={
+                lang === "zh"
+                  ? "还没有已发布的草稿"
+                  : "No drafts posted yet"
+              }
+              description={
+                lang === "zh"
+                  ? "去 drafts 页面发布几条,粘贴 URL 后我们会每 6 小时自动抓 engagement。"
+                  : "Head to drafts, post a few, paste the URLs, and we'll auto-scrape engagement every 6h."
+              }
+              ctaLabel={lang === "zh" ? "去 drafts →" : "Go to drafts →"}
+              ctaHref={`/project/${projectId}/drafts`}
+            />
           ) : (
             <>
               {/* Top-line totals + winning channel */}

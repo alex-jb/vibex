@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useLang } from "@/lib/i18n";
+import { EmptyState } from "@/components/empty-state";
+import { SkeletonStatTile } from "@/components/skeleton";
 
 const ONBOARDING_DISMISSED_KEY = "vibex-onboarding-dismissed";
 
@@ -320,23 +322,20 @@ export default function DashboardPage() {
             ▸ {lang === "zh" ? "你的项目" : "YOUR PROJECTS"} ({projects.length})
           </h2>
           {projects.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] p-10 text-center">
-              <p className="text-foreground/60 mb-4">
-                {lang === "zh" ? "还没有项目。" : "No projects yet."}
-              </p>
-              <p className="text-foreground/40 text-sm mb-6">
-                {lang === "zh"
-                  ? "提交你的第一个 AI 项目。我们的 agent 5 秒内为你写好 10+ 平台专属推广帖。"
-                  : "Submit your first AI project. Our agents will write 10+ platform-specific posts in 5 seconds."}
-              </p>
-              <Link
-                href="/launch"
-                className="inline-block px-6 py-3 rounded-md bg-[#FF4500] hover:bg-[#FF6633] text-black text-sm font-semibold"
-                style={{ boxShadow: "4px 4px 0 #000" }}
-              >
-                {lang === "zh" ? "▶ 提交第一个项目" : "▶ Submit first project"}
-              </Link>
-            </div>
+            <EmptyState
+              kind="projects"
+              accent="forge"
+              title={lang === "zh" ? "还没有项目" : "No projects yet"}
+              description={
+                lang === "zh"
+                  ? "提交你的第一个 AI 项目。我们的 agent 在 10 秒内为你写好 17 张平台专属草稿。"
+                  : "Submit your first AI project. Our agents write 17 platform-native posts in 10 seconds."
+              }
+              ctaLabel={
+                lang === "zh" ? "提交第一个项目 →" : "Submit your first project →"
+              }
+              ctaHref="/launch"
+            />
           ) : (
             <div className="space-y-3">
               {projects.map((p) => (

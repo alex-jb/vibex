@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useLang } from "@/lib/i18n";
+import { EmptyState } from "@/components/empty-state";
 
 /**
  * /notifications — Q4 — creator's notification inbox.
@@ -200,17 +201,22 @@ export default function NotificationsPage() {
         </div>
 
         {visible.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] p-10 text-center">
-            <p className="text-foreground/60">
-              {filter === "unread"
-                ? lang === "zh"
-                  ? "没有未读通知。"
-                  : "No unread notifications."
+          <EmptyState
+            kind={filter === "unread" ? "filter" : "notifications"}
+            accent="violet"
+            title={
+              filter === "unread"
+                ? lang === "zh" ? "没有未读通知" : "No unread notifications"
+                : lang === "zh" ? "还没有通知" : "No notifications yet"
+            }
+            description={
+              filter === "unread"
+                ? undefined
                 : lang === "zh"
-                  ? "还没有通知。当有人 upvote 你的项目、follow 你、或者你的草稿生成完成,通知会出现在这里。"
-                  : "No notifications yet. When someone upvotes your project, follows you, or your drafts finish generating, they'll show up here."}
-            </p>
-          </div>
+                  ? "当有人 upvote 你的项目、follow 你、或你的草稿生成完成,通知会出现在这里。"
+                  : "When someone upvotes your project, follows you, or your drafts finish generating, they'll show up here."
+            }
+          />
         ) : (
           <ul className="space-y-2">
             {visible.map((n) => (
