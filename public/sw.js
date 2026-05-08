@@ -1,20 +1,28 @@
-// VibeX Service Worker — RETIRED 2026-05-06.
+// VibeX Service Worker — minimal install-only shell.
 //
-// The previous SW intercepted all HTML requests via fetch handler and
-// returned cache fallback / offline HTML on network errors. For a
-// 5-user indie product this was net-negative: a stale cache or a
-// thrown handler exception surfaces in Chrome as ERR_FAILED on the
-// route the SW touched, which is exactly what was happening on /launch.
+// Rewritten 2026-05-08 (Q2: PWA clean rebuild). The previous SW was a
+// kill-switch that unregistered itself on activate; before that, an
+// HTML-intercepting SW caused ERR_FAILED on /launch.
 //
-// This file now exists only to actively unregister any prior SW that
-// browsers still have installed. Once the user lands on any page,
-// their browser fetches /sw.js fresh, runs this script, and the SW
-// removes itself from `navigator.serviceWorker`. Caches it created
-// are also purged so no stale HTML survives.
+// This version is intentionally minimal:
+//   - install: skipWaiting (take control immediately)
+//   - activate: clients.claim, plus one-time purge of any old caches
+//     left over from the pre-2026-05-06 SW
+//   - NO fetch handler — we never intercept HTML, JS, or API
+//     requests. Users get fresh-from-network behavior every time.
 //
-// Keep this file in place for at least 30 days so returning users
-// get cleaned. After that it can be deleted along with
-// components/sw-register.tsx.
+// Why have an SW at all if it does nothing? Chrome's "Install app"
+// prompt + Add-to-Home-Screen requires a valid SW registration plus
+// a manifest.json. This file is the bare minimum to satisfy that
+// installability check while staying out of the way of every actual
+// request.
+//
+// Push notifications + Background Sync are deferred — they need a
+// server-side subscription store (web-push + VAPID keys + a creators
+// table column) which is its own commit.
+
+const CACHE_GENERATION = "vibex-2026-05-08";
+
 self.addEventListener("install", () => {
   self.skipWaiting();
 });
@@ -22,14 +30,21 @@ self.addEventListener("install", () => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
-      const cacheKeys = await caches.keys();
-      await Promise.all(cacheKeys.map((k) => caches.delete(k)));
-      await self.registration.unregister();
-      const clients = await self.clients.matchAll({ type: "window" });
-      for (const c of clients) {
-        // Force a reload so the page no longer thinks an SW is in control.
-        c.navigate(c.url).catch(() => {});
-      }
-    })()
+      // One-time cleanup: purge any caches from the previous SW
+      // generation. Match by name prefix so we don't accidentally
+      // kill caches from sibling apps on the same origin (we don't
+      // have any, but defensive).
+      const keys = await caches.keys();
+      await Promise.all(
+        keys
+          .filter((k) => k.startsWith("vibex-") && k !== CACHE_GENERATION)
+          .map((k) => caches.delete(k)),
+      );
+      await self.clients.claim();
+    })(),
   );
 });
+
+// Intentionally NO fetch listener. Every request goes straight to the
+// network. If we ever want offline support we'll add it carefully and
+// scope it to static assets only — never HTML or API routes.

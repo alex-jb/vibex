@@ -1,12 +1,15 @@
 {
-  "name": "VibeXForge — Forge Your AI Hero",
+  "name": "VibeXForge — Distribution amplifier for solo AI creators",
   "short_name": "VibeXForge",
-  "description": "Every AI project is a collectible hero. Paste a URL, forge a card, get real feedback, evolve with real traction.",
+  "description": "Submit your AI app once. Our agents auto-write 10+ platform-native posts in 5 seconds — X, Xiaohongshu, Reddit, HN, Dev.to, LinkedIn and more.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0a0a0c",
-  "theme_color": "#8b5cf6",
+  "theme_color": "#FF4500",
+  "lang": "en",
+  "categories": ["productivity", "developer", "marketing"],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -25,6 +28,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Submit project",
+      "short_name": "Submit",
+      "description": "Submit a new AI project for draft generation",
+      "url": "/launch",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Your projects and draft pipeline",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

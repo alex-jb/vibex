@@ -3,33 +3,36 @@
 import { useEffect } from "react";
 
 /**
- * Component name preserved for layout.tsx import compat, but the
- * behavior was inverted on 2026-05-06: instead of registering the
- * service worker, this now actively unregisters any prior install
- * and purges its caches.
+ * Service Worker registrar — rewritten 2026-05-08 (Q2: PWA clean rebuild).
  *
- * Why: the SW's HTML fetch handler was suspected of producing
- * `ERR_FAILED` on /launch by either (a) intercepting with a stale
- * cached response or (b) throwing inside the handler. For an indie
- * product with a tiny user base the offline-fallback value didn't
- * justify the failure modes. /public/sw.js is also rewritten to
- * unregister itself on activate, so this client-side hook is the
- * belt to that suspenders — guarantees cleanup even for users who
- * never re-fetch /sw.js because their cached one services the page.
+ * After the 2026-05-06 kill-switch incident, returning visitors had
+ * their old buggy SW unregistered + caches purged. That's been live
+ * for two days, enough time for the kill-SW to have run on every
+ * recurring visitor.
+ *
+ * Now we register the new minimal /sw.js (no fetch handler, no HTML
+ * cache — see public/sw.js for design notes). Goal: enable Chrome's
+ * "Install app" + iOS Add-to-Home-Screen prompts so creators can
+ * one-tap-launch into the dashboard from their phone.
  */
 export function ServiceWorkerRegister() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
+    if (process.env.NODE_ENV !== "production") return;
+
     (async () => {
       try {
-        const regs = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(regs.map((r) => r.unregister()));
-        if ("caches" in self) {
-          const keys = await caches.keys();
-          await Promise.all(keys.map((k) => caches.delete(k)));
-        }
+        // updateViaCache: "none" makes the browser always check
+        // /sw.js for changes on each registration call. Without this
+        // browsers can hold an old SW for 24h via HTTP cache, which
+        // is exactly what made the 2026-05-06 kill-switch slow to
+        // propagate.
+        await navigator.serviceWorker.register("/sw.js", {
+          scope: "/",
+          updateViaCache: "none",
+        });
       } catch {
-        // Non-critical: the next page load will try again.
+        // Non-critical: site works fine without SW. Silent fail.
       }
     })();
   }, []);
