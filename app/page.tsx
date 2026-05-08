@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ForgeCounter } from "@/components/landing/forge-counter";
 import { SeasonBanner } from "@/components/landing/season-banner";
+import { useLang } from "@/lib/i18n";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    LANDING PAGE — v8 VibeXForge forge treatment.
@@ -107,6 +108,7 @@ function PixelSprite({ size = 40 }: { size?: number }) {
 
 export default function LandingPage() {
   const router = useRouter();
+  const { lang } = useLang();
 
   /* SPACE key launches the full app (desktop power user shortcut) */
   useEffect(() => {
@@ -933,9 +935,9 @@ export default function LandingPage() {
             fontFamily: "var(--font-press-start), monospace",
           }}
         >
-          中国独立 AI 创作者的多渠道曝光放大器
-          <br />
-          <span style={{ opacity: 0.6 }}>Distribution amplifier for solo AI creators</span>
+          {lang === "zh"
+            ? "中国独立 AI 创作者的多渠道曝光放大器"
+            : "Distribution amplifier for solo AI creators"}
         </motion.div>
 
         {/* === CTAs === */}

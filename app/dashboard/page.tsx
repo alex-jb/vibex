@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { useLang } from "@/lib/i18n";
 
 /**
  * /dashboard — Creator's project + draft + reach overview.
@@ -51,6 +52,7 @@ const STAGE_COLOR: Record<string, string> = {
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
+  const { lang } = useLang();
   const [projects, setProjects] = useState<ProjectRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [creator, setCreator] = useState<{ name: string; id: string } | null>(null);
@@ -183,23 +185,37 @@ export default function DashboardPage() {
             ▸ CREATOR DASHBOARD
           </p>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-            欢迎回来,{creator?.name || "creator"}
+            {lang === "zh"
+              ? `欢迎回来,${creator?.name || "creator"}`
+              : `Welcome back, ${creator?.name || "creator"}`}
           </h1>
           <p className="text-foreground/60 text-sm mt-1">
-            你的项目 · 草稿状态 · 跨平台曝光数据
+            {lang === "zh"
+              ? "你的项目 · 草稿状态 · 跨平台曝光数据"
+              : "Your projects · draft pipeline · cross-platform reach"}
           </p>
         </header>
 
         {/* Stat tiles */}
         <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-          <Stat label="Projects" value={projects.length} />
           <Stat
-            label="Drafts pending review"
+            label={lang === "zh" ? "项目" : "Projects"}
+            value={projects.length}
+          />
+          <Stat
+            label={lang === "zh" ? "待审核草稿" : "Drafts pending review"}
             value={totals.pending}
             accent={totals.pending > 0 ? "violet" : undefined}
           />
-          <Stat label="Drafts posted" value={totals.posted} accent="emerald" />
-          <Stat label="Total reach (views)" value={totals.views} />
+          <Stat
+            label={lang === "zh" ? "已发布草稿" : "Drafts posted"}
+            value={totals.posted}
+            accent="emerald"
+          />
+          <Stat
+            label={lang === "zh" ? "总曝光(浏览)" : "Total reach (views)"}
+            value={totals.views}
+          />
         </section>
 
         {/* CTA */}
@@ -209,48 +225,49 @@ export default function DashboardPage() {
             className="px-4 py-2 rounded bg-[#FF4500] hover:bg-[#FF6633] text-black font-pixel text-[10px] uppercase tracking-wider"
             style={{ boxShadow: "4px 4px 0 #000" }}
           >
-            ▶ Submit new project
+            {lang === "zh" ? "▶ 提交新项目" : "▶ Submit new project"}
           </Link>
           <Link
             href="/how-it-works"
             className="px-4 py-2 rounded border border-white/15 hover:bg-white/5 text-foreground/80 font-pixel text-[10px] uppercase tracking-wider"
           >
-            How it works
+            {lang === "zh" ? "怎么用" : "How it works"}
           </Link>
           <Link
             href={`/profile/${creator?.id}`}
             className="px-4 py-2 rounded border border-white/15 hover:bg-white/5 text-foreground/80 font-pixel text-[10px] uppercase tracking-wider"
           >
-            Public profile →
+            {lang === "zh" ? "公开主页 →" : "Public profile →"}
           </Link>
         </div>
 
         {/* Projects list */}
         <section>
           <h2 className="font-pixel text-[11px] uppercase tracking-wider text-emerald-300 mb-4">
-            ▸ YOUR PROJECTS ({projects.length})
+            ▸ {lang === "zh" ? "你的项目" : "YOUR PROJECTS"} ({projects.length})
           </h2>
           {projects.length === 0 ? (
             <div className="rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] p-10 text-center">
               <p className="text-foreground/60 mb-4">
-                No projects yet.
+                {lang === "zh" ? "还没有项目。" : "No projects yet."}
               </p>
               <p className="text-foreground/40 text-sm mb-6">
-                Submit your first AI project. Our agents will write 10+
-                platform-specific posts in 5 seconds.
+                {lang === "zh"
+                  ? "提交你的第一个 AI 项目。我们的 agent 5 秒内为你写好 10+ 平台专属推广帖。"
+                  : "Submit your first AI project. Our agents will write 10+ platform-specific posts in 5 seconds."}
               </p>
               <Link
                 href="/launch"
                 className="inline-block px-6 py-3 rounded bg-[#FF4500] hover:bg-[#FF6633] text-black font-pixel text-[10px] uppercase tracking-wider"
                 style={{ boxShadow: "4px 4px 0 #000" }}
               >
-                ▶ Submit first project
+                {lang === "zh" ? "▶ 提交第一个项目" : "▶ Submit first project"}
               </Link>
             </div>
           ) : (
             <div className="space-y-3">
               {projects.map((p) => (
-                <ProjectRow key={p.id} project={p} />
+                <ProjectRow key={p.id} project={p} lang={lang} />
               ))}
             </div>
           )}
@@ -287,7 +304,13 @@ function Stat({
   );
 }
 
-function ProjectRow({ project }: { project: ProjectRow }) {
+function ProjectRow({
+  project,
+  lang,
+}: {
+  project: ProjectRow;
+  lang: "en" | "zh";
+}) {
   const stage = project.evolution_stage || "Seed";
   const stageColor = STAGE_COLOR[stage] || "#6B6E76";
   const counts = project.draft_counts;
@@ -330,27 +353,57 @@ function ProjectRow({ project }: { project: ProjectRow }) {
           <div className="flex items-center gap-3 text-xs flex-wrap">
             {totalDrafts === 0 ? (
               <span className="text-foreground/40 italic">
-                No drafts yet
+                {lang === "zh" ? "暂无草稿" : "No drafts yet"}
               </span>
             ) : (
               <>
                 {counts && counts.pending > 0 && (
-                  <Pill color="violet" label={`${counts.pending} pending`} />
+                  <Pill
+                    color="violet"
+                    label={
+                      lang === "zh"
+                        ? `${counts.pending} 待审`
+                        : `${counts.pending} pending`
+                    }
+                  />
                 )}
                 {counts && counts.approved > 0 && (
-                  <Pill color="yellow" label={`${counts.approved} approved`} />
+                  <Pill
+                    color="yellow"
+                    label={
+                      lang === "zh"
+                        ? `${counts.approved} 已批`
+                        : `${counts.approved} approved`
+                    }
+                  />
                 )}
                 {counts && counts.posted > 0 && (
-                  <Pill color="emerald" label={`${counts.posted} posted ✓`} />
+                  <Pill
+                    color="emerald"
+                    label={
+                      lang === "zh"
+                        ? `${counts.posted} 已发 ✓`
+                        : `${counts.posted} posted ✓`
+                    }
+                  />
                 )}
                 {counts && counts.rejected > 0 && (
-                  <Pill color="red" label={`${counts.rejected} rejected`} />
+                  <Pill
+                    color="red"
+                    label={
+                      lang === "zh"
+                        ? `${counts.rejected} 已拒`
+                        : `${counts.rejected} rejected`
+                    }
+                  />
                 )}
               </>
             )}
             <span className="text-foreground/40">·</span>
             <span className="text-foreground/50">
-              {project.views || 0} views · {project.upvotes || 0} upvotes
+              {lang === "zh"
+                ? `${project.views || 0} 浏览 · ${project.upvotes || 0} 点赞`
+                : `${project.views || 0} views · ${project.upvotes || 0} upvotes`}
             </span>
           </div>
         </div>
@@ -360,13 +413,13 @@ function ProjectRow({ project }: { project: ProjectRow }) {
             href={`/project/${project.id}/drafts`}
             className="px-3 py-1.5 rounded text-xs border border-violet-500/30 bg-violet-500/5 hover:bg-violet-500/10 text-violet-300"
           >
-            ✨ Drafts
+            {lang === "zh" ? "✨ 草稿" : "✨ Drafts"}
           </Link>
           <Link
             href={`/project/${project.id}`}
             className="px-3 py-1.5 rounded text-xs border border-white/10 hover:bg-white/5 text-foreground/70"
           >
-            View
+            {lang === "zh" ? "查看" : "View"}
           </Link>
         </div>
       </div>
