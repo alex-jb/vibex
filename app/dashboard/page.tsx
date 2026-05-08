@@ -197,7 +197,7 @@ export default function DashboardPage() {
           </p>
           <Link
             href="/login"
-            className="inline-block px-6 py-3 rounded bg-violet-600 hover:bg-violet-500 text-white font-pixel text-[10px] uppercase tracking-wider"
+            className="inline-block px-6 py-3 rounded bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium"
           >
             Sign in
           </Link>
@@ -295,20 +295,20 @@ export default function DashboardPage() {
         <div className="mb-8 flex flex-wrap gap-3">
           <Link
             href="/launch"
-            className="px-4 py-2 rounded bg-[#FF4500] hover:bg-[#FF6633] text-black font-pixel text-[10px] uppercase tracking-wider"
+            className="px-5 py-2.5 rounded-md bg-[#FF4500] hover:bg-[#FF6633] text-black text-sm font-semibold"
             style={{ boxShadow: "4px 4px 0 #000" }}
           >
             {lang === "zh" ? "▶ 提交新项目" : "▶ Submit new project"}
           </Link>
           <Link
             href="/how-it-works"
-            className="px-4 py-2 rounded border border-white/15 hover:bg-white/5 text-foreground/80 font-pixel text-[10px] uppercase tracking-wider"
+            className="px-5 py-2.5 rounded-md border border-white/15 hover:bg-white/5 text-foreground/85 text-sm font-medium"
           >
             {lang === "zh" ? "怎么用" : "How it works"}
           </Link>
           <Link
             href={`/profile/${creator?.id}`}
-            className="px-4 py-2 rounded border border-white/15 hover:bg-white/5 text-foreground/80 font-pixel text-[10px] uppercase tracking-wider"
+            className="px-5 py-2.5 rounded-md border border-white/15 hover:bg-white/5 text-foreground/85 text-sm font-medium"
           >
             {lang === "zh" ? "公开主页 →" : "Public profile →"}
           </Link>
@@ -316,7 +316,7 @@ export default function DashboardPage() {
 
         {/* Projects list */}
         <section>
-          <h2 className="font-pixel text-[11px] uppercase tracking-wider text-emerald-300 mb-4">
+          <h2 className="font-pixel text-[11px] uppercase tracking-[1.5px] text-emerald-300 mb-4">
             ▸ {lang === "zh" ? "你的项目" : "YOUR PROJECTS"} ({projects.length})
           </h2>
           {projects.length === 0 ? (
@@ -331,7 +331,7 @@ export default function DashboardPage() {
               </p>
               <Link
                 href="/launch"
-                className="inline-block px-6 py-3 rounded bg-[#FF4500] hover:bg-[#FF6633] text-black font-pixel text-[10px] uppercase tracking-wider"
+                className="inline-block px-6 py-3 rounded-md bg-[#FF4500] hover:bg-[#FF6633] text-black text-sm font-semibold"
                 style={{ boxShadow: "4px 4px 0 #000" }}
               >
                 {lang === "zh" ? "▶ 提交第一个项目" : "▶ Submit first project"}
@@ -407,11 +407,12 @@ function ProjectRow({
               {displayTitle}
             </Link>
             <span
-              className="text-[9px] px-2 py-0.5 rounded font-pixel uppercase tracking-wider"
+              className="text-[10px] px-2 py-0.5 rounded uppercase font-medium"
               style={{
                 color: stageColor,
                 border: `1px solid ${stageColor}40`,
                 background: `${stageColor}10`,
+                letterSpacing: "0.05em",
               }}
             >
               {stage}

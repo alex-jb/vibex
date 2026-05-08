@@ -140,14 +140,14 @@ export default function HowItWorksClient() {
         <div className="flex justify-center gap-4 flex-wrap">
           <Link
             href="/launch"
-            className="px-8 py-4 rounded font-pixel text-[12px] uppercase tracking-widest bg-[#FF4500] text-black hover:bg-[#FF6633] transition-colors"
+            className="px-8 py-4 rounded-md text-sm font-semibold bg-[#FF4500] text-black hover:bg-[#FF6633] transition-colors"
             style={{ boxShadow: "5px 5px 0 #000" }}
           >
             {t.ctaPrimary}
           </Link>
           <Link
             href="/home"
-            className="px-8 py-4 rounded font-pixel text-[12px] uppercase tracking-widest border-2 border-white/40 text-white hover:bg-white/5"
+            className="px-8 py-4 rounded-md text-sm font-semibold border border-white/30 text-white hover:bg-white/5"
             style={{ boxShadow: "5px 5px 0 #000" }}
           >
             {t.ctaSecondary}
@@ -159,7 +159,7 @@ export default function HowItWorksClient() {
       {/* 3-step explainer */}
       <section className="px-6 py-16 bg-white/[0.02] border-y border-white/[0.06]">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-center font-pixel text-[11px] uppercase tracking-widest text-emerald-300 mb-12">
+          <h2 className="text-center font-pixel text-[11px] uppercase tracking-[1.5px] text-emerald-300 mb-12">
             {t.stepsTitle}
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -172,7 +172,7 @@ export default function HowItWorksClient() {
 
       {/* Platforms grid */}
       <section className="px-6 py-16 max-w-5xl mx-auto">
-        <h2 className="text-center font-pixel text-[11px] uppercase tracking-widest text-violet-300 mb-3">
+        <h2 className="text-center font-pixel text-[11px] uppercase tracking-[1.5px] text-violet-300 mb-3">
           {t.platformsTitle}
         </h2>
         <p className="text-center text-foreground/60 mb-10 max-w-2xl mx-auto">
@@ -201,7 +201,7 @@ export default function HowItWorksClient() {
       {/* Why us */}
       <section className="px-6 py-16 bg-white/[0.02] border-y border-white/[0.06]">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-center font-pixel text-[11px] uppercase tracking-widest text-emerald-300 mb-10">
+          <h2 className="text-center font-pixel text-[11px] uppercase tracking-[1.5px] text-emerald-300 mb-10">
             {t.whyTitle}
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
@@ -224,7 +224,7 @@ export default function HowItWorksClient() {
         <p className="text-foreground/60 mb-10">{t.ctaBody}</p>
         <Link
           href="/launch"
-          className="inline-block px-10 py-5 rounded font-pixel text-[14px] uppercase tracking-widest bg-[#FF4500] text-black hover:bg-[#FF6633] transition-colors"
+          className="inline-block px-10 py-4 rounded-md text-base font-semibold bg-[#FF4500] text-black hover:bg-[#FF6633] transition-colors"
           style={{ boxShadow: "6px 6px 0 #000" }}
         >
           {t.ctaButton}

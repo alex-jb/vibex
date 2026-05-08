@@ -330,7 +330,7 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
               </p>
               <Link
                 href={`/project/${projectId}/drafts`}
-                className="inline-block px-4 py-2 rounded text-xs font-pixel uppercase tracking-wider bg-violet-600 hover:bg-violet-500 text-white"
+                className="inline-block px-4 py-2 rounded-md text-sm font-medium bg-violet-600 hover:bg-violet-500 text-white"
               >
                 {lang === "zh" ? "去 drafts" : "Go to drafts"}
               </Link>

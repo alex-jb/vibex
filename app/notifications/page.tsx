@@ -185,7 +185,7 @@ export default function NotificationsPage() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1 text-xs rounded font-pixel uppercase tracking-wider transition-colors ${
+              className={`px-3.5 py-1.5 text-xs rounded-md font-medium transition-colors ${
                 filter === f
                   ? "bg-violet-600 text-white"
                   : "border border-white/10 hover:bg-white/5 text-foreground/70"

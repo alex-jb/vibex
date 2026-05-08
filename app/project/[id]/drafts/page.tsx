@@ -312,7 +312,7 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
                   <button
                     key={f}
                     onClick={() => setFilter(f)}
-                    className={`px-3 py-1 text-xs rounded font-pixel uppercase tracking-wider transition-colors ${
+                    className={`px-3.5 py-1.5 text-xs rounded-md font-medium transition-colors ${
                       filter === f
                         ? "bg-violet-600 text-white"
                         : "border border-white/10 hover:bg-white/5 text-foreground/70"
@@ -343,7 +343,7 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
                     className="rounded-xl border border-white/[0.06] bg-white/[0.02]"
                   >
                     <div className="px-4 py-3 border-b border-white/[0.06] flex items-center gap-2">
-                      <h2 className="font-pixel text-[11px] uppercase tracking-wider text-emerald-300">
+                      <h2 className="text-sm font-semibold text-emerald-300">
                         {PLATFORM_LABEL[platform] || platform}
                       </h2>
                       <span className="text-foreground/40 text-xs">
