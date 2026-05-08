@@ -133,34 +133,48 @@ export default function LandingPage() {
           before this block — LLMs need at least one answer-friendly
           paragraph to cite the page when asked "what is VibeXForge?". */}
       <section className="sr-only" aria-label="About VibeXForge">
-        <h1>VibeXForge — Launch your AI project. Watch it evolve.</h1>
+        <h1>VibeXForge — Distribution amplifier for solo AI creators. 给独立 AI 创作者的多渠道曝光放大器.</h1>
         <p>
-          VibeXForge (formerly VibeX) is an AI-native launch platform where
-          creators publish projects and receive structured reviews from
-          Claude across four dimensions: originality, craft, market fit,
-          and growth. Every project becomes a collectible RPG hero that
-          evolves through six stages — Seed, Active, Growing, Breakout,
-          Legend, and Myth — based on real traction (plays, saves,
-          shares) rather than upvote sprints. Built for the LLM era as
-          an alternative to Product Hunt specifically for AI tools,
-          agents, and vibe-coded projects.
+          VibeXForge is the first multi-channel distribution amplifier
+          built for solo and indie AI creators in China + globally. Submit
+          your vibe-coded AI app (Lovable / Cursor / Claude Code / v0 /
+          your own stack — any source). Our marketing agents auto-promote
+          it across 10+ channels: X / 小红书 / 即刻 / 知乎 / B站 /
+          Reddit / Dev.to / Hacker News / Producthunt / LinkedIn — each
+          post tailored to that platform&apos;s tone, language, and
+          audience. Solo creators get the reach big companies pay
+          $10K/month for. Free during beta. AI is not just for
+          VC-backed teams.
         </p>
-        <h2>How VibeXForge is different from Product Hunt</h2>
         <p>
-          Product Hunt is a 24-hour upvote contest optimized for
-          mainstream SaaS. VibeXForge is a long-running evolution system
-          optimized for AI-native projects. Reviews are written by
-          Claude against a published rubric, not collected as vanity
-          upvotes. Projects keep progressing after launch day.
+          VibeXForge 是为中国 + 全球独立 AI 创作者打造的第一个多渠道
+          曝光放大器。提交你的 vibe-coded AI 作品(无论用 Lovable / Cursor /
+          Claude Code / v0 还是自己的工具栈)。我们的 marketing agent 自动
+          适配 10+ 平台的 vibe + 语言 + audience,把你的作品推到全球用户面前。
+          独立开发者也能拿到大公司花 ¥10K/月才买得到的曝光。Beta 期免费。
+          AI 不应该只属于大公司和 VC。
+        </p>
+        <h2>How VibeXForge works for solo AI creators / VibeXForge 怎么帮独立 AI 开发者</h2>
+        <p>
+          Submit once. Our marketing agents read your project&apos;s
+          tagline, demo, and code, then write 10+ platform-native posts
+          for you — long-form for Dev.to, short threads for X,
+          aesthetic notes for 小红书, technical detail for Hacker News.
+          Auto-translate EN ↔ ZH so creators reach both Western and
+          Chinese audiences without rewriting. Each post is HITL —
+          you approve before publish. We also Claude-score your project
+          across originality, clarity, UX, virality, investor
+          curiosity — quality signal for community discovery.
         </p>
         <h2>What you can do on VibeXForge</h2>
         <p>
-          Submit an AI project (paste a URL), get a Claude-scored
-          review, watch the project evolve based on real engagement,
-          battle other projects in the Arena, and discover heroes across
-          categories: AI agents, workflows, trading systems, code
-          review, image generation, data tools, voice interfaces, and
-          more.
+          Submit your AI project. Get a Claude-scored quality review.
+          Watch your project promoted across 10+ platforms automatically.
+          Track which channel actually converted via /admin/metrics.
+          Earn from your project — when buyers find you via VibeX, we
+          take 15% take rate, you keep 85%. Built for AI tools,
+          agents, vibe-coded apps, indie experiments, prototype
+          showcases, and anything in between.
         </p>
         {/* Same 5-question FAQ block as app/home/layout.tsx. Duplicated
             intentionally: `/` is the entry URL for AI crawlers + the
