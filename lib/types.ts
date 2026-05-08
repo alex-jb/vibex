@@ -162,6 +162,12 @@ export interface Idea {
   id: string;
   title: string;
   description: string;
+  // Optional pre-translated Chinese versions. When lang === "zh" and these
+  // are set, IdeaCard renders them; otherwise falls back to the EN `title`
+  // and `description`. Mock ideas have these populated; user-submitted
+  // ideas may not (until we add a translate-on-submit step).
+  title_zh?: string;
+  description_zh?: string;
   creatorName: string;
   createdAt: string;
   category: ProjectCategory;

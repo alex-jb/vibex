@@ -8,16 +8,23 @@ import {
 import type { Idea } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { useLang } from "@/lib/i18n";
+import { localizeCategory } from "@/lib/i18n-categories";
 import Link from "next/link";
 import { AiEvaluationPanel } from "./ai-evaluation";
 import { statusConfig } from "./idea-helpers";
 
-function formatIdeaDate(raw: string): string {
+function formatIdeaDate(raw: string, lang: "en" | "zh"): string {
   if (!raw) return "";
   const d = new Date(raw);
   if (Number.isNaN(d.getTime())) return raw;
   const now = new Date();
   const diffDays = Math.floor((now.getTime() - d.getTime()) / 86_400_000);
+  if (lang === "zh") {
+    if (diffDays === 0) return "今天";
+    if (diffDays === 1) return "昨天";
+    if (diffDays < 30) return `${diffDays} 天前`;
+    return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+  }
   if (diffDays === 0) return "Today";
   if (diffDays === 1) return "Yesterday";
   if (diffDays < 30) return `${diffDays}d ago`;
@@ -35,9 +42,12 @@ export function IdeaCard({
   isExpanded: boolean;
   onToggle: () => void;
 }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const status = statusConfig(idea.status, t);
   const StatusIcon = status.icon;
+  const title = lang === "zh" && idea.title_zh ? idea.title_zh : idea.title;
+  const description =
+    lang === "zh" && idea.description_zh ? idea.description_zh : idea.description;
 
   return (
     <motion.div
@@ -70,7 +80,7 @@ export function IdeaCard({
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-1.5">
             <h3 className="text-base font-semibold leading-snug" style={{ color: "var(--text)" }}>
-              {idea.title}
+              {title}
             </h3>
             {idea.status === "launched" && idea.launchedProjectId && (
               <Link
@@ -84,7 +94,7 @@ export function IdeaCard({
             )}
           </div>
           <p className="text-sm line-clamp-2 leading-relaxed" style={{ color: "var(--text-muted)" }}>
-            {idea.description}
+            {description}
           </p>
           <div className="flex flex-wrap items-center gap-2 mt-3">
             <Badge
@@ -95,13 +105,13 @@ export function IdeaCard({
               {status.label}
             </Badge>
             <Badge variant="outline" className="text-[10px]">
-              {idea.category}
+              {localizeCategory(idea.category, lang)}
             </Badge>
             <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>
               {t("ideas.by")} {idea.creatorName}
             </span>
             <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-              {formatIdeaDate(idea.createdAt)}
+              {formatIdeaDate(idea.createdAt, lang)}
             </span>
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLang } from "@/lib/i18n";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Explorer Chrome — global adventure progress strip.
@@ -34,12 +35,21 @@ export function ExplorerChrome({
   total = 250,
   xpCurrent = 2840,
   xpToNext = 6700,
-  questTitle = "SCOUT 3 EPIC+ HEROES",
+  questTitle,
   questProgress = "1/3",
   questReward = "+50 XP",
 }: ExplorerChromeProps) {
+  const { lang } = useLang();
   const discoveryPct = Math.round((discovered / total) * 100);
   const xpPct = Math.round((xpCurrent / xpToNext) * 100);
+  const labels = {
+    discovered: lang === "zh" ? "已探索" : "DISCOVERED",
+    xpNext: lang === "zh" ? "下级 XP" : "XP NEXT",
+    quest: lang === "zh" ? "▸ 任务" : "▸ QUEST",
+  };
+  const defaultQuest =
+    lang === "zh" ? "探索 3 个 EPIC+ 英雄" : "SCOUT 3 EPIC+ HEROES";
+  const resolvedQuestTitle = questTitle ?? defaultQuest;
 
   return (
     <div
@@ -89,7 +99,7 @@ export function ExplorerChrome({
               letterSpacing: 1.5,
             }}
           >
-            DISCOVERED
+            {labels.discovered}
           </span>
           <span
             className="font-ui"
@@ -144,7 +154,7 @@ export function ExplorerChrome({
               letterSpacing: 1.5,
             }}
           >
-            XP NEXT
+            {labels.xpNext}
           </span>
           <div
             className="relative"
@@ -190,7 +200,7 @@ export function ExplorerChrome({
               textShadow: "0 0 4px rgba(57,255,20,0.5)",
             }}
           >
-            ▸ QUEST
+            {labels.quest}
           </span>
           <span
             className="font-ui truncate"
@@ -200,7 +210,7 @@ export function ExplorerChrome({
               letterSpacing: 1,
             }}
           >
-            {questTitle}
+            {resolvedQuestTitle}
           </span>
           <span
             className="font-ui shrink-0"

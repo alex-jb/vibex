@@ -12,6 +12,7 @@ import { categories } from "@/lib/mock-data";
 import { useIdeas } from "@/lib/use-data";
 import { Input } from "@/components/ui/input";
 import { useLang } from "@/lib/i18n";
+import { localizeCategory } from "@/lib/i18n-categories";
 import Link from "next/link";
 import { IdeaCard } from "@/components/ideas/idea-card";
 import { IdeaSubmitForm } from "@/components/ideas/idea-submit-form";
@@ -20,7 +21,7 @@ import { statusConfig } from "@/components/ideas/idea-helpers";
 /* ─── page ─── */
 
 export default function IdeasPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { data: ideas } = useIdeas();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -132,7 +133,7 @@ export default function IdeasPage() {
                 : "bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:bg-white/[0.06] hover:text-foreground"
             }`}
           >
-            {cat}
+            {localizeCategory(cat, lang)}
           </button>
         ))}
       </motion.div>
