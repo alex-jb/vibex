@@ -106,7 +106,7 @@ export default function LaunchPage() {
   // (per /design-shotgun 2026-04-13 approved "Launch URL Paste Hero" direction)
   const [showForm, setShowForm] = useState(false);
 
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -493,15 +493,13 @@ export default function LaunchPage() {
       // wouldn't refetch on client-side back navigation.
       router.refresh();
 
-      // Redirect into the new project detail page so the user sees the
-      // full Launch Feedback Loop payoff. If the row was actually persisted
-      // (persisted: true), the /project/[id] route will find it via
-      // useProjects(). For the mock/fallback path, /project/[id] shows
-      // LOADING HERO... then 404 — which is still better than staying
-      // stuck on the form. Use a small delay so the success flash is
-      // visible before navigating.
+      // Redirect into the new project's drafts page — the actual Aha
+      // moment for the new positioning. Creator immediately sees 17
+      // platform-native drafts ready to review/edit/publish. The
+      // ?forged=1 query carries forward the celebration flash if the
+      // drafts page wants to surface a "drafts generating..." banner.
       setTimeout(() => {
-        router.push(`/project/${encodeURIComponent(data.id)}?forged=1`);
+        router.push(`/project/${encodeURIComponent(data.id)}/drafts?forged=1`);
       }, 650);
     } catch (err) {
       console.error("[launch] submit failed", err);
@@ -641,7 +639,9 @@ export default function LaunchPage() {
               textShadow: "0 0 4px rgba(57,255,20,0.8)",
             }}
           >
-            ▸ VIBEXFORGE://LAUNCH_V1 · ZERO CONFIG
+            ▸ {lang === "zh"
+              ? "VIBEXFORGE://提交 · 零配置"
+              : "VIBEXFORGE://LAUNCH · ZERO CONFIG"}
           </div>
 
           <h1
@@ -655,7 +655,7 @@ export default function LaunchPage() {
                 "0 0 14px rgba(232,232,236,0.35), 0 0 30px rgba(255,69,0,0.35)",
             }}
           >
-            PASTE YOUR AI PROJECT.
+            {lang === "zh" ? "提交一次 AI 作品。" : "PASTE YOUR AI PROJECT."}
             <br />
             <span
               style={{
@@ -663,7 +663,9 @@ export default function LaunchPage() {
                 textShadow: "0 0 14px rgba(255,69,0,0.7), 3px 3px 0 #000",
               }}
             >
-              WE FORGE THE REST.
+              {lang === "zh"
+                ? "10+ 渠道齐发。"
+                : "SHIP TO 10+ CHANNELS."}
             </span>
           </h1>
 
@@ -684,11 +686,18 @@ export default function LaunchPage() {
               }}
             />
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 text-left">
-              {[
-                { step: "1", text: "DROP A URL" },
-                { step: "2", text: "CLAUDE SCORES 0–100" },
-                { step: "3", text: "WATCH IT EVOLVE" },
-              ].map((t, i) => (
+              {(lang === "zh"
+                ? [
+                    { step: "1", text: "贴 URL" },
+                    { step: "2", text: "AGENT 写 17 张草稿" },
+                    { step: "3", text: "1-CLICK 发布" },
+                  ]
+                : [
+                    { step: "1", text: "DROP A URL" },
+                    { step: "2", text: "AGENTS WRITE 17 DRAFTS" },
+                    { step: "3", text: "1-CLICK PUBLISH" },
+                  ]
+              ).map((t, i) => (
                 <div
                   key={i}
                   className="flex items-center gap-2"
@@ -722,7 +731,9 @@ export default function LaunchPage() {
               color: "var(--text-muted)",
             }}
           >
-            URL in, Hero Card out. 10 seconds. No form, no typing, no friction.
+            {lang === "zh"
+              ? "URL 进,17 张平台专属草稿出,10 秒。审核、修改、一键发布。"
+              : "URL in, 17 platform-native drafts out. 10 seconds. Edit, approve, publish."}
           </p>
 
           {/* Mega URL input */}
@@ -823,11 +834,18 @@ export default function LaunchPage() {
 
           {/* Benefit chips */}
           <div className="flex justify-center gap-3 mb-8 flex-wrap">
-            {[
-              { label: "AI-AUTOFILL TITLE + DESCRIPTION", hi: null },
-              { label: "AUTO-DETECT CATEGORY + RARITY", hi: "RARITY" },
-              { label: "FORGE CARD IN 10s", hi: "10s" },
-            ].map((c, i) => (
+            {(lang === "zh"
+              ? [
+                  { label: "AI 写 17 张草稿", hi: "17" },
+                  { label: "X · REDDIT · HN · 小红书 · +6", hi: "10+" },
+                  { label: "BETA 期免费", hi: "免费" },
+                ]
+              : [
+                  { label: "AI WRITES 17 DRAFTS", hi: "17" },
+                  { label: "X · REDDIT · HN · XIAOHONGSHU · +6", hi: "10+" },
+                  { label: "FREE DURING BETA", hi: "FREE" },
+                ]
+            ).map((c, i) => (
               <div
                 key={i}
                 className="flex items-center gap-2"
@@ -1733,13 +1751,15 @@ export default function LaunchPage() {
                     textShadow: "2px 2px 0 #000, 0 0 10px rgba(255,69,0,0.8)",
                   }}
                 >
-                  ⚒ HERO FORGED ⚒
+                  {lang === "zh" ? "✨ 17 张草稿生成中 ✨" : "✨ 17 DRAFTS GENERATING ✨"}
                 </p>
                 <p
                   className="font-retro"
                   style={{ fontSize: 13, color: "#8A7B9A", letterSpacing: 0.5 }}
                 >
-                  Taking you to your page…
+                  {lang === "zh"
+                    ? "正在跳转到你的草稿页…"
+                    : "Taking you to your drafts page…"}
                 </p>
               </div>
             )}
@@ -1804,7 +1824,13 @@ export default function LaunchPage() {
                   repeat: submitLoading ? Infinity : 0,
                 }}
               >
-                {submitLoading ? "🔨 FORGING HERO…" : "▸ LIVE FORGE PREVIEW"}
+                {submitLoading
+                  ? lang === "zh"
+                    ? "✍ 草稿生成中…"
+                    : "✍ DRAFTS GENERATING…"
+                  : lang === "zh"
+                    ? "▸ 实时预览"
+                    : "▸ LIVE PREVIEW"}
               </motion.div>
               <motion.div
                 className="relative"
@@ -1902,8 +1928,12 @@ export default function LaunchPage() {
                 }}
               >
                 {submitLoading
-                  ? "⏱ CLAUDE REVIEWING · ATTRIBUTES FORGING"
-                  : "⏳ PENDING CLAUDE · STRIKE ANVIL TO FORGE"}
+                  ? lang === "zh"
+                    ? "⏱ CLAUDE 正在写 17 张草稿"
+                    : "⏱ CLAUDE WRITING 17 DRAFTS"
+                  : lang === "zh"
+                    ? "⏳ 等待提交 · 提交后 10 秒出 17 张"
+                    : "⏳ READY · 17 DRAFTS IN 10s AFTER SUBMIT"}
               </motion.div>
             </div>
 
