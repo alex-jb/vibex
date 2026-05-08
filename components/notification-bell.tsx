@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell } from "lucide-react";
+import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { useLang } from "@/lib/i18n";
 
@@ -73,7 +74,7 @@ function timeAgo(dateStr: string): string {
 }
 
 export function NotificationBell() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -216,6 +217,13 @@ export function NotificationBell() {
                   ))
                 )}
               </div>
+              <Link
+                href="/notifications"
+                onClick={() => setOpen(false)}
+                className="block px-4 py-2.5 text-center text-xs font-medium text-violet-300 border-t border-white/[0.06] hover:bg-white/5"
+              >
+                {lang === "zh" ? "查看全部 →" : "View all →"}
+              </Link>
             </motion.div>
           </>
         )}
