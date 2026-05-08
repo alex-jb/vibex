@@ -50,6 +50,14 @@ interface DraftRow {
   body: string;
 }
 
+interface EngagementSnapshot {
+  draft_id: string;
+  scraped_at: string;
+  views: number;
+  likes: number;
+  comments: number;
+}
+
 const PLATFORM_LABEL: Record<string, string> = {
   x: "X (Twitter)",
   reddit: "Reddit",
@@ -190,6 +198,7 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
   const { lang } = useLang();
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [postedDrafts, setPostedDrafts] = useState<DraftRow[]>([]);
+  const [snapshots, setSnapshots] = useState<EngagementSnapshot[]>([]);
   const [suggestions, setSuggestions] = useState<GrowthSuggestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [sugLoading, setSugLoading] = useState(false);
@@ -213,7 +222,26 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
         .eq("project_id", projectId)
         .eq("status", "posted")
         .order("posted_at", { ascending: false });
-      setPostedDrafts((drafts || []) as DraftRow[]);
+      const draftRows = (drafts || []) as DraftRow[];
+      setPostedDrafts(draftRows);
+
+      // Pull snapshots for these drafts so we can build per-platform
+      // time series. Limit to last 30 days to keep payload bounded.
+      if (draftRows.length > 0) {
+        const draftIds = draftRows.map((d) => d.id);
+        const since = new Date(
+          Date.now() - 30 * 24 * 60 * 60 * 1000,
+        ).toISOString();
+        const { data: snaps } = await supabase
+          .from("draft_engagement_snapshots")
+          .select("draft_id, scraped_at, views, likes, comments")
+          .in("draft_id", draftIds)
+          .gte("scraped_at", since)
+          .order("scraped_at", { ascending: true });
+        setSnapshots((snaps || []) as EngagementSnapshot[]);
+      } else {
+        setSnapshots([]);
+      }
     })();
   }, [projectId]);
 
@@ -393,6 +421,11 @@ export default function ProjectAnalyticsPage({ params }: { params: Promise<{ id:
 
                       {isExpanded && (
                         <div className="bg-black/30 border-b border-white/[0.04] px-4 py-3 space-y-2">
+                          <PlatformSparkline
+                            draftIds={p.drafts.map((d) => d.id)}
+                            snapshots={snapshots}
+                            lang={lang}
+                          />
                           {p.drafts.map((d) => (
                             <div
                               key={d.id}
@@ -597,6 +630,81 @@ function Tile({
         } mt-2 ${color}`}
       >
         {value}
+      </p>
+    </div>
+  );
+}
+
+
+function PlatformSparkline({
+  draftIds,
+  snapshots,
+  lang,
+}: {
+  draftIds: string[];
+  snapshots: EngagementSnapshot[];
+  lang: "en" | "zh";
+}) {
+  // Aggregate snapshots across all drafts of this platform, bucketed
+  // by day. Then render a tiny sparkline of total engagement per day.
+  const draftSet = new Set(draftIds);
+  const byDay = new Map<string, number>();
+  for (const s of snapshots) {
+    if (!draftSet.has(s.draft_id)) continue;
+    const day = s.scraped_at.slice(0, 10); // YYYY-MM-DD
+    const eng = (s.views || 0) + (s.likes || 0) + (s.comments || 0);
+    // Take the MAX engagement for the day (snapshots are cumulative
+    // counters — last scrape of the day = end-of-day total).
+    byDay.set(day, Math.max(byDay.get(day) || 0, eng));
+  }
+  const days = Array.from(byDay.entries()).sort((a, b) =>
+    a[0].localeCompare(b[0]),
+  );
+  if (days.length < 2) {
+    return (
+      <p className="text-[10px] text-foreground/40 italic mb-2">
+        {lang === "zh"
+          ? "时间序列数据积累中(每 6 小时刷新一次)..."
+          : "Time-series data collecting (refreshes every 6h)..."}
+      </p>
+    );
+  }
+  const max = Math.max(...days.map(([, v]) => v), 1);
+  const width = 200;
+  const height = 32;
+  const stepX = days.length > 1 ? width / (days.length - 1) : 0;
+  const points = days
+    .map(([, v], i) => `${i * stepX},${height - (v / max) * height}`)
+    .join(" ");
+  const last = days[days.length - 1][1];
+  const first = days[0][1];
+  const delta = last - first;
+  return (
+    <div className="flex items-center gap-3 mb-3 pb-2 border-b border-white/[0.04]">
+      <p className="text-[10px] font-pixel uppercase tracking-wider text-foreground/50">
+        {lang === "zh" ? "30 天趋势" : "30D trend"}
+      </p>
+      <svg width={width} height={height} className="shrink-0">
+        <polyline
+          fill="none"
+          stroke="#10b981"
+          strokeWidth={1.5}
+          points={points}
+        />
+      </svg>
+      <p className="text-[10px] text-foreground/60 font-mono">
+        {first} → {last}{" "}
+        <span
+          className={
+            delta > 0
+              ? "text-emerald-400"
+              : delta < 0
+                ? "text-red-400"
+                : "text-foreground/40"
+          }
+        >
+          ({delta > 0 ? "+" : ""}{delta})
+        </span>
       </p>
     </div>
   );

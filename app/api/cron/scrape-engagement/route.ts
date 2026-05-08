@@ -112,6 +112,16 @@ export async function GET(req: NextRequest) {
       results.push({ id: row.id, platform: row.platform, ok: false });
       continue;
     }
+
+    // Append a snapshot for time-series charts. Best-effort — if the
+    // insert fails we still return ok=true since the live numbers are
+    // updated; only the history loses one data point.
+    await supa.from("draft_engagement_snapshots").insert({
+      draft_id: row.id,
+      views: metrics.views,
+      likes: metrics.likes,
+      comments: metrics.comments,
+    });
     results.push({
       id: row.id,
       platform: row.platform,
