@@ -167,11 +167,29 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* nes.css/css/nes-core.min.css ships a global rule:
+     `body, code, html, kbd, pre, samp { font-family: "Press Start 2P" }`
+     which overrides Geist Sans on the body element. Even though nes.css
+     is imported with `layer(base)`, the rule is still in effect because
+     globals.css never explicitly set `body { font-family }` — only
+     `html { @apply font-sans }`, which doesn't propagate to body when
+     body has its own rule. Result: every `<p>` on every page (including
+     conversion pages like /how-it-works) was rendering in pixel font
+     instead of Geist Sans for months. Fix: explicitly apply font-sans
+     to body so the cascade lands on Geist. Pages that WANT pixel font
+     (RPG splash, /arcade, game routes) opt in via `.font-pixel` class
+     or inline style as before. */
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
   html {
     @apply font-sans;
+  }
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-mono);
   }
 }
 
