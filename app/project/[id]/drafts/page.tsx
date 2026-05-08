@@ -37,9 +37,12 @@ interface Draft {
   views: number;
   likes: number;
   comments: number;
+  cover_image_url: string | null;
   created_at: string;
   updated_at: string;
 }
+
+const COVER_SUPPORTED_PLATFORMS = new Set(["xiaohongshu"]);
 
 const PLATFORM_LABEL: Record<string, string> = {
   x: "X (Twitter)",
@@ -368,6 +371,29 @@ function DraftCard({
     }
   };
 
+  const [generatingCover, setGeneratingCover] = useState(false);
+  const generateCover = async () => {
+    if (generatingCover) return;
+    setGeneratingCover(true);
+    try {
+      const res = await fetch(`/api/drafts/${draft.id}/generate-cover`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        if (res.status === 429) {
+          alert(err.message || "Cover costs 10 credits — quota exhausted.");
+        } else {
+          alert(err.message || "Cover generation failed");
+        }
+      }
+      // Realtime subscription refreshes draft.cover_image_url.
+    } finally {
+      setGeneratingCover(false);
+    }
+  };
+  const supportsCover = COVER_SUPPORTED_PLATFORMS.has(draft.platform);
+
   const intentBuilder = PLATFORM_INTENT_URL[draft.platform];
   const intentUrl = intentBuilder
     ? intentBuilder(body, {
@@ -466,6 +492,24 @@ function DraftCard({
         <p className="font-bold text-foreground mb-2 text-sm">{draft.title}</p>
       )}
 
+      {draft.cover_image_url && (
+        <a
+          href={draft.cover_image_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block mb-3 w-32 sm:w-40 rounded overflow-hidden border border-pink-500/20 hover:border-pink-500/40 transition-colors"
+          title="Click to open full-size cover"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={draft.cover_image_url}
+            alt="Cover"
+            className="w-full h-auto block"
+            loading="lazy"
+          />
+        </a>
+      )}
+
       {editing ? (
         <textarea
           value={body}
@@ -509,6 +553,20 @@ function DraftCard({
         >
           {rerolling ? "Rerolling…" : "🎲 Re-roll"}
         </button>
+        {supportsCover && (
+          <button
+            onClick={generateCover}
+            disabled={generatingCover}
+            className="px-3 py-1 text-xs rounded border border-pink-500/30 bg-pink-500/5 hover:bg-pink-500/10 text-pink-300 disabled:opacity-50"
+            title="Generate Xiaohongshu cover image (10 credits, ~$0.05)"
+          >
+            {generatingCover
+              ? "✨ Painting…"
+              : draft.cover_image_url
+                ? "🎨 Re-cover"
+                : "🎨 Cover"}
+          </button>
+        )}
         {intentUrl && (
           <a
             href={intentUrl}
