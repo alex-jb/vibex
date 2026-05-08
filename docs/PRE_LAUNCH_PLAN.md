@@ -7,6 +7,10 @@ page, and `/ideas` ZH translation. This file tracks what's left.
 
 ## Active batch — Alex picked "1-7" (5 must-fix + 2 quick wins)
 
+✅ **All 7 shipped 2026-05-08** — commits b0e85ed, ca9176e, d882029,
+8374aa0, 33fac2d, 136d8c0, 4d61a30. The launch funnel now speaks the
+new positioning end to end and the engagement loop is fully wired.
+
 These 7 ship before any new launch traffic. Order matters: each unblocks
 the next when a creator walks the funnel.
 
