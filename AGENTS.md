@@ -6,14 +6,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## 🔴 RED-LINE: Build cost discipline
 
-**Every `git push` to master is a ~$0.60 Vercel build charge** (5-6 min × $0.12/min). This billing cycle already cost $131.92 in Build Minutes alone — 99% of the total bill. This rule is escalated from the global `~/.claude/CLAUDE.md` version:
+**Every `git push` to master that touches non-ignored files triggers a Vercel build of ~50s ≈ $0.10** (measured 2026-05-08 across 4 commits via `vercel API /v6/deployments` `ready - buildingAt`). The 2026-04 cycle hit $131.92 in Build Minutes despite the per-build cost being modest — the bill came from raw push *count* (hundreds of pushes during the gamification + IH-pivot dev sprints), not per-build cost. So the rule is still about discipline, just the math is different from earlier estimates.
 
-1. **Always `npm run build` locally before `git push`**. No exceptions. If build fails, fix locally — do NOT push and rely on CI. Failed remote builds still cost $0.60 each.
-2. **Batch small commits before pushing.** If you're going to make 5 related commits in the next 10 minutes, don't push after each one. Push once at the end.
-3. **Docs-only and non-code commits can push freely** — `vercel.json` `ignoreCommand` already skips builds for `*.md`, `docs/**`, `.github/**`, `remotion/**`, `out/**`, `scripts/screenshot-*.mjs`, `scripts/_probe*.mjs`. Anything else triggers a $0.60 build.
+1. **Always `npm run build` locally before `git push`**. No exceptions. If build fails, fix locally — do NOT push and rely on CI. Failed remote builds still cost ~$0.10 each AND waste your wall-clock waiting for the red X.
+2. **Batch small commits before pushing.** Each push = one ~$0.10 build. 10 pushes/day = $1/day = $30/mo just from your fingers, before any traffic cost. If you're going to make 5 related commits in the next 10 minutes, push once at the end.
+3. **Docs-only and non-code commits can push freely** — `vercel.json` `ignoreCommand` skips builds for `*.md`, `docs/**`, `.github/**`, `remotion/**`, `out/**`, `scripts/screenshot-*.mjs`, `scripts/_probe*.mjs`. Anything else triggers a build.
 4. **If the user explicitly says "just push" or "skip build"**, obey. Otherwise assume this rule is in effect.
 
-Preview deploys are already disabled via `deploymentEnabled.master: true`. Only master triggers builds.
+Preview deploys are already disabled via `deploymentEnabled.master: true`. Only master triggers builds. Per-commit Vercel records show TWO entries (one ~50s "build" + one ~25s "alias-promote") — only the build is billed; the promote is free.
+
+**To verify cost in real time** for any session: see `~/Library/Application Support/com.vercel.cli/auth.json` for token, then `curl -H "Authorization: Bearer $TOKEN" "https://api.vercel.com/v6/deployments?projectId=prj_hXAG9m1xJUctjdBSte2tOBy0WVCj&limit=20&teamId=team_QvJ1BiFCrafQsekDLGHHgeFx"` and sum `(ready - buildingAt)` for your commits. Don't trust dashboard estimates without checking.
 
 ## Preferred skills for VibeX work
 
