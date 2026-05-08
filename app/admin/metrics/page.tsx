@@ -62,6 +62,10 @@ async function loadMetrics() {
     { data: recentCreators },
     { data: recentProjects },
     { data: stageCounts },
+    { count: drafts24h },
+    { count: draftsPosted24h },
+    { data: draftStatusRows },
+    { data: postedDraftRows },
   ] = await Promise.all([
     supa.from("creators").select("id", { count: "exact", head: true }).gte("created_at", day),
     supa.from("creators").select("id", { count: "exact", head: true }).gte("created_at", week),
@@ -86,6 +90,26 @@ async function loadMetrics() {
       .from("projects")
       .select("evolution_stage")
       .gte("created_at", week),
+    supa
+      .from("project_drafts")
+      .select("id", { count: "exact", head: true })
+      .gte("created_at", day),
+    supa
+      .from("project_drafts")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "posted")
+      .gte("posted_at", day),
+    // Funnel buckets: status of every draft created in the last 7d.
+    supa
+      .from("project_drafts")
+      .select("status")
+      .gte("created_at", week),
+    // Per-platform engagement totals across posted drafts.
+    supa
+      .from("project_drafts")
+      .select("platform, views, likes, comments, posted_at")
+      .eq("status", "posted")
+      .not("posted_url", "is", null),
   ]);
 
   // Bucket signup_ref counts.
@@ -107,6 +131,59 @@ async function loadMetrics() {
     stageBuckets.set(s, (stageBuckets.get(s) || 0) + 1);
   }
 
+  // Drafts funnel: status counts across the last 7 days.
+  const draftFunnel = {
+    pending: 0,
+    approved: 0,
+    posted: 0,
+    rejected: 0,
+    failed: 0,
+  };
+  for (const r of draftStatusRows || []) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const s = (r as any).status as keyof typeof draftFunnel;
+    if (s in draftFunnel) draftFunnel[s] += 1;
+  }
+  const draftFunnelTotal = Object.values(draftFunnel).reduce((a, b) => a + b, 0);
+
+  // Per-platform engagement aggregation across all posted drafts.
+  type PlatformAgg = {
+    platform: string;
+    posts: number;
+    views: number;
+    likes: number;
+    comments: number;
+    engagement: number;
+  };
+  const platformMap = new Map<string, PlatformAgg>();
+  let totalEngagement = 0;
+  for (const r of postedDraftRows || []) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const row = r as any;
+    const plat = row.platform as string;
+    const cur =
+      platformMap.get(plat) ||
+      ({
+        platform: plat,
+        posts: 0,
+        views: 0,
+        likes: 0,
+        comments: 0,
+        engagement: 0,
+      } as PlatformAgg);
+    cur.posts += 1;
+    cur.views += row.views || 0;
+    cur.likes += row.likes || 0;
+    cur.comments += row.comments || 0;
+    cur.engagement = cur.views + cur.likes + cur.comments;
+    platformMap.set(plat, cur);
+    totalEngagement += (row.views || 0) + (row.likes || 0) + (row.comments || 0);
+  }
+  const platformList = Array.from(platformMap.values()).sort(
+    (a, b) => b.engagement - a.engagement,
+  );
+  const topChannel = platformList[0] || null;
+
   return {
     signups24h: signups24h ?? 0,
     signups7d: signups7d ?? 0,
@@ -118,6 +195,13 @@ async function loadMetrics() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     recentProjects: (recentProjects || []) as any[],
     stageBuckets: Object.fromEntries(stageBuckets) as Record<string, number>,
+    drafts24h: drafts24h ?? 0,
+    draftsPosted24h: draftsPosted24h ?? 0,
+    draftFunnel,
+    draftFunnelTotal,
+    totalEngagement,
+    platformList,
+    topChannel,
   };
 }
 
@@ -143,12 +227,107 @@ export default async function AdminMetricsPage() {
           Auto-refreshes every 60 seconds. {user.email} · {new Date().toUTCString()}
         </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           <Stat label="Signups · 24h" value={m.signups24h} />
           <Stat label="Signups · 7d" value={m.signups7d} />
           <Stat label="Projects · 24h" value={m.projects24h} />
           <Stat label="Projects · 7d" value={m.projects7d} />
         </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          <Stat label="Drafts gen · 24h" value={m.drafts24h} accent="violet" />
+          <Stat
+            label="Drafts posted · 24h"
+            value={m.draftsPosted24h}
+            accent="emerald"
+          />
+          <Stat
+            label="Cross-platform engagement"
+            value={m.totalEngagement}
+            accent={m.totalEngagement > 0 ? "emerald" : undefined}
+          />
+          <Stat
+            label="Top channel"
+            value={m.topChannel ? m.topChannel.platform : "—"}
+            textValue
+            accent={m.topChannel ? "orange" : undefined}
+          />
+        </div>
+
+        <Section title="Drafts funnel · 7d">
+          {m.draftFunnelTotal === 0 ? (
+            <Empty>No drafts created in the last 7 days.</Empty>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              {[
+                { label: "Pending", value: m.draftFunnel.pending, color: "text-violet-300" },
+                { label: "Approved", value: m.draftFunnel.approved, color: "text-yellow-300" },
+                { label: "Posted", value: m.draftFunnel.posted, color: "text-emerald-300" },
+                { label: "Rejected", value: m.draftFunnel.rejected, color: "text-red-400" },
+                { label: "Failed", value: m.draftFunnel.failed, color: "text-foreground/40" },
+              ].map((f) => {
+                const pct =
+                  m.draftFunnelTotal > 0
+                    ? ((f.value / m.draftFunnelTotal) * 100).toFixed(0)
+                    : "0";
+                return (
+                  <div
+                    key={f.label}
+                    className="rounded-lg border border-white/5 bg-white/[0.02] p-3 text-center"
+                  >
+                    <div className="font-pixel text-[9px] uppercase tracking-wider text-foreground/50">
+                      {f.label}
+                    </div>
+                    <div className={`text-2xl font-mono font-bold tabular-nums mt-1 ${f.color}`}>
+                      {f.value}
+                    </div>
+                    <div className="text-[10px] text-foreground/40 mt-0.5">{pct}%</div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Section>
+
+        <Section title="Channel performance · all-time">
+          {m.platformList.length === 0 ? (
+            <Empty>No drafts posted yet.</Empty>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="text-foreground/50 text-xs uppercase">
+                <tr>
+                  <th className="text-left py-2">Platform</th>
+                  <th className="text-right py-2">Posts</th>
+                  <th className="text-right py-2">Views</th>
+                  <th className="text-right py-2">Likes</th>
+                  <th className="text-right py-2">Comments</th>
+                  <th className="text-right py-2">Engagement</th>
+                </tr>
+              </thead>
+              <tbody>
+                {m.platformList.map((p, idx) => (
+                  <tr key={p.platform} className="border-t border-white/5">
+                    <td className="py-2 text-foreground/90">
+                      {p.platform}
+                      {idx === 0 && p.engagement > 0 ? (
+                        <span className="ml-2 text-[9px] px-1.5 py-0.5 rounded bg-[#FF4500]/20 text-[#FF6633] font-pixel uppercase tracking-wider">
+                          ▲ TOP
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="py-2 text-right tabular-nums">{p.posts}</td>
+                    <td className="py-2 text-right tabular-nums">{p.views}</td>
+                    <td className="py-2 text-right tabular-nums">{p.likes}</td>
+                    <td className="py-2 text-right tabular-nums">{p.comments}</td>
+                    <td className="py-2 text-right tabular-nums text-emerald-300 font-bold">
+                      {p.engagement}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </Section>
 
         <Section title="Signup channel attribution · 7d">
           {m.refList.length === 0 ? (
@@ -273,13 +452,37 @@ export default async function AdminMetricsPage() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({
+  label,
+  value,
+  accent,
+  textValue,
+}: {
+  label: string;
+  value: number | string;
+  accent?: "violet" | "emerald" | "orange";
+  textValue?: boolean;
+}) {
+  const color =
+    accent === "emerald"
+      ? "text-emerald-300"
+      : accent === "orange"
+        ? "text-[#FF6633]"
+        : accent === "violet"
+          ? "text-violet-300"
+          : "text-violet-200";
   return (
     <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
       <div className="font-pixel text-[9px] uppercase tracking-wider text-foreground/50">
         {label}
       </div>
-      <div className="text-3xl font-mono font-bold tabular-nums mt-2 text-violet-200">
+      <div
+        className={`${
+          textValue
+            ? "text-base sm:text-lg font-bold truncate"
+            : "text-3xl font-mono font-bold tabular-nums"
+        } mt-2 ${color}`}
+      >
         {value}
       </div>
     </div>
