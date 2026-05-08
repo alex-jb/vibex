@@ -52,17 +52,10 @@ export default function TryPage() {
           translation, no copy-paste. Bilingual EN ↔ ZH from one submit.
         </p>
         <div className="flex flex-wrap gap-3 mb-6">
-          <Link
-            href="/launch"
-            className="px-7 py-3 rounded-md text-sm font-semibold bg-[#FF4500] hover:bg-[#FF6633] text-black transition-colors"
-            style={{ boxShadow: "4px 4px 0 #000" }}
-          >
+          <Link href="/launch" className="btn-primary btn-primary-lg">
             Generate for YOUR project →
           </Link>
-          <Link
-            href="/how-it-works"
-            className="px-7 py-3 rounded-md text-sm font-semibold border border-white/15 hover:bg-white/5 text-foreground/90"
-          >
+          <Link href="/how-it-works" className="btn-ghost btn-ghost-lg">
             How it works
           </Link>
         </div>
@@ -126,11 +119,7 @@ export default function TryPage() {
           Same loop. URL in, 17 platform-native drafts out, ~10 seconds. Edit,
           approve, one-click publish. Free during beta.
         </p>
-        <Link
-          href="/launch"
-          className="inline-block px-10 py-4 rounded-md text-base font-semibold bg-[#FF4500] hover:bg-[#FF6633] text-black transition-colors"
-          style={{ boxShadow: "5px 5px 0 #000" }}
-        >
+        <Link href="/launch" className="btn-primary btn-primary-lg">
           Submit your AI project →
         </Link>
         <p className="text-xs text-foreground/30 mt-8">

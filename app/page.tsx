@@ -278,25 +278,15 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.25 }}
           className="flex flex-wrap gap-3 mb-4"
         >
-          <Link
-            href="/launch"
-            className="px-7 py-3.5 rounded-md text-sm font-semibold bg-[#FF4500] hover:bg-[#FF6633] text-black transition-colors"
-            style={{ boxShadow: "4px 4px 0 #000" }}
-          >
+          <Link href="/launch" className="btn-primary btn-primary-lg">
             {t.ctaPrimary} →
           </Link>
-          <Link
-            href="/try"
-            className="px-7 py-3.5 rounded-md text-sm font-semibold border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-300"
-          >
+          <Link href="/try" className="btn-ghost btn-ghost-lg">
             {lang === "zh"
               ? "看 6 个真实草稿(无需登录)"
-              : "See 6 sample drafts (no signup)"}
+              : "See 6 sample drafts"}
           </Link>
-          <Link
-            href="/how-it-works"
-            className="px-7 py-3.5 rounded-md text-sm font-semibold border border-white/15 hover:bg-white/5 text-foreground/90"
-          >
+          <Link href="/how-it-works" className="btn-ghost btn-ghost-lg">
             {t.ctaSecondary}
           </Link>
         </motion.div>
@@ -476,11 +466,7 @@ export default function LandingPage() {
           {t.ctaH2}
         </h2>
         <p className="text-foreground/60 mb-10 leading-relaxed">{t.ctaBody}</p>
-        <Link
-          href="/launch"
-          className="inline-block px-10 py-4 rounded-md text-base font-semibold bg-[#FF4500] hover:bg-[#FF6633] text-black transition-colors"
-          style={{ boxShadow: "5px 5px 0 #000" }}
-        >
+        <Link href="/launch" className="btn-primary btn-primary-lg">
           {t.ctaButton} →
         </Link>
         <p className="text-xs text-foreground/30 mt-10">

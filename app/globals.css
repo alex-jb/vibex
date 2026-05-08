@@ -34,6 +34,23 @@
   --bg-deep: #0A0A0C;
   --bg-elev: #14141A;
 
+  /* Border tokens (2026-05-09 design discipline pass) — only 2 tiers.
+     Components were using 8 different opacity levels (white/[0.04]
+     through /[0.40]) which diluted layer hierarchy. Linear's whole
+     site uses 2 border weights. Now we do too. */
+  --border-soft: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+
+  /* Type scale lockdown — 6 sizes max (Linear convention).
+     Avoid arbitrary text-[Npx] values; pick from this scale. */
+  --text-caption: 12px;   /* metadata, captions */
+  --text-body:    14px;   /* default body */
+  --text-lead:    16px;   /* lead paragraphs, large body */
+  --text-h3:      22px;   /* card titles */
+  --text-h2:      32px;   /* section heads */
+  --text-h1:      48px;   /* page titles */
+  --text-display: 88px;   /* hero h1 (mobile fallback to h1) */
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -155,6 +172,71 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* Button system — 2 styles only.
+   Primary = brand-forge filled. Ghost = transparent + border-soft.
+   Variants for size are modifiers (btn-sm / btn-lg), not new styles.
+
+   Disciplined buttons mean visual hierarchy survives 100 components.
+   Ad-hoc Tailwind classes — what we had — produce 5 styles that all
+   look slightly different. */
+@layer components {
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: var(--brand-forge);
+    color: #000;
+    box-shadow: 4px 4px 0 #000;
+    transition: background-color 150ms, transform 150ms;
+  }
+  .btn-primary:hover {
+    background: #FF6633;
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--border-soft);
+    transition: background-color 150ms, border-color 150ms;
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--border-strong);
+  }
+  .btn-ghost:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Big hero variants (used on / and stack landing pages) */
+  .btn-primary-lg {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+    box-shadow: 5px 5px 0 #000;
+  }
+  .btn-ghost-lg {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
   }
 }
 

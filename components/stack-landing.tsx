@@ -42,19 +42,12 @@ export function StackLanding({ cfg }: { cfg: StackPageConfig }) {
           {cfg.subhero}
         </p>
         <div className="flex flex-wrap gap-3 mb-4">
-          <Link
-            href="/launch"
-            className="px-7 py-3.5 rounded-md text-sm font-semibold bg-[#FF4500] hover:bg-[#FF6633] text-black transition-colors"
-            style={{ boxShadow: "4px 4px 0 #000" }}
-          >
+          <Link href="/launch" className="btn-primary btn-primary-lg">
             {lang === "zh"
               ? `提交你的 ${cfg.brand} 项目 →`
               : `Submit your ${cfg.brand} project →`}
           </Link>
-          <Link
-            href="/try"
-            className="px-7 py-3.5 rounded-md text-sm font-semibold border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-300"
-          >
+          <Link href="/try" className="btn-ghost btn-ghost-lg">
             {lang === "zh" ? "看真实草稿" : "See sample drafts"}
           </Link>
         </div>
@@ -146,11 +139,7 @@ export function StackLanding({ cfg }: { cfg: StackPageConfig }) {
             ? "Beta 期免费。前 100 名 creator 拿无限次生成 + 公共发现 feed 优先曝光。"
             : "Free during beta. First 100 creators get unlimited generation + priority on the discovery feed."}
         </p>
-        <Link
-          href="/launch"
-          className="inline-block px-10 py-4 rounded-md text-base font-semibold bg-[#FF4500] hover:bg-[#FF6633] text-black transition-colors"
-          style={{ boxShadow: "5px 5px 0 #000" }}
-        >
+        <Link href="/launch" className="btn-primary btn-primary-lg">
           {lang === "zh"
             ? `提交你的 ${cfg.brand} 项目 →`
             : `Submit your ${cfg.brand} project →`}
