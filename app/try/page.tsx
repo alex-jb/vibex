@@ -40,7 +40,7 @@ export default function TryPage() {
         >
           ▸ NO SIGNUP · REAL DRAFTS · GENERATED FROM VIBEXFORGE.COM
         </p>
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight mb-4 tracking-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.1] mb-4 tracking-[-0.02em]">
           See what you&apos;d get,
           <br />
           <span style={{ color: "#F97316" }}>before you sign in.</span>

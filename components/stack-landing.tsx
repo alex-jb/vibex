@@ -35,7 +35,7 @@ export function StackLanding({ cfg }: { cfg: StackPageConfig }) {
           </a>
           {" "}CREATORS
         </p>
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight mb-6 tracking-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.1] mb-6 tracking-[-0.02em]">
           {cfg.hero}
         </h1>
         <p className="text-lg text-foreground/70 max-w-2xl mb-8 leading-relaxed">

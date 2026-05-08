@@ -34,7 +34,7 @@ export default function ChangelogPage() {
         >
           ▸ CHANGELOG · STRAIGHT FROM MASTER
         </p>
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight mb-4 tracking-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.1] mb-4 tracking-[-0.02em]">
           What we shipped.
         </h1>
         <p className="text-foreground/60 text-base mb-12 leading-relaxed">
