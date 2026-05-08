@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useLang } from "@/lib/i18n";
+
+const ONBOARDING_DISMISSED_KEY = "vibex-onboarding-dismissed";
 
 /**
  * /dashboard — Creator's project + draft + reach overview.
@@ -203,6 +205,22 @@ export default function DashboardPage() {
   const totalEngagement =
     totals.reachViews + totals.reachLikes + totals.reachComments;
 
+  // Onboarding quest state — derives from data; persisted dismissal
+  // stored in localStorage so a creator who chose Skip stays dismissed
+  // across sessions.
+  const onboardingProgress = useMemo(
+    () => ({
+      step1Done: projects.length > 0,
+      step2Done: totals.approved + totals.posted > 0,
+      step3Done: totals.posted >= 5,
+    }),
+    [projects.length, totals.approved, totals.posted],
+  );
+  const onboardingComplete =
+    onboardingProgress.step1Done &&
+    onboardingProgress.step2Done &&
+    onboardingProgress.step3Done;
+
   return (
     <main className="min-h-screen bg-[var(--bg-deep)] px-4 sm:px-8 py-10">
       <div className="max-w-5xl mx-auto">
@@ -221,6 +239,13 @@ export default function DashboardPage() {
               : "Your projects · draft pipeline · cross-platform reach"}
           </p>
         </header>
+
+        <OnboardingQuest
+          progress={onboardingProgress}
+          complete={onboardingComplete}
+          lang={lang}
+          firstProjectId={projects[0]?.id}
+        />
 
         {/* Stat tiles */}
         <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
@@ -490,5 +515,175 @@ function Pill({
     >
       {label}
     </span>
+  );
+}
+
+function OnboardingQuest({
+  progress,
+  complete,
+  lang,
+  firstProjectId,
+}: {
+  progress: { step1Done: boolean; step2Done: boolean; step3Done: boolean };
+  complete: boolean;
+  lang: "en" | "zh";
+  firstProjectId: string | undefined;
+}) {
+  const [dismissed, setDismissed] = useState(true); // start dismissed; localStorage decides
+
+  useEffect(() => {
+    const saved = localStorage.getItem(ONBOARDING_DISMISSED_KEY);
+    setDismissed(saved === "1");
+  }, []);
+
+  const dismiss = () => {
+    localStorage.setItem(ONBOARDING_DISMISSED_KEY, "1");
+    setDismissed(true);
+  };
+
+  if (dismissed) return null;
+  if (complete) return null;
+
+  const doneCount =
+    Number(progress.step1Done) +
+    Number(progress.step2Done) +
+    Number(progress.step3Done);
+
+  const steps = [
+    {
+      n: 1,
+      done: progress.step1Done,
+      title: lang === "zh" ? "提交一个 AI 项目" : "Submit an AI project",
+      hint:
+        lang === "zh"
+          ? "贴 URL 或 GitHub repo,30 秒"
+          : "Paste a URL or GitHub repo, 30s",
+      cta: lang === "zh" ? "去 /launch →" : "Go to /launch →",
+      href: "/launch",
+    },
+    {
+      n: 2,
+      done: progress.step2Done,
+      title:
+        lang === "zh" ? "审核并批准 17 张草稿" : "Review and approve 17 drafts",
+      hint:
+        lang === "zh"
+          ? "edit inline,1-click 打开平台,~5 分钟"
+          : "Edit inline, 1-click open platform, ~5 min",
+      cta:
+        firstProjectId && progress.step1Done
+          ? lang === "zh"
+            ? "去 drafts →"
+            : "Go to drafts →"
+          : lang === "zh"
+            ? "先做第 1 步"
+            : "Finish step 1 first",
+      href:
+        firstProjectId && progress.step1Done
+          ? `/project/${firstProjectId}/drafts`
+          : "/launch",
+    },
+    {
+      n: 3,
+      done: progress.step3Done,
+      title: lang === "zh" ? "今天发出 5 条" : "Post 5 today",
+      hint:
+        lang === "zh"
+          ? "发出后粘贴 URL,我们会帮你追踪 engagement"
+          : "Paste posted URL after — we'll track engagement",
+      cta:
+        firstProjectId && progress.step1Done
+          ? lang === "zh"
+            ? "去 drafts →"
+            : "Go to drafts →"
+          : lang === "zh"
+            ? "先完成前面"
+            : "Finish previous steps",
+      href:
+        firstProjectId && progress.step1Done
+          ? `/project/${firstProjectId}/drafts`
+          : "/launch",
+    },
+  ];
+
+  return (
+    <section
+      className="rounded-xl border border-[#FF4500]/40 bg-gradient-to-br from-[#FF4500]/10 to-violet-500/5 p-5 mb-8"
+      style={{ boxShadow: "4px 4px 0 #000" }}
+    >
+      <div className="flex items-start justify-between mb-3 flex-wrap gap-2">
+        <div>
+          <p className="font-pixel text-[10px] uppercase tracking-wider text-[#FF6633] mb-1">
+            ▸ {lang === "zh" ? "新手任务" : "ONBOARDING QUEST"}
+          </p>
+          <h2 className="text-lg font-bold text-foreground">
+            {lang === "zh"
+              ? "首次发布:从提交到 10+ 平台齐发"
+              : "First launch: submit → 10+ channels"}
+          </h2>
+          <p className="text-xs text-foreground/60 mt-1">
+            {lang === "zh"
+              ? `进度 ${doneCount}/3`
+              : `Progress ${doneCount}/3`}
+          </p>
+        </div>
+        <button
+          onClick={dismiss}
+          className="text-foreground/40 hover:text-foreground/70 text-xs"
+          aria-label={lang === "zh" ? "跳过" : "Skip"}
+        >
+          {lang === "zh" ? "跳过 ✕" : "Skip ✕"}
+        </button>
+      </div>
+
+      {/* Progress bar */}
+      <div className="h-1.5 bg-white/5 rounded-full mb-4 overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-[#FF4500] to-yellow-400 transition-all duration-500"
+          style={{ width: `${(doneCount / 3) * 100}%` }}
+        />
+      </div>
+
+      <ol className="space-y-2">
+        {steps.map((s) => (
+          <li
+            key={s.n}
+            className={`flex items-center gap-3 rounded-md p-3 ${
+              s.done
+                ? "bg-emerald-500/5 border border-emerald-500/20"
+                : "bg-white/[0.02] border border-white/[0.06]"
+            }`}
+          >
+            <span
+              className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-mono font-bold text-sm ${
+                s.done
+                  ? "bg-emerald-500/20 text-emerald-300"
+                  : "bg-white/[0.05] text-foreground/60"
+              }`}
+            >
+              {s.done ? "✓" : s.n}
+            </span>
+            <div className="flex-1 min-w-0">
+              <p
+                className={`font-medium text-sm ${
+                  s.done ? "text-foreground/50 line-through" : "text-foreground"
+                }`}
+              >
+                {s.title}
+              </p>
+              <p className="text-xs text-foreground/50">{s.hint}</p>
+            </div>
+            {!s.done && (
+              <Link
+                href={s.href}
+                className="shrink-0 text-xs text-violet-300 hover:text-violet-200 hover:underline"
+              >
+                {s.cta}
+              </Link>
+            )}
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
