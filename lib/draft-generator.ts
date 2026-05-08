@@ -443,5 +443,91 @@ export async function generateDraftsForProject(
     console.error("[draft-generator] insert failed:", error);
     return { ok: false, created: 0, failed: rows.length };
   }
+
+  // Fire drafts-ready email so creator gets pulled back to /drafts.
+  // The drafts-generation step is fire-and-forget after submit, so the
+  // user has likely closed the tab by now. Email = retention loop.
+  // Failure here is non-fatal — drafts already in DB.
+  try {
+    await sendDraftsReadyEmail(supabase, project, rows.length);
+  } catch (err) {
+    console.error("[draft-generator] email path threw:", err);
+  }
+
   return { ok: true, created: rows.length, failed };
+}
+
+async function sendDraftsReadyEmail(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: SupabaseClient<any, "public", any>,
+  project: ProjectInput,
+  draftCount: number,
+): Promise<void> {
+  // Look up creator email + auth_user_id via projects → creators join.
+  // We need email to send and creator_id for unsubscribe URL.
+  const { data: row } = await supabase
+    .from("projects")
+    .select("creator_id, creators!inner(email, name, email_opt_out)")
+    .eq("id", project.id)
+    .maybeSingle();
+  if (!row) return;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const creator = (row as any).creators;
+  const email = creator?.email;
+  if (!email) return;
+  if (creator.email_opt_out) return;
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.vibexforge.com";
+  const draftsUrl = `${siteUrl}/project/${project.id}/drafts`;
+  const name = (creator.name as string | undefined) || "creator";
+
+  const subject = `${draftCount} drafts ready for "${project.title}"`;
+  const text = [
+    `Hey ${name},`,
+    "",
+    `Your project "${project.title}" just landed on VibeXForge,`,
+    `and our marketing agents finished writing ${draftCount} platform-`,
+    `specific drafts for you across X / Reddit / LinkedIn / Hacker News /`,
+    `Dev.to / Bluesky / Threads / 小红书 / 即刻 / Producthunt.`,
+    "",
+    `Each draft is tailored to its platform's tone (long-form for Dev.to,`,
+    `threads for X, aesthetic for 小红书, technical for HN). Bilingual EN/ZH`,
+    `where applicable.`,
+    "",
+    `Edit, approve, publish:`,
+    `→ ${draftsUrl}`,
+    "",
+    `Takes 5 minutes. After that, your work is reaching all 10 channels`,
+    `at once.`,
+    "",
+    `— VibeXForge`,
+  ].join("\n");
+
+  // Lazy-import to avoid pulling email helpers into every draft-generator
+  // import path (this file gets bundled into the API route).
+  const {
+    sendEmail,
+    textToHtmlParas,
+    ensureUnsubscribeUrl,
+    withUnsubscribeFooter,
+  } = await import("@/lib/email");
+
+  const unsubscribeUrl = await ensureUnsubscribeUrl(supabase, row.creator_id);
+  const { text: fullText, html } = withUnsubscribeFooter(text, unsubscribeUrl);
+
+  const result = await sendEmail({
+    to: email,
+    subject,
+    text: fullText,
+    html: html || textToHtmlParas(fullText),
+    unsubscribeUrl: unsubscribeUrl || undefined,
+  });
+
+  if (!result.ok) {
+    console.error(`[drafts-ready-email] send failed: ${result.error}`);
+  } else if (result.dryRun) {
+    console.log(`[drafts-ready-email] dry-run for ${email}`);
+  } else {
+    console.log(`[drafts-ready-email] sent to ${email} (${result.resendId})`);
+  }
 }

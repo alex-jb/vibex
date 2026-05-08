@@ -905,7 +905,7 @@ export default function LandingPage() {
             textShadow: `0 0 6px rgba(232,232,236,0.5), 0 0 20px ${C.FORGE}55`,
           }}
         >
-          LAUNCH YOUR AI PROJECT.
+          AMPLIFY YOUR AI WORK.
           <br />
           <span
             style={{
@@ -913,8 +913,29 @@ export default function LandingPage() {
               textShadow: `0 0 8px ${C.FORGE}E6, 3px 3px 0 #000`,
             }}
           >
-            WATCH IT EVOLVE.
+            10+ CHANNELS. ONE SUBMIT.
           </span>
+        </motion.div>
+
+        {/* Bilingual subtitle — new positioning 2026-05-08:
+            Distribution amplifier for solo AI creators. Chinese line
+            below speaks to the primary target audience the splash CTA
+            doesn't otherwise call out. */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 5.5, ease: pixelEase }}
+          className="text-center mb-7"
+          style={{
+            fontSize: 11,
+            letterSpacing: 1.5,
+            color: "var(--text-muted-safe, #8B8E96)",
+            fontFamily: "var(--font-press-start), monospace",
+          }}
+        >
+          中国独立 AI 创作者的多渠道曝光放大器
+          <br />
+          <span style={{ opacity: 0.6 }}>Distribution amplifier for solo AI creators</span>
         </motion.div>
 
         {/* === CTAs === */}
@@ -942,7 +963,7 @@ export default function LandingPage() {
               ▶ PRESS START
             </motion.button>
           </Link>
-          <Link href="/about" prefetch={false}>
+          <Link href="/how-it-works" prefetch={false}>
             <motion.button
               type="button"
               className="font-pixel uppercase cursor-pointer"
@@ -962,7 +983,7 @@ export default function LandingPage() {
               }}
               transition={{ type: "spring", stiffness: 400, damping: 26 }}
             >
-              [ ABOUT ]
+              [ HOW IT WORKS ]
             </motion.button>
           </Link>
         </div>
