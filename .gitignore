@@ -54,3 +54,6 @@ next-env.d.ts
 # /investors + DemoVertical reference Blob URLs. Re-render locally,
 # upload with `npm run demo:sync-blob`. PNG screenshots stay tracked.
 public/demo-assets/*.mp4
+
+# Dogfood / eval output
+out/dogfood-vibex-launch/

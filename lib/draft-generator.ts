@@ -237,7 +237,19 @@ function userPromptFor(
   language: Language,
   subreddit: string | null,
 ): string {
+  // Hard language directive at top of user prompt. Without this the model
+  // anchors on the language of the project description (often English)
+  // and produces English even when system prompt + closer are in Chinese.
+  // 2026-05-08 dogfood caught this on x-zh-stat-led, bluesky-zh-stat-led,
+  // and linkedin-zh — all three came out in English because the source
+  // description had English numbers/terms ("990 tests").
+  const langDirective =
+    language === "zh"
+      ? "OUTPUT LANGUAGE: 中文 (Simplified Chinese). The project description below may be in English — translate ideas into native, idiomatic Chinese. Do NOT output English sentences unless quoting a brand name or a technical term that has no Chinese equivalent.\n"
+      : "OUTPUT LANGUAGE: English. The project description may include Chinese — translate ideas into native English.\n";
+
   const parts: string[] = [
+    langDirective,
     `Project: ${project.title}`,
     `Tagline: ${project.tagline}`,
   ];
@@ -257,8 +269,8 @@ function userPromptFor(
 
   const closer =
     language === "zh"
-      ? `\n现在直接写 ${platform} 的内容。只输出内容本身,不要解释,不要加前置语。`
-      : `\nWrite the ${platform} post now. Output ONLY the post text, no preamble.`;
+      ? `\n现在直接写 ${platform} 的内容。只输出内容本身,不要解释,不要加前置语。整篇用中文。`
+      : `\nWrite the ${platform} post now. Output ONLY the post text in English, no preamble.`;
   parts.push(closer);
   return parts.join("\n\n");
 }
@@ -363,26 +375,20 @@ async function generateOne(
 }
 
 /**
- * Generate the full draft set for a project and persist to
- * project_drafts. Runs all draft generations in parallel — total wall
- * time is ~5-10s for ~24 drafts at Sonnet 4.6 latency.
- *
- * Caller (e.g. /api/projects/[id]/generate-drafts) should run this in
- * the background after the submit response returns. Vercel function
- * waitUntil() is the right primitive.
+ * Generate drafts in memory (no DB write). Used by /api/projects/...
+ * via generateDraftsForProject, and by scripts/dogfood-vibex-launch.mjs
+ * to evaluate prompt quality without touching prod data.
  */
-export async function generateDraftsForProject(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  supabase: SupabaseClient<any, "public", any>,
+export async function generateDraftsInMemory(
   project: ProjectInput,
   options: {
     platforms?: Platform[];
     languages?: Language[];
     subreddit?: string;
   } = {},
-): Promise<{ ok: boolean; created: number; failed: number }> {
+): Promise<{ rows: DraftRow[]; failed: number }> {
   if (!process.env.ANTHROPIC_API_KEY) {
-    return { ok: false, created: 0, failed: 0 };
+    return { rows: [], failed: 0 };
   }
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -435,6 +441,29 @@ export async function generateDraftsForProject(
       console.error("[draft-generator] generation failed:", res.reason);
     }
   }
+  return { rows, failed };
+}
+
+/**
+ * Generate the full draft set for a project and persist to
+ * project_drafts. Runs all draft generations in parallel — total wall
+ * time is ~5-10s for ~24 drafts at Sonnet 4.6 latency.
+ *
+ * Caller (e.g. /api/projects/[id]/generate-drafts) should run this in
+ * the background after the submit response returns. Vercel function
+ * waitUntil() is the right primitive.
+ */
+export async function generateDraftsForProject(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: SupabaseClient<any, "public", any>,
+  project: ProjectInput,
+  options: {
+    platforms?: Platform[];
+    languages?: Language[];
+    subreddit?: string;
+  } = {},
+): Promise<{ ok: boolean; created: number; failed: number }> {
+  const { rows, failed } = await generateDraftsInMemory(project, options);
 
   if (rows.length === 0) return { ok: false, created: 0, failed };
 
