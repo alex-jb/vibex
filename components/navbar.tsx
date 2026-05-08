@@ -64,7 +64,7 @@ export function Navbar() {
   const allNavItems = [...primaryNavItems, ...(user ? dojoNavItems : [])];
   const isCJK = lang === "zh";
   const navFont: React.CSSProperties = isCJK
-    ? { fontFamily: "var(--font-zpix), monospace", fontSize: 12, letterSpacing: 4, transform: "scale(1.35)", transformOrigin: "center" }
+    ? { fontFamily: "var(--font-zpix), monospace", fontSize: 14, letterSpacing: 2 }
     : { fontFamily: "var(--font-pixel), monospace", fontSize: 11, letterSpacing: 1, imageRendering: "pixelated" };
 
   return (
