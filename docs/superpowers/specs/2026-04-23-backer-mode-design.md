@@ -7,9 +7,13 @@
 
 ## 0 · Strategic Framing (added 2026-05-11)
 
-> *Inspired by Semona0x's 2026-05-11 essay "AI 时代 GenZ 最大的杠杆" (211 likes on 小红书) and its internal memo quote:*
-> *"internet commerce turns attention & niche obsession into cashflow with the least friction.*
-> *internet capital markets turn information asymmetry into fee streams with the least friction."*
+> *Original framework: **Dovey Wan** (Primitive Ventures founding partner, @DoveyWan).*
+> *Paraphrased and surfaced via Semona0x's 2026-05-11 小红书 essay (211 likes) which directs readers to Dovey Wan's tweet thread:*
+>
+> *"Internet commerce turns attention & niche obsession into cashflow with the least friction.*
+> *Internet capital markets turn information asymmetry into fee streams with the least friction.*
+>
+> *只有在这两个地方,速度还经常能赢规模,小团队还可能打穿大组织,且有资本化的效率是最高的 (both monetary gravity and velocity)。这也是我对未来 crypto/fintech/open-fin 最 bullish 的地方。"*
 
 **VibeXForge's main product is the *internet commerce* rail** — solo AI creators turn attention (and the rare niche obsession of an indie audience) into cashflow through 17-platform amplification. That's the part already live.
 

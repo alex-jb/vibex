@@ -320,6 +320,19 @@ export default function VCPage() {
               这是 Buffer / Hootsuite 们用 enterprise SaaS 资本结构
               无法 commoditize 的东西。
             </p>
+            <p
+              className="font-retro"
+              style={{
+                fontSize: 13,
+                color: COLOR.TEXT_DIM,
+                lineHeight: 1.4,
+                marginTop: 16,
+                fontStyle: "italic",
+              }}
+            >
+              Framework per Dovey Wan (Primitive Ventures) — internet
+              commerce & internet capital markets thesis, May 2026.
+            </p>
           </div>
         </section>
 
