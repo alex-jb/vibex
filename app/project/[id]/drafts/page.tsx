@@ -285,7 +285,7 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
                 Claude is writing 17 platform-native drafts.
               </p>
               <p className="text-foreground/50 text-sm">
-                ~10 seconds · they'll appear below as they finish.
+                ~10 seconds · they&apos;ll appear below as they finish.
               </p>
             </section>
           ) : (

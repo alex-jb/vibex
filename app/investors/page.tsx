@@ -316,7 +316,7 @@ export default function VCPage() {
               中文版: 速度还经常能赢规模 ——
               小团队的资本化效率(monetary gravity AND velocity)
               在 attention-priced 这条 rail 上结构性高于大组织。
-              我们卖的是 "把 attention 转成 cashflow 的最低摩擦工具",
+              我们卖的是 &ldquo;把 attention 转成 cashflow 的最低摩擦工具&rdquo;,
               这是 Buffer / Hootsuite 们用 enterprise SaaS 资本结构
               无法 commoditize 的东西。
             </p>

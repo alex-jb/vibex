@@ -104,15 +104,16 @@ export async function POST(
 
   // Run generation in background. Vercel Functions: `after` waits up
   // to maxDuration after response is sent.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
+  const projectRow = project as Record<string, unknown>;
   const projectInput = {
-    id: project.id as string,
-    title: (project as any).title as string,
-    tagline: (project as any).tagline as string,
-    description: (project as any).description as string | undefined,
-    category: (project as any).category as string | undefined,
-    tags: (project as any).tags as string[] | undefined,
-    demoUrl: (project as any).demo_url as string | undefined,
+    id: projectRow.id as string,
+    title: projectRow.title as string,
+    tagline: projectRow.tagline as string,
+    description: projectRow.description as string | undefined,
+    category: projectRow.category as string | undefined,
+    tags: projectRow.tags as string[] | undefined,
+    demoUrl: projectRow.demo_url as string | undefined,
   };
 
   after(async () => {

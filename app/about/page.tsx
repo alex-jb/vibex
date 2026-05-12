@@ -134,7 +134,7 @@ export default function AboutPage() {
         <p style={{ color: "#8888A0", fontSize: 14, lineHeight: 1.8, marginBottom: 16 }}>
           Same author, completely different problem space.{" "}
           <a href="https://orallexa-ui.vercel.app/?ref=vibex" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>Orallexa</a>{" "}
-          is a self-tuning multi-agent AI trading system: 4 analyst personas debate, 10 ML models vote, walk-forward Sharpe 1.41 OOS on RSI INTC. If VibeX is "where AI projects evolve," Orallexa is "where AI trading decisions evolve."{" "}
+          is a self-tuning multi-agent AI trading system: 4 analyst personas debate, 10 ML models vote, walk-forward Sharpe 1.41 OOS on RSI INTC. If VibeX is &ldquo;where AI projects evolve,&rdquo; Orallexa is &ldquo;where AI trading decisions evolve.&rdquo;{" "}
           <a href="https://orallexa-ui.vercel.app/leaderboard?ref=vibex" target="_blank" rel="noopener noreferrer" style={{ color: "#FFE27D" }}>Public OOS Sharpe leaderboard →</a>
         </p>
 
