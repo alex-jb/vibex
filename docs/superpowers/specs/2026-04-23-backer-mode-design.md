@@ -2,7 +2,30 @@
 
 **Status**: Future spec · NOT for immediate implementation    
 **Drafted**: 2026-04-23 via `/superpowers:brainstorming` session    
+**Reframed**: 2026-05-11 — see "0 · Strategic Framing" below    
 **Prereq**: VibeXForge public launch + 2-4 weeks of traction data, so we back the right projects from the right audience
+
+## 0 · Strategic Framing (added 2026-05-11)
+
+> *Inspired by Semona0x's 2026-05-11 essay "AI 时代 GenZ 最大的杠杆" (211 likes on 小红书) and its internal memo quote:*
+> *"internet commerce turns attention & niche obsession into cashflow with the least friction.*
+> *internet capital markets turn information asymmetry into fee streams with the least friction."*
+
+**VibeXForge's main product is the *internet commerce* rail** — solo AI creators turn attention (and the rare niche obsession of an indie audience) into cashflow through 17-platform amplification. That's the part already live.
+
+**Backer Mode is the *internet capital markets* rail inside the same product** — the same attention data we already collect (views, plays, upvotes, evolution stage) becomes a **forward-looking signal** that a backer can act on with $10–$500 before the market catches up. The information asymmetry is *real and structural*: most of the world is not reading VibeXForge feeds in 2026, but the people who do see early traction signals an average of weeks before mainstream Twitter / Product Hunt / TechCrunch picks up the project. That asymmetry is the asset; the spotter badge ladder is its fee-stream packaging.
+
+**Both rails share the same underlying primitive**: *permissionless distribution + attention-direct monetization + bypass the traditional capital-and-distribution double gatekeeper*. The first rail collects attention; the second monetizes the prediction layer that sits on top of it.
+
+This is *not* a token, not a security, not Pump.fun. Specifically:
+
+- **Pump-style attention markets fail in our domain** because the asset they tokenize (meme attention) decays to zero faster than it appreciates. VibeXForge projects are *built things* with usable products underneath, so the attention compounds rather than dissipates.
+- **Capital-priced platforms (Kickstarter / Republic) lose** because they require sophisticated capital screening, qualified investor framing, and Form D filings. We have none of those — we have a social-proof badge that any GenZ creator can show on Twitter without filing anything.
+- **Small teams can punch through large incumbents** on rails where capitalization *velocity* dominates over capitalization *gravity* (see Semona0x essay). The velocity here is: attention signal → backer decides in <60 seconds → badge minted in <5 seconds → social proof posted to creator's X within the hour. No incumbent matches that loop.
+
+**The structural moat**: a Backer's badge is *contingent on the creator they picked* — which is impossible on Patreon, Ko-fi, or Kickstarter because none of them have an evolution mechanic on the backed asset. We have a 6-stage ladder. That's the wedge.
+
+---
 
 ## 1 · Summary
 

@@ -253,6 +253,76 @@ export default function VCPage() {
           </div>
         </section>
 
+        {/* Why we win — small-team velocity thesis */}
+        <section style={{ marginBottom: 56 }}>
+          <div
+            className="font-pixel"
+            style={{
+              fontSize: 12,
+              color: COLOR.FORGE,
+              letterSpacing: 3,
+              marginBottom: 16,
+            }}
+          >
+            ▸ WHY A SOLO TEAM WINS THIS
+          </div>
+          <div
+            style={{
+              padding: 24,
+              background: COLOR.PANEL,
+              border: `1px solid ${COLOR.FORGE}66`,
+            }}
+          >
+            <p
+              className="font-retro"
+              style={{
+                fontSize: 17,
+                color: COLOR.TEXT,
+                lineHeight: 1.55,
+                marginBottom: 16,
+              }}
+            >
+              Hootsuite, Buffer, Sprout Social raised <strong>$200M+ each</strong>{" "}
+              to sell scheduling to enterprise marketing teams. Their moat is
+              <em> capitalization gravity</em>: big sales orgs, big logos, big
+              SOC2 binders.
+            </p>
+            <p
+              className="font-retro"
+              style={{
+                fontSize: 17,
+                color: COLOR.TEXT,
+                lineHeight: 1.55,
+                marginBottom: 16,
+              }}
+            >
+              VibeXForge plays a different game.{" "}
+              <strong>Small teams can punch through large incumbents</strong>{" "}
+              on rails where capitalization <em>velocity</em> dominates
+              capitalization <em>gravity</em>: AI-native creators talk to
+              AI-native creators in their native voice, in 10 seconds, on 17
+              platforms, with no enterprise sales motion. Incumbents
+              <em> structurally cannot</em> price this — pricing it requires
+              the same taste, and taste does not scale through a 200-person org.
+            </p>
+            <p
+              className="font-retro"
+              style={{
+                fontSize: 17,
+                color: COLOR.TEXT_MUTED,
+                lineHeight: 1.55,
+              }}
+            >
+              中文版: 速度还经常能赢规模 ——
+              小团队的资本化效率(monetary gravity AND velocity)
+              在 attention-priced 这条 rail 上结构性高于大组织。
+              我们卖的是 "把 attention 转成 cashflow 的最低摩擦工具",
+              这是 Buffer / Hootsuite 们用 enterprise SaaS 资本结构
+              无法 commoditize 的东西。
+            </p>
+          </div>
+        </section>
+
         {/* Ask */}
         <section style={{ marginBottom: 56 }}>
           <div
