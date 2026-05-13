@@ -374,6 +374,38 @@ export async function POST(req: NextRequest) {
         console.error("[submit] welcome-email path threw", err);
       });
 
+      // 2026-05-13: Auto-generate an RPG pixel-art cover via gpt-image-2
+      // when the submitter didn't provide a thumbnail. Fires in after()
+      // so the API response returns immediately; Supabase Realtime push
+      // (migration 054) updates Feed cards on web + iOS once thumbnail
+      // is written. Cost ~$0.04. Failure is swallowed — project stays
+      // thumbnail-less and is harmless.
+      if (process.env.OPENAI_API_KEY && !project.thumbnail) {
+        after(async () => {
+          try {
+            const { generateProjectCover } = await import("@/lib/gen-cover");
+            const coverUrl = await generateProjectCover({
+              id: project.id,
+              title: project.title,
+              tagline: project.tagline,
+              category: project.category,
+              evolutionStage: project.hero?.evolutionStage,
+            });
+            const { error: updErr } = await supabase
+              .from("projects")
+              .update({ thumbnail: coverUrl })
+              .eq("id", project.id);
+            if (updErr) {
+              console.error("[submit] cover UPDATE failed", project.id, updErr);
+            } else {
+              console.log(`[submit] cover ${project.id} → ${coverUrl}`);
+            }
+          } catch (err) {
+            console.error("[submit] cover-gen path threw", err);
+          }
+        });
+      }
+
       // 2026-05-08: Auto-generate 17 platform-specific drafts in the
       // background so creator lands on /project/[id]/drafts with
       // drafts already populated.
