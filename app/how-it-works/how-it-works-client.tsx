@@ -34,7 +34,7 @@ const COPY = {
       "Paste your AI app URL or GitHub repo. Add a tagline + description. 30 seconds.",
     step2Title: "Agents write 10+ posts",
     step2Body:
-      "Claude Sonnet 4.6 writes platform-specific drafts in parallel. ~10 seconds. 24 drafts per project (8 platforms × 3 variants).",
+      "Our agents write platform-specific drafts in parallel. ~10 seconds. 24 drafts per project (8 platforms × 3 variants).",
     step3Title: "Edit + publish",
     step3Body:
       "Review each draft. Edit inline. One click opens the target platform with text pre-filled. 5 minutes per project, all platforms covered.",
@@ -81,7 +81,7 @@ const COPY = {
       "贴上你的 AI 作品链接或 GitHub repo。加一句 tagline + 简介。30 秒搞定。",
     step2Title: "Agent 帮你写 10+ 平台帖",
     step2Body:
-      "Claude Sonnet 4.6 并行生成 10+ 平台专属帖子。约 10 秒。每个项目 24 张草稿(8 平台 × 3 风格变体)。",
+      "Agent 并行生成 10+ 平台专属帖子。约 10 秒。每个项目 24 张草稿(8 平台 × 3 风格变体)。",
     step3Title: "审核 + 发布",
     step3Body:
       "逐张审核。直接编辑。一键打开目标平台,文案已自动填好。每个项目 5 分钟,10+ 平台全部覆盖。",

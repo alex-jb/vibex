@@ -189,7 +189,7 @@ export default function HomePage() {
         />
         <HeroCardGrid
           label="▸ LEGENDARY IN THE WILD"
-          subLabel="· TOP 3 THIS WEEK"
+          subLabel="· TOP 3 BY COMPOUND SCORE"
           cards={legendary}
         />
         <HeroCardGrid
