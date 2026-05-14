@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { DirectorySubmitButton } from "@/components/drafts/directory-submit-button";
 
 /**
  * /project/[id]/drafts — Creator HITL UI for marketing-agent drafts.
@@ -271,6 +272,8 @@ export default function DraftsPage({ params }: { params: Promise<{ id: string }>
             Xiaohongshu / Jike / Zhihu / Bilibili you paste once.
           </p>
         </header>
+
+        <DirectorySubmitButton projectId={id} />
 
         {drafts.length === 0 ? (
           justForged && pollAttempt < 22 ? (
