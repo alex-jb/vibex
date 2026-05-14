@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import CountUp from "@/components/react-bits/CountUp";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ForgeCounter — public social-proof strip on landing `/` mirroring the
@@ -34,11 +35,9 @@ type Counts = {
   engagement: number;
 };
 
-function formatCount(n: number): string {
-  if (n >= 1000000) return `${(n / 1000000).toFixed(1).replace(/\.0$/, "")}M`;
-  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K`;
-  return String(n);
-}
+// Previously formatted as "121K" / "5.2M"; replaced by CountUp with comma
+// separator below. Kept here as a comment in case we want K/M back at scale.
+// function formatCount(n: number): string { ... }
 
 export function ForgeCounter({ delay = 5.0 }: { delay?: number }) {
   const [counts, setCounts] = useState<Counts | null>(null);
@@ -134,16 +133,24 @@ export function ForgeCounter({ delay = 5.0 }: { delay?: number }) {
               ·
             </span>
           ) : null}
-          <span
-            style={{
-              color: FORGE,
-              fontSize: 11,
-              textShadow: `0 0 8px ${FORGE}, 1px 1px 0 #000`,
-              letterSpacing: 1,
-            }}
-          >
-            {formatCount(tile.num)}
-          </span>
+          {/* CountUp from react-bits — animates 0 → tile.num on first scroll
+              into view. Comma separator beats K/M at our scale (raw "121,500"
+              psychologically > "121K"). className passes through so the
+              FORGE color + glow + tracking match the previous static render. */}
+          <CountUp
+            to={tile.num}
+            duration={1.6}
+            separator=","
+            className="forge-counter-num"
+          />
+          <style jsx>{`
+            :global(.forge-counter-num) {
+              color: ${FORGE};
+              font-size: 11px;
+              text-shadow: 0 0 8px ${FORGE}, 1px 1px 0 #000;
+              letter-spacing: 1px;
+            }
+          `}</style>
           <span style={{ fontSize: 9, letterSpacing: 2 }}>{tile.label}</span>
           <span
             aria-hidden

@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { ForgeCounter } from "@/components/landing/forge-counter";
 import { SeasonBanner } from "@/components/landing/season-banner";
 import { useLang } from "@/lib/i18n";
+import DecryptedText from "@/components/react-bits/DecryptedText";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    LANDING PAGE — v8 VibeXForge forge treatment.
@@ -909,13 +910,27 @@ export default function LandingPage() {
         >
           AMPLIFY YOUR AI WORK.
           <br />
+          {/* DecryptedText (react-bits) — reveals "10+ CHANNELS. ONE SUBMIT."
+              by decrypting characters in sequence. Matches the BOOT terminal
+              aesthetic of the left column. Trigger: on first scroll into view. */}
           <span
             style={{
               color: C.FORGE,
               textShadow: `0 0 8px ${C.FORGE}E6, 3px 3px 0 #000`,
+              display: "inline-block",
             }}
           >
-            10+ CHANNELS. ONE SUBMIT.
+            <DecryptedText
+              text="10+ CHANNELS. ONE SUBMIT."
+              animateOn="view"
+              sequential
+              speed={45}
+              maxIterations={12}
+              revealDirection="start"
+              parentClassName=""
+              className=""
+              encryptedClassName="opacity-70"
+            />
           </span>
         </motion.div>
 
