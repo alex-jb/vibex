@@ -272,6 +272,50 @@ Default recommendation: **(a)** — narrow first to validate the
 queue+adapter architecture, then expand to 8 once the pattern proves
 out. Risk-adjusted ROI is highest for narrow ship.
 
+## 🛑 2026-05-14 DECISION — locked at NARROW. Do NOT expand to broad.
+
+Post-build, competitive-landscape research surfaced the truth: this
+market (auto-submit to Western directories) is **already settled at
+$29-499 / 18-500 directories**, owned by ListingBott / SubmitSaaS /
+AutoSaaSLaunch / GetMoreBacklinks / SubmitPro / Submit Juice /
+Startories / LinkJuice / SaaSLaunch.site. 10+ products. Pure red
+ocean. PicoLaunch (the 小红书 post that triggered this spec) was
+not actually verifiable as a real product — likely a re-pitch.
+
+VibeXForge's actual moat is NOT directory count — it's:
+1. **Bilingual EN+ZH multi-platform reach** (小红书/即刻/B站/知乎
+   that Western tools don't touch)
+2. **AI quality layer** (Claude compound score + RPG evolution
+   gating exposure)
+3. **iOS Companion + auto-trailer** (mobile surface + Remotion video
+   that competitors don't have)
+
+So this spec is **frozen** in its current ship state:
+- ✅ v0.1 narrow: dev.to + GitHub awesome-mcp-servers PR (already
+  shipped 2026-05-14 in commits f49fe16 + 20e34b6)
+- 🚫 v0.2 broad (Toolify / Futurepedia / TAAFT / AlternativeTo /
+  TopAI / +ZH directories) — **NOT BUILDING**. Removed from queue.
+- 🚫 Email-on-approve UX — NOT BUILDING.
+- 🚫 Directory dashboard page — NOT BUILDING.
+
+What lives on instead:
+- The existing `directory_submissions` queue + cron + UI button
+  keeps running. dev.to + awesome-PR adapters keep doing their job
+  (when DEVTO_API_KEY and GITHUB_TOKEN are set in prod env).
+- All future scope-growth effort redirects to the China-bridge moat:
+  doubling-down on the 17 platform-specific social draft generator
+  + 小红书/即刻/B站 reach + iOS Companion polish.
+
+Why this matters: every hour spent on adapter #4-#8 is an hour NOT
+spent on the China-bridge angle that is **the only differentiation
+that's not commoditized**. Spec stays as historical artifact +
+narrow ship spec, but expansion is killed.
+
+Cross-reference: this is the same conversation thread that triggered
+the iOS TikTok-style Demos tab and the react-bits CountUp/DecryptedText
+integration. The strategic theme is **double-down on what we
+already own that no one else does**.
+
 ## Related docs
 
 - `vibex_north_star_vision.md` — locked positioning (this spec respects it)
