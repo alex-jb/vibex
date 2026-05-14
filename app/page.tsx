@@ -919,17 +919,39 @@ export default function LandingPage() {
           </span>
         </motion.div>
 
-        {/* Bilingual subtitle — new positioning 2026-05-08:
-            Distribution amplifier for solo AI creators. Chinese line
-            below speaks to the primary target audience the splash CTA
-            doesn't otherwise call out. */}
+        {/* Bilingual thesis line — 2026-05-14 narrative steal from
+            PicoLaunch's "first mile / last mile" framing (432 saves on
+            小红书). vibe coding made shipping cheap; what's left is
+            distribution. That's exactly what VibeXForge does — same
+            north-star positioning ("multi-channel exposure amplifier"),
+            sharper framing. The locked positioning subtitle moves to a
+            second muted line below for citability/SEO. */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 5.5, ease: pixelEase }}
+          className="text-center mb-2"
+          style={{
+            fontSize: 13,
+            lineHeight: 1.6,
+            letterSpacing: 0.6,
+            color: "var(--text)",
+            fontFamily: "var(--font-press-start), monospace",
+            maxWidth: 520,
+            margin: "0 auto",
+          }}
+        >
+          {lang === "zh"
+            ? "vibe coding 跑完第一公里。最后一公里我们替你跑完。"
+            : "vibe coding ran the first mile. we run the last."}
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 5.7, ease: pixelEase }}
           className="text-center mb-7"
           style={{
-            fontSize: 11,
+            fontSize: 10,
             letterSpacing: 1.5,
             color: "var(--text-muted-safe, #8B8E96)",
             fontFamily: "var(--font-press-start), monospace",
