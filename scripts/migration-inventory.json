@@ -1378,5 +1378,35 @@
   {
     "kind": "trigger",
     "name": "trg_workflows_updated"
+  },
+  {
+    "kind": "table",
+    "name": "directory_submissions",
+    "_migration": "061_directory_submissions.sql"
+  },
+  {
+    "kind": "table",
+    "name": "launchkit_jobs",
+    "_migration": "062_launchkit_jobs.sql"
+  },
+  {
+    "kind": "table",
+    "name": "launchkit_subscriptions",
+    "_migration": "063_launchkit_stripe_and_trailer.sql"
+  },
+  {
+    "kind": "table",
+    "name": "launchkit_credits",
+    "_migration": "063_launchkit_stripe_and_trailer.sql"
+  },
+  {
+    "kind": "table",
+    "name": "funerals",
+    "_migration": "064_funerals.sql"
+  },
+  {
+    "kind": "table",
+    "name": "idea_validations",
+    "_migration": "065_idea_validations.sql"
   }
 ]
