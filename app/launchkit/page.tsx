@@ -144,36 +144,48 @@ export default function LaunchKitPage() {
           )}
         </form>
 
-        {/* Pricing teaser */}
+        {/* Pricing — pay to skip beta wait */}
         <section className="mt-16">
-          <h2 className="mb-6 text-2xl font-bold">After beta</h2>
+          <h2 className="mb-2 text-2xl font-bold">
+            Need more than 1/day?
+          </h2>
+          <p className="mb-6 text-sm text-zinc-400">
+            Free beta is 1 launch per email per 24h. Skip the wait:
+          </p>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800">
-              <p className="text-sm uppercase tracking-wider text-orange-400">
-                Single launch
-              </p>
-              <p className="mt-2 text-3xl font-bold">$49</p>
-              <ul className="mt-4 space-y-2 text-sm text-zinc-300">
-                <li>· 24 platform drafts</li>
-                <li>· EN + ZH</li>
-                <li>· Bandit-ranked variants</li>
-                <li>· 12-month archive access</li>
-              </ul>
-            </div>
-            <div className="rounded-2xl bg-orange-500/10 p-6 ring-1 ring-orange-500/30">
-              <p className="text-sm uppercase tracking-wider text-orange-400">
-                Pro · subscription
-              </p>
-              <p className="mt-2 text-3xl font-bold">
-                $19<span className="text-base text-zinc-400">/mo</span>
-              </p>
-              <ul className="mt-4 space-y-2 text-sm text-zinc-300">
-                <li>· 5 launches / month</li>
-                <li>· Weekly trending hook digest</li>
-                <li>· Bandit feedback on past launches</li>
-                <li>· Priority Claude (no wait)</li>
-              </ul>
-            </div>
+            <PricingCard
+              title="Single launch"
+              price="$49"
+              cta="Buy now"
+              features={[
+                "24 platform drafts",
+                "EN + ZH",
+                "Bandit-ranked variants",
+                "12-month archive access",
+                "Instant — skip rate limit",
+              ]}
+              mode="single"
+              email={email}
+              url={url}
+              positioning={positioning}
+            />
+            <PricingCard
+              title="Pro · subscription"
+              price="$19/mo"
+              cta="Subscribe"
+              accent
+              features={[
+                "5 launches / month",
+                "Weekly trending hook digest",
+                "Bandit feedback on past launches",
+                "Priority Claude (no wait)",
+                "Cancel anytime",
+              ]}
+              mode="subscription"
+              email={email}
+              url={url}
+              positioning={positioning}
+            />
           </div>
         </section>
 
@@ -194,5 +206,87 @@ export default function LaunchKitPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+interface PricingCardProps {
+  title: string;
+  price: string;
+  cta: string;
+  features: string[];
+  mode: "single" | "subscription";
+  email: string;
+  url?: string;
+  positioning?: string;
+  accent?: boolean;
+}
+
+function PricingCard({
+  title,
+  price,
+  cta,
+  features,
+  mode,
+  email,
+  url,
+  positioning,
+  accent,
+}: PricingCardProps) {
+  const [loading, setLoading] = useState(false);
+
+  async function buy() {
+    if (!email) {
+      alert("Enter your email above first — we'll send your receipt there.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const resp = await fetch("/api/launchkit/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode, email, url, positioning }),
+      });
+      const data = await resp.json();
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        alert(`Checkout failed: ${data.error || "unknown"}`);
+      }
+    } catch (err) {
+      alert(`Checkout failed: ${String(err)}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div
+      className={
+        accent
+          ? "rounded-2xl bg-orange-500/10 p-6 ring-1 ring-orange-500/30"
+          : "rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800"
+      }
+    >
+      <p className="text-sm uppercase tracking-wider text-orange-400">{title}</p>
+      <p className="mt-2 text-3xl font-bold">
+        {price}
+        {mode === "subscription" && (
+          <span className="text-base text-zinc-400"></span>
+        )}
+      </p>
+      <ul className="mt-4 space-y-2 text-sm text-zinc-300">
+        {features.map((f) => (
+          <li key={f}>· {f}</li>
+        ))}
+      </ul>
+      <button
+        type="button"
+        onClick={buy}
+        disabled={loading}
+        className="mt-6 w-full rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-orange-400 disabled:opacity-50"
+      >
+        {loading ? "…" : cta}
+      </button>
+    </div>
   );
 }
