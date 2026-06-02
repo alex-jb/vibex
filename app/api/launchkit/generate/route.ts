@@ -81,26 +81,61 @@ export async function POST(req: NextRequest) {
 
   const supabase = createClient(SUPA_URL, SUPA_ANON_KEY);
 
-  // Rate limit by email (Phase 1 anti-abuse). If launchkit_jobs table
-  // doesn't exist yet, skip the check (migration 062 ships it).
+  // Bypass rate-limit if user is a Pro subscriber OR has Silver+ Creator Score
+  // tier (≥150 pts) — that's the perk we promised on /score/[handle] ladder.
+  let bypassRateLimit = false;
+
   try {
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { count, error } = await supabase
-      .from("launchkit_jobs")
-      .select("id", { count: "exact", head: true })
-      .eq("caller_email", email)
-      .gte("created_at", since);
-    if (!error && (count ?? 0) >= RATE_LIMIT_PER_24H) {
-      return NextResponse.json(
-        {
-          error: `Rate limited: ${RATE_LIMIT_PER_24H} free launch per email per 24h. Pro plan ($19/mo) launches Phase 2.`,
-        },
-        { status: 429 },
-      );
+    const { data: sub } = await supabase
+      .from("launchkit_subscriptions")
+      .select("active, current_period_end")
+      .eq("email", email)
+      .maybeSingle();
+    if (sub?.active) {
+      const stillValid =
+        !sub.current_period_end ||
+        new Date(sub.current_period_end).getTime() > Date.now();
+      if (stillValid) bypassRateLimit = true;
     }
   } catch {
-    // launchkit_jobs table likely not migrated yet — fall through. Phase
-    // 1 MVP can run without rate limiting; will get added before launch.
+    // table missing → no bypass via subscription
+  }
+
+  if (!bypassRateLimit && handle) {
+    try {
+      const { data: scoreRow } = await supabase
+        .from("creator_scores")
+        .select("score")
+        .eq("handle", handle.toLowerCase())
+        .maybeSingle();
+      if (scoreRow && (scoreRow.score ?? 0) >= 150) {
+        bypassRateLimit = true;
+      }
+    } catch {
+      // table missing → no bypass via score
+    }
+  }
+
+  // Rate limit by email (Phase 1 anti-abuse). Skip when bypassed.
+  if (!bypassRateLimit) {
+    try {
+      const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const { count, error } = await supabase
+        .from("launchkit_jobs")
+        .select("id", { count: "exact", head: true })
+        .eq("caller_email", email)
+        .gte("created_at", since);
+      if (!error && (count ?? 0) >= RATE_LIMIT_PER_24H) {
+        return NextResponse.json(
+          {
+            error: `Rate limited: ${RATE_LIMIT_PER_24H} free launch per email per 24h. Upgrade to Pro ($19/mo) or reach Silver tier (150+ Creator Score) for unlimited.`,
+          },
+          { status: 429 },
+        );
+      }
+    } catch {
+      // launchkit_jobs table missing → fall through (graceful degrade)
+    }
   }
 
   const jobId = randomUUID();

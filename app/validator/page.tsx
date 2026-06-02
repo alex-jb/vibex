@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function ValidatorLanding() {
@@ -9,6 +9,23 @@ export default function ValidatorLanding() {
   const [email, setEmail] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [carryNote, setCarryNote] = useState<string | null>(null);
+
+  // Carry-over from /funeral/[id] Revival Judge "Try Again on Validator" CTA.
+  // The Revival panel builds /validator?from_funeral=<id>&prefill=<pitch>
+  // so we pre-fill the idea textarea and show a small "from funeral" banner.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const prefill = params.get("prefill");
+    const fromFuneral = params.get("from_funeral");
+    if (prefill) {
+      setIdea(prefill.slice(0, 1000));
+    }
+    if (fromFuneral) {
+      setCarryNote(fromFuneral);
+    }
+  }, []);
   const [result, setResult] = useState<
     null | { ok: true; viewUrl: string; score: number; recommendation: string }
     | { ok: false; error: string }
@@ -67,6 +84,19 @@ export default function ValidatorLanding() {
             Brutally honest. 0-100 score. Recommendation: BUILD / ITERATE / SKIP.
           </p>
         </header>
+
+        {carryNote && (
+          <div className="mb-6 rounded-xl bg-orange-500/10 p-4 text-sm text-orange-300 ring-1 ring-orange-500/30">
+            🔄 Carried over from a funeral. Pre-filled the Revival Judge&apos;s
+            relaunch pitch. Tweak then validate.{" "}
+            <Link
+              href={`/funeral/${carryNote}`}
+              className="underline hover:text-orange-200"
+            >
+              Back to memorial →
+            </Link>
+          </div>
+        )}
 
         <form
           onSubmit={check}

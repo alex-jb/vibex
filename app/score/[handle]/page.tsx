@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import type { Metadata } from "next";
 import { TIER_LADDER, tierFromScore } from "@/lib/score";
+import { ScoreShareButtons } from "@/components/score/share-buttons";
 
 interface PageProps {
   params: Promise<{ handle: string }>;
@@ -154,20 +155,23 @@ export default async function ScoreProfilePage({ params }: PageProps) {
           </ul>
         </section>
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-              `I'm ${tier.label} ${tier.emoji} on VibeXForge (${row.score} pts). The creator lifecycle in one number.`,
-            )}&url=${encodeURIComponent(`https://vibexforge.com/score/${handle}`)}`}
-            target="_blank"
-            rel="noreferrer"
-            className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
-          >
-            Share on X
-          </a>
+        <ScoreShareButtons
+          handle={handle}
+          score={row.score}
+          tierLabel={tier.label}
+          tierEmoji={tier.emoji}
+          funerals={row.funerals_count}
+          ideaFunerals={row.idea_funerals_count}
+          validations={row.validations_count}
+          launchkits={row.launchkits_count}
+          revivals={row.revivals_triggered_count}
+          ships={row.vibex_submits_count}
+        />
+
+        <div className="mt-3">
           <Link
             href="/validator"
-            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+            className="block w-full rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
           >
             Climb the ladder → /validator
           </Link>
