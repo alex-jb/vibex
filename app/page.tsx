@@ -1077,6 +1077,56 @@ export default function LandingPage() {
             </Link>
           ))}
         </motion.div>
+
+        {/* === Creator Lifecycle pills — Validator → LaunchKit → Funeral → Score
+            (2026-06-02) cross-link surface so visitors discover the 4-piece
+            lifecycle without leaving the hero. Same pixel-pill treatment as
+            BROWSE row above; subtler color (CREAM border, no orange glow) so
+            it reads as secondary to BROWSE. */}
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 5.95, ease: pixelEase }}
+          className="mt-3 flex flex-wrap items-center justify-center gap-2"
+          aria-label="Creator lifecycle"
+        >
+          <span
+            aria-hidden
+            style={{
+              fontFamily: "var(--font-press-start), monospace",
+              fontSize: 8,
+              letterSpacing: 2.5,
+              color: `${C.CREAM}B8`,
+              marginRight: 4,
+            }}
+          >
+            ▸ LIFECYCLE
+          </span>
+          {[
+            { label: "VALIDATE", href: "/validator", emoji: "💡" },
+            { label: "LAUNCH", href: "/launchkit", emoji: "🚀" },
+            { label: "BURY", href: "/funeral", emoji: "🪦" },
+            { label: "SCORE", href: "/score/alex", emoji: "👑" },
+          ].map((pill) => (
+            <Link
+              key={pill.href}
+              href={pill.href}
+              className="transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--neon-orange)]"
+              style={{
+                fontFamily: "var(--font-press-start), monospace",
+                fontSize: 8,
+                letterSpacing: 1.5,
+                padding: "6px 10px",
+                color: C.CREAM,
+                background: "rgba(0,0,0,0.35)",
+                border: `2px solid ${C.CREAM}44`,
+                boxShadow: `2px 2px 0 #000`,
+              }}
+            >
+              {pill.emoji} {pill.label}
+            </Link>
+          ))}
+        </motion.div>
       </motion.div>
 
       {/* ═══ Keyboard hint bottom (desktop only) ═══ */}

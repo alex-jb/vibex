@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export default function ValidatorLanding() {
   const [idea, setIdea] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,7 @@ export default function ValidatorLanding() {
           idea,
           email: email || undefined,
           is_public: isPublic,
+          handle: name || undefined,
         }),
       });
       const data = await resp.json();
@@ -86,6 +88,18 @@ export default function ValidatorLanding() {
           <p className="mb-4 text-right text-xs text-zinc-500">
             {idea.length}/1000
           </p>
+
+          <label className="mb-2 block text-sm font-medium text-zinc-300">
+            Your handle (optional — used as your Creator Score name)
+          </label>
+          <input
+            type="text"
+            placeholder="alex"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={64}
+            className="mb-4 w-full rounded-xl bg-zinc-800 px-4 py-3 text-base outline-none ring-1 ring-zinc-700 focus:ring-orange-500"
+          />
 
           <label className="mb-2 block text-sm font-medium text-zinc-300">
             Email (optional — for follow-up monitoring)

@@ -21,6 +21,7 @@ export default function LaunchKitPage() {
   const [url, setUrl] = useState("");
   const [positioning, setPositioning] = useState("");
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<
     null | { ok: true; jobId: string } | { ok: false; error: string }
@@ -35,7 +36,7 @@ export default function LaunchKitPage() {
       const resp = await fetch("/api/launchkit/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, positioning, email }),
+        body: JSON.stringify({ url, positioning, email, handle: name || undefined }),
       });
       const data = await resp.json();
       if (!resp.ok) {
@@ -111,6 +112,18 @@ export default function LaunchKitPage() {
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="mb-4 w-full rounded-xl bg-zinc-800 px-4 py-3 text-base outline-none ring-1 ring-zinc-700 focus:ring-orange-500"
+          />
+
+          <label className="mb-2 block text-sm font-medium text-zinc-300">
+            Your handle (optional — counts toward Creator Score)
+          </label>
+          <input
+            type="text"
+            placeholder="alex"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={64}
             className="mb-6 w-full rounded-xl bg-zinc-800 px-4 py-3 text-base outline-none ring-1 ring-zinc-700 focus:ring-orange-500"
           />
 

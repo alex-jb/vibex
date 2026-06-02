@@ -19,6 +19,7 @@ import {
   generateDraftsInMemory,
   type ProjectInput,
 } from "@/lib/draft-generator";
+import { bumpScore } from "@/lib/score";
 
 export const runtime = "nodejs";
 export const maxDuration = 60; // Vercel Fluid Compute hard limit
@@ -35,6 +36,7 @@ function validateInput(body: unknown): {
   url: string;
   positioning: string;
   email: string;
+  handle?: string;
 } | null {
   if (!body || typeof body !== "object") return null;
   const b = body as Record<string, unknown>;
@@ -46,7 +48,8 @@ function validateInput(body: unknown): {
   if (!/^https?:\/\//.test(url)) return null;
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return null;
   if (positioning.length > 140) return null;
-  return { url, positioning, email };
+  const handle = typeof b.handle === "string" ? b.handle.slice(0, 64) : undefined;
+  return { url, positioning, email, handle };
 }
 
 export async function POST(req: NextRequest) {
@@ -57,7 +60,7 @@ export async function POST(req: NextRequest) {
       { status: 400 },
     );
   }
-  const { url, positioning, email } = input;
+  const { url, positioning, email, handle } = input;
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
@@ -161,6 +164,15 @@ export async function POST(req: NextRequest) {
       source: "launchkit" as const,
     }));
     await supabase.from("project_drafts").insert(draftsToInsert);
+
+    // Bump Creator Score (surface=launchkit, delta 30)
+    if (handle) {
+      await bumpScore(supabase, {
+        handle,
+        surface: "launchkit",
+        ref_id: jobId,
+      });
+    }
   } catch (err) {
     // Persistence failed — degrade gracefully. Drafts are gone but user
     // gets jobId so they can re-request via support.
