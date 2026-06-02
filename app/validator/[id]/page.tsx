@@ -17,6 +17,8 @@ interface ValidationRow {
   report: ValidatorReport;
   pmf_score: number | null;
   verdict: string | null;
+  death_probability_6m: number | null;
+  death_reason: string | null;
   is_public: boolean;
   created_at: string;
 }
@@ -29,7 +31,7 @@ async function fetchValidation(id: string): Promise<ValidationRow | null> {
   const { data } = await supa
     .from("idea_validations")
     .select(
-      "id, idea_text, idea_category, idea_keywords, target_persona, report, pmf_score, verdict, is_public, created_at",
+      "id, idea_text, idea_category, idea_keywords, target_persona, report, pmf_score, verdict, death_probability_6m, death_reason, is_public, created_at",
     )
     .eq("id", id)
     .maybeSingle();
@@ -250,6 +252,46 @@ export default async function ValidatorReportPage({ params }: PageProps) {
               <p className="mt-4 text-center text-sm italic text-zinc-300">
                 &ldquo;{r.verdict.analogy}&rdquo;
               </p>
+            )}
+          </section>
+        )}
+
+        {/* Section 6: Death Probability (migration 068) */}
+        {row.death_probability_6m !== null && (
+          <section className="mb-10 rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800">
+            <h2 className="mb-3 text-xl font-bold">💀 Death probability (6 months)</h2>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-32 text-zinc-400">If you build it</span>
+              <div className="flex-1 rounded-full bg-zinc-800">
+                <div
+                  className={`rounded-full py-1 text-center text-xs ${
+                    row.death_probability_6m >= 70
+                      ? "bg-red-500"
+                      : row.death_probability_6m >= 50
+                        ? "bg-yellow-500 text-black"
+                        : "bg-green-500 text-black"
+                  }`}
+                  style={{ width: `${Math.max(row.death_probability_6m, 8)}%` }}
+                >
+                  {row.death_probability_6m}%
+                </div>
+              </div>
+            </div>
+            {row.death_reason && (
+              <p className="mt-3 text-sm text-zinc-300">{row.death_reason}</p>
+            )}
+            {row.death_probability_6m >= 70 && (
+              <div className="mt-4 rounded-xl bg-orange-500/10 p-4 ring-1 ring-orange-500/30">
+                <p className="text-sm text-orange-300">
+                  Most ideas like this die within 6 months.
+                </p>
+                <Link
+                  href={`/funeral/idea?prefill=${encodeURIComponent(row.idea_text.slice(0, 400))}`}
+                  className="mt-2 inline-block text-sm font-semibold text-orange-200 underline hover:text-orange-100"
+                >
+                  Bury it on /funeral/idea — closure first, then next idea →
+                </Link>
+              </div>
             )}
           </section>
         )}

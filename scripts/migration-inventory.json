@@ -1408,5 +1408,20 @@
     "kind": "table",
     "name": "idea_validations",
     "_migration": "065_idea_validations.sql"
+  },
+  {
+    "kind": "table",
+    "name": "idea_funerals",
+    "_migration": "066_idea_funerals.sql"
+  },
+  {
+    "kind": "table",
+    "name": "creator_scores",
+    "_migration": "069_creator_scores.sql"
+  },
+  {
+    "kind": "function",
+    "name": "bump_creator_score",
+    "_migration": "069_creator_scores.sql"
   }
 ]

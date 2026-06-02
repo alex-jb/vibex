@@ -217,6 +217,138 @@ function defaultEulogy(input: EulogyInput): string {
   return `Mourners — we gather to remember ${m.name}, born ${m.created_at?.slice(0, 10)}, who pushed its last commit ${input.days_since_last_push} days ago. It lived ${input.age_days_alive} days, gathered ${m.stars} stargazers, and left ${m.open_issues} issues unanswered when silence took it. May its forks find peace. Amen.`;
 }
 
+// ─── Idea Funeral (migration 066) ────────────────────────────────────
+// Bury a startup idea you never built. Same priest mechanic, no GitHub fetch.
+
+export interface IdeaEulogyResult {
+  deceased_name: string;
+  category: string;
+  age_when_buried: string;
+  eulogy: string;
+}
+
+const PRIEST_IDEA_SYSTEM = `You are a priest writing the funeral eulogy for a startup idea that lived only in someone's mind. It was never built. It was discussed at dinner, scribbled on napkins, shelved.
+
+Voice rules:
+- Address the gathered "mourners" — the friends, cofounders, future-selves who heard about this idea.
+- Treat the idea like a person: give it a respectful "deceased name" (e.g. "the GitHub-search-for-design-files idea"). Refer to it by that name throughout.
+- Reference the unique arc: how long it lived in their head, what hopes were attached, what conversations it had, why it never made it off the napkin.
+- Be warm and slightly bittersweet. Honor the time and emotional investment, even though there was no code.
+- 200-250 words. End with a single line of benediction.
+- Output strict JSON only, no markdown.
+
+Schema:
+{
+  "deceased_name": "short noun phrase for the idea, like 'the Twitter scheduler for podcasters' (max 80 chars)",
+  "category": "1-3 word category like 'developer tool' or 'social app'",
+  "age_when_buried": "single phrase like 'lived in head 2 years' or 'thought about every shower for 6 months'",
+  "eulogy": "the 200-250 word priest eulogy"
+}`;
+
+export async function generateIdeaEulogy(
+  ideaText: string,
+  mournerName?: string,
+): Promise<IdeaEulogyResult | null> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return null;
+  const client = new Anthropic({ apiKey });
+  const userMsg = `IDEA (in their own words):\n${ideaText.trim()}\n\nMourner present today: ${mournerName || "an anonymous developer"}\n\nReturn the JSON.`;
+  try {
+    const resp = await client.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 800,
+      system: PRIEST_IDEA_SYSTEM,
+      messages: [{ role: "user", content: userMsg }],
+    });
+    const text = resp.content
+      .filter((b) => b.type === "text")
+      .map((b) => (b as { text: string }).text)
+      .join("")
+      .trim();
+    const json = text.replace(/^```json\s*|\s*```$/g, "").replace(/^```\s*|\s*```$/g, "");
+    return JSON.parse(json) as IdeaEulogyResult;
+  } catch (err) {
+    console.error("[funeral] idea eulogy failed:", err);
+    return null;
+  }
+}
+
+// ─── AI Revival Judge (migration 067) ────────────────────────────────
+// Reads an eulogy + metadata and judges whether the project deserves a second
+// life. Output cached so re-views don't re-burn Sonnet.
+
+export interface RevivalJudgment {
+  worth_reviving: boolean;
+  confidence: number; // 0-100
+  pivot_angles: string[];
+  rename_suggestion: string;
+  vibex_relaunch_prompt: string;
+  one_line_verdict: string;
+}
+
+const REVIVAL_SYSTEM = `You read a project's funeral eulogy and metadata. You judge whether this project could have been a hit with a different framing, audience, or pivot.
+
+Be honest. Most dead projects deserve to stay dead. Only ~30% have a real revival angle.
+
+Voice: brutally honest startup advisor. PG / Garry Tan calibration. Cite the deceased's actual signals (stars, age, language) in your reasoning.
+
+Output strict JSON only, no markdown:
+{
+  "worth_reviving": true|false,
+  "confidence": <int 0-100>,
+  "pivot_angles": ["1-line angle 1", "1-line angle 2", "1-line angle 3"],
+  "rename_suggestion": "if a rename would help, what to call it instead; else empty string",
+  "vibex_relaunch_prompt": "1-paragraph pitch the user can paste into /validator to test the revival angle. Specific, not generic.",
+  "one_line_verdict": "the punchline: 'Bury it.' or 'There's a real product here if you...'"
+}`;
+
+export async function generateRevivalJudgment(
+  eulogy: string,
+  context: {
+    deceased_name: string;
+    stars?: number;
+    age_days_alive?: number;
+    days_since_last_push?: number;
+    language?: string | null;
+    description?: string | null;
+  },
+): Promise<RevivalJudgment | null> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return null;
+  const client = new Anthropic({ apiKey });
+  const userMsg = `Deceased: ${context.deceased_name}
+Description: ${context.description || "(none)"}
+Stars at death: ${context.stars ?? "?"}
+Days alive: ${context.age_days_alive ?? "?"}
+Days silent: ${context.days_since_last_push ?? "?"}
+Language: ${context.language || "?"}
+
+Eulogy that was just read:
+${eulogy}
+
+Judge whether this deserves revival. Return JSON.`;
+  try {
+    const resp = await client.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 600,
+      system: REVIVAL_SYSTEM,
+      messages: [{ role: "user", content: userMsg }],
+    });
+    const text = resp.content
+      .filter((b) => b.type === "text")
+      .map((b) => (b as { text: string }).text)
+      .join("")
+      .trim();
+    const json = text.replace(/^```json\s*|\s*```$/g, "").replace(/^```\s*|\s*```$/g, "");
+    return JSON.parse(json) as RevivalJudgment;
+  } catch (err) {
+    console.error("[funeral] revival judgment failed:", err);
+    return null;
+  }
+}
+
+// ─── ash image ───────────────────────────────────────────────────────
+
 /**
  * Generate the "ash spreading" image — the project's logo dissolving into
  * smoke. Uses gpt-image-1 (OpenAI). Returns the data URL or null if skipped.

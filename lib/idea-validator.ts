@@ -90,6 +90,75 @@ export interface ValidatorReport {
     };
     analogy: string; // "This is more like X..."
   };
+  // Migration 068 — death probability 6 months out.
+  // MVP: heuristic derived from the 4 axes. Phase 2: trained on funerals data.
+  death_axis?: {
+    probability_6m: number; // 0-100
+    reason: string;          // one-line plain-language reason
+  };
+}
+
+/**
+ * Heuristic estimator for "what's the chance this idea is dead in 6 months."
+ *
+ * Inputs: the 4 PMF axes (each 0-100 where higher = better for that axis,
+ * except competition which the schema notes is inverted: higher = more crowded = worse).
+ *
+ * Mental model:
+ *   - Low demand   →  high death prob (no one cares)
+ *   - High competition (low axis value) → high death prob (can't break through)
+ *   - Low differentiation → high death prob (looks like noise)
+ *   - Low feasibility → high death prob (can't ship)
+ *
+ * Output is clamped 5-95 (never 0% nor 100%, because either is a lie).
+ */
+export function estimateDeathProbability(axes: {
+  demand: number;
+  competition: number;
+  differentiation: number;
+  feasibility: number;
+}): { probability_6m: number; reason: string } {
+  // Each axis inverted to "risk contribution":
+  //   risk_from_demand = 100 - demand           (low demand = high risk)
+  //   risk_from_competition = 100 - competition (low competition score = crowded = high risk)
+  //   risk_from_differentiation = 100 - differentiation
+  //   risk_from_feasibility = 100 - feasibility
+  const riskDemand = 100 - axes.demand;
+  const riskComp = 100 - axes.competition;
+  const riskDiff = 100 - axes.differentiation;
+  const riskFeas = 100 - axes.feasibility;
+
+  // Weighted average: demand + feasibility matter most at the 0→1 stage.
+  // Differentiation matters mid-game, competition is a tiebreaker.
+  const weighted =
+    riskDemand * 0.35 +
+    riskFeas * 0.30 +
+    riskDiff * 0.20 +
+    riskComp * 0.15;
+
+  const prob = Math.max(5, Math.min(95, Math.round(weighted)));
+
+  // Find the dominant contributor for the one-line reason
+  const contribs = [
+    { name: "no real demand signal", value: riskDemand },
+    { name: "feasibility wall", value: riskFeas },
+    { name: "no differentiation", value: riskDiff },
+    { name: "too crowded", value: riskComp },
+  ];
+  contribs.sort((a, b) => b.value - a.value);
+  const top = contribs[0];
+
+  let reason: string;
+  if (prob < 30) {
+    reason = "Solid signal across all 4 axes. This one's more likely to survive than fold.";
+  } else if (prob < 55) {
+    reason = `Mixed signal. Biggest risk: ${top.name}.`;
+  } else if (prob < 75) {
+    reason = `Stacked against you. ${top.name.charAt(0).toUpperCase() + top.name.slice(1)} is the main killer.`;
+  } else {
+    reason = `Most ideas like this die. ${top.name.charAt(0).toUpperCase() + top.name.slice(1)} + at least one other red flag.`;
+  }
+  return { probability_6m: prob, reason };
 }
 
 // ─── Phase A: extract ────────────────────────────────────────────────
@@ -391,6 +460,11 @@ export async function validateIdea(
       reason: "synthesis_failed",
       message: "Claude returned malformed JSON; try again.",
     };
+  }
+
+  // Migration 068 — attach death-axis heuristic to every report.
+  if (report.verdict?.axes) {
+    report.death_axis = estimateDeathProbability(report.verdict.axes);
   }
 
   return {

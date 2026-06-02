@@ -14,6 +14,7 @@ import {
   writeEulogy,
   generateAshImage,
 } from "@/lib/funeral";
+import { bumpScore } from "@/lib/score";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -26,6 +27,7 @@ interface EulogizeBody {
   mourner_name?: string;
   mourner_email?: string;
   is_public?: boolean;
+  handle?: string;
 }
 
 function validate(body: unknown): EulogizeBody | null {
@@ -42,6 +44,7 @@ function validate(body: unknown): EulogizeBody | null {
     mourner_email:
       typeof b.mourner_email === "string" ? b.mourner_email.trim() : undefined,
     is_public: typeof b.is_public === "boolean" ? b.is_public : true,
+    handle: typeof b.handle === "string" ? b.handle.slice(0, 64) : undefined,
   };
 }
 
@@ -136,6 +139,15 @@ export async function POST(req: NextRequest) {
     } else if (inserted) {
       id = inserted.id;
       viewUrl = `/funeral/${id}`;
+      // Bump creator score (surface=funeral_repo, delta scales with stars)
+      if (input.handle && id) {
+        await bumpScore(supa, {
+          handle: input.handle,
+          surface: "funeral_repo",
+          ref_id: id,
+          ctx: { stars: meta.stars },
+        });
+      }
     }
   }
 

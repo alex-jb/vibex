@@ -12,6 +12,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { validateIdea, hashIdea } from "@/lib/idea-validator";
+import { bumpScore } from "@/lib/score";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -23,6 +24,7 @@ interface Body {
   idea: string;
   email?: string;
   is_public?: boolean;
+  handle?: string;
 }
 
 function validate(body: unknown): Body | null {
@@ -37,6 +39,7 @@ function validate(body: unknown): Body | null {
         ? b.email.trim()
         : undefined,
     is_public: typeof b.is_public === "boolean" ? b.is_public : false,
+    handle: typeof b.handle === "string" ? b.handle.slice(0, 64) : undefined,
   };
 }
 
@@ -105,6 +108,8 @@ export async function POST(req: NextRequest) {
         report: result.report,
         pmf_score: result.report.verdict?.pmf_score ?? null,
         verdict: result.report.verdict?.recommendation ?? null,
+        death_probability_6m: result.report.death_axis?.probability_6m ?? null,
+        death_reason: result.report.death_axis?.reason ?? null,
         requester_email: input.email,
         is_public: input.is_public === true,
         is_paid: false, // Phase 1 = free beta
@@ -117,6 +122,14 @@ export async function POST(req: NextRequest) {
     } else if (inserted) {
       id = inserted.id;
       viewUrl = `/validator/${id}`;
+      if (input.handle && id) {
+        await bumpScore(supa, {
+          handle: input.handle,
+          surface: "validator",
+          ref_id: id,
+          ctx: { pmf_score: result.report.verdict?.pmf_score ?? 50 },
+        });
+      }
     }
   }
 

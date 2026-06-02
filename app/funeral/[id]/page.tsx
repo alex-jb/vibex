@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import type { Metadata } from "next";
+import { RevivalPanel } from "@/components/funeral/revival-panel";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -24,6 +25,14 @@ interface Funeral {
   created_at: string;
   view_count: number;
   share_count: number;
+  revival_judgment: {
+    worth_reviving: boolean;
+    confidence: number;
+    pivot_angles: string[];
+    rename_suggestion: string;
+    vibex_relaunch_prompt: string;
+    one_line_verdict: string;
+  } | null;
 }
 
 async function fetchFuneral(id: string): Promise<Funeral | null> {
@@ -34,7 +43,7 @@ async function fetchFuneral(id: string): Promise<Funeral | null> {
   const { data } = await supa
     .from("funerals")
     .select(
-      "id, github_url, repo_owner, repo_name, deceased_name, deceased_at, stars, forks, language, age_days_alive, eulogy, ash_image_url, mourner_name, created_at, view_count, share_count",
+      "id, github_url, repo_owner, repo_name, deceased_name, deceased_at, stars, forks, language, age_days_alive, eulogy, ash_image_url, mourner_name, created_at, view_count, share_count, revival_judgment",
     )
     .eq("id", id)
     .maybeSingle();
@@ -117,6 +126,8 @@ export default async function FuneralMemorialPage({ params }: PageProps) {
             </p>
           )}
         </article>
+
+        <RevivalPanel funeralId={funeral.id} prefetched={funeral.revival_judgment} />
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <a
