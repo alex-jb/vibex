@@ -1,5 +1,4 @@
 import { ImageResponse } from "next/og";
-import { createClient } from "@supabase/supabase-js";
 import { scoreHandle } from "@/lib/cracked-score";
 
 export const runtime = "nodejs";
@@ -16,33 +15,18 @@ const C = {
   ORANGE: "#F97316",
 };
 
-async function rankOf(overall: number): Promise<{ rank: number; total: number } | null> {
-  const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!SUPA_URL || !SUPA_ANON_KEY) return null;
-  const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
-  const [{ count: ahead }, { count: total }] = await Promise.all([
-    supa.from("cracked_scores").select("*", { count: "exact", head: true }).gt("overall", overall),
-    supa.from("cracked_scores").select("*", { count: "exact", head: true }),
-  ]);
-  if (ahead == null || total == null) return null;
-  return { rank: ahead + 1, total };
-}
-
 export default async function CrackedOG({
   params,
 }: {
-  params: Promise<{ handle: string }>;
+  params: { handle: string };
 }) {
-  const { handle: rawHandle } = await params;
-  const r = await scoreHandle(rawHandle);
-  const handle = r?.handle ?? rawHandle;
+  const r = await scoreHandle(params.handle);
+  const handle = r?.handle ?? params.handle;
   const overall = r?.overall ?? 0;
   const tier = r?.tier ?? { name: "starting", emoji: "🥚", threshold: 0 };
   const totalStars = r?.totalStars ?? 0;
   const totalRepos = r?.totalRepos ?? 0;
   const followers = r?.followers ?? 0;
-  const rankInfo = r ? await rankOf(r.overall) : null;
 
   return new ImageResponse(
     (
@@ -87,27 +71,20 @@ export default async function CrackedOG({
             </div>
             <div style={{ fontSize: 22, color: C.MUTED }}>/ 100</div>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                padding: "16px 40px",
-                borderRadius: 999,
-                background: C.ORANGE,
-                color: "#0A0A0A",
-                fontSize: 56,
-                fontWeight: 700,
-                textTransform: "uppercase",
-              }}
-            >
-              {tier.name}
-            </div>
-            {rankInfo && (
-              <div style={{ display: "flex", marginTop: 16, fontSize: 28, color: C.MUTED, letterSpacing: 4, textTransform: "uppercase" }}>
-                Rank #{rankInfo.rank} of {rankInfo.total}
-              </div>
-            )}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              padding: "16px 40px",
+              borderRadius: 999,
+              background: C.ORANGE,
+              color: "#0A0A0A",
+              fontSize: 56,
+              fontWeight: 700,
+              textTransform: "uppercase",
+            }}
+          >
+            {tier.name}
           </div>
         </div>
 

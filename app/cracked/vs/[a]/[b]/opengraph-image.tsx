@@ -20,14 +20,13 @@ const C = {
 export default async function CrackedVsOG({
   params,
 }: {
-  params: Promise<{ a: string; b: string }>;
+  params: { a: string; b: string };
 }) {
-  const { a: rawA, b: rawB } = await params;
-  const [resA, resB] = await Promise.all([scoreHandle(rawA), scoreHandle(rawB)]);
+  const [resA, resB] = await Promise.all([scoreHandle(params.a), scoreHandle(params.b)]);
   const aOverall = resA?.overall ?? 0;
   const bOverall = resB?.overall ?? 0;
-  const aHandle = resA?.handle ?? rawA;
-  const bHandle = resB?.handle ?? rawB;
+  const aHandle = resA?.handle ?? params.a;
+  const bHandle = resB?.handle ?? params.b;
   const aTier = resA?.tier ?? { name: "starting", emoji: "🥚", threshold: 0 };
   const bTier = resB?.tier ?? { name: "starting", emoji: "🥚", threshold: 0 };
   const aWin = aOverall > bOverall;
