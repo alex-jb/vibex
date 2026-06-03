@@ -90,6 +90,21 @@ export default function CrackedScoreLanding() {
           </button>
         </form>
 
+        <div className="mt-8 flex flex-col gap-2 sm:flex-row">
+          <Link
+            href="/cracked/leaderboard"
+            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+          >
+            🏆 See leaderboard
+          </Link>
+          <Link
+            href="/cracked/vs/karpathy/antirez"
+            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+          >
+            ⚔️ Head-to-head example
+          </Link>
+        </div>
+
         <p className="mt-10 text-xs text-zinc-500">
           Built on the same{" "}
           <Link href="/score/alex" className="text-orange-400 hover:underline">
