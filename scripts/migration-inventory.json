@@ -1433,5 +1433,10 @@
     "kind": "table",
     "name": "validator_credits",
     "_migration": "070_validator_paywall.sql"
+  },
+  {
+    "kind": "table",
+    "name": "cracked_waitlist",
+    "_migration": "073_cracked_waitlist.sql"
   }
 ]

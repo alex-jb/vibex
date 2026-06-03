@@ -30,6 +30,9 @@ export type HeroCardData = {
       this looping in the sprite slot (codedex-style animated course card).
       Falls back to the static evo sprite when absent. */
   demoVideoUrl?: string;
+  /** Migration 072 — set when this project carries a from_funeral_id or
+      from_idea_funeral_id pointer. Drives the "Born From" badge corner. */
+  bornFromFuneral?: boolean;
 };
 
 export type HeroCardVariant = "grid" | "share";
@@ -206,7 +209,7 @@ export function HeroCard({
   const { t } = useLang();
   const {
     id, name, creator, category, evolutionStage,
-    compound, topAttrs, traction, newChip, demoVideoUrl,
+    compound, topAttrs, traction, newChip, demoVideoUrl, bornFromFuneral,
   } = data;
 
   const evoColor = EVOLUTION_CONFIG[evolutionStage].color;
@@ -584,6 +587,23 @@ export function HeroCard({
               }}
             >
               {t("heroCard.new")}
+            </span>
+          )}
+          {bornFromFuneral && (
+            <span
+              className="font-ui"
+              title="Born from a funeral — this creator buried a project and started this one with the lesson"
+              style={{
+                fontSize: 7,
+                letterSpacing: 1.5,
+                color: "var(--neon-orange)",
+                padding: "2px 5px",
+                border: "1px solid var(--neon-orange)",
+                background: "rgba(249,115,22,0.10)",
+                textShadow: "0 0 4px rgba(249,115,22,0.6)",
+              }}
+            >
+              🪦 BORN FROM
             </span>
           )}
           <span

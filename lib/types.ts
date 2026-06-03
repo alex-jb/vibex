@@ -120,6 +120,11 @@ export interface Project {
   // RPG extensions
   hero?: HeroStats;
   funding?: FundingInfo;
+  // Migration 072 — Born From Funeral narrative arc.
+  // When a creator goes Funeral → Revival → Validator → /submit, this carries
+  // the predecessor's id. HeroCard renders a 🪦 badge so visitors see the arc.
+  fromFuneralId?: string;
+  fromIdeaFuneralId?: string;
 }
 
 export type ProjectCategory =

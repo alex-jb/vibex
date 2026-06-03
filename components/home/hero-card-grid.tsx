@@ -7,6 +7,10 @@ import type { Project, EvolutionStage } from "@/lib/types";
 
 const SEVEN_DAYS_MS = 7 * 86400 * 1000;
 
+function isBornFromFuneral(p: Project): boolean {
+  return Boolean(p.fromFuneralId || p.fromIdeaFuneralId);
+}
+
 export function projectToHeroCardData(p: Project): HeroCardData {
   const stage: EvolutionStage =
     (p.hero?.evolutionStage as EvolutionStage | undefined) ??
@@ -35,6 +39,7 @@ export function projectToHeroCardData(p: Project): HeroCardData {
     traction: topTraction,
     newChip,
     demoVideoUrl: p.demoVideoUrl,
+    bornFromFuneral: isBornFromFuneral(p),
   };
 }
 

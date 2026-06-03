@@ -11,6 +11,7 @@ export default function ValidatorLanding() {
   const [loading, setLoading] = useState(false);
   const [carryNote, setCarryNote] = useState<string | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState<"single" | "subscription" | null>(null);
+  const [rateLimitOpen, setRateLimitOpen] = useState(false);
 
   async function upgrade(mode: "single" | "subscription") {
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
@@ -80,7 +81,13 @@ export default function ValidatorLanding() {
       });
       const data = await resp.json();
       if (!resp.ok) {
-        setResult({ ok: false, error: data.error || "Validation failed" });
+        // Surface 429 (rate-limited) with paywall modal instead of plain error
+        if (resp.status === 429) {
+          setRateLimitOpen(true);
+          setResult(null);
+        } else {
+          setResult({ ok: false, error: data.error || "Validation failed" });
+        }
       } else {
         setResult({
           ok: true,
@@ -274,6 +281,63 @@ export default function ValidatorLanding() {
             </div>
           </div>
         </section>
+
+        {rateLimitOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+            onClick={() => setRateLimitOpen(false)}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div
+              className="w-full max-w-md rounded-2xl bg-zinc-950 p-6 ring-1 ring-orange-500/40"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mb-3 text-center text-3xl">🔒</div>
+              <h3 className="text-center text-xl font-bold text-white">
+                Free tier: 1 validation per email per 24h
+              </h3>
+              <p className="mt-2 text-center text-sm text-zinc-400">
+                Skip the wait. Two ways:
+              </p>
+              <div className="mt-5 space-y-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRateLimitOpen(false);
+                    upgrade("single");
+                  }}
+                  disabled={checkoutLoading !== null}
+                  className="w-full rounded-xl bg-orange-500 px-4 py-3 text-sm font-semibold text-black hover:bg-orange-400 disabled:opacity-50"
+                >
+                  {checkoutLoading === "single" ? "Redirecting…" : "Pay $5 — 1 more report now"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRateLimitOpen(false);
+                    upgrade("subscription");
+                  }}
+                  disabled={checkoutLoading !== null}
+                  className="w-full rounded-xl bg-zinc-800 px-4 py-3 text-sm font-semibold text-orange-400 ring-1 ring-zinc-700 hover:bg-zinc-700 disabled:opacity-50"
+                >
+                  {checkoutLoading === "subscription" ? "Redirecting…" : "Subscribe $19/mo — unlimited"}
+                </button>
+              </div>
+              <p className="mt-4 text-center text-xs text-zinc-500">
+                Or earn it: reach Silver tier (150+ Creator Score) for the
+                same perk free.
+              </p>
+              <button
+                type="button"
+                onClick={() => setRateLimitOpen(false)}
+                className="mt-3 block w-full text-center text-xs text-zinc-500 hover:text-zinc-300"
+              >
+                Maybe later
+              </button>
+            </div>
+          </div>
+        )}
 
         <footer className="mt-12 text-center text-xs text-zinc-600">
           A side project of{" "}
