@@ -28,44 +28,60 @@ const CAUSE_LABELS: Record<string, { label: string; emoji: string }> = {
 interface WeeklyStats {
   total: number;
   topCause: { key: string; count: number } | null;
+  topMourners: { name: string; count: number }[];
 }
 
 async function fetchWeeklyStats(): Promise<WeeklyStats> {
   const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!SUPA_URL || !SUPA_ANON_KEY) return { total: 0, topCause: null };
+  if (!SUPA_URL || !SUPA_ANON_KEY) return { total: 0, topCause: null, topMourners: [] };
   const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
   const week = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   const [{ data: funerals }, { data: ideas }] = await Promise.all([
     supa
       .from("funerals")
-      .select("cause_of_death")
+      .select("cause_of_death, mourner_name")
       .eq("is_public", true)
       .gte("created_at", week),
     supa
       .from("idea_funerals")
-      .select("cause_of_death")
+      .select("cause_of_death, mourner_name")
       .eq("is_public", true)
       .gte("created_at", week),
   ]);
 
   const all = [...(funerals || []), ...(ideas || [])];
-  if (all.length === 0) return { total: 0, topCause: null };
+  if (all.length === 0) return { total: 0, topCause: null, topMourners: [] };
 
-  const buckets = new Map<string, number>();
+  const causeBuckets = new Map<string, number>();
   for (const r of all) {
     const c = (r as { cause_of_death?: string }).cause_of_death;
     if (!c) continue;
-    buckets.set(c, (buckets.get(c) || 0) + 1);
+    causeBuckets.set(c, (causeBuckets.get(c) || 0) + 1);
   }
-  if (buckets.size === 0) return { total: all.length, topCause: null };
+  const topCause = causeBuckets.size > 0
+    ? (() => {
+        const sorted = Array.from(causeBuckets.entries()).sort((a, b) => b[1] - a[1]);
+        return { key: sorted[0][0], count: sorted[0][1] };
+      })()
+    : null;
 
-  const sorted = Array.from(buckets.entries()).sort((a, b) => b[1] - a[1]);
-  return {
-    total: all.length,
-    topCause: { key: sorted[0][0], count: sorted[0][1] },
-  };
+  // Top mourners (skip seed curator + anon)
+  const mournerBuckets = new Map<string, number>();
+  for (const r of all) {
+    const name = ((r as { mourner_name?: string }).mourner_name || "").trim();
+    if (!name) continue;
+    if (name === "vibex curator") continue;
+    mournerBuckets.set(name, (mournerBuckets.get(name) || 0) + 1);
+  }
+  const topMourners = Array.from(mournerBuckets.entries())
+    .filter(([, c]) => c >= 1)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([name, count]) => ({ name, count }));
+
+  return { total: all.length, topCause, topMourners };
 }
 
 async function fetchWall(cause: string | null): Promise<WallRow[]> {
@@ -160,26 +176,50 @@ export default async function MemorialWall({ searchParams }: PageProps) {
         </header>
 
         {/* This-week stat banner (SEO + share hook for /funeral/wall) */}
-        {weeklyStats.total > 0 && weeklyStats.topCause && (
+        {weeklyStats.total > 0 && (
           <div className="mb-8 rounded-2xl bg-zinc-900/40 p-5 text-center ring-1 ring-zinc-800">
             <p className="text-xs uppercase tracking-widest text-zinc-500">
               This week
             </p>
             <p className="mt-2 text-lg text-zinc-200">
               <b className="text-orange-400">{weeklyStats.total}</b> indie
-              projects + ideas buried.{" "}
-              <span className="text-zinc-400">
-                #1 cause:{" "}
-                <Link
-                  href={`/funeral/wall?cause=${weeklyStats.topCause.key}`}
-                  className="text-zinc-200 underline hover:text-orange-400"
-                >
-                  {CAUSE_LABELS[weeklyStats.topCause.key]?.emoji}{" "}
-                  {CAUSE_LABELS[weeklyStats.topCause.key]?.label}
-                </Link>
-                {" "}({weeklyStats.topCause.count})
-              </span>
+              projects + ideas buried.
+              {weeklyStats.topCause && (
+                <>
+                  {" "}
+                  <span className="text-zinc-400">
+                    #1 cause:{" "}
+                    <Link
+                      href={`/funeral/wall?cause=${weeklyStats.topCause.key}`}
+                      className="text-zinc-200 underline hover:text-orange-400"
+                    >
+                      {CAUSE_LABELS[weeklyStats.topCause.key]?.emoji}{" "}
+                      {CAUSE_LABELS[weeklyStats.topCause.key]?.label}
+                    </Link>
+                    {" "}({weeklyStats.topCause.count})
+                  </span>
+                </>
+              )}
             </p>
+            {weeklyStats.topMourners.length > 0 && (
+              <div className="mt-4 border-t border-zinc-800 pt-3">
+                <p className="text-xs uppercase tracking-widest text-zinc-500">
+                  Top mourners
+                </p>
+                <ul className="mt-2 flex flex-wrap justify-center gap-2 text-sm">
+                  {weeklyStats.topMourners.map((m, i) => (
+                    <li
+                      key={m.name}
+                      className="rounded-full bg-black/40 px-3 py-1.5 ring-1 ring-zinc-800"
+                    >
+                      <span className="text-orange-400">#{i + 1}</span>{" "}
+                      <span className="text-zinc-200">{m.name}</span>{" "}
+                      <span className="text-zinc-500">({m.count})</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
 

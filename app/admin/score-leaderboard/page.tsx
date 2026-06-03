@@ -20,6 +20,7 @@ import { createServerSupabase, getAuthUser } from "@/lib/supabase-server";
 import { createClient } from "@supabase/supabase-js";
 import { tierFromScore, TIER_LADDER } from "@/lib/score";
 import Link from "next/link";
+import { AdminNav } from "@/components/admin/admin-nav";
 
 export const runtime = "nodejs";
 export const revalidate = 60;
@@ -182,6 +183,7 @@ export default async function ScoreLeaderboardPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] px-6 py-12 text-zinc-200">
       <div className="mx-auto max-w-5xl">
+        <AdminNav current="/admin/score-leaderboard" />
         <header className="mb-10">
           <p className="text-xs uppercase tracking-widest text-orange-400">
             Admin · Score Leaderboard

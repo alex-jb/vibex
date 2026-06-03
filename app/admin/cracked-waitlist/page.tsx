@@ -9,6 +9,7 @@
 import { notFound } from "next/navigation";
 import { createServerSupabase, getAuthUser } from "@/lib/supabase-server";
 import { createClient } from "@supabase/supabase-js";
+import { AdminNav } from "@/components/admin/admin-nav";
 
 export const runtime = "nodejs";
 export const revalidate = 60;
@@ -65,6 +66,7 @@ export default async function CrackedWaitlistPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] px-6 py-12 text-zinc-200">
       <div className="mx-auto max-w-4xl">
+        <AdminNav current="/admin/cracked-waitlist" />
         <header className="mb-8">
           <p className="text-xs uppercase tracking-widest text-orange-400">
             Admin · Cracked Waitlist

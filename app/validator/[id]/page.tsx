@@ -6,6 +6,7 @@ import type { ValidatorReport } from "@/lib/idea-validator";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ from_funeral?: string; from_idea_funeral?: string }>;
 }
 
 interface ValidationRow {
@@ -83,11 +84,19 @@ function VerdictBadge({
   );
 }
 
-export default async function ValidatorReportPage({ params }: PageProps) {
+export default async function ValidatorReportPage({ params, searchParams }: PageProps) {
   const { id } = await params;
+  const { from_funeral, from_idea_funeral } = await searchParams;
   const row = await fetchValidation(id);
   if (!row) notFound();
   const r = row.report;
+  // Build /launch URL that carries the funeral pointer through so the
+  // submitted Project gets fromFuneralId / fromIdeaFuneralId persisted.
+  const launchQs = new URLSearchParams();
+  if (from_funeral) launchQs.set("from_funeral", from_funeral);
+  if (from_idea_funeral) launchQs.set("from_idea_funeral", from_idea_funeral);
+  const launchHref = launchQs.toString() ? `/launch?${launchQs.toString()}` : "/launch";
+  const isBornFromFuneral = Boolean(from_funeral || from_idea_funeral);
 
   return (
     <main className="min-h-screen bg-[#0a0a0c] text-white px-6 py-12">
@@ -296,10 +305,25 @@ export default async function ValidatorReportPage({ params }: PageProps) {
           </section>
         )}
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        {/* Lifecycle CTA — preferentially show "Ship this on VibeXForge"
+            for high PMF + low death-prob ideas, and double-emphasize when
+            the user came in from a funeral (Born From narrative). */}
+        {(row.pmf_score ?? 0) >= 60 &&
+        (row.death_probability_6m ?? 100) < 60 && (
+          <Link
+            href={launchHref}
+            className="mt-8 block w-full rounded-2xl bg-orange-500 px-6 py-4 text-center text-base font-semibold text-black hover:bg-orange-400"
+          >
+            {isBornFromFuneral
+              ? "🪦→🚀 Ship the resurrection on VibeXForge"
+              : "🚀 Ship it on VibeXForge"}
+          </Link>
+        )}
+
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/validator"
-            className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
+            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
           >
             Validate another →
           </Link>
