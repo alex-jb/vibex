@@ -59,6 +59,43 @@ export default function AdminPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
       <AdminNav current="/admin" />
+
+      {/* Dashboard cards — quick links to other admin surfaces with at-a-glance count */}
+      <div className="mb-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <a
+          href="/admin/metrics"
+          className="rounded-xl bg-zinc-900/60 p-4 ring-1 ring-zinc-800 hover:ring-orange-500/40 transition"
+        >
+          <div className="text-2xl">📊</div>
+          <div className="mt-1 text-sm font-semibold text-zinc-200">Metrics</div>
+          <div className="text-xs text-zinc-500">launch-day funnel</div>
+        </a>
+        <a
+          href="/admin/score-leaderboard"
+          className="rounded-xl bg-zinc-900/60 p-4 ring-1 ring-zinc-800 hover:ring-orange-500/40 transition"
+        >
+          <div className="text-2xl">🏆</div>
+          <div className="mt-1 text-sm font-semibold text-zinc-200">Leaderboard</div>
+          <div className="text-xs text-zinc-500">creator score + paid</div>
+        </a>
+        <a
+          href="/admin/cracked-waitlist"
+          className="rounded-xl bg-zinc-900/60 p-4 ring-1 ring-zinc-800 hover:ring-orange-500/40 transition"
+        >
+          <div className="text-2xl">🧠</div>
+          <div className="mt-1 text-sm font-semibold text-zinc-200">Cracked Waitlist</div>
+          <div className="text-xs text-zinc-500">phase 2 progress</div>
+        </a>
+        <a
+          href="/admin/analytics"
+          className="rounded-xl bg-zinc-900/60 p-4 ring-1 ring-zinc-800 hover:ring-orange-500/40 transition"
+        >
+          <div className="text-2xl">📈</div>
+          <div className="mt-1 text-sm font-semibold text-zinc-200">Analytics</div>
+          <div className="text-xs text-zinc-500">retention + events</div>
+        </a>
+      </div>
+
       {/* Terminal Header */}
       <div style={{ background: "#0A0A0C", padding: "8px 12px", display: "flex", alignItems: "center", gap: 8, borderBottom: "2px solid #2A2A30" }}>
         <span style={{ width: 10, height: 10, background: "#F97316", display: "inline-block" }} />

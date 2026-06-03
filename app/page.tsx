@@ -977,6 +977,54 @@ export default function LandingPage() {
             : "Distribution amplifier for solo AI creators"}
         </motion.div>
 
+        {/* === Creator Lifecycle hero strip — 4 surfaces with emoji + caption.
+            More discoverable than the small LIFECYCLE pill row below since
+            this lands inside the hero motion. Each click deep-links to the
+            surface; muted-bronze styling so it reads as supporting nav
+            rather than competing with PRESS START CTA. */}
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 5.85, ease: pixelEase }}
+          className="mb-6 flex justify-center"
+          aria-label="Creator lifecycle"
+        >
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
+            {[
+              { emoji: "💡", label: "VALIDATE", href: "/validator" },
+              { emoji: "🚀", label: "LAUNCH", href: "/launchkit" },
+              { emoji: "🪦", label: "BURY", href: "/funeral" },
+              { emoji: "👑", label: "SCORE", href: "/score/alex" },
+            ].map((item, i, arr) => (
+              <span key={item.href} className="flex items-center gap-3 sm:gap-5">
+                <Link
+                  href={item.href}
+                  className="flex flex-col items-center gap-1 transition-transform hover:-translate-y-0.5"
+                  style={{
+                    fontFamily: "var(--font-press-start), monospace",
+                    color: C.CREAM,
+                  }}
+                >
+                  <span style={{ fontSize: 28 }}>{item.emoji}</span>
+                  <span style={{ fontSize: 7, letterSpacing: 2 }}>{item.label}</span>
+                </Link>
+                {i < arr.length - 1 && (
+                  <span
+                    aria-hidden
+                    style={{
+                      fontFamily: "var(--font-press-start), monospace",
+                      fontSize: 10,
+                      color: `${C.FORGE}88`,
+                    }}
+                  >
+                    →
+                  </span>
+                )}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+
         {/* === CTAs === */}
         <div className="flex justify-center gap-4">
           <Link href="/home">

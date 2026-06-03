@@ -144,10 +144,25 @@ interface PageProps {
   searchParams: Promise<{ cause?: string }>;
 }
 
-export const metadata = {
-  title: "🪦 Memorial Wall — A Funeral for Your Side Project",
-  description: "The public memorial wall. Recent dead projects + ideas given a proper send-off.",
-};
+export async function generateMetadata({ searchParams }: PageProps) {
+  const { cause } = await searchParams;
+  if (cause && CAUSE_LABELS[cause]) {
+    const m = CAUSE_LABELS[cause];
+    return {
+      title: `🪦 Dead because of ${m.label} — Memorial Wall`,
+      description: `Indie projects + ideas that died from ${m.label.toLowerCase()}. The Memorial Wall filtered to one cause-of-death category. Learn from each.`,
+      openGraph: {
+        title: `🪦 ${m.label} — Memorial Wall · VibeXForge`,
+        description: `Indie projects + ideas killed by ${m.label.toLowerCase()}.`,
+        type: "website",
+      },
+    };
+  }
+  return {
+    title: "🪦 Memorial Wall — A Funeral for Your Side Project",
+    description: "The public memorial wall. Recent dead projects + ideas given a proper send-off, classified by cause of death.",
+  };
+}
 
 export default async function MemorialWall({ searchParams }: PageProps) {
   const { cause: rawCause } = await searchParams;
