@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { scoreHandle, type CrackedScoreResult } from "@/lib/cracked-score";
+import { scoreHandle } from "@/lib/cracked-score";
+import { bumpScore, getAnonClient } from "@/lib/score";
 import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ handle: string }>;
+  searchParams: Promise<{ as?: string }>;
 }
 
 export const runtime = "nodejs";
@@ -28,10 +30,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function CrackedHandlePage({ params }: PageProps) {
+export default async function CrackedHandlePage({ params, searchParams }: PageProps) {
   const { handle } = await params;
+  const { as: creatorHandle } = await searchParams;
   const result = await scoreHandle(handle);
   if (!result) notFound();
+
+  // If the user passed ?as=<creator-handle>, fire a Creator Score bump
+  // (surface = revival, +40 — Cracked Score completion counts as a creator
+  // action, slotted under the existing revival surface so we don't need a
+  // new RPC enum value). Best-effort, never blocks the render.
+  if (creatorHandle && creatorHandle.length <= 64) {
+    try {
+      const supa = getAnonClient();
+      await bumpScore(supa, {
+        handle: creatorHandle,
+        surface: "revival",
+        ref_id: `cracked-${result.handle}`,
+      });
+    } catch {
+      // best-effort; logging would be noisy in server logs
+    }
+  }
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] px-6 py-12 text-zinc-200">

@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 export default function CrackedScoreLanding() {
   const router = useRouter();
   const [github, setGithub] = useState("");
+  const [creatorHandle, setCreatorHandle] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting">("idle");
 
   async function scoreNow(e: React.FormEvent) {
@@ -26,7 +27,10 @@ export default function CrackedScoreLanding() {
     const h = github.replace(/^@/, "").trim();
     if (!h) return;
     setStatus("submitting");
-    router.push(`/cracked/${encodeURIComponent(h)}`);
+    const qs = creatorHandle.trim()
+      ? `?as=${encodeURIComponent(creatorHandle.trim())}`
+      : "";
+    router.push(`/cracked/${encodeURIComponent(h)}${qs}`);
   }
 
   return (
@@ -63,8 +67,20 @@ export default function CrackedScoreLanding() {
             placeholder="@alex-jb"
             value={github}
             onChange={(e) => setGithub(e.target.value)}
+            className="mb-4 w-full rounded-xl bg-black/40 px-4 py-3 text-base outline-none ring-1 ring-zinc-700 focus:ring-orange-500"
+          />
+
+          <label className="mb-2 block text-xs uppercase tracking-widest text-zinc-400">
+            Your VibeXForge Creator Score handle (optional — +40 pts to your tier)
+          </label>
+          <input
+            type="text"
+            placeholder="alex"
+            value={creatorHandle}
+            onChange={(e) => setCreatorHandle(e.target.value)}
             className="mb-6 w-full rounded-xl bg-black/40 px-4 py-3 text-base outline-none ring-1 ring-zinc-700 focus:ring-orange-500"
           />
+
           <button
             type="submit"
             disabled={status === "submitting" || !github}
