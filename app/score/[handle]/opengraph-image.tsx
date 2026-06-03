@@ -63,10 +63,11 @@ async function loadStats(handle: string): Promise<{
 export default async function ScoreOG({
   params,
 }: {
-  params: { handle: string };
+  params: Promise<{ handle: string }>;
 }) {
-  const data = await loadStats(params.handle);
-  const handle = data?.handle ?? params.handle;
+  const { handle: rawHandle } = await params;
+  const data = await loadStats(rawHandle);
+  const handle = data?.handle ?? rawHandle;
   const score = data?.score ?? 0;
   const tier = data?.tier ?? "Unranked";
   const meta = tierFromScore(score);
@@ -96,10 +97,10 @@ export default async function ScoreOG({
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: 24, color: C.MUTED, letterSpacing: 6, textTransform: "uppercase" }}>
+            <div style={{ display: "flex", fontSize: 24, color: C.MUTED, letterSpacing: 6, textTransform: "uppercase" }}>
               VibeXForge · Creator Score
             </div>
-            <div style={{ fontSize: 72, fontWeight: 800, marginTop: 8 }}>@{handle}</div>
+            <div style={{ display: "flex", fontSize: 72, fontWeight: 800, marginTop: 8 }}>@{handle}</div>
           </div>
           <div style={{ display: "flex", alignItems: "center", fontSize: 120 }}>{meta.emoji}</div>
         </div>
@@ -118,8 +119,8 @@ export default async function ScoreOG({
           }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: 28, color: C.MUTED }}>SCORE</div>
-            <div style={{ fontSize: 96, fontWeight: 800, color: C.ORANGE, lineHeight: 1 }}>
+            <div style={{ display: "flex", fontSize: 28, color: C.MUTED }}>SCORE</div>
+            <div style={{ display: "flex", fontSize: 96, fontWeight: 800, color: C.ORANGE, lineHeight: 1 }}>
               {score}
             </div>
           </div>
@@ -169,8 +170,8 @@ export default async function ScoreOG({
                 border: `1px solid ${C.BORDER}`,
               }}
             >
-              <div style={{ fontSize: 48, fontWeight: 800 }}>{b.v}</div>
-              <div style={{ fontSize: 18, color: C.MUTED, marginTop: 6 }}>{b.label}</div>
+              <div style={{ display: "flex", fontSize: 48, fontWeight: 800 }}>{b.v}</div>
+              <div style={{ display: "flex", fontSize: 18, color: C.MUTED, marginTop: 6 }}>{b.label}</div>
             </div>
           ))}
         </div>
@@ -184,8 +185,8 @@ export default async function ScoreOG({
             alignItems: "center",
           }}
         >
-          <div style={{ fontSize: 22, color: C.MUTED }}>vibexforge.com/score/{handle}</div>
-          <div style={{ fontSize: 22, color: C.ORANGE }}>
+          <div style={{ display: "flex", fontSize: 22, color: C.MUTED }}>vibexforge.com/score/{handle}</div>
+          <div style={{ display: "flex", fontSize: 22, color: C.ORANGE }}>
             Validator → LaunchKit → Funeral → Revival → Ship
           </div>
         </div>

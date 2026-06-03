@@ -48,10 +48,11 @@ async function load(handle: string): Promise<ScoreRow | null> {
 export default async function CrackedOG({
   params,
 }: {
-  params: { handle: string };
+  params: Promise<{ handle: string }>;
 }) {
-  const row = await load(params.handle);
-  const handle = row?.github_handle ?? params.handle;
+  const { handle: rawHandle } = await params;
+  const row = await load(rawHandle);
+  const handle = row?.github_handle ?? rawHandle;
   const overall = row?.overall ?? 0;
   const tierName = row?.tier ?? "starting";
   const tierEmoji = TIER_EMOJI[tierName] ?? "🥚";

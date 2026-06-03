@@ -47,13 +47,14 @@ async function load(handle: string): Promise<Row | null> {
 export default async function CrackedVsOG({
   params,
 }: {
-  params: { a: string; b: string };
+  params: Promise<{ a: string; b: string }>;
 }) {
-  const [rowA, rowB] = await Promise.all([load(params.a), load(params.b)]);
+  const { a: rawA, b: rawB } = await params;
+  const [rowA, rowB] = await Promise.all([load(rawA), load(rawB)]);
   const aOverall = rowA?.overall ?? 0;
   const bOverall = rowB?.overall ?? 0;
-  const aHandle = rowA?.github_handle ?? params.a;
-  const bHandle = rowB?.github_handle ?? params.b;
+  const aHandle = rowA?.github_handle ?? rawA;
+  const bHandle = rowB?.github_handle ?? rawB;
   const aTier = rowA?.tier ?? "starting";
   const bTier = rowB?.tier ?? "starting";
   const aTierEmoji = TIER_EMOJI[aTier] ?? "🥚";

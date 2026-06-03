@@ -34,8 +34,9 @@ async function loadMemorial(id: string) {
   };
 }
 
-export default async function IdeaFuneralOG({ params }: { params: { id: string } }) {
-  const m = await loadMemorial(params.id);
+export default async function IdeaFuneralOG({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const m = await loadMemorial(id);
   if (!m) {
     return new ImageResponse(
       (
