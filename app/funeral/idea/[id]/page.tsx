@@ -21,6 +21,19 @@ interface IdeaFuneral {
   share_count: number;
 }
 
+async function fetchResurrections(funeralId: string): Promise<{ id: string; title: string }[]> {
+  const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!SUPA_URL || !SUPA_ANON_KEY) return [];
+  const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
+  const { data } = await supa
+    .from("projects")
+    .select("id, title")
+    .eq("from_idea_funeral_id", funeralId)
+    .limit(5);
+  return (data as { id: string; title: string }[] | null) || [];
+}
+
 async function fetchIdeaFuneral(id: string): Promise<IdeaFuneral | null> {
   const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -66,6 +79,7 @@ export default async function IdeaFuneralMemorialPage({ params }: PageProps) {
   const { id } = await params;
   const f = await fetchIdeaFuneral(id);
   if (!f) notFound();
+  const resurrections = await fetchResurrections(id);
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-zinc-200 px-6 py-12">
@@ -105,6 +119,26 @@ export default async function IdeaFuneralMemorialPage({ params }: PageProps) {
             </p>
           )}
         </article>
+
+        {resurrections.length > 0 && (
+          <aside className="mt-6 rounded-2xl bg-orange-500/10 p-6 ring-1 ring-orange-500/30">
+            <p className="text-xs uppercase tracking-widest text-orange-400">
+              💭 → 🚀 Now lives as
+            </p>
+            <ul className="mt-2 space-y-1 text-sm">
+              {resurrections.map((p) => (
+                <li key={p.id}>
+                  <Link
+                    href={`/project/${p.id}`}
+                    className="text-orange-200 hover:text-orange-100 hover:underline"
+                  >
+                    → {p.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
 
         <details className="mt-6 rounded-2xl bg-zinc-900/40 p-4 text-sm text-zinc-400 ring-1 ring-zinc-800">
           <summary className="cursor-pointer font-medium text-zinc-300">

@@ -70,6 +70,18 @@ export default function LaunchPage() {
   const [tagline, setTagline] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  // Migration 072 — carry funeral pointer through from /validator?from_funeral=X
+  const [fromFuneralId, setFromFuneralId] = useState<string | undefined>();
+  const [fromIdeaFuneralId, setFromIdeaFuneralId] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const f = params.get("from_funeral");
+    const i = params.get("from_idea_funeral");
+    if (f) setFromFuneralId(f);
+    if (i) setFromIdeaFuneralId(i);
+  }, []);
   const [demoType, setDemoType] = useState("");
   const [demoLink, setDemoLink] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
@@ -456,6 +468,8 @@ export default function LaunchPage() {
           demoType: demoType || "preview",
           demoUrl: demoLink,
           demoVideoUrl: demoVideoUrl.trim() || undefined,
+          fromFuneralId,
+          fromIdeaFuneralId,
         }),
       });
 
@@ -923,6 +937,18 @@ export default function LaunchPage() {
 
       {/* PH-day live banner — renders countdown / live state / nothing */}
       <PHDayBanner />
+
+      {/* Born From Funeral banner — when user carried a funeral pointer via
+          /validator?from_funeral=X → /launch?from_funeral=X, surface the
+          narrative so they know the resurrection is tracked. */}
+      {(fromFuneralId || fromIdeaFuneralId) && (
+        <div className="mb-6 rounded-xl bg-orange-500/10 p-4 text-sm text-orange-200 ring-1 ring-orange-500/30">
+          🪦→🚀 <b>Resurrection mode.</b> This project will be tagged as
+          &ldquo;Born From&rdquo; the {fromFuneralId ? "repo" : "idea"} funeral
+          you visited. Your HeroCard will carry the badge so visitors see the
+          arc.
+        </div>
+      )}
 
       {/* Mobile sticky preview strip — lg:hidden so desktop uses the right-column
           full HeroCard preview instead. Shows sprite + name + compound placeholder
