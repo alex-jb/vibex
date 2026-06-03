@@ -130,6 +130,7 @@ export async function POST(req: NextRequest) {
           handle: input.handle,
           surface: "funeral_idea",
           ref_id: id,
+          email: input.mourner_email,
         });
       }
     }

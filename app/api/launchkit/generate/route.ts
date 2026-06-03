@@ -206,6 +206,7 @@ export async function POST(req: NextRequest) {
         handle,
         surface: "launchkit",
         ref_id: jobId,
+        email,
       });
     }
   } catch (err) {

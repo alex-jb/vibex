@@ -25,6 +25,49 @@ const CAUSE_LABELS: Record<string, { label: string; emoji: string }> = {
   other: { label: "Other", emoji: "·" },
 };
 
+interface WeeklyStats {
+  total: number;
+  topCause: { key: string; count: number } | null;
+}
+
+async function fetchWeeklyStats(): Promise<WeeklyStats> {
+  const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!SUPA_URL || !SUPA_ANON_KEY) return { total: 0, topCause: null };
+  const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
+  const week = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  const [{ data: funerals }, { data: ideas }] = await Promise.all([
+    supa
+      .from("funerals")
+      .select("cause_of_death")
+      .eq("is_public", true)
+      .gte("created_at", week),
+    supa
+      .from("idea_funerals")
+      .select("cause_of_death")
+      .eq("is_public", true)
+      .gte("created_at", week),
+  ]);
+
+  const all = [...(funerals || []), ...(ideas || [])];
+  if (all.length === 0) return { total: 0, topCause: null };
+
+  const buckets = new Map<string, number>();
+  for (const r of all) {
+    const c = (r as { cause_of_death?: string }).cause_of_death;
+    if (!c) continue;
+    buckets.set(c, (buckets.get(c) || 0) + 1);
+  }
+  if (buckets.size === 0) return { total: all.length, topCause: null };
+
+  const sorted = Array.from(buckets.entries()).sort((a, b) => b[1] - a[1]);
+  return {
+    total: all.length,
+    topCause: { key: sorted[0][0], count: sorted[0][1] },
+  };
+}
+
 async function fetchWall(cause: string | null): Promise<WallRow[]> {
   const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -93,7 +136,10 @@ export const metadata = {
 export default async function MemorialWall({ searchParams }: PageProps) {
   const { cause: rawCause } = await searchParams;
   const cause = rawCause && CAUSE_LABELS[rawCause] ? rawCause : null;
-  const rows = await fetchWall(cause);
+  const [rows, weeklyStats] = await Promise.all([
+    fetchWall(cause),
+    fetchWeeklyStats(),
+  ]);
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-zinc-200 px-6 py-12">
       <div className="mx-auto max-w-4xl">
@@ -112,6 +158,30 @@ export default async function MemorialWall({ searchParams }: PageProps) {
             </Link>
           </p>
         </header>
+
+        {/* This-week stat banner (SEO + share hook for /funeral/wall) */}
+        {weeklyStats.total > 0 && weeklyStats.topCause && (
+          <div className="mb-8 rounded-2xl bg-zinc-900/40 p-5 text-center ring-1 ring-zinc-800">
+            <p className="text-xs uppercase tracking-widest text-zinc-500">
+              This week
+            </p>
+            <p className="mt-2 text-lg text-zinc-200">
+              <b className="text-orange-400">{weeklyStats.total}</b> indie
+              projects + ideas buried.{" "}
+              <span className="text-zinc-400">
+                #1 cause:{" "}
+                <Link
+                  href={`/funeral/wall?cause=${weeklyStats.topCause.key}`}
+                  className="text-zinc-200 underline hover:text-orange-400"
+                >
+                  {CAUSE_LABELS[weeklyStats.topCause.key]?.emoji}{" "}
+                  {CAUSE_LABELS[weeklyStats.topCause.key]?.label}
+                </Link>
+                {" "}({weeklyStats.topCause.count})
+              </span>
+            </p>
+          </div>
+        )}
 
         {/* Cause-of-death filter pills */}
         <nav

@@ -212,6 +212,7 @@ export async function POST(req: NextRequest) {
           surface: "validator",
           ref_id: id,
           ctx: { pmf_score: result.report.verdict?.pmf_score ?? 50 },
+          email: input.email,
         });
       }
     }

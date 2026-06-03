@@ -146,6 +146,7 @@ export async function POST(req: NextRequest) {
           surface: "funeral_repo",
           ref_id: id,
           ctx: { stars: meta.stars },
+          email: input.mourner_email,
         });
       }
     }

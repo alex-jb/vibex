@@ -95,6 +95,10 @@ export function normaliseHandle(input: string | null | undefined): string {
  *
  * Designed to be called from a Route Handler with the anon supabase client.
  * The RPC is SECURITY DEFINER so it can write atomically + dedupe per ref_id.
+ *
+ * If `email` is provided, also detects tier upgrade and fires a Resend
+ * notification email (closes the reward loop — Silver/Gold tier perks now
+ * feel real to users when they unlock).
  */
 export async function bumpScore(
   supabase: SupabaseClient,
@@ -103,10 +107,25 @@ export async function bumpScore(
     surface: Surface;
     ref_id: string;
     ctx?: { pmf_score?: number; stars?: number; upvotes_30d?: number };
+    email?: string;
   },
-): Promise<{ score: number; tier: Tier } | null> {
+): Promise<{ score: number; tier: Tier; upgraded?: boolean; prevTier?: Tier } | null> {
   const delta = computeDelta(args.surface, args.ctx ?? {});
   const handle = normaliseHandle(args.handle);
+
+  // Snapshot previous tier so we can detect upgrade without an RPC-shape change
+  let prevTier: Tier = "unranked";
+  try {
+    const { data: prev } = await supabase
+      .from("creator_scores")
+      .select("tier")
+      .eq("handle", handle)
+      .maybeSingle();
+    if (prev?.tier) prevTier = prev.tier as Tier;
+  } catch {
+    // missing row = unranked; new account
+  }
+
   const { data, error } = await supabase.rpc("bump_creator_score", {
     p_handle: handle,
     p_surface: args.surface,
@@ -117,10 +136,35 @@ export async function bumpScore(
     console.error("[score] bump RPC failed:", error.message);
     return null;
   }
-  // RPC returns a table; supabase-js shapes it as an array
   const row = Array.isArray(data) ? data[0] : data;
   if (!row) return null;
-  return { score: row.new_score as number, tier: row.new_tier as Tier };
+  const newTier = row.new_tier as Tier;
+
+  const tierOrder: Tier[] = ["unranked", "bronze", "silver", "gold", "platinum", "diamond"];
+  const upgraded = tierOrder.indexOf(newTier) > tierOrder.indexOf(prevTier);
+
+  // Fire tier-unlock email when upgraded AND we have an email AND we're not
+  // in dry-run-only mode (sendEmail handles missing API key gracefully).
+  if (upgraded && args.email) {
+    // Lazy-load to avoid bundling email helpers into routes that don't need it
+    import("./tier-unlock-email")
+      .then(({ sendTierUnlockEmail }) =>
+        sendTierUnlockEmail({
+          email: args.email!,
+          handle,
+          newTier,
+          score: row.new_score as number,
+        }),
+      )
+      .catch((err) => console.error("[score] tier email failed:", err));
+  }
+
+  return {
+    score: row.new_score as number,
+    tier: newTier,
+    upgraded,
+    prevTier,
+  };
 }
 
 /**
