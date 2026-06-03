@@ -1,8 +1,22 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@supabase/supabase-js";
 import { scoreHandle } from "@/lib/cracked-score";
 import { bumpScore, getAnonClient } from "@/lib/score";
 import type { Metadata } from "next";
+
+async function fetchRank(overall: number): Promise<{ rank: number; total: number } | null> {
+  const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!SUPA_URL || !SUPA_ANON_KEY) return null;
+  const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
+  const [{ count: ahead }, { count: total }] = await Promise.all([
+    supa.from("cracked_scores").select("*", { count: "exact", head: true }).gt("overall", overall),
+    supa.from("cracked_scores").select("*", { count: "exact", head: true }),
+  ]);
+  if (ahead == null || total == null) return null;
+  return { rank: ahead + 1, total };
+}
 
 interface PageProps {
   params: Promise<{ handle: string }>;
@@ -35,6 +49,8 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
   const { as: creatorHandle } = await searchParams;
   const result = await scoreHandle(handle, { viewerHandle: creatorHandle });
   if (!result) notFound();
+
+  const rankInfo = await fetchRank(result.overall);
 
   // If the user passed ?as=<creator-handle>, fire a Creator Score bump
   // (surface = revival, +40 — Cracked Score completion counts as a creator
@@ -76,8 +92,15 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
               </p>
               <p className="text-sm text-zinc-500">/ 100</p>
             </div>
-            <div className="rounded-full bg-orange-500 px-5 py-2 text-base font-bold uppercase text-black">
-              {result.tier.name}
+            <div className="text-right">
+              <div className="inline-block rounded-full bg-orange-500 px-5 py-2 text-base font-bold uppercase text-black">
+                {result.tier.name}
+              </div>
+              {rankInfo && (
+                <p className="mt-2 text-xs uppercase tracking-wider text-zinc-400">
+                  Rank #{rankInfo.rank} of {rankInfo.total}
+                </p>
+              )}
             </div>
           </div>
           <div className="mt-5 grid grid-cols-3 gap-2 text-center text-xs">
@@ -125,7 +148,7 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <a
             href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-              `My Cracked Score: ${result.overall}/100 ${result.tier.emoji} ${result.tier.name.toUpperCase()}.\n\n@${result.handle} on GitHub. 12-axis score across velocity, depth, OSS.\n\nGet yours:`,
+              `My Cracked Score: ${result.overall}/100 ${result.tier.emoji} ${result.tier.name.toUpperCase()}${rankInfo ? ` — #${rankInfo.rank} of ${rankInfo.total}` : ""}.\n\n@${result.handle} on GitHub. 12-axis score across velocity, depth, OSS.\n\nGet yours:`,
             )}&url=${encodeURIComponent(`https://vibexforge.com/cracked/${result.handle}`)}`}
             target="_blank"
             rel="noreferrer"
@@ -134,10 +157,18 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
             Share on 𝕏
           </a>
           <Link
-            href="/cracked"
+            href="/cracked/leaderboard"
             className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
           >
-            Score another handle →
+            See leaderboard →
+          </Link>
+        </div>
+        <div className="mt-3 text-center">
+          <Link
+            href="/cracked"
+            className="text-xs text-zinc-500 hover:text-zinc-300 hover:underline"
+          >
+            Score another handle
           </Link>
         </div>
 

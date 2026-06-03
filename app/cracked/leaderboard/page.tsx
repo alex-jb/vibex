@@ -81,7 +81,11 @@ export default async function CrackedLeaderboardPage() {
                     href={`/cracked/${r.github_handle}`}
                     className="flex items-center gap-4 rounded-xl p-4 hover:bg-orange-500/5"
                   >
-                    <div className="w-8 shrink-0 text-right text-sm text-zinc-500">
+                    <div
+                      className={`w-8 shrink-0 text-right text-sm ${
+                        i === 0 ? "font-bold text-orange-400" : i < 3 ? "text-orange-300" : "text-zinc-500"
+                      }`}
+                    >
                       #{i + 1}
                     </div>
                     <div className="flex-1 min-w-0">
