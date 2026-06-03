@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { scoreHandle } from "@/lib/cracked-score";
+import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
 export const alt = "Cracked Score";
@@ -15,18 +15,49 @@ const C = {
   ORANGE: "#F97316",
 };
 
+const TIER_EMOJI: Record<string, string> = {
+  mythic: "👑",
+  cracked: "⚡",
+  solid: "💪",
+  rising: "🌱",
+  starting: "🥚",
+};
+
+interface ScoreRow {
+  github_handle: string;
+  overall: number;
+  tier: string;
+  total_stars: number;
+  total_repos: number;
+  followers: number;
+}
+
+async function load(handle: string): Promise<ScoreRow | null> {
+  const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!SUPA_URL || !SUPA_ANON_KEY) return null;
+  const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
+  const { data } = await supa
+    .from("cracked_scores")
+    .select("github_handle, overall, tier, total_stars, total_repos, followers")
+    .eq("github_handle", handle.toLowerCase())
+    .maybeSingle();
+  return (data as ScoreRow | null) || null;
+}
+
 export default async function CrackedOG({
   params,
 }: {
   params: { handle: string };
 }) {
-  const r = await scoreHandle(params.handle);
-  const handle = r?.handle ?? params.handle;
-  const overall = r?.overall ?? 0;
-  const tier = r?.tier ?? { name: "starting", emoji: "🥚", threshold: 0 };
-  const totalStars = r?.totalStars ?? 0;
-  const totalRepos = r?.totalRepos ?? 0;
-  const followers = r?.followers ?? 0;
+  const row = await load(params.handle);
+  const handle = row?.github_handle ?? params.handle;
+  const overall = row?.overall ?? 0;
+  const tierName = row?.tier ?? "starting";
+  const tierEmoji = TIER_EMOJI[tierName] ?? "🥚";
+  const totalStars = row?.total_stars ?? 0;
+  const totalRepos = row?.total_repos ?? 0;
+  const followers = row?.followers ?? 0;
 
   return new ImageResponse(
     (
@@ -44,12 +75,12 @@ export default async function CrackedOG({
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: 24, color: C.MUTED, letterSpacing: 6, textTransform: "uppercase" }}>
+            <div style={{ display: "flex", fontSize: 24, color: C.MUTED, letterSpacing: 6, textTransform: "uppercase" }}>
               Cracked Score · VibeXForge
             </div>
-            <div style={{ fontSize: 72, fontWeight: 800, marginTop: 8 }}>@{handle}</div>
+            <div style={{ display: "flex", fontSize: 72, fontWeight: 800, marginTop: 8 }}>@{handle}</div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", fontSize: 120 }}>{tier.emoji}</div>
+          <div style={{ display: "flex", alignItems: "center", fontSize: 120 }}>{tierEmoji}</div>
         </div>
 
         <div
@@ -65,11 +96,11 @@ export default async function CrackedOG({
           }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: 28, color: C.MUTED }}>OVERALL</div>
-            <div style={{ fontSize: 120, fontWeight: 800, color: C.ORANGE, lineHeight: 1 }}>
+            <div style={{ display: "flex", fontSize: 28, color: C.MUTED }}>OVERALL</div>
+            <div style={{ display: "flex", fontSize: 120, fontWeight: 800, color: C.ORANGE, lineHeight: 1 }}>
               {overall}
             </div>
-            <div style={{ fontSize: 22, color: C.MUTED }}>/ 100</div>
+            <div style={{ display: "flex", fontSize: 22, color: C.MUTED }}>/ 100</div>
           </div>
           <div
             style={{
@@ -84,7 +115,7 @@ export default async function CrackedOG({
               textTransform: "uppercase",
             }}
           >
-            {tier.name}
+            {tierName}
           </div>
         </div>
 
@@ -107,8 +138,8 @@ export default async function CrackedOG({
                 border: `1px solid ${C.BORDER}`,
               }}
             >
-              <div style={{ fontSize: 52, fontWeight: 800 }}>{b.v.toLocaleString()}</div>
-              <div style={{ fontSize: 20, color: C.MUTED, marginTop: 6 }}>{b.label}</div>
+              <div style={{ display: "flex", fontSize: 52, fontWeight: 800 }}>{b.v.toLocaleString()}</div>
+              <div style={{ display: "flex", fontSize: 20, color: C.MUTED, marginTop: 6 }}>{b.label}</div>
             </div>
           ))}
         </div>
@@ -121,8 +152,8 @@ export default async function CrackedOG({
             alignItems: "center",
           }}
         >
-          <div style={{ fontSize: 22, color: C.MUTED }}>vibexforge.com/cracked/{handle}</div>
-          <div style={{ fontSize: 22, color: C.ORANGE }}>
+          <div style={{ display: "flex", fontSize: 22, color: C.MUTED }}>vibexforge.com/cracked/{handle}</div>
+          <div style={{ display: "flex", fontSize: 22, color: C.ORANGE }}>
             12-axis dev profile score
           </div>
         </div>

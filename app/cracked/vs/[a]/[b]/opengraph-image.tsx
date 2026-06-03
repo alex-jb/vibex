@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { scoreHandle } from "@/lib/cracked-score";
+import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
 export const alt = "Cracked Score — Head-to-Head";
@@ -17,18 +17,47 @@ const C = {
   ORANGE: "#F97316",
 };
 
+const TIER_EMOJI: Record<string, string> = {
+  mythic: "👑",
+  cracked: "⚡",
+  solid: "💪",
+  rising: "🌱",
+  starting: "🥚",
+};
+
+interface Row {
+  github_handle: string;
+  overall: number;
+  tier: string;
+}
+
+async function load(handle: string): Promise<Row | null> {
+  const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!SUPA_URL || !SUPA_ANON_KEY) return null;
+  const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
+  const { data } = await supa
+    .from("cracked_scores")
+    .select("github_handle, overall, tier")
+    .eq("github_handle", handle.toLowerCase())
+    .maybeSingle();
+  return (data as Row | null) || null;
+}
+
 export default async function CrackedVsOG({
   params,
 }: {
   params: { a: string; b: string };
 }) {
-  const [resA, resB] = await Promise.all([scoreHandle(params.a), scoreHandle(params.b)]);
-  const aOverall = resA?.overall ?? 0;
-  const bOverall = resB?.overall ?? 0;
-  const aHandle = resA?.handle ?? params.a;
-  const bHandle = resB?.handle ?? params.b;
-  const aTier = resA?.tier ?? { name: "starting", emoji: "🥚", threshold: 0 };
-  const bTier = resB?.tier ?? { name: "starting", emoji: "🥚", threshold: 0 };
+  const [rowA, rowB] = await Promise.all([load(params.a), load(params.b)]);
+  const aOverall = rowA?.overall ?? 0;
+  const bOverall = rowB?.overall ?? 0;
+  const aHandle = rowA?.github_handle ?? params.a;
+  const bHandle = rowB?.github_handle ?? params.b;
+  const aTier = rowA?.tier ?? "starting";
+  const bTier = rowB?.tier ?? "starting";
+  const aTierEmoji = TIER_EMOJI[aTier] ?? "🥚";
+  const bTierEmoji = TIER_EMOJI[bTier] ?? "🥚";
   const aWin = aOverall > bOverall;
   const bWin = bOverall > aOverall;
   const margin = Math.abs(aOverall - bOverall);
@@ -36,7 +65,8 @@ export default async function CrackedVsOG({
   const panel = (
     handle: string,
     overall: number,
-    tier: { name: string; emoji: string },
+    tierName: string,
+    tierEmoji: string,
     won: boolean,
   ) => (
     <div
@@ -55,7 +85,7 @@ export default async function CrackedVsOG({
       <div style={{ display: "flex", fontSize: 36, fontWeight: 700, marginBottom: 8 }}>
         @{handle}
       </div>
-      <div style={{ display: "flex", fontSize: 56, marginBottom: 8 }}>{tier.emoji}</div>
+      <div style={{ display: "flex", fontSize: 56, marginBottom: 8 }}>{tierEmoji}</div>
       <div
         style={{
           display: "flex",
@@ -80,7 +110,7 @@ export default async function CrackedVsOG({
           textTransform: "uppercase",
         }}
       >
-        {tier.name}
+        {tierName}
       </div>
     </div>
   );
@@ -100,13 +130,13 @@ export default async function CrackedVsOG({
         }}
       >
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-          <div style={{ fontSize: 22, color: C.MUTED, letterSpacing: 6, textTransform: "uppercase" }}>
+          <div style={{ display: "flex", fontSize: 22, color: C.MUTED, letterSpacing: 6, textTransform: "uppercase" }}>
             Cracked Score · Head-to-Head
           </div>
         </div>
 
         <div style={{ display: "flex", flex: 1, gap: 20, alignItems: "stretch" }}>
-          {panel(aHandle, aOverall, aTier, aWin)}
+          {panel(aHandle, aOverall, aTier, aTierEmoji, aWin)}
           <div
             style={{
               display: "flex",
@@ -125,7 +155,7 @@ export default async function CrackedVsOG({
               </div>
             )}
           </div>
-          {panel(bHandle, bOverall, bTier, bWin)}
+          {panel(bHandle, bOverall, bTier, bTierEmoji, bWin)}
         </div>
 
         <div
@@ -136,10 +166,10 @@ export default async function CrackedVsOG({
             alignItems: "center",
           }}
         >
-          <div style={{ fontSize: 20, color: C.MUTED }}>
+          <div style={{ display: "flex", fontSize: 20, color: C.MUTED }}>
             vibexforge.com/cracked/vs/{aHandle}/{bHandle}
           </div>
-          <div style={{ fontSize: 20, color: C.ORANGE }}>
+          <div style={{ display: "flex", fontSize: 20, color: C.ORANGE }}>
             12-axis · Live from GitHub
           </div>
         </div>
