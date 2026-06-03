@@ -113,13 +113,43 @@ export default async function IdeaFuneralMemorialPage({ params }: PageProps) {
           <p className="mt-3 whitespace-pre-wrap leading-6">{f.idea_text}</p>
         </details>
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Link
-            href="/validator"
-            className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
-          >
-            Validate the next one →
-          </Link>
+        {(() => {
+          const tweetText =
+            `RIP "${f.deceased_name}" — someone buried an idea today. ` +
+            `it lived only in their head${f.age_when_buried ? ` (${f.age_when_buried})` : ""}. ` +
+            `AI wrote it a proper eulogy:`;
+          const memorialUrl = `https://www.vibexforge.com/funeral/idea/${f.id}`;
+          const tweetIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(memorialUrl)}`;
+          const redditIntent = `https://www.reddit.com/r/SideProject/submit?title=${encodeURIComponent(`Someone buried an idea today. The eulogy was for "${f.deceased_name}"`)}&url=${encodeURIComponent(memorialUrl)}`;
+          return (
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a
+                href={tweetIntent}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
+              >
+                𝕏 Share the eulogy
+              </a>
+              <a
+                href={redditIntent}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+              >
+                Share to r/SideProject
+              </a>
+              <Link
+                href="/validator"
+                className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+              >
+                Validate the next one →
+              </Link>
+            </div>
+          );
+        })()}
+
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/funeral/idea"
             className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"

@@ -55,5 +55,12 @@ next-env.d.ts
 # upload with `npm run demo:sync-blob`. PNG screenshots stay tracked.
 public/demo-assets/*.mp4
 
+# Demo / pitch artifacts at repo root — never commit, render locally
+vibex-demo*.mp4
+vibex-demo*.webm
+VibeX-Hackathon-Pitch.pptx
+VibeX-Pitch-Script.md
+scripts/gen-vibex-icons.mjs
+
 # Dogfood / eval output
 out/dogfood-vibex-launch/

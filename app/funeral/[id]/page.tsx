@@ -129,18 +129,49 @@ export default async function FuneralMemorialPage({ params }: PageProps) {
 
         <RevivalPanel funeralId={funeral.id} prefetched={funeral.revival_judgment} />
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a
-            href={funeral.github_url}
-            target="_blank"
-            rel="noreferrer"
-            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
-          >
-            Visit the body →
-          </a>
+        {(() => {
+          const tweetText =
+            `RIP ${funeral.deceased_name}. ` +
+            `lived ${funeral.age_days_alive ?? "?"} days, ` +
+            `${funeral.stars} stars, ${funeral.forks} forks. ` +
+            `someone wrote it a proper eulogy:`;
+          const memorialUrl = `https://www.vibexforge.com/funeral/${funeral.id}`;
+          const tweetIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(memorialUrl)}`;
+          const redditIntent = `https://www.reddit.com/r/SideProject/submit?title=${encodeURIComponent(`RIP ${funeral.deceased_name} — someone gave it a proper funeral`)}&url=${encodeURIComponent(memorialUrl)}`;
+          return (
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a
+                href={tweetIntent}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
+              >
+                𝕏 Share the eulogy
+              </a>
+              <a
+                href={redditIntent}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+              >
+                Share to r/SideProject
+              </a>
+              <a
+                href={funeral.github_url}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+              >
+                Visit the body →
+              </a>
+            </div>
+          );
+        })()}
+
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/funeral"
-            className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
+            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
           >
             Bury another project
           </Link>

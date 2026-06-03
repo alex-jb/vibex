@@ -73,6 +73,10 @@ export default async function ScoreLeaderboardPage() {
     { data: tierRows },
     { data: funeralCauses },
     { data: ideaFuneralCauses },
+    { data: launchkitSubs },
+    { data: launchkitCredits },
+    { data: validatorSubs },
+    { data: validatorCredits },
   ] = await Promise.all([
     supa
       .from("creator_scores")
@@ -91,7 +95,31 @@ export default async function ScoreLeaderboardPage() {
     supa.from("creator_scores").select("tier, score"),
     supa.from("funerals").select("cause_of_death").not("cause_of_death", "is", null),
     supa.from("idea_funerals").select("cause_of_death").not("cause_of_death", "is", null),
+    supa.from("launchkit_subscriptions").select("email").eq("active", true),
+    supa.from("launchkit_credits").select("email"),
+    supa.from("validator_subscriptions").select("email").eq("active", true),
+    supa.from("validator_credits").select("email"),
   ]);
+
+  // Build a set of paid emails (any product, any mode). Note: creator_scores
+  // is keyed by handle (anon-friendly), not by email — so this is best-effort
+  // cross-reference using the heuristic "handle == email-local-part" when
+  // users use their email prefix as their handle. Still useful as a signal.
+  const paidEmails = new Set<string>();
+  for (const r of [...(launchkitSubs || []), ...(launchkitCredits || []), ...(validatorSubs || []), ...(validatorCredits || [])]) {
+    const e = (r as { email?: string }).email?.toLowerCase();
+    if (e) paidEmails.add(e);
+  }
+  const paidHandlePrefixes = new Set(
+    Array.from(paidEmails).map((e) => e.split("@")[0]),
+  );
+  const paidEmailCount = paidEmails.size;
+  const paidProductMix = {
+    launchkit_pro: (launchkitSubs || []).length,
+    launchkit_single: (launchkitCredits || []).length,
+    validator_pro: (validatorSubs || []).length,
+    validator_single: (validatorCredits || []).length,
+  };
 
   const top = (topRows as ScoreRow[] | null) || [];
 
@@ -230,6 +258,34 @@ export default async function ScoreLeaderboardPage() {
           )}
         </section>
 
+        {/* Stripe revenue snapshot */}
+        <section className="mb-10 rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800">
+          <h2 className="mb-4 text-lg font-semibold">💰 Paid customers</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="rounded-xl bg-black/40 p-3 text-center ring-1 ring-zinc-800">
+              <p className="text-2xl font-bold">{paidProductMix.launchkit_pro}</p>
+              <p className="text-xs text-zinc-400">LK Pro $19/mo</p>
+            </div>
+            <div className="rounded-xl bg-black/40 p-3 text-center ring-1 ring-zinc-800">
+              <p className="text-2xl font-bold">{paidProductMix.launchkit_single}</p>
+              <p className="text-xs text-zinc-400">LK Single $49</p>
+            </div>
+            <div className="rounded-xl bg-black/40 p-3 text-center ring-1 ring-zinc-800">
+              <p className="text-2xl font-bold">{paidProductMix.validator_pro}</p>
+              <p className="text-xs text-zinc-400">Val Pro $19/mo</p>
+            </div>
+            <div className="rounded-xl bg-black/40 p-3 text-center ring-1 ring-zinc-800">
+              <p className="text-2xl font-bold">{paidProductMix.validator_single}</p>
+              <p className="text-xs text-zinc-400">Val Single $5</p>
+            </div>
+          </div>
+          <p className="mt-3 text-xs text-zinc-500">
+            {paidEmailCount} unique paying emails. Handle column below shows 💰
+            when the handle&apos;s email prefix matches a paid email (anon
+            cross-reference heuristic).
+          </p>
+        </section>
+
         {/* Cause-of-death distribution */}
         <section className="mb-10 rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800">
           <h2 className="mb-4 text-lg font-semibold">
@@ -296,6 +352,7 @@ export default async function ScoreLeaderboardPage() {
                     <th className="px-2 py-2 text-right">🔄</th>
                     <th className="px-2 py-2 text-right">⚡</th>
                     <th className="px-2 py-2 text-left">Active</th>
+                    <th className="px-2 py-2 text-center">💰</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -350,6 +407,9 @@ export default async function ScoreLeaderboardPage() {
                             : daysAgo === 1
                               ? "yesterday"
                               : `${daysAgo}d ago`}
+                        </td>
+                        <td className="px-2 py-2 text-center text-xs">
+                          {paidHandlePrefixes.has(row.handle.toLowerCase()) ? "✓" : ""}
                         </td>
                       </tr>
                     );
