@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { scoreHandle } from "@/lib/cracked-score";
 import { bumpScore, getAnonClient } from "@/lib/score";
+import { CompareInput } from "@/components/cracked/compare-input";
 import type { Metadata } from "next";
 
 async function fetchRank(overall: number): Promise<{ rank: number; total: number } | null> {
@@ -143,6 +144,8 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
             ))}
           </ul>
         </section>
+
+        <CompareInput baseHandle={result.handle} />
 
         {/* CTA */}
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
