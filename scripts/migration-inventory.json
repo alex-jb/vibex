@@ -1423,5 +1423,15 @@
     "kind": "function",
     "name": "bump_creator_score",
     "_migration": "069_creator_scores.sql"
+  },
+  {
+    "kind": "table",
+    "name": "validator_subscriptions",
+    "_migration": "070_validator_paywall.sql"
+  },
+  {
+    "kind": "table",
+    "name": "validator_credits",
+    "_migration": "070_validator_paywall.sql"
   }
 ]

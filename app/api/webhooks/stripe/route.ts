@@ -65,8 +65,9 @@ export async function POST(req: NextRequest) {
   };
 
   const meta = session.metadata || {};
-  if (meta.product !== "launchkit") {
-    return NextResponse.json({ ok: true, ignored: "not_launchkit" });
+  const product = meta.product;
+  if (product !== "launchkit" && product !== "validator") {
+    return NextResponse.json({ ok: true, ignored: "unknown_product" });
   }
 
   if (!SUPA_URL || !SUPA_SERVICE_KEY) {
@@ -79,21 +80,20 @@ export async function POST(req: NextRequest) {
 
   const supabase = createClient(SUPA_URL, SUPA_SERVICE_KEY);
 
-  // Persist subscription marker. launchkit_subscriptions table tracks who
-  // has Pro access. Migration 063 (deferred) ships the table; for MVP we
-  // upsert into a simple JSON column on a singleton row.
+  // Route by product. LaunchKit + Validator have parallel table pairs.
+  const subTable = product === "launchkit" ? "launchkit_subscriptions" : "validator_subscriptions";
+  const creditTable = product === "launchkit" ? "launchkit_credits" : "validator_credits";
+
   try {
     if (meta.mode === "subscription" && session.subscription) {
-      await supabase.from("launchkit_subscriptions").upsert({
+      await supabase.from(subTable).upsert({
         email: session.customer_email,
         stripe_subscription_id: session.subscription,
         active: true,
         updated_at: new Date().toISOString(),
       });
     } else if (meta.mode === "single") {
-      // Single-launch credit. Insert one row per purchase; the /generate
-      // route consumes it before applying free-tier rate limit.
-      await supabase.from("launchkit_credits").insert({
+      await supabase.from(creditTable).insert({
         email: session.customer_email,
         stripe_session_id: session.id,
         used: false,
@@ -101,11 +101,8 @@ export async function POST(req: NextRequest) {
       });
     }
   } catch (err) {
-    // launchkit_subscriptions / launchkit_credits tables may not exist
-    // yet (migration 063 deferred). Log and degrade gracefully — webhook
-    // returns 200 so Stripe doesn't retry.
-    console.error("[stripe-webhook] persist failed:", err);
+    console.error(`[stripe-webhook] persist failed (${product}):`, err);
   }
 
-  return NextResponse.json({ ok: true, mode: meta.mode });
+  return NextResponse.json({ ok: true, product, mode: meta.mode });
 }

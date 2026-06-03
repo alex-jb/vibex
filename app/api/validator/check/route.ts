@@ -27,6 +27,9 @@ interface Body {
   handle?: string;
 }
 
+// Free beta limit: 1 validation per email per 24h. Paid tiers + Silver+ score bypass.
+const RATE_LIMIT_PER_24H = 1;
+
 function validate(body: unknown): Body | null {
   if (!body || typeof body !== "object") return null;
   const b = body as Record<string, unknown>;
@@ -54,6 +57,87 @@ export async function POST(req: NextRequest) {
       },
       { status: 400 },
     );
+  }
+
+  // Paywall + rate limit gate (only when email provided — anon stays free for first run)
+  if (input.email && SUPA_URL && SUPA_ANON_KEY) {
+    const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
+    let bypass = false;
+
+    // Active Pro subscription → unlimited
+    try {
+      const { data: sub } = await supa
+        .from("validator_subscriptions")
+        .select("active, current_period_end")
+        .eq("email", input.email)
+        .maybeSingle();
+      if (sub?.active) {
+        const stillValid = !sub.current_period_end ||
+          new Date(sub.current_period_end).getTime() > Date.now();
+        if (stillValid) bypass = true;
+      }
+    } catch { /* table missing → fall through */ }
+
+    // Unused single-credit → consume it on this run
+    let creditId: string | null = null;
+    if (!bypass) {
+      try {
+        const { data: credit } = await supa
+          .from("validator_credits")
+          .select("id")
+          .eq("email", input.email)
+          .eq("used", false)
+          .order("created_at", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        if (credit) {
+          creditId = credit.id;
+          bypass = true;
+        }
+      } catch { /* table missing → fall through */ }
+    }
+
+    // Silver+ Creator Score (≥150) → bypass (perk redemption)
+    if (!bypass && input.handle) {
+      try {
+        const { data: scoreRow } = await supa
+          .from("creator_scores")
+          .select("score")
+          .eq("handle", input.handle.toLowerCase())
+          .maybeSingle();
+        if (scoreRow && (scoreRow.score ?? 0) >= 150) bypass = true;
+      } catch { /* fall through */ }
+    }
+
+    // Enforce 1/24h free beta rate limit when no bypass
+    if (!bypass) {
+      try {
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const { count } = await supa
+          .from("idea_validations")
+          .select("id", { count: "exact", head: true })
+          .eq("requester_email", input.email)
+          .gte("created_at", since);
+        if ((count ?? 0) >= RATE_LIMIT_PER_24H) {
+          return NextResponse.json(
+            {
+              error: `Rate limited: ${RATE_LIMIT_PER_24H} free validation per email per 24h. Upgrade to Pro ($19/mo) or reach Silver tier (150+ Creator Score) for unlimited. Single $5 also works.`,
+            },
+            { status: 429 },
+          );
+        }
+      } catch { /* table missing → fall through */ }
+    }
+
+    // Mark credit as used (do this here pre-validation so concurrent calls don't double-consume)
+    if (creditId) {
+      try {
+        await supa
+          .from("validator_credits")
+          .update({ used: true, used_at: new Date().toISOString() })
+          .eq("id", creditId);
+      } catch { /* best effort */ }
+    }
   }
 
   // Check cache: same idea_hash within 24h returns cached row
