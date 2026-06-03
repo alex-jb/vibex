@@ -59,7 +59,10 @@ export async function POST(
 
   await supa
     .from("funerals")
-    .update({ revival_judgment: judgment })
+    .update({
+      revival_judgment: judgment,
+      cause_of_death: judgment.cause_of_death || "other",
+    })
     .eq("id", id);
 
   return NextResponse.json({ judgment, cached: false });

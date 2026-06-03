@@ -71,6 +71,8 @@ export default async function ScoreLeaderboardPage() {
     { count: totalScored },
     { count: activeThisWeek },
     { data: tierRows },
+    { data: funeralCauses },
+    { data: ideaFuneralCauses },
   ] = await Promise.all([
     supa
       .from("creator_scores")
@@ -87,6 +89,8 @@ export default async function ScoreLeaderboardPage() {
       .select("handle", { count: "exact", head: true })
       .gte("last_active_at", week),
     supa.from("creator_scores").select("tier, score"),
+    supa.from("funerals").select("cause_of_death").not("cause_of_death", "is", null),
+    supa.from("idea_funerals").select("cause_of_death").not("cause_of_death", "is", null),
   ]);
 
   const top = (topRows as ScoreRow[] | null) || [];
@@ -124,6 +128,28 @@ export default async function ScoreLeaderboardPage() {
     surfaceMix.ideaFunerals +
     surfaceMix.revivals +
     surfaceMix.ships;
+
+  // Cause-of-death distribution across both funeral tables
+  const causeLabels: Record<string, { label: string; emoji: string }> = {
+    no_users: { label: "No users", emoji: "👻" },
+    no_revenue: { label: "No revenue", emoji: "💸" },
+    founder_lost_interest: { label: "Lost interest", emoji: "🐿" },
+    pivot_failed: { label: "Pivot failed", emoji: "🔁" },
+    tech_debt: { label: "Tech debt", emoji: "🧱" },
+    competition: { label: "Out-competed", emoji: "⚔" },
+    money_ran_out: { label: "Out of money", emoji: "🪙" },
+    regulation: { label: "Regulation", emoji: "📜" },
+    other: { label: "Other", emoji: "·" },
+  };
+  const causeBuckets = new Map<string, number>();
+  for (const r of [...(funeralCauses || []), ...(ideaFuneralCauses || [])]) {
+    const c = (r as { cause_of_death?: string }).cause_of_death || "other";
+    causeBuckets.set(c, (causeBuckets.get(c) || 0) + 1);
+  }
+  const causesSorted = Array.from(causeBuckets.entries())
+    .map(([k, n]) => ({ key: k, count: n, ...(causeLabels[k] || { label: k, emoji: "?" }) }))
+    .sort((a, b) => b.count - a.count);
+  const causeTotal = causesSorted.reduce((acc, c) => acc + c.count, 0);
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] px-6 py-12 text-zinc-200">
@@ -200,6 +226,48 @@ export default async function ScoreLeaderboardPage() {
                   </div>
                 );
               })}
+            </div>
+          )}
+        </section>
+
+        {/* Cause-of-death distribution */}
+        <section className="mb-10 rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800">
+          <h2 className="mb-4 text-lg font-semibold">
+            Cause of death (classified funerals + idea funerals)
+          </h2>
+          {causeTotal === 0 ? (
+            <p className="text-sm text-zinc-500">
+              No causes classified yet. New funerals get a cause via Claude;
+              older repo funerals get one when their Revival Judge is triggered.
+            </p>
+          ) : (
+            <div className="space-y-2 text-sm">
+              {causesSorted.map((c) => {
+                const pct = (c.count / causeTotal) * 100;
+                return (
+                  <div key={c.key} className="flex items-center gap-3">
+                    <span className="w-40 text-zinc-400">
+                      {c.emoji} {c.label}
+                    </span>
+                    <div className="flex-1 rounded-full bg-zinc-800">
+                      <div
+                        className="rounded-full bg-orange-500 py-1 text-center text-[10px] text-black"
+                        style={{ width: `${Math.max(pct, 2)}%` }}
+                      >
+                        {c.count}
+                      </div>
+                    </div>
+                    <span className="w-12 text-right text-xs text-zinc-500">
+                      {pct.toFixed(0)}%
+                    </span>
+                  </div>
+                );
+              })}
+              <p className="mt-3 text-xs text-zinc-500">
+                Year-in-Review seed data ({causeTotal} classified). 2026/12 we
+                turn this into a "what killed indie projects this year" big
+                event.
+              </p>
             </div>
           )}
         </section>

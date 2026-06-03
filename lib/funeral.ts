@@ -225,7 +225,22 @@ export interface IdeaEulogyResult {
   category: string;
   age_when_buried: string;
   eulogy: string;
+  cause_of_death: string; // enum: see CAUSE_OF_DEATH_OPTIONS
 }
+
+// Migration 071. Used by Year-in-Review + cause filter on wall + admin pie.
+export const CAUSE_OF_DEATH_OPTIONS = [
+  "no_users",                 // shipped/wrote but no traction
+  "no_revenue",               // had users but couldn't monetize
+  "founder_lost_interest",    // pivoted away / shiny object syndrome
+  "pivot_failed",             // tried a new direction, didn't land
+  "tech_debt",                // code became unmaintainable
+  "competition",              // bigger player ate the market
+  "money_ran_out",            // burn rate killed it
+  "regulation",               // policy / legal change
+  "other",                    // fallback
+] as const;
+export type CauseOfDeath = (typeof CAUSE_OF_DEATH_OPTIONS)[number];
 
 const PRIEST_IDEA_SYSTEM = `You are a priest writing the funeral eulogy for a startup idea that lived only in someone's mind. It was never built. It was discussed at dinner, scribbled on napkins, shelved.
 
@@ -242,7 +257,8 @@ Schema:
   "deceased_name": "short noun phrase for the idea, like 'the Twitter scheduler for podcasters' (max 80 chars)",
   "category": "1-3 word category like 'developer tool' or 'social app'",
   "age_when_buried": "single phrase like 'lived in head 2 years' or 'thought about every shower for 6 months'",
-  "eulogy": "the 200-250 word priest eulogy"
+  "eulogy": "the 200-250 word priest eulogy",
+  "cause_of_death": "one of: no_users | no_revenue | founder_lost_interest | pivot_failed | tech_debt | competition | money_ran_out | regulation | other. Pick based on what the mourner's description suggests was the real reason this idea never lived. For ideas that never got off the napkin, 'founder_lost_interest' or 'competition' (felt too crowded already) are most common."
 }`;
 
 export async function generateIdeaEulogy(
@@ -284,6 +300,7 @@ export interface RevivalJudgment {
   rename_suggestion: string;
   vibex_relaunch_prompt: string;
   one_line_verdict: string;
+  cause_of_death: CauseOfDeath; // populated for repo funerals during revival step
 }
 
 const REVIVAL_SYSTEM = `You read a project's funeral eulogy and metadata. You judge whether this project could have been a hit with a different framing, audience, or pivot.
@@ -299,7 +316,8 @@ Output strict JSON only, no markdown:
   "pivot_angles": ["1-line angle 1", "1-line angle 2", "1-line angle 3"],
   "rename_suggestion": "if a rename would help, what to call it instead; else empty string",
   "vibex_relaunch_prompt": "1-paragraph pitch the user can paste into /validator to test the revival angle. Specific, not generic.",
-  "one_line_verdict": "the punchline: 'Bury it.' or 'There's a real product here if you...'"
+  "one_line_verdict": "the punchline: 'Bury it.' or 'There's a real product here if you...'",
+  "cause_of_death": "one of: no_users | no_revenue | founder_lost_interest | pivot_failed | tech_debt | competition | money_ran_out | regulation | other. Infer from metadata (stars/age/last-push pattern) and eulogy text."
 }`;
 
 export async function generateRevivalJudgment(

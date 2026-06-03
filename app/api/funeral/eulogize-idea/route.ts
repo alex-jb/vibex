@@ -111,6 +111,7 @@ export async function POST(req: NextRequest) {
         category: result.category,
         age_when_buried: result.age_when_buried,
         eulogy: result.eulogy,
+        cause_of_death: result.cause_of_death || "other",
         ash_image_url,
         mourner_email: input.mourner_email,
         mourner_name: input.mourner_name,
