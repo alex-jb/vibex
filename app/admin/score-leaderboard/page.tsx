@@ -65,7 +65,10 @@ export default async function ScoreLeaderboardPage() {
         )
       : await createServerSupabase();
 
-  const week = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  // server component runs fresh per request — Date.now() impurity is intentional
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
+  const week = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   const [
     { data: topRows },
@@ -323,7 +326,7 @@ export default async function ScoreLeaderboardPage() {
               })}
               <p className="mt-3 text-xs text-zinc-500">
                 Year-in-Review seed data ({causeTotal} classified). 2026/12 we
-                turn this into a "what killed indie projects this year" big
+                turn this into a &ldquo;what killed indie projects this year&rdquo; big
                 event.
               </p>
             </div>
@@ -362,7 +365,7 @@ export default async function ScoreLeaderboardPage() {
                     const tier = tierFromScore(row.score);
                     const lastActive = new Date(row.last_active_at);
                     const daysAgo = Math.floor(
-                      (Date.now() - lastActive.getTime()) /
+                      (now - lastActive.getTime()) /
                         (1000 * 60 * 60 * 24),
                     );
                     return (

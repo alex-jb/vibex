@@ -95,9 +95,12 @@ export default async function FuneralMemorialPage({ params }: PageProps) {
   if (!funeral) notFound();
   const resurrections = await fetchResurrections(id);
 
+  // server component renders fresh per request — Date.now() impurity is fine
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
   const sinceDeath = funeral.deceased_at
     ? Math.floor(
-        (Date.now() - new Date(funeral.deceased_at).getTime()) /
+        (now - new Date(funeral.deceased_at).getTime()) /
           (1000 * 60 * 60 * 24),
       )
     : null;

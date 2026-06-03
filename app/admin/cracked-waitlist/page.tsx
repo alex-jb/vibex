@@ -43,8 +43,11 @@ export default async function CrackedWaitlistPage() {
       ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
       : await createServerSupabase();
 
-  const day = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const week = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  // server component runs fresh per request — Date.now() impurity is intentional
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
+  const day = new Date(now - 24 * 60 * 60 * 1000).toISOString();
+  const week = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   const [{ count: total }, { count: last24h }, { count: last7d }, { data: recent }] =
     await Promise.all([
@@ -130,7 +133,7 @@ export default async function CrackedWaitlistPage() {
                 <tbody>
                   {rows.map((r) => {
                     const ageDays = Math.floor(
-                      (Date.now() - new Date(r.created_at).getTime()) / (1000 * 60 * 60 * 24),
+                      (now - new Date(r.created_at).getTime()) / (1000 * 60 * 60 * 24),
                     );
                     return (
                       <tr
