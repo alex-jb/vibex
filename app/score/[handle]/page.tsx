@@ -38,6 +38,38 @@ async function fetchScore(handle: string): Promise<ScoreRow | null> {
   return data as ScoreRow | null;
 }
 
+interface CrackedSummary {
+  overall: number;
+  tier: string;
+  rank: number;
+  total: number;
+}
+const CRACKED_TIER_EMOJI: Record<string, string> = {
+  mythic: "👑",
+  cracked: "⚡",
+  solid: "💪",
+  rising: "🌱",
+  starting: "🥚",
+};
+async function fetchCrackedSummary(handle: string): Promise<CrackedSummary | null> {
+  const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!SUPA_URL || !SUPA_ANON_KEY) return null;
+  const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
+  const { data } = await supa
+    .from("cracked_scores")
+    .select("overall, tier")
+    .eq("github_handle", handle.toLowerCase())
+    .maybeSingle();
+  if (!data) return null;
+  const [{ count: ahead }, { count: total }] = await Promise.all([
+    supa.from("cracked_scores").select("*", { count: "exact", head: true }).gt("overall", data.overall as number),
+    supa.from("cracked_scores").select("*", { count: "exact", head: true }),
+  ]);
+  if (ahead == null || total == null) return null;
+  return { overall: data.overall as number, tier: data.tier as string, rank: ahead + 1, total };
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -63,6 +95,7 @@ export default async function ScoreProfilePage({ params }: PageProps) {
   const tier = tierFromScore(row.score);
   const nextTier = TIER_LADDER.find((t) => t.threshold > row.score);
   const ptsToNext = nextTier ? nextTier.threshold - row.score : 0;
+  const cracked = await fetchCrackedSummary(handle);
 
   const stats = [
     { label: "Validated ideas", value: row.validations_count, emoji: "📝" },
@@ -116,6 +149,41 @@ export default async function ScoreProfilePage({ params }: PageProps) {
             <b className="text-orange-400">Current perk:</b> {tier.perk}
           </p>
         </div>
+
+        {cracked ? (
+          <Link
+            href={`/cracked/${handle}?as=${handle}`}
+            className="mb-8 block rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800 hover:ring-orange-500/40"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-widest text-orange-400">
+                  🧠 Cracked Score
+                </p>
+                <p className="mt-2 text-3xl font-bold">
+                  {cracked.overall}<span className="text-base text-zinc-500"> / 100</span>
+                </p>
+                <p className="mt-1 text-xs text-zinc-500">
+                  {CRACKED_TIER_EMOJI[cracked.tier] || ""} {cracked.tier} · Rank #{cracked.rank} of {cracked.total}
+                </p>
+              </div>
+              <span className="text-sm text-orange-400">View →</span>
+            </div>
+          </Link>
+        ) : (
+          <Link
+            href={`/cracked/${handle}?as=${handle}`}
+            className="mb-8 block rounded-2xl bg-orange-500/5 p-6 ring-1 ring-orange-500/20 hover:bg-orange-500/10"
+          >
+            <p className="text-xs uppercase tracking-widest text-orange-400">
+              🧠 Get your Cracked Score
+            </p>
+            <p className="mt-2 text-sm text-zinc-300">
+              Score @{handle} on the 12-axis dev profile. +40 to Creator Score on completion.
+            </p>
+            <p className="mt-2 text-xs text-orange-400">Score now →</p>
+          </Link>
+        )}
 
         <section className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {stats.map((s) => (
