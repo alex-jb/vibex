@@ -14,6 +14,7 @@ import {
   formatNumber,
 } from "@/components/creators/creator-helpers";
 import { hashString } from "@/lib/hash";
+import { CrackedProfilePanel } from "@/components/cracked/profile-panel";
 
 const C = {
   BG: "#0D0D0D",
@@ -454,6 +455,8 @@ export default function PublicProfilePage({
                 glyph="★"
               />
             </div>
+
+            <CrackedProfilePanel candidate={creator.name} creatorHandle={creator.name} />
 
             {/* Radar + Spotter Codex */}
             <div
