@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { AdminNav } from "@/components/admin/admin-nav";
 
 interface FlaggedPost {
   id: string;
@@ -57,6 +58,7 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
+      <AdminNav current="/admin" />
       {/* Terminal Header */}
       <div style={{ background: "#0A0A0C", padding: "8px 12px", display: "flex", alignItems: "center", gap: 8, borderBottom: "2px solid #2A2A30" }}>
         <span style={{ width: 10, height: 10, background: "#F97316", display: "inline-block" }} />

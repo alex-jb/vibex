@@ -22,6 +22,7 @@
 import { notFound } from "next/navigation";
 import { createServerSupabase, getAuthUser } from "@/lib/supabase-server";
 import { createClient } from "@supabase/supabase-js";
+import { AdminNav } from "@/components/admin/admin-nav";
 
 export const runtime = "nodejs";
 export const revalidate = 60;
@@ -220,6 +221,7 @@ export default async function AdminMetricsPage() {
   return (
     <main className="min-h-screen bg-[var(--bg-deep)] px-6 py-10 font-sans">
       <div className="max-w-5xl mx-auto">
+        <AdminNav current="/admin/metrics" />
         <h1 className="font-pixel text-xs uppercase tracking-wider text-violet-300 mb-1">
           ▸ ADMIN · METRICS
         </h1>

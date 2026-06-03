@@ -320,6 +320,25 @@ export default async function ValidatorReportPage({ params, searchParams }: Page
           </Link>
         )}
 
+        {/* Symmetric low-PMF bury callout — when the report says SKIP /
+            score < 40, surface /funeral/idea as the dignified exit. */}
+        {(row.pmf_score ?? 100) < 40 && (
+          <div className="mt-8 rounded-2xl bg-red-500/10 p-6 ring-1 ring-red-500/30">
+            <p className="text-sm uppercase tracking-widest text-red-400">
+              🪦 Honest call
+            </p>
+            <p className="mt-2 text-base text-zinc-200">
+              {`PMF score ${row.pmf_score ?? 0}/100. The data's already telling you. Burying this idea now is cheaper than spending 6 months learning the same thing.`}
+            </p>
+            <Link
+              href={`/funeral/idea?prefill=${encodeURIComponent(row.idea_text.slice(0, 400))}`}
+              className="mt-4 inline-block rounded-xl bg-red-500/20 px-4 py-2 text-sm font-semibold text-red-200 ring-1 ring-red-500/40 hover:bg-red-500/30"
+            >
+              Bury it on /funeral/idea →
+            </Link>
+          </div>
+        )}
+
         <div className="mt-3 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/validator"
