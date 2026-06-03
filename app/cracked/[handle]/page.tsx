@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function CrackedHandlePage({ params, searchParams }: PageProps) {
   const { handle } = await params;
   const { as: creatorHandle } = await searchParams;
-  const result = await scoreHandle(handle);
+  const result = await scoreHandle(handle, { viewerHandle: creatorHandle });
   if (!result) notFound();
 
   // If the user passed ?as=<creator-handle>, fire a Creator Score bump

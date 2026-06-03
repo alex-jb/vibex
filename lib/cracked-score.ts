@@ -96,9 +96,73 @@ async function gh<T>(path: string): Promise<T | null> {
   }
 }
 
-export async function scoreHandle(rawHandle: string): Promise<CrackedScoreResult | null> {
+/**
+ * Score a handle. Honors a 24h DB cache via cracked_scores table — if a
+ * recent row exists and forceFresh is false, returns the cached result
+ * instead of hitting GitHub. Writes back to DB after fresh fetch.
+ */
+import { createClient } from "@supabase/supabase-js";
+
+async function loadCached(handle: string): Promise<CrackedScoreResult | null> {
+  const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!SUPA_URL || !SUPA_ANON_KEY) return null;
+  const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
+  const day = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { data } = await supa
+    .from("cracked_scores")
+    .select("github_handle, overall, tier, axes, total_stars, total_repos, followers, scored_at")
+    .eq("github_handle", handle.toLowerCase())
+    .gte("scored_at", day)
+    .maybeSingle();
+  if (!data) return null;
+  const tier = tierFor(data.overall as number);
+  return {
+    handle: data.github_handle as string,
+    overall: data.overall as number,
+    tier,
+    axes: data.axes as CrackedAxis[],
+    totalStars: data.total_stars as number,
+    totalRepos: data.total_repos as number,
+    followers: data.followers as number,
+    computedAt: data.scored_at as string,
+  };
+}
+
+async function persist(result: CrackedScoreResult, viewerHandle?: string): Promise<void> {
+  const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!SUPA_URL || !SUPA_ANON_KEY) return;
+  const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
+  try {
+    await supa.from("cracked_scores").upsert(
+      {
+        github_handle: result.handle.toLowerCase(),
+        overall: result.overall,
+        tier: result.tier.name,
+        axes: result.axes,
+        total_stars: result.totalStars,
+        total_repos: result.totalRepos,
+        followers: result.followers,
+        viewer_handle: viewerHandle ?? null,
+        scored_at: result.computedAt,
+      },
+      { onConflict: "github_handle" },
+    );
+  } catch {
+    // best-effort
+  }
+}
+
+export async function scoreHandle(rawHandle: string, opts: { viewerHandle?: string; forceFresh?: boolean } = {}): Promise<CrackedScoreResult | null> {
   const handle = rawHandle.replace(/^@/, "").trim();
   if (!handle || handle.length > 39 || !/^[\w-]+$/.test(handle)) return null;
+
+  // Check 24h DB cache first (skip GitHub if recent score exists)
+  if (!opts.forceFresh) {
+    const cached = await loadCached(handle);
+    if (cached) return cached;
+  }
 
   const [user, allRepos] = await Promise.all([
     gh<GhUser>(`/users/${handle}`),
@@ -157,7 +221,7 @@ export async function scoreHandle(rawHandle: string): Promise<CrackedScoreResult
 
   const overall = clamp(axes.reduce((acc, a) => acc + a.score, 0) / axes.length);
 
-  return {
+  const result: CrackedScoreResult = {
     handle,
     overall,
     tier: tierFor(overall),
@@ -167,4 +231,9 @@ export async function scoreHandle(rawHandle: string): Promise<CrackedScoreResult
     followers,
     computedAt: new Date().toISOString(),
   };
+
+  // Best-effort persist (drives /cracked/leaderboard + 24h cache)
+  void persist(result, opts.viewerHandle);
+
+  return result;
 }
