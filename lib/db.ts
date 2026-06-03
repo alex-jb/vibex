@@ -206,6 +206,10 @@ export interface NewProjectInput {
   /** Optional short-form MP4/WebM preview URL — stored in projects.demo_video_url. */
   demoVideoUrl?: string;
   thumbnail?: string;
+  /** Migration 072 — link to the funeral this project resurrects, when the
+      creator came from Revival Judge's "Try Again on Validator" path. */
+  fromFuneralId?: string;
+  fromIdeaFuneralId?: string;
 }
 
 type AuthUser = {
@@ -372,6 +376,8 @@ export async function createProject(
       demo_type: input.demoType ?? "preview",
       demo_url: input.demoUrl ?? null,
       demo_video_url: input.demoVideoUrl ?? null,
+      from_funeral_id: input.fromFuneralId ?? null,
+      from_idea_funeral_id: input.fromIdeaFuneralId ?? null,
     })
     .select("*, creators(name)")
     .single();

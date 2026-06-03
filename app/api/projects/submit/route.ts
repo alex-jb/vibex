@@ -26,6 +26,9 @@ interface SubmitBody {
   demoType?: string;
   demoUrl?: string;
   demoVideoUrl?: string;
+  /** Migration 072 — carry over from /funeral/[id] Revival Judge path. */
+  fromFuneralId?: string;
+  fromIdeaFuneralId?: string;
 }
 
 const VALID_CATEGORIES: ProjectCategory[] = [
@@ -250,6 +253,9 @@ export async function POST(req: NextRequest) {
     demoType: (body.demoType as DemoType | undefined) ?? "preview",
     demoUrl: body.demoUrl,
     demoVideoUrl: body.demoVideoUrl?.trim() || undefined,
+    // Migration 072 — Revival Judge → Validator → /submit carry-over
+    fromFuneralId: typeof body.fromFuneralId === "string" ? body.fromFuneralId.trim() : undefined,
+    fromIdeaFuneralId: typeof body.fromIdeaFuneralId === "string" ? body.fromIdeaFuneralId.trim() : undefined,
   };
 
   // Try to persist to Supabase as the authenticated user. If the env isn't
