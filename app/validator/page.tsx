@@ -10,6 +10,37 @@ export default function ValidatorLanding() {
   const [isPublic, setIsPublic] = useState(false);
   const [loading, setLoading] = useState(false);
   const [carryNote, setCarryNote] = useState<string | null>(null);
+  const [checkoutLoading, setCheckoutLoading] = useState<"single" | "subscription" | null>(null);
+
+  async function upgrade(mode: "single" | "subscription") {
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      alert("Please enter your email above first.");
+      return;
+    }
+    setCheckoutLoading(mode);
+    try {
+      const resp = await fetch("/api/validator/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode,
+          email,
+          idea: idea || undefined,
+          handle: name || undefined,
+        }),
+      });
+      const data = await resp.json();
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        alert(data.error || "Checkout failed");
+        setCheckoutLoading(null);
+      }
+    } catch (err) {
+      alert(String(err));
+      setCheckoutLoading(null);
+    }
+  }
 
   // Carry-over from /funeral/[id] Revival Judge "Try Again on Validator" CTA.
   // The Revival panel builds /validator?from_funeral=<id>&prefill=<pitch>
@@ -210,6 +241,14 @@ export default function ValidatorLanding() {
                 <li>· PDF + archive link</li>
                 <li>· No expiration</li>
               </ul>
+              <button
+                type="button"
+                onClick={() => upgrade("single")}
+                disabled={checkoutLoading !== null}
+                className="mt-4 w-full rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-black hover:bg-orange-400 disabled:opacity-50"
+              >
+                {checkoutLoading === "single" ? "Redirecting…" : "Buy single $5"}
+              </button>
             </div>
             <div className="rounded-2xl bg-orange-500/10 p-6 ring-1 ring-orange-500/30">
               <p className="text-sm uppercase tracking-wider text-orange-400">
@@ -224,6 +263,14 @@ export default function ValidatorLanding() {
                 <li>· Weekly &quot;trending opportunities&quot; digest</li>
                 <li>· Cancel anytime</li>
               </ul>
+              <button
+                type="button"
+                onClick={() => upgrade("subscription")}
+                disabled={checkoutLoading !== null}
+                className="mt-4 w-full rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-black hover:bg-orange-400 disabled:opacity-50"
+              >
+                {checkoutLoading === "subscription" ? "Redirecting…" : "Subscribe $19/mo"}
+              </button>
             </div>
           </div>
         </section>

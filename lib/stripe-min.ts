@@ -38,9 +38,11 @@ export interface CreateCheckoutOptions {
 export interface CheckoutSession {
   id: string;
   url: string;
+  mode?: "payment" | "subscription" | "setup";
   payment_status?: string;
   status?: string;
   customer_email?: string;
+  customer_details?: { email?: string; name?: string };
   amount_total?: number;
   metadata?: Record<string, string>;
 }
