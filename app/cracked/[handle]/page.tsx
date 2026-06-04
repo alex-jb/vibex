@@ -5,6 +5,7 @@ import { scoreHandle } from "@/lib/cracked-score";
 import { bumpScore, getAnonClient } from "@/lib/score";
 import { CompareInput } from "@/components/cracked/compare-input";
 import { Bilingual } from "@/components/i18n/bilingual";
+import CountUp from "@/components/react-bits/CountUp";
 import type { Metadata } from "next";
 
 async function fetchRank(overall: number): Promise<{ rank: number; total: number } | null> {
@@ -26,7 +27,9 @@ interface PageProps {
 }
 
 export const runtime = "nodejs";
-export const revalidate = 600; // 10-min cache per (handle) — GitHub API rate respect
+// 1-hour ISR per (handle). 24h DB cache in lib/cracked-score handles
+// the deeper GitHub API rate-respect; this is just the Next render cache.
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { handle } = await params;
@@ -89,9 +92,11 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
               <p className="text-sm uppercase tracking-wider text-zinc-500">
                 <Bilingual en="Overall" zh="总分" />
               </p>
-              <p className="mt-1 text-6xl font-bold text-orange-400">
-                {result.overall}
-              </p>
+              <CountUp
+                to={result.overall}
+                duration={1.6}
+                className="mt-1 block text-6xl font-bold text-orange-400 tabular-nums"
+              />
               <p className="text-sm text-zinc-500">/ 100</p>
             </div>
             <div className="text-right">

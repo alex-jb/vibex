@@ -9,7 +9,8 @@ interface PageProps {
 }
 
 export const runtime = "nodejs";
-export const revalidate = 600;
+// 1-hour ISR — same rationale as /cracked/[handle].
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { a, b } = await params;

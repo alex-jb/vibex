@@ -3,7 +3,9 @@ import { createClient } from "@supabase/supabase-js";
 import { Bilingual } from "@/components/i18n/bilingual";
 
 export const runtime = "nodejs";
-export const revalidate = 300; // 5-min ISR
+// 1-hour ISR — data is daily-refreshed by cracked-seed cron, sub-hour
+// revalidation was thrashing Supabase reads with no UX gain.
+export const revalidate = 3600;
 
 export const metadata = {
   title: "🧠 Cracked Score Leaderboard — Who's the most cracked dev?",
