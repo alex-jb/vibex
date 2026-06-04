@@ -27,11 +27,37 @@ import fs from "node:fs";
 
 const OUT = process.argv[2] || "scripts/migration-inventory.json";
 
-const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const key =
+// Load .env.local manually if env vars not already set. `vercel env pull`
+// sometimes writes values with literal trailing `\n` inside quotes, which
+// breaks the URL by appending it to the host. Strip the trailing whitespace
+// and any literal `\n` sequence at the end of the value.
+function loadEnvLocal() {
+  try {
+    const text = fs.readFileSync(".env.local", "utf8");
+    for (const line of text.split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*)$/);
+      if (!m) continue;
+      const k = m[1];
+      let v = m[2];
+      if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+        v = v.slice(1, -1);
+      }
+      v = v.replace(/\\n$/, "").replace(/\s+$/, "");
+      if (!(k in process.env)) process.env[k] = v;
+    }
+  } catch {
+    // .env.local optional — caller may have set env via shell
+  }
+}
+loadEnvLocal();
+
+const url = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "").trim();
+const key = (
   process.env.SUPABASE_ANON_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  process.env.SUPABASE_SERVICE_ROLE_KEY;
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  ""
+).trim();
 
 if (!url || !key) {
   console.error(
