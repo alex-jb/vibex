@@ -6,6 +6,7 @@ import { bumpScore, getAnonClient } from "@/lib/score";
 import { CompareInput } from "@/components/cracked/compare-input";
 import { Bilingual } from "@/components/i18n/bilingual";
 import CountUp from "@/components/react-bits/CountUp";
+import DecryptedText from "@/components/react-bits/DecryptedText";
 import type { Metadata } from "next";
 
 async function fetchRank(overall: number): Promise<{ rank: number; total: number } | null> {
@@ -101,7 +102,14 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
             </div>
             <div className="text-right">
               <div className="inline-block rounded-full bg-orange-500 px-5 py-2 text-base font-bold uppercase text-black">
-                {result.tier.name}
+                <DecryptedText
+                  text={result.tier.name}
+                  animateOn="view"
+                  sequential
+                  revealDirection="start"
+                  speed={45}
+                  maxIterations={8}
+                />
               </div>
               {rankInfo && (
                 <p className="mt-2 text-xs uppercase tracking-wider text-zinc-400">
@@ -112,15 +120,15 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
           </div>
           <div className="mt-5 grid grid-cols-3 gap-2 text-center text-xs">
             <div className="rounded-lg bg-black/40 p-2 ring-1 ring-zinc-800">
-              <p className="text-base font-semibold">{result.totalStars}</p>
+              <CountUp to={result.totalStars} duration={1.4} separator="," className="text-base font-semibold tabular-nums" />
               <p className="text-zinc-500"><Bilingual en="total stars" zh="总星标" /></p>
             </div>
             <div className="rounded-lg bg-black/40 p-2 ring-1 ring-zinc-800">
-              <p className="text-base font-semibold">{result.totalRepos}</p>
+              <CountUp to={result.totalRepos} duration={1.4} className="text-base font-semibold tabular-nums" />
               <p className="text-zinc-500"><Bilingual en="public repos" zh="公开仓库" /></p>
             </div>
             <div className="rounded-lg bg-black/40 p-2 ring-1 ring-zinc-800">
-              <p className="text-base font-semibold">{result.followers}</p>
+              <CountUp to={result.followers} duration={1.4} separator="," className="text-base font-semibold tabular-nums" />
               <p className="text-zinc-500"><Bilingual en="followers" zh="关注者" /></p>
             </div>
           </div>
