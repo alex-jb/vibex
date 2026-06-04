@@ -538,43 +538,118 @@ export interface AIBattleNarrative {
   mvpComment: string;
 }
 
+const BATTLE_NARRATIVE_STUB = (battle: {
+  challengerTitle: string;
+  defenderTitle: string;
+  rounds: { attribute: string; challengerValue: number; defenderValue: number; winner: string; isCritical: boolean }[];
+  winner: string;
+}): AIBattleNarrative => ({
+  intro: `${battle.challengerTitle} vs ${battle.defenderTitle} — let the battle begin!`,
+  roundNarratives: battle.rounds.map(
+    (r) => `${r.attribute}: ${r.winner} wins this round!`,
+  ),
+  conclusion: `${battle.winner} claims victory!`,
+  mvpComment: "An impressive showing from both sides.",
+});
+
+const BATTLE_NARRATIVE_TOOL_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    intro: { type: "string", description: "1-2 sentences setting up the matchup. Cracked / RPG tone. No buzzwords." },
+    roundNarratives: { type: "array", items: { type: "string" }, description: "One line per round in the order given. Reference the attribute + which side won + the value gap." },
+    conclusion: { type: "string", description: "1-2 sentences declaring the winner. Tie back to the stat that won it." },
+    mvpComment: { type: "string", description: "1 sentence on the strongest moment from either side." },
+  },
+  required: ["intro", "roundNarratives", "conclusion", "mvpComment"],
+};
+
 export async function generateBattleNarrative(battle: {
   challengerTitle: string;
   defenderTitle: string;
   rounds: { attribute: string; challengerValue: number; defenderValue: number; winner: string; isCritical: boolean }[];
   winner: string;
 }): Promise<AIBattleNarrative> {
-  return {
-    intro: `${battle.challengerTitle} vs ${battle.defenderTitle} — let the battle begin!`,
-    roundNarratives: battle.rounds.map(
-      (r) => `${r.attribute}: ${r.winner} wins this round!`,
-    ),
-    conclusion: `${battle.winner} claims victory!`,
-    mvpComment: "An impressive showing from both sides.",
-  };
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return BATTLE_NARRATIVE_STUB(battle);
+  try {
+    const client = new Anthropic({ apiKey });
+    const roundsBlob = battle.rounds
+      .map((r, i) =>
+        `Round ${i + 1} (${r.attribute}): ${battle.challengerTitle} ${r.challengerValue} vs ${battle.defenderTitle} ${r.defenderValue} → ${r.winner} wins${r.isCritical ? " (CRITICAL)" : ""}`,
+      )
+      .join("\n");
+    const response = await client.messages.create({
+      model: REVIEW_MODEL,
+      max_tokens: 800,
+      system: `You narrate AI project battles in a Cracked / RPG voice. Tight punchy lines. Reference actual stat gaps. No "revolutionary", "epic", "ultimate". No em dashes. ${battle.rounds.length} rounds — produce that many roundNarratives in order.`,
+      tools: [{ name: "submit_battle", description: "Submit battle narrative.", input_schema: BATTLE_NARRATIVE_TOOL_SCHEMA }],
+      tool_choice: { type: "tool", name: "submit_battle" },
+      messages: [{
+        role: "user",
+        content: `${battle.challengerTitle} vs ${battle.defenderTitle}\n\nRounds:\n${roundsBlob}\n\nOverall winner: ${battle.winner}`,
+      }],
+    });
+    const block = response.content.find((b) => b.type === "tool_use");
+    if (!block || block.type !== "tool_use") throw new Error("no tool_use");
+    return block.input as AIBattleNarrative;
+  } catch (err) {
+    console.error("[ai] generateBattleNarrative failed:", err);
+    return BATTLE_NARRATIVE_STUB(battle);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
 // AI BATTLE COMMENTARY (streaming)
 // ═══════════════════════════════════════════════════════════════
 
+/**
+ * Streaming battle narrative. Calls Claude with `stream: true` and yields
+ * raw text chunks as they arrive. Front-end can render progressively.
+ *
+ * Falls back to a chunked stub when ANTHROPIC_API_KEY is absent so the
+ * UI still streams something rather than appearing broken.
+ */
 export async function* streamBattleNarrative(battle: {
   challengerTitle: string;
   defenderTitle: string;
   rounds: { attribute: string; challengerValue: number; defenderValue: number; winner: string; isCritical: boolean }[];
   winner: string;
 }): AsyncGenerator<string> {
-  const narrative = JSON.stringify({
-    intro: `${battle.challengerTitle} vs ${battle.defenderTitle} — battle commences!`,
-    roundNarratives: battle.rounds.map(
-      (r) => `${r.attribute}: ${r.winner} wins!`,
-    ),
-    conclusion: `${battle.winner} is victorious!`,
-    mvpComment: "Great battle!",
-  });
-  // Simulate streaming by yielding chunks
-  for (let i = 0; i < narrative.length; i += 20) {
-    yield narrative.slice(i, i + 20);
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    const stub = `${battle.challengerTitle} vs ${battle.defenderTitle}. ${battle.winner} takes it.`;
+    for (let i = 0; i < stub.length; i += 20) {
+      yield stub.slice(i, i + 20);
+    }
+    return;
+  }
+  try {
+    const client = new Anthropic({ apiKey });
+    const roundsBlob = battle.rounds
+      .map((r, i) =>
+        `Round ${i + 1} (${r.attribute}): ${r.challengerValue} vs ${r.defenderValue} → ${r.winner}${r.isCritical ? " CRITICAL" : ""}`,
+      )
+      .join("\n");
+    const stream = await client.messages.stream({
+      model: REVIEW_MODEL,
+      max_tokens: 600,
+      system: `Narrate an AI project battle round-by-round in a Cracked / RPG voice. Punchy sentences. Use the real numbers. No "epic", no "ultimate", no em dashes.`,
+      messages: [{
+        role: "user",
+        content: `${battle.challengerTitle} vs ${battle.defenderTitle}\n\n${roundsBlob}\n\nOverall winner: ${battle.winner}\n\nWrite a single-pass narrative (intro, 1 line per round, conclusion).`,
+      }],
+    });
+    for await (const event of stream) {
+      if (
+        event.type === "content_block_delta" &&
+        event.delta.type === "text_delta"
+      ) {
+        yield event.delta.text;
+      }
+    }
+  } catch (err) {
+    console.error("[ai] streamBattleNarrative failed:", err);
+    yield `${battle.challengerTitle} vs ${battle.defenderTitle}. ${battle.winner} takes it.`;
   }
 }
 
@@ -582,20 +657,45 @@ export async function* streamBattleNarrative(battle: {
 // AI LAUNCH ASSISTANT (streaming)
 // ═══════════════════════════════════════════════════════════════
 
-export async function* streamLaunchAssistant(_project: {
+export async function* streamLaunchAssistant(project: {
   title: string;
   tagline: string;
   description: string;
   category: string;
 }): AsyncGenerator<string> {
-  const tips = [
-    "Your project looks promising! ",
-    "Consider adding a demo video. ",
-    "Make sure your tagline is catchy and under 10 words. ",
-    "Target a specific niche for better traction.",
-  ];
-  for (const tip of tips) {
-    yield tip;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    const tips = [
+      "Your project looks promising. ",
+      "Add a demo video. ",
+      "Catchy tagline under 10 words. ",
+      "Target a specific niche.",
+    ];
+    for (const tip of tips) yield tip;
+    return;
+  }
+  try {
+    const client = new Anthropic({ apiKey });
+    const stream = await client.messages.stream({
+      model: REVIEW_MODEL,
+      max_tokens: 600,
+      system: `You are VibeX Launch Coach. Direct, founder-to-founder. Give 3-5 specific, actionable next-step suggestions for this project's launch. No "revolutionary", no em dashes, no preamble. Stream as plain text, one suggestion per paragraph.`,
+      messages: [{
+        role: "user",
+        content: `Title: ${project.title}\nTagline: ${project.tagline}\nCategory: ${project.category}\n\nDescription:\n${project.description}\n\nGive launch advice.`,
+      }],
+    });
+    for await (const event of stream) {
+      if (
+        event.type === "content_block_delta" &&
+        event.delta.type === "text_delta"
+      ) {
+        yield event.delta.text;
+      }
+    }
+  } catch (err) {
+    console.error("[ai] streamLaunchAssistant failed:", err);
+    yield `Add a demo video. Tighten the tagline under 10 words. Pick one niche subreddit and post within 7 days of going live.`;
   }
 }
 

@@ -33,6 +33,7 @@ import { ShareModal } from "@/components/share-modal";
 import { GrowthRadar } from "@/components/project/growth-radar";
 import { ForkTree } from "@/components/project/fork-tree";
 import { EvolutionProgress } from "@/components/project/evolution-progress";
+import { TipButton } from "@/components/project/tip-button";
 import { EvolutionBurst, useEvolutionDetector } from "@/components/rpg/evolution-burst";
 import { SkillTree } from "@/components/rpg/skill-tree";
 import { ClassIcon } from "@/components/rpg/class-icon";
@@ -1080,6 +1081,18 @@ export default function ProjectPage({
                 Tweet my stage
               </span>
             </Button>
+          </motion.div>
+
+          {/* Backer Mode v0: PMF signal capture, no money. See spec
+              docs/superpowers/specs/2026-04-23-backer-mode-design.md +
+              migration 075. Drop below the Tweet CTA so launch-day
+              visitors who already liked the project see "would back at $X". */}
+          <motion.div variants={fadeIn}>
+            <TipButton
+              projectId={project.id}
+              projectTitle={project.title}
+              creatorName={project.creatorName}
+            />
           </motion.div>
 
           {/* Evolution Progress */}
