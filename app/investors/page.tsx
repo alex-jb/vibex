@@ -58,12 +58,47 @@ const STATS = [
   { label: "BILINGUAL i18n KEYS", value: "925+" },
 ];
 
+const INVESTORS_JSONLD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://www.vibexforge.com/investors",
+      url: "https://www.vibexforge.com/investors",
+      name: "VibeXForge for Investors",
+      description:
+        "2-minute pitch video for VibeXForge — the distribution amplifier for solo AI creators. 43 DB tables, 57 API routes, 119 React components, 925+ bilingual keys. Solo-built, open source, live in open beta.",
+      isPartOf: { "@id": "https://www.vibexforge.com/#website" },
+      about: { "@id": "https://www.vibexforge.com/#product" },
+      mainEntity: { "@id": "https://www.vibexforge.com/investors#pitch" },
+    },
+    {
+      "@type": "Article",
+      "@id": "https://www.vibexforge.com/investors#pitch",
+      headline: "VibeXForge — the growth layer for AI creators",
+      description:
+        "A 2-minute pitch on why every solo AI creator stalls at the distribution mile, and how VibeXForge turns one submission into 12 platform-native posts in 10 seconds.",
+      author: { "@id": "https://www.vibexforge.com/#founder" },
+      publisher: { "@id": "https://www.vibexforge.com/#org" },
+      datePublished: "2026-04-22",
+      dateModified: "2026-06-04",
+      inLanguage: "en",
+      isAccessibleForFree: true,
+      mainEntityOfPage: { "@id": "https://www.vibexforge.com/investors" },
+    },
+  ],
+};
+
 export default function VCPage() {
   return (
     <main
       className="min-h-full"
       style={{ background: COLOR.BG, color: COLOR.TEXT }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(INVESTORS_JSONLD) }}
+      />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
         {/* Terminal header */}
         <div

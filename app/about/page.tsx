@@ -12,10 +12,58 @@ const STAGES = [
   { code: "MYTH", color: "#FF69B4" },
 ] as const;
 
+const ABOUT_JSONLD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "AboutPage",
+      "@id": "https://www.vibexforge.com/about",
+      url: "https://www.vibexforge.com/about",
+      name: "About VibeXForge",
+      description:
+        "VibeXForge is a distribution amplifier for solo AI creators. Submit your AI project once and get platform-native posts in 10 seconds for X, Reddit, HN, Dev.to, LinkedIn, Bluesky, Threads, Xiaohongshu, Jike, Zhihu, and Bilibili. Bilingual EN ↔ ZH.",
+      isPartOf: { "@id": "https://www.vibexforge.com/#website" },
+      about: { "@id": "https://www.vibexforge.com/#org" },
+      mainEntity: { "@id": "https://www.vibexforge.com/#product" },
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://www.vibexforge.com/#product",
+      name: "VibeXForge",
+      applicationCategory: "BusinessApplication",
+      applicationSubCategory: "AI launch platform",
+      operatingSystem: "Web",
+      url: "https://www.vibexforge.com",
+      description:
+        "Launch your AI project once, reach 12 platforms at the same time. Claude-scored 5-dimension reviews, bilingual EN ↔ ZH posts, evolution-stage progression (Seed → Active → Growing → Breakout → Legend → Myth).",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        description: "Free during open beta.",
+      },
+      featureList: [
+        "Auto-publish to 12 platforms (X, Reddit, HN, Dev.to, LinkedIn, Bluesky, Threads, Xiaohongshu, Jike, Zhihu, Bilibili, PH)",
+        "Claude-scored 5-dimension AI reviews",
+        "Bilingual EN ↔ ZH posts",
+        "Evolution-stage progression",
+        "Public arena battles",
+      ],
+      author: { "@id": "https://www.vibexforge.com/#founder" },
+      publisher: { "@id": "https://www.vibexforge.com/#org" },
+    },
+  ],
+};
+
 export default function AboutPage() {
   const { t } = useLang();
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ABOUT_JSONLD) }}
+      />
       {/* Terminal Header */}
       <div
         style={{

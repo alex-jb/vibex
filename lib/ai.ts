@@ -120,20 +120,54 @@ export interface AIIdeaEvalResult {
   similarProjects: string[];
 }
 
-export async function evaluateIdea(_idea: {
+const IDEA_EVAL_STUB: AIIdeaEvalResult = {
+  viability: 70,
+  marketFit: 65,
+  competition: "moderate",
+  uniqueness: 60,
+  difficulty: "medium",
+  suggestions: ["Validate with early users", "Build an MVP first"],
+  similarProjects: ["ExampleProject"],
+};
+
+const IDEA_EVAL_TOOL_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    viability: { type: "number", minimum: 0, maximum: 100, description: "How real is the demand?" },
+    marketFit: { type: "number", minimum: 0, maximum: 100, description: "How well does this match an underserved segment?" },
+    competition: { type: "string", enum: ["low", "moderate", "high", "saturated"] },
+    uniqueness: { type: "number", minimum: 0, maximum: 100 },
+    difficulty: { type: "string", enum: ["easy", "medium", "hard", "expert"] },
+    suggestions: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 5, description: "Concrete next steps. No 'consider thinking about'." },
+    similarProjects: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 4, description: "Real product names that already exist in this space." },
+  },
+  required: ["viability", "marketFit", "competition", "uniqueness", "difficulty", "suggestions", "similarProjects"],
+};
+
+export async function evaluateIdea(idea: {
   title: string;
   description: string;
   category: string;
 }): Promise<AIIdeaEvalResult> {
-  return {
-    viability: 70,
-    marketFit: 65,
-    competition: "moderate",
-    uniqueness: 60,
-    difficulty: "medium",
-    suggestions: ["Validate with early users", "Build an MVP first"],
-    similarProjects: ["ExampleProject"],
-  };
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return IDEA_EVAL_STUB;
+  try {
+    const client = new Anthropic({ apiKey });
+    const response = await client.messages.create({
+      model: REVIEW_MODEL,
+      max_tokens: 1200,
+      system: `You evaluate AI project ideas at YC-partner level. No hedging. Name real competitors. Numbers over adjectives.`,
+      tools: [{ name: "submit_idea_eval", description: "Submit idea evaluation.", input_schema: IDEA_EVAL_TOOL_SCHEMA }],
+      tool_choice: { type: "tool", name: "submit_idea_eval" },
+      messages: [{ role: "user", content: `Title: ${idea.title}\nCategory: ${idea.category}\n\nDescription:\n${idea.description}` }],
+    });
+    const block = response.content.find((b) => b.type === "tool_use");
+    if (!block || block.type !== "tool_use") throw new Error("no tool_use");
+    return block.input as AIIdeaEvalResult;
+  } catch (err) {
+    console.error("[ai] evaluateIdea failed:", err);
+    return IDEA_EVAL_STUB;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -573,28 +607,76 @@ export async function generateShareSummary(project: {
   title: string;
   tagline: string;
   category: string;
-}, _platform: "twitter" | "xiaohongshu" | "douyin"): Promise<string> {
-  return `Check out ${project.title} — ${project.tagline} #AI #VibeX`;
+}, platform: "twitter" | "xiaohongshu" | "douyin"): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const stub = `Check out ${project.title} — ${project.tagline} #AI #VibeX`;
+  if (!apiKey) return stub;
+  const platformVoice = {
+    twitter: "Direct, founder-to-founder. Under 240 chars (room for the link). Hook in first 5 words. 1-2 relevant hashtags, not 5.",
+    xiaohongshu: "小红书 voice: friendly, conversational Chinese (or English w/ Chinese accent), emojis OK (3-5 max), 100-150 字, ends with a question or invite. Avoid marketing speak.",
+    douyin: "抖音 voice: hook-led Chinese, short punchy lines, 50-80 字, energetic, ends with a CTA.",
+  }[platform];
+  try {
+    const client = new Anthropic({ apiKey });
+    const response = await client.messages.create({
+      model: REVIEW_MODEL,
+      max_tokens: 400,
+      system: `You write share posts in the voice of the platform. No "AI-native", no "revolutionary", no em dashes. Specific over abstract.\n\nPlatform voice: ${platformVoice}`,
+      messages: [{ role: "user", content: `Project: ${project.title}\nTagline: ${project.tagline}\nCategory: ${project.category}\n\nWrite ONE share post text. Return ONLY the post body, no quotes, no labels, no preface.` }],
+    });
+    const block = response.content.find((b) => b.type === "text");
+    if (!block || block.type !== "text") return stub;
+    return block.text.trim();
+  } catch (err) {
+    console.error("[ai] generateShareSummary failed:", err);
+    return stub;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
 // AI TREND ANALYSIS
 // ═══════════════════════════════════════════════════════════════
 
-export async function analyzeTrend(_category: string, _projectCount: number): Promise<{
-  type: "rising" | "saturated" | "opportunity" | "emerging";
-  signal: "strong" | "moderate" | "early";
-  summary: string;
-  momentum: number;
-  confidence: number;
-}> {
-  return {
-    type: "rising",
-    signal: "moderate",
-    summary: "This category shows steady growth with room for innovation.",
-    momentum: 65,
-    confidence: 70,
-  };
+const TREND_STUB = {
+  type: "rising" as const,
+  signal: "moderate" as const,
+  summary: "This category shows steady growth with room for innovation.",
+  momentum: 65,
+  confidence: 70,
+};
+
+const TREND_TOOL_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    type: { type: "string", enum: ["rising", "saturated", "opportunity", "emerging"] },
+    signal: { type: "string", enum: ["strong", "moderate", "early"] },
+    summary: { type: "string", description: "One sentence. Specific to category + count. No buzzwords." },
+    momentum: { type: "number", minimum: 0, maximum: 100 },
+    confidence: { type: "number", minimum: 0, maximum: 100 },
+  },
+  required: ["type", "signal", "summary", "momentum", "confidence"],
+};
+
+export async function analyzeTrend(category: string, projectCount: number): Promise<typeof TREND_STUB> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return TREND_STUB;
+  try {
+    const client = new Anthropic({ apiKey });
+    const response = await client.messages.create({
+      model: REVIEW_MODEL,
+      max_tokens: 500,
+      system: `You analyze category trends for an AI-project launch platform. Be honest: most niches are 'saturated' or 'emerging', not 'rising'. Use the project count as a sanity check.`,
+      tools: [{ name: "submit_trend", description: "Submit trend analysis.", input_schema: TREND_TOOL_SCHEMA }],
+      tool_choice: { type: "tool", name: "submit_trend" },
+      messages: [{ role: "user", content: `Category: ${category}\nProjects in this category on the platform: ${projectCount}\n\nAnalyze the trend.` }],
+    });
+    const block = response.content.find((b) => b.type === "tool_use");
+    if (!block || block.type !== "tool_use") throw new Error("no tool_use");
+    return block.input as typeof TREND_STUB;
+  } catch (err) {
+    console.error("[ai] analyzeTrend failed:", err);
+    return TREND_STUB;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -636,6 +718,141 @@ export interface LaunchPackage {
   competitors: { name: string; difference: string }[];
 }
 
+const LAUNCH_PACKAGE_STUB = (project: {
+  title: string;
+  tagline: string;
+  description: string;
+  category: string;
+  tags: string[];
+  demoUrl?: string;
+}): LaunchPackage => ({
+  positioning: {
+    oneLiner: `${project.title} — the next big thing in ${project.category}`,
+    targetAudience: "AI-curious developers and creators",
+    problemSolved: "Helps creators launch AI projects faster",
+    uniqueValue: "Community-driven discovery and feedback",
+  },
+  copy: {
+    title: project.title,
+    tagline: project.tagline,
+    elevatorPitch: `${project.title} is a ${project.category} project that ${project.description.slice(0, 100)}...`,
+    productHuntDescription: `${project.title} helps you ${project.tagline}. Built with AI-native principles.`,
+  },
+  social: {
+    twitterThread: [
+      `Launching ${project.title} today!`,
+      `Here's what it does: ${project.tagline}`,
+      "Built this in public, feedback welcome!",
+      `Try it out: ${project.demoUrl ?? "link in bio"}`,
+    ],
+    linkedinPost: `Excited to launch ${project.title}. ${project.tagline}`,
+    redditTitle: `I built ${project.title} — ${project.tagline}`,
+    redditBody: `${project.description}\n\nWould love your feedback!`,
+  },
+  distribution: {
+    channels: [
+      { name: "Twitter/X", reason: "Large AI community", priority: "high" as const },
+      { name: "Reddit", reason: "Authentic discussion", priority: "high" as const },
+      { name: "Product Hunt", reason: "Launch visibility", priority: "medium" as const },
+    ],
+    timing: "Tuesday morning EST",
+    targetCommunities: ["r/artificial", "r/SideProject"],
+  },
+  investorPitch: {
+    problem: "AI creators lack a dedicated platform for discovery",
+    solution: project.description.slice(0, 200),
+    market: "$10B+ AI tools market",
+    traction: "Early stage — building community",
+    ask: "Feedback and early users",
+  },
+  demoScript: `Hi, I'm showing ${project.title}. ${project.tagline}. Let me walk you through the key features.`,
+  competitors: [
+    { name: "Product Hunt", difference: "We focus exclusively on AI projects" },
+  ],
+});
+
+const LAUNCH_PACKAGE_TOOL_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    positioning: {
+      type: "object",
+      properties: {
+        oneLiner: { type: "string", description: "Under 90 chars. Names problem + solution + outcome. No buzzwords." },
+        targetAudience: { type: "string", description: "Specific persona, not 'developers and creators'." },
+        problemSolved: { type: "string", description: "Concrete pain point in one sentence." },
+        uniqueValue: { type: "string", description: "What only this project does. Don't say 'community-driven'." },
+      },
+      required: ["oneLiner", "targetAudience", "problemSolved", "uniqueValue"],
+    },
+    copy: {
+      type: "object",
+      properties: {
+        title: { type: "string" },
+        tagline: { type: "string", description: "Punchy. Under 10 words." },
+        elevatorPitch: { type: "string", description: "2-3 sentences. Hook first, mechanism second." },
+        productHuntDescription: { type: "string", description: "PH-style: third-person, benefit-led, ends with call to action." },
+      },
+      required: ["title", "tagline", "elevatorPitch", "productHuntDescription"],
+    },
+    social: {
+      type: "object",
+      properties: {
+        twitterThread: { type: "array", items: { type: "string" }, minItems: 3, maxItems: 6, description: "Each tweet ≤ 280 chars. Hook tweet first." },
+        linkedinPost: { type: "string", description: "Professional tone, 2-4 short paragraphs." },
+        redditTitle: { type: "string", description: "No clickbait. 'I built X — does it solve Y?'-style." },
+        redditBody: { type: "string", description: "Honest founder voice, mention process and ask specific feedback." },
+      },
+      required: ["twitterThread", "linkedinPost", "redditTitle", "redditBody"],
+    },
+    distribution: {
+      type: "object",
+      properties: {
+        channels: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              reason: { type: "string", description: "Why THIS audience, specific." },
+              priority: { type: "string", enum: ["high", "medium", "low"] },
+            },
+            required: ["name", "reason", "priority"],
+          },
+          minItems: 3, maxItems: 6,
+        },
+        timing: { type: "string", description: "Best day/time with reason." },
+        targetCommunities: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 6, description: "Real subreddits / Discord / forums." },
+      },
+      required: ["channels", "timing", "targetCommunities"],
+    },
+    investorPitch: {
+      type: "object",
+      properties: {
+        problem: { type: "string" },
+        solution: { type: "string" },
+        market: { type: "string", description: "Real TAM with source if possible." },
+        traction: { type: "string", description: "What's true today, not aspirational." },
+        ask: { type: "string", description: "Specific ask." },
+      },
+      required: ["problem", "solution", "market", "traction", "ask"],
+    },
+    demoScript: { type: "string", description: "60-second demo walkthrough." },
+    competitors: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          difference: { type: "string", description: "Honest, specific differentiator." },
+        },
+        required: ["name", "difference"],
+      },
+      minItems: 1, maxItems: 4,
+    },
+  },
+  required: ["positioning", "copy", "social", "distribution", "investorPitch", "demoScript", "competitors"],
+};
+
 export async function generateLaunchPackage(project: {
   title: string;
   tagline: string;
@@ -644,51 +861,52 @@ export async function generateLaunchPackage(project: {
   tags: string[];
   demoUrl?: string;
 }): Promise<LaunchPackage> {
-  return {
-    positioning: {
-      oneLiner: `${project.title} — the next big thing in ${project.category}`,
-      targetAudience: "AI-curious developers and creators",
-      problemSolved: "Helps creators launch AI projects faster",
-      uniqueValue: "Community-driven discovery and feedback",
-    },
-    copy: {
-      title: project.title,
-      tagline: project.tagline,
-      elevatorPitch: `${project.title} is a ${project.category} project that ${project.description.slice(0, 100)}...`,
-      productHuntDescription: `${project.title} helps you ${project.tagline}. Built with AI-native principles.`,
-    },
-    social: {
-      twitterThread: [
-        `Launching ${project.title} today!`,
-        `Here's what it does: ${project.tagline}`,
-        "Built this in public, feedback welcome!",
-        `Try it out: ${project.demoUrl ?? "link in bio"}`,
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return LAUNCH_PACKAGE_STUB(project);
+
+  try {
+    const client = new Anthropic({ apiKey });
+    const systemPrompt = `You are VibeX Launch Coach — direct, founder-to-founder. You write launch copy that doesn't sound AI-generated. No "revolutionary", "next-gen", "AI-native", "delve", "unlock", "robust", "comprehensive". No em dashes — use commas, periods, or "...".
+
+You're packaging a project for Product Hunt + HN + Reddit + Twitter + LinkedIn launch. Hook first, mechanism second, benefit third. Specifics over abstractions. Numbers over adjectives.
+
+Return via submit_launch_package tool. Every field filled.`;
+
+    const userPrompt = `Project to launch:
+
+Title:       ${project.title}
+Tagline:     ${project.tagline}
+Category:    ${project.category}
+Tags:        ${project.tags.length ? project.tags.join(", ") : "(none)"}
+Demo URL:    ${project.demoUrl ?? "(none)"}
+
+Description:
+${project.description}`;
+
+    const response = await client.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 4000,
+      system: systemPrompt,
+      tools: [
+        {
+          name: "submit_launch_package",
+          description: "Submit the complete launch package: positioning, copy, social, distribution, investor pitch, demo script, competitors.",
+          input_schema: LAUNCH_PACKAGE_TOOL_SCHEMA,
+        },
       ],
-      linkedinPost: `Excited to launch ${project.title}. ${project.tagline}`,
-      redditTitle: `I built ${project.title} — ${project.tagline}`,
-      redditBody: `${project.description}\n\nWould love your feedback!`,
-    },
-    distribution: {
-      channels: [
-        { name: "Twitter/X", reason: "Large AI community", priority: "high" },
-        { name: "Reddit", reason: "Authentic discussion", priority: "high" },
-        { name: "Product Hunt", reason: "Launch visibility", priority: "medium" },
-      ],
-      timing: "Tuesday morning EST",
-      targetCommunities: ["r/artificial", "r/SideProject"],
-    },
-    investorPitch: {
-      problem: "AI creators lack a dedicated platform for discovery",
-      solution: project.description.slice(0, 200),
-      market: "$10B+ AI tools market",
-      traction: "Early stage — building community",
-      ask: "Feedback and early users",
-    },
-    demoScript: `Hi, I'm showing ${project.title}. ${project.tagline}. Let me walk you through the key features.`,
-    competitors: [
-      { name: "Product Hunt", difference: "We focus exclusively on AI projects" },
-    ],
-  };
+      tool_choice: { type: "tool", name: "submit_launch_package" },
+      messages: [{ role: "user", content: userPrompt }],
+    });
+
+    const block = response.content.find((b) => b.type === "tool_use");
+    if (!block || block.type !== "tool_use") {
+      throw new Error("Claude did not return tool_use block");
+    }
+    return block.input as LaunchPackage;
+  } catch (err) {
+    console.error("[ai] generateLaunchPackage failed, returning stub:", err);
+    return LAUNCH_PACKAGE_STUB(project);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -702,7 +920,36 @@ export interface GrowthSuggestion {
   effort: "5min" | "30min" | "1hr" | "1day";
 }
 
-export async function generateGrowthSuggestions(_project: {
+const GROWTH_STUB: GrowthSuggestion[] = [
+  { priority: "high", action: "Add a GIF preview to your listing", reason: "Increases click-through by ~55%", effort: "30min" },
+  { priority: "high", action: "Share on relevant subreddits", reason: "Drives authentic discussion", effort: "30min" },
+  { priority: "medium", action: "Write a short blog post about your journey", reason: "Builds credibility", effort: "1hr" },
+  { priority: "low", action: "Optimize your tagline for clarity", reason: "First impression matters", effort: "5min" },
+];
+
+const GROWTH_TOOL_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    suggestions: {
+      type: "array",
+      minItems: 3,
+      maxItems: 6,
+      items: {
+        type: "object",
+        properties: {
+          priority: { type: "string", enum: ["high", "medium", "low"] },
+          action: { type: "string", description: "One concrete action. No 'consider'. Imperative." },
+          reason: { type: "string", description: "Why this works for THIS project's stats, not generic." },
+          effort: { type: "string", enum: ["5min", "30min", "1hr", "1day"] },
+        },
+        required: ["priority", "action", "reason", "effort"],
+      },
+    },
+  },
+  required: ["suggestions"],
+};
+
+export async function generateGrowthSuggestions(project: {
   title: string;
   description: string;
   category: string;
@@ -711,10 +958,28 @@ export async function generateGrowthSuggestions(_project: {
   comments: number;
   daysSinceLaunch: number;
 }): Promise<GrowthSuggestion[]> {
-  return [
-    { priority: "high", action: "Add a GIF preview to your listing", reason: "Increases click-through by ~55%", effort: "30min" },
-    { priority: "high", action: "Share on relevant subreddits", reason: "Drives authentic discussion", effort: "30min" },
-    { priority: "medium", action: "Write a short blog post about your journey", reason: "Builds credibility", effort: "1hr" },
-    { priority: "low", action: "Optimize your tagline for clarity", reason: "First impression matters", effort: "5min" },
-  ];
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return GROWTH_STUB;
+  try {
+    const client = new Anthropic({ apiKey });
+    const ratio = project.views > 0 ? (project.upvotes / project.views * 100).toFixed(1) : "0";
+    const response = await client.messages.create({
+      model: REVIEW_MODEL,
+      max_tokens: 1500,
+      system: `You give post-launch growth advice. Read the stats first. Diagnose the bottleneck (low views? low conversion? low engagement?) and propose actions that fix THAT bottleneck. No generic launch advice.`,
+      tools: [{ name: "submit_growth", description: "Submit growth suggestions.", input_schema: GROWTH_TOOL_SCHEMA }],
+      tool_choice: { type: "tool", name: "submit_growth" },
+      messages: [{
+        role: "user",
+        content: `Project: ${project.title}\nCategory: ${project.category}\nDescription: ${project.description.slice(0, 400)}\n\nStats after ${project.daysSinceLaunch}d:\n- ${project.views} views\n- ${project.upvotes} upvotes (${ratio}% conversion)\n- ${project.comments} comments\n\nGive 3-6 specific growth actions ranked by priority.`,
+      }],
+    });
+    const block = response.content.find((b) => b.type === "tool_use");
+    if (!block || block.type !== "tool_use") throw new Error("no tool_use");
+    const parsed = block.input as { suggestions: GrowthSuggestion[] };
+    return parsed.suggestions;
+  } catch (err) {
+    console.error("[ai] generateGrowthSuggestions failed:", err);
+    return GROWTH_STUB;
+  }
 }
