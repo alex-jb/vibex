@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
+import { Bilingual } from "@/components/i18n/bilingual";
 
 export const runtime = "nodejs";
 export const revalidate = 300; // 5-min ISR
@@ -53,22 +54,27 @@ export default async function CrackedLeaderboardPage() {
         <header className="mb-10 text-center">
           <div className="mb-2 text-5xl">🧠</div>
           <p className="text-xs uppercase tracking-widest text-orange-400">
-            Cracked Score · Leaderboard
+            <Bilingual en="Cracked Score · Leaderboard" zh="Cracked 分数 · 排行榜" />
           </p>
           <h1 className="mt-2 text-4xl font-bold">
-            Who&apos;s the most <span className="text-orange-400">cracked</span>?
+            <Bilingual
+              en="Who's the most cracked?"
+              zh="谁才是最 cracked 的开发者?"
+            />
           </h1>
           <p className="mt-3 text-sm text-zinc-400">
-            Top 50 by Cracked Score. Live from GitHub. Click a row to see the
-            12-axis breakdown.
+            <Bilingual
+              en="Top 50 by Cracked Score. Live from GitHub. Click a row to see the 12-axis breakdown."
+              zh="按 Cracked 分数排前 50。GitHub 实时数据。点任一行看 12 轴拆解。"
+            />
           </p>
         </header>
 
         {rows.length === 0 ? (
           <p className="text-center text-sm text-zinc-500">
-            No scores yet. Be the first to{" "}
+            <Bilingual en="No scores yet. Be the first to " zh="还没有分数。第一个去 " />
             <Link href="/cracked" className="text-orange-400 hover:underline">
-              score a handle
+              <Bilingual en="score a handle" zh="测一个 handle" />
             </Link>
             .
           </p>
@@ -117,19 +123,21 @@ export default async function CrackedLeaderboardPage() {
             href="/cracked"
             className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
           >
-            Score yourself → /cracked
+            <Bilingual en="Score yourself → /cracked" zh="测自己 → /cracked" />
           </Link>
           <Link
             href="/score/alex"
             className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
           >
-            Your Creator Score → /score
+            <Bilingual en="Your Creator Score → /score" zh="你的 Creator Score → /score" />
           </Link>
         </div>
 
         <footer className="mt-16 text-center text-xs text-zinc-600">
-          Live from GitHub public data · 5-min ISR cache · Seed handles via
-          daily cron
+          <Bilingual
+            en="Live from GitHub public data · 5-min ISR cache · Seed handles via daily cron"
+            zh="GitHub 公开数据实时 · 5 分钟 ISR 缓存 · 种子 handle 每日 cron"
+          />
         </footer>
       </div>
     </main>

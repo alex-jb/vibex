@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useLang } from "@/lib/i18n";
 
 /**
  * /cracked — Cracked Score (viral track #2 scaffold).
@@ -18,6 +19,8 @@ import { useRouter } from "next/navigation";
  */
 export default function CrackedScoreLanding() {
   const router = useRouter();
+  const { lang } = useLang();
+  const isZh = lang === "zh";
   const [github, setGithub] = useState("");
   const [creatorHandle, setCreatorHandle] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting">("idle");
@@ -38,20 +41,24 @@ export default function CrackedScoreLanding() {
       <div className="mx-auto max-w-2xl text-center">
         <div className="mb-3 text-6xl">🧠</div>
         <p className="text-xs uppercase tracking-widest text-orange-400">
-          Cracked Score · live
+          {isZh ? "Cracked 分数 · 实时" : "Cracked Score · live"}
         </p>
         <h1 className="mt-3 text-5xl font-bold leading-tight">
-          How <span className="text-orange-400">cracked</span> are you, really?
+          {isZh ? (
+            <>你到底有多 <span className="text-orange-400">cracked</span>?</>
+          ) : (
+            <>How <span className="text-orange-400">cracked</span> are you, really?</>
+          )}
         </h1>
         <p className="mt-5 text-base text-zinc-400">
-          Paste your GitHub handle. We score 0-100 across 12 axes —
-          shipping velocity, depth, OSS contribution, signal-to-noise, recent
-          activity, language breadth, README discipline, tenure, social,
-          iteration, and writing presence.
+          {isZh
+            ? "粘 GitHub handle。12 轴 0-100 评分:出货速度、深度、OSS 贡献、信噪比、最近活跃、语言广度、README 自律、注册年龄、社交、迭代、写作存在感。"
+            : "Paste your GitHub handle. We score 0-100 across 12 axes — shipping velocity, depth, OSS contribution, signal-to-noise, recent activity, language breadth, README discipline, tenure, social, iteration, and writing presence."}
           <br />
           <br />
-          You get a single number + a share card. The card hits harder than a
-          resume.
+          {isZh
+            ? "拿到一个分数 + 一张分享卡。比简历狠。"
+            : "You get a single number + a share card. The card hits harder than a resume."}
         </p>
 
         <form
@@ -59,7 +66,7 @@ export default function CrackedScoreLanding() {
           className="mt-10 rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800 text-left"
         >
           <label className="mb-2 block text-xs uppercase tracking-widest text-zinc-400">
-            Your GitHub handle
+            {isZh ? "你的 GitHub handle" : "Your GitHub handle"}
           </label>
           <input
             type="text"
@@ -71,7 +78,9 @@ export default function CrackedScoreLanding() {
           />
 
           <label className="mb-2 block text-xs uppercase tracking-widest text-zinc-400">
-            Your VibeXForge Creator Score handle (optional — +40 pts to your tier)
+            {isZh
+              ? "你的 VibeXForge Creator Score handle(可选 — +40 分到你的等级)"
+              : "Your VibeXForge Creator Score handle (optional — +40 pts to your tier)"}
           </label>
           <input
             type="text"
@@ -86,7 +95,9 @@ export default function CrackedScoreLanding() {
             disabled={status === "submitting" || !github}
             className="w-full rounded-xl bg-orange-500 px-6 py-3 text-sm font-semibold text-black hover:bg-orange-400 disabled:opacity-50"
           >
-            {status === "submitting" ? "Scoring…" : "Get my Cracked Score"}
+            {status === "submitting"
+              ? (isZh ? "计算中…" : "Scoring…")
+              : (isZh ? "拿我的 Cracked 分数" : "Get my Cracked Score")}
           </button>
         </form>
 
@@ -95,26 +106,28 @@ export default function CrackedScoreLanding() {
             href="/cracked/leaderboard"
             className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
           >
-            🏆 See leaderboard
+            {isZh ? "🏆 看排行榜" : "🏆 See leaderboard"}
           </Link>
           <Link
             href="/cracked/vs/karpathy/antirez"
             className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
           >
-            ⚔️ Head-to-head example
+            {isZh ? "⚔️ 单挑示例" : "⚔️ Head-to-head example"}
           </Link>
         </div>
 
         <p className="mt-10 text-xs text-zinc-500">
-          Built on the same{" "}
+          {isZh ? "构建在同一套 " : "Built on the same "}
           <Link href="/score/alex" className="text-orange-400 hover:underline">
-            Creator Score
-          </Link>{" "}
-          infra. Calibrated on karpathy (71) / antirez (69) / gaearon (53).
+            {isZh ? "Creator Score" : "Creator Score"}
+          </Link>
+          {isZh
+            ? " 基础设施。校准于 karpathy(71)/ antirez(69)/ gaearon(53)。"
+            : " infra. Calibrated on karpathy (71) / antirez (69) / gaearon (53)."}
         </p>
 
         <footer className="mt-16 text-xs text-zinc-600">
-          A side project of{" "}
+          {isZh ? "VibeXForge 的副产品 — " : "A side project of "}
           <Link href="/" className="text-orange-400 hover:underline">
             VibeXForge
           </Link>

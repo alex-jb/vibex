@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { scoreHandle } from "@/lib/cracked-score";
 import { bumpScore, getAnonClient } from "@/lib/score";
 import { CompareInput } from "@/components/cracked/compare-input";
+import { Bilingual } from "@/components/i18n/bilingual";
 import type { Metadata } from "next";
 
 async function fetchRank(overall: number): Promise<{ rank: number; total: number } | null> {
@@ -76,7 +77,7 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
         <header className="mb-10 text-center">
           <div className="mb-2 text-6xl">{result.tier.emoji}</div>
           <p className="text-xs uppercase tracking-widest text-orange-400">
-            Cracked Score
+            <Bilingual en="Cracked Score" zh="Cracked 分数" />
           </p>
           <h1 className="mt-2 text-4xl font-bold">@{result.handle}</h1>
         </header>
@@ -86,7 +87,7 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
           <div className="flex items-baseline justify-between gap-4">
             <div>
               <p className="text-sm uppercase tracking-wider text-zinc-500">
-                Overall
+                <Bilingual en="Overall" zh="总分" />
               </p>
               <p className="mt-1 text-6xl font-bold text-orange-400">
                 {result.overall}
@@ -99,7 +100,7 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
               </div>
               {rankInfo && (
                 <p className="mt-2 text-xs uppercase tracking-wider text-zinc-400">
-                  Rank #{rankInfo.rank} of {rankInfo.total}
+                  <Bilingual en={`Rank #${rankInfo.rank} of ${rankInfo.total}`} zh={`排名 #${rankInfo.rank} / ${rankInfo.total}`} />
                 </p>
               )}
             </div>
@@ -107,15 +108,15 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
           <div className="mt-5 grid grid-cols-3 gap-2 text-center text-xs">
             <div className="rounded-lg bg-black/40 p-2 ring-1 ring-zinc-800">
               <p className="text-base font-semibold">{result.totalStars}</p>
-              <p className="text-zinc-500">total stars</p>
+              <p className="text-zinc-500"><Bilingual en="total stars" zh="总星标" /></p>
             </div>
             <div className="rounded-lg bg-black/40 p-2 ring-1 ring-zinc-800">
               <p className="text-base font-semibold">{result.totalRepos}</p>
-              <p className="text-zinc-500">public repos</p>
+              <p className="text-zinc-500"><Bilingual en="public repos" zh="公开仓库" /></p>
             </div>
             <div className="rounded-lg bg-black/40 p-2 ring-1 ring-zinc-800">
               <p className="text-base font-semibold">{result.followers}</p>
-              <p className="text-zinc-500">followers</p>
+              <p className="text-zinc-500"><Bilingual en="followers" zh="关注者" /></p>
             </div>
           </div>
         </section>
@@ -123,7 +124,7 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
         {/* Axes */}
         <section className="mb-8 rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800">
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-400">
-            12 axes
+            <Bilingual en="12 axes" zh="12 轴拆解" />
           </h2>
           <ul className="space-y-3">
             {result.axes.map((a) => (
@@ -157,13 +158,13 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
             rel="noreferrer"
             className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
           >
-            Share on 𝕏
+            <Bilingual en="Share on 𝕏" zh="分享到 𝕏" />
           </a>
           <Link
             href="/cracked/leaderboard"
             className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
           >
-            See leaderboard →
+            <Bilingual en="See leaderboard →" zh="看排行榜 →" />
           </Link>
         </div>
         <div className="mt-3 text-center">
@@ -171,13 +172,14 @@ export default async function CrackedHandlePage({ params, searchParams }: PagePr
             href="/cracked"
             className="text-xs text-zinc-500 hover:text-zinc-300 hover:underline"
           >
-            Score another handle
+            <Bilingual en="Score another handle" zh="测另一个 handle" />
           </Link>
         </div>
 
         <footer className="mt-16 text-center text-xs text-zinc-600">
-          Live from GitHub public data · Computed{" "}
-          {new Date(result.computedAt).toLocaleString()} · cached 10m
+          <Bilingual en="Live from GitHub public data · Computed " zh="GitHub 公开数据 · 计算于 " />
+          {new Date(result.computedAt).toLocaleString()}
+          <Bilingual en=" · cached 10m" zh=" · 10 分钟缓存" />
         </footer>
       </div>
     </main>

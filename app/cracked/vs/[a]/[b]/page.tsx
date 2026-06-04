@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { scoreHandle } from "@/lib/cracked-score";
+import { Bilingual } from "@/components/i18n/bilingual";
 
 interface PageProps {
   params: Promise<{ a: string; b: string }>;
@@ -44,10 +45,10 @@ export default async function CrackedVsPage({ params }: PageProps) {
       <div className="mx-auto max-w-4xl">
         <header className="mb-10 text-center">
           <p className="text-xs uppercase tracking-widest text-orange-400">
-            Cracked Score · Head-to-Head
+            <Bilingual en="Cracked Score · Head-to-Head" zh="Cracked 分数 · 单挑" />
           </p>
           <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-            @{resA.handle} <span className="text-zinc-500">vs</span> @{resB.handle}
+            @{resA.handle} <span className="text-zinc-500"><Bilingual en="vs" zh="对决" /></span> @{resB.handle}
           </h1>
         </header>
 
@@ -82,7 +83,7 @@ export default async function CrackedVsPage({ params }: PageProps) {
         {/* Axis-by-axis */}
         <section className="mb-8 rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800">
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-400">
-            12 axes
+            <Bilingual en="12 axes" zh="12 轴拆解" />
           </h2>
           <ul className="space-y-2">
             {resA.axes.map((axisA, i) => {
@@ -121,18 +122,20 @@ export default async function CrackedVsPage({ params }: PageProps) {
         <section className="mb-8 rounded-2xl bg-zinc-900/40 p-6 text-center ring-1 ring-zinc-800">
           {resA.overall === resB.overall ? (
             <p className="text-sm text-zinc-300">
-              Dead tie at <span className="text-orange-400 font-bold">{resA.overall}</span>. Cracked equilibrium.
+              <Bilingual en="Dead tie at " zh="平手 " />
+              <span className="text-orange-400 font-bold">{resA.overall}</span>
+              <Bilingual en=". Cracked equilibrium." zh="。Cracked 均势。" />
             </p>
           ) : (
             <p className="text-sm text-zinc-300">
               <span className="text-orange-400 font-bold">
                 @{resA.overall > resB.overall ? resA.handle : resB.handle}
-              </span>{" "}
-              wins by{" "}
+              </span>
+              <Bilingual en=" wins by " zh=" 赢 " />
               <span className="text-orange-400 font-bold">
                 {Math.abs(resA.overall - resB.overall)}
-              </span>{" "}
-              points ({delta(resA.overall, resB.overall)} net).
+              </span>
+              <Bilingual en={` points (${delta(resA.overall, resB.overall)} net).`} zh={` 分(净 ${delta(resA.overall, resB.overall)})。`} />
             </p>
           )}
         </section>
@@ -147,20 +150,20 @@ export default async function CrackedVsPage({ params }: PageProps) {
             rel="noreferrer"
             className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
           >
-            Share on 𝕏
+            <Bilingual en="Share on 𝕏" zh="分享到 𝕏" />
           </a>
           <Link
             href="/cracked"
             className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
           >
-            Score yourself →
+            <Bilingual en="Score yourself →" zh="测自己 →" />
           </Link>
         </div>
 
         <footer className="mt-16 text-center text-xs text-zinc-600">
-          Live from GitHub public data ·{" "}
+          <Bilingual en="Live from GitHub public data · " zh="GitHub 公开数据 · " />
           <Link href="/cracked/leaderboard" className="text-orange-400 hover:underline">
-            See full leaderboard
+            <Bilingual en="See full leaderboard" zh="看完整排行榜" />
           </Link>
         </footer>
       </div>
