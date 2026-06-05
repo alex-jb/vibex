@@ -156,8 +156,19 @@ export async function evaluateIdea(idea: {
     const response = await client.messages.create({
       model: REVIEW_MODEL,
       max_tokens: 1200,
-      system: `You evaluate AI project ideas at YC-partner level. No hedging. Name real competitors. Numbers over adjectives.`,
-      tools: [{ name: "submit_idea_eval", description: "Submit idea evaluation.", input_schema: IDEA_EVAL_TOOL_SCHEMA }],
+      system: [
+        {
+          type: "text" as const,
+          text: `You evaluate AI project ideas at YC-partner level. No hedging. Name real competitors. Numbers over adjectives.`,
+          cache_control: { type: "ephemeral" as const },
+        },
+      ],
+      tools: [{
+        name: "submit_idea_eval",
+        description: "Submit idea evaluation.",
+        input_schema: IDEA_EVAL_TOOL_SCHEMA,
+        cache_control: { type: "ephemeral" as const },
+      }],
       tool_choice: { type: "tool", name: "submit_idea_eval" },
       messages: [{ role: "user", content: `Title: ${idea.title}\nCategory: ${idea.category}\n\nDescription:\n${idea.description}` }],
     });
@@ -597,8 +608,21 @@ export async function generateBattleNarrative(battle: {
     const response = await client.messages.create({
       model: REVIEW_MODEL,
       max_tokens: 800,
-      system: `You narrate AI project battles in a Cracked / RPG voice. Tight punchy lines. Reference actual stat gaps. No "revolutionary", "epic", "ultimate". No em dashes. ${battle.rounds.length} rounds — produce that many roundNarratives in order.`,
-      tools: [{ name: "submit_battle", description: "Submit battle narrative.", input_schema: BATTLE_NARRATIVE_TOOL_SCHEMA }],
+      // System prompt + tool schema same across battles, varies only in
+      // round count interpolation. Cache the static parts.
+      system: [
+        {
+          type: "text" as const,
+          text: `You narrate AI project battles in a Cracked / RPG voice. Tight punchy lines. Reference actual stat gaps. No "revolutionary", "epic", "ultimate". No em dashes. ${battle.rounds.length} rounds — produce that many roundNarratives in order.`,
+          cache_control: { type: "ephemeral" as const },
+        },
+      ],
+      tools: [{
+        name: "submit_battle",
+        description: "Submit battle narrative.",
+        input_schema: BATTLE_NARRATIVE_TOOL_SCHEMA,
+        cache_control: { type: "ephemeral" as const },
+      }],
       tool_choice: { type: "tool", name: "submit_battle" },
       messages: [{
         role: "user",
@@ -781,8 +805,19 @@ export async function analyzeTrend(category: string, projectCount: number): Prom
     const response = await client.messages.create({
       model: REVIEW_MODEL,
       max_tokens: 500,
-      system: `You analyze category trends for an AI-project launch platform. Be honest: most niches are 'saturated' or 'emerging', not 'rising'. Use the project count as a sanity check.`,
-      tools: [{ name: "submit_trend", description: "Submit trend analysis.", input_schema: TREND_TOOL_SCHEMA }],
+      system: [
+        {
+          type: "text" as const,
+          text: `You analyze category trends for an AI-project launch platform. Be honest: most niches are 'saturated' or 'emerging', not 'rising'. Use the project count as a sanity check.`,
+          cache_control: { type: "ephemeral" as const },
+        },
+      ],
+      tools: [{
+        name: "submit_trend",
+        description: "Submit trend analysis.",
+        input_schema: TREND_TOOL_SCHEMA,
+        cache_control: { type: "ephemeral" as const },
+      }],
       tool_choice: { type: "tool", name: "submit_trend" },
       messages: [{ role: "user", content: `Category: ${category}\nProjects in this category on the platform: ${projectCount}\n\nAnalyze the trend.` }],
     });
@@ -1091,8 +1126,19 @@ export async function generateGrowthSuggestions(project: {
     const response = await client.messages.create({
       model: REVIEW_MODEL,
       max_tokens: 1500,
-      system: `You give post-launch growth advice. Read the stats first. Diagnose the bottleneck (low views? low conversion? low engagement?) and propose actions that fix THAT bottleneck. No generic launch advice.`,
-      tools: [{ name: "submit_growth", description: "Submit growth suggestions.", input_schema: GROWTH_TOOL_SCHEMA }],
+      system: [
+        {
+          type: "text" as const,
+          text: `You give post-launch growth advice. Read the stats first. Diagnose the bottleneck (low views? low conversion? low engagement?) and propose actions that fix THAT bottleneck. No generic launch advice.`,
+          cache_control: { type: "ephemeral" as const },
+        },
+      ],
+      tools: [{
+        name: "submit_growth",
+        description: "Submit growth suggestions.",
+        input_schema: GROWTH_TOOL_SCHEMA,
+        cache_control: { type: "ephemeral" as const },
+      }],
       tool_choice: { type: "tool", name: "submit_growth" },
       messages: [{
         role: "user",
