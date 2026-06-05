@@ -54,7 +54,7 @@
     "gif-encoder-2": "^1.0.5",
     "lucide-react": "^1.7.0",
     "nes.css": "^2.2.1",
-    "next": "16.2.4",
+    "next": "^16.2.7",
     "openai": "^6.34.0",
     "pngjs": "^7.0.0",
     "pptxgenjs": "^4.0.1",
