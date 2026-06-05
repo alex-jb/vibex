@@ -58,7 +58,14 @@ const functions = new Set(
 //     (auth, storage, realtime)
 //   - The name is a dynamic value that happens to match the regex
 //     but isn't a real .from() target
-const ALLOWLIST_TABLES = new Set([]);
+const ALLOWLIST_TABLES = new Set([
+  // 2026-06-05 Backer Mode v0 — migration 075_tip_interest.sql is committed
+  // but pending manual Supabase Dashboard apply by Alex. API route
+  // app/api/tip-interest/route.ts and components/project/tip-button.tsx
+  // are wired and ready. Remove this entry after running
+  // `npm run audit:dump` post-apply.
+  "tip_interest",
+]);
 const ALLOWLIST_FUNCTIONS = new Set([]);
 
 // Walk source tree, collecting .from("X") and .rpc("Y") call sites.

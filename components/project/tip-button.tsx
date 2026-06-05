@@ -97,7 +97,7 @@ export function TipButton({ projectId, projectTitle, creatorName }: TipButtonPro
         role="status"
         className="rounded-md border border-[#39FF14] bg-[#0a1a0a] px-4 py-3 text-sm text-[#39FF14]"
       >
-        ✓ Thanks. We'll email you when Backer Mode opens for {projectTitle}.
+        ✓ Thanks. We&apos;ll email you when Backer Mode opens for {projectTitle}.
       </div>
     );
   }
@@ -107,7 +107,7 @@ export function TipButton({ projectId, projectTitle, creatorName }: TipButtonPro
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="text-sm text-[#E8E8EC]">
           <strong>Backer Mode is coming.</strong>{" "}
-          <span className="text-[#857596]">No money moves yet. Tell us what you'd back this at.</span>
+          <span className="text-[#857596]">No money moves yet. Tell us what you&apos;d back this at.</span>
         </div>
 
         <div className="flex gap-2">
