@@ -53,3 +53,7 @@ This repo is a solo indie project. When an obvious workflow match exists, **invo
 - `pair-agent` — this is a solo project
 - `freeze` / `careful` / `guard` — only for explicit prod-risk operations
 - Hardcoded stubs in code when the real implementation can check `ANTHROPIC_API_KEY` and fall back (see `lib/ai.ts::generateProjectReview` pattern)
+
+### Design
+
+Taste Skill available at `.claude/skills/taste-skill/` — invoke for visual design decisions (anti-AI-slop guidance for landing pages / hero surfaces / redesigns). See also `DESIGN.md` (root) and `app/predictions/DESIGN.md` (page-scoped).
