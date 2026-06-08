@@ -45,7 +45,9 @@ function useData<T>(entity: string, fallback: T[]): { data: T[]; loading: boolea
   useEffect(() => {
     const controller = new AbortController();
 
-    // Initial fetch
+    // Initial fetch — setState before async fetch is intentional here so
+    // UI shows skeleton immediately. The async finally() resolves loading.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     fetchOnce(controller.signal).finally(() => {
       if (!controller.signal.aborted) setLoading(false);
