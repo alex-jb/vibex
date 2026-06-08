@@ -51,6 +51,26 @@
   --text-h1:      48px;   /* page titles */
   --text-display: 88px;   /* hero h1 (mobile fallback to h1) */
 
+  /* 2026-06-08 Linear/Vercel polish pass (大神 research delivery)
+     - Indigo accent for Linear-style focus / link state
+     - 4-tier radius scale matching Geist + Vercel
+     - 8px grid spacing scale (most components are off-grid 4px/6px) */
+  --accent-indigo:    #5E6AD2;  /* Linear's exact indigo, focus/active state */
+  --accent-indigo-90: #5E6AD2E6; /* with 90% alpha, hover state */
+
+  --r-tight:  4px;   /* buttons, chips, tags */
+  --r-snug:   6px;   /* inputs, tiny cards */
+  --r-card:   8px;   /* default card / panel */
+  --r-large: 12px;   /* modal, hero card */
+
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
