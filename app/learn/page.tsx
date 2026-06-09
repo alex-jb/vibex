@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLang } from "@/lib/i18n";
 import { CHAPTERS, TOTAL_XP, levelFromXp, isUnlocked, type ChapterSlug } from "@/lib/learn";
 import { ChapterBadge } from "@/components/learn/chapter-badge";
+import { TopBuilders } from "@/components/learn/top-builders";
 
 const STORAGE_KEY = "aicg-academy-progress-v1";
 
@@ -209,6 +210,8 @@ export default function LearnHome() {
             );
           })}
         </section>
+
+        <TopBuilders />
 
         <section className="mt-16 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-6 text-sm text-zinc-300">
           <div className="text-xs uppercase tracking-[0.3em] text-zinc-500">
