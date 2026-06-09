@@ -11,6 +11,8 @@ import {
   TOTAL_XP,
   type ChapterSlug,
 } from "@/lib/learn";
+import { ChapterBadge } from "@/components/learn/chapter-badge";
+import { Confetti } from "@/components/learn/confetti";
 
 const STORAGE_KEY = "aicg-academy-progress-v1";
 
@@ -55,6 +57,7 @@ export default function LessonPage() {
   const [imgLoading, setImgLoading] = useState(false);
   const [feedback, setFeedback] = useState<string>("");
   const [showHint, setShowHint] = useState(false);
+  const [celebrate, setCelebrate] = useState(0); // counter, increments on complete to refire confetti
 
   useEffect(() => {
     setProgress(loadProgress());
@@ -99,6 +102,7 @@ export default function LessonPage() {
     };
     setProgress(next);
     saveProgress(next);
+    setCelebrate((n) => n + 1); // refire confetti
     setFeedback(
       isZh
         ? `🎉 +${chapter.xpReward} XP. 这关作品已记入你的 VibeX 卡草稿。`
@@ -306,9 +310,10 @@ export default function LessonPage() {
         </div>
 
         {done && (
-          <section className="mt-8 rounded-[var(--r-card)] border border-emerald-500/40 bg-[var(--bg-elev)] p-6">
-            <div className="flex items-start gap-4">
-              <div className="text-4xl">🏆</div>
+          <section className="relative mt-8 overflow-hidden rounded-[var(--r-card)] border border-emerald-500/40 bg-[var(--bg-elev)] p-6">
+            {celebrate > 0 && <Confetti key={celebrate} count={50} />}
+            <div className="relative z-20 flex items-start gap-4">
+              <ChapterBadge slug={chapter.slug} size={56} glow />
               <div className="flex-1">
                 <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-emerald-400">
                   {isZh ? "已通关" : "Chapter cleared"}

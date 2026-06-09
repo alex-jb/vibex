@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/lib/i18n";
 import { CHAPTERS, TOTAL_XP, levelFromXp, isUnlocked, type ChapterSlug } from "@/lib/learn";
+import { ChapterBadge } from "@/components/learn/chapter-badge";
 
 const STORAGE_KEY = "aicg-academy-progress-v1";
 
@@ -164,8 +165,11 @@ export default function LearnHome() {
                 <div className="flex items-center justify-between">
                   <div className="text-3xl">{c.emoji}</div>
                   {done ? (
-                    <div className="rounded-full border border-emerald-500/40 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
-                      DONE
+                    <div className="flex items-center gap-2">
+                      <ChapterBadge slug={c.slug} size={20} glow />
+                      <div className="rounded-full border border-emerald-500/40 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                        DONE
+                      </div>
                     </div>
                   ) : unlocked ? (
                     <div className="rounded-full border border-amber-500/40 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
