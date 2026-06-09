@@ -20,6 +20,7 @@ import { ExplorerChrome } from "@/components/explorer-chrome";
 // /discover was merged into /home (HQ) on 2026-04-14 — one page, one catalog.
 const fullNavItems = [
   { href: "/home", key: "nav.home" as const },
+  { href: "/learn", key: "nav.learn" as const },
   { href: "/creators", key: "nav.creators" as const },
   { href: "/dojo", key: "nav.dojo" as const },
   { href: "/insights", key: "nav.insights" as const },
