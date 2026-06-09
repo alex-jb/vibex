@@ -1,37 +1,35 @@
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
-import { Bilingual } from "@/components/i18n/bilingual";
 
 export const runtime = "nodejs";
-// 1-hour ISR — data is daily-refreshed by cracked-seed cron, sub-hour
-// revalidation was thrashing Supabase reads with no UX gain.
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "🧠 Cracked Score Leaderboard — Who's the most cracked dev?",
-  description: "Live leaderboard of GitHub devs scored 0-100 on the 12-axis Cracked Score. From karpathy and antirez at the top to the rising waves below.",
+  title: "📊 Quant Bench Leaderboard · VibeXForge",
+  description:
+    "Top Jane-Street-ready GitHub profiles. 5-voice quant council verdict, Brier-audited at 6mo.",
   openGraph: {
-    title: "Cracked Score Leaderboard · VibeXForge",
-    description: "12-axis dev profile leaderboard",
+    title: "Quant Bench Leaderboard",
+    description: "Top Jane Street ready candidates · Brier-audited",
     type: "website",
   },
 };
 
 interface Row {
-  github_handle: string;
+  handle: string;
   overall: number;
   tier: string;
   total_stars: number;
   followers: number;
-  scored_at: string;
+  computed_at: string;
 }
 
 const TIER_EMOJI: Record<string, string> = {
-  mythic: "👑",
-  cracked: "⚡",
-  solid: "💪",
-  rising: "🌱",
-  starting: "🥚",
+  jane_street_ready: "🎯",
+  tier1_quant_ready: "📈",
+  ml_researcher_ready: "🧠",
+  junior_quant_ready: "📊",
+  needs_more_work: "🌱",
 };
 
 async function fetchLeaderboard(): Promise<Row[]> {
@@ -40,77 +38,79 @@ async function fetchLeaderboard(): Promise<Row[]> {
   if (!SUPA_URL || !SUPA_ANON_KEY) return [];
   const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
   const { data } = await supa
-    .from("cracked_scores")
-    .select("github_handle, overall, tier, total_stars, followers, scored_at")
+    .from("quant_bench_scores")
+    .select("handle, overall, tier, total_stars, followers, computed_at")
     .order("overall", { ascending: false })
     .limit(50);
   return (data as Row[] | null) || [];
 }
 
-export default async function CrackedLeaderboardPage() {
+export default async function QuantBenchLeaderboard() {
   const rows = await fetchLeaderboard();
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] px-6 py-12 text-zinc-200">
+    <main className="min-h-screen bg-[var(--bg-deep)] px-6 py-12 text-zinc-200">
       <div className="mx-auto max-w-3xl">
         <header className="mb-10 text-center">
-          <div className="mb-2 text-5xl">🧠</div>
-          <p className="text-xs uppercase tracking-widest text-orange-400">
-            <Bilingual en="Cracked Score · Leaderboard" zh="Cracked 分数 · 排行榜" />
+          <div className="mb-2 text-5xl">📊</div>
+          <p className="text-xs uppercase tracking-widest text-[var(--accent-indigo)]">
+            Quant Bench · Brier-audited
           </p>
-          <h1 className="mt-2 text-4xl font-bold">
-            <Bilingual
-              en="Who's the most cracked?"
-              zh="谁才是最 cracked 的开发者?"
-            />
-          </h1>
+          <h1 className="mt-2 text-4xl font-bold">Top Jane Street ready</h1>
           <p className="mt-3 text-sm text-zinc-400">
-            <Bilingual
-              en="Top 50 by Cracked Score. Live from GitHub. Click a row to see the 12-axis breakdown."
-              zh="按 Cracked 分数排前 50。GitHub 实时数据。点任一行看 12 轴拆解。"
-            />
+            Top 50 by 5-voice quant council score. Public Brier audit at 6mo.
           </p>
         </header>
 
         {rows.length === 0 ? (
-          <p className="text-center text-sm text-zinc-500">
-            <Bilingual en="No scores yet. Be the first to " zh="还没有分数。第一个去 " />
-            <Link href="/cracked" className="text-orange-400 hover:underline">
-              <Bilingual en="score a handle" zh="测一个 handle" />
-            </Link>
-            .
-          </p>
+          <div className="rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-10 text-center">
+            <p className="text-sm text-zinc-400">
+              No scores yet. Be the first to{" "}
+              <Link href="/quant-bench" className="text-[var(--accent-indigo)] hover:underline">
+                score a handle
+              </Link>
+              .
+            </p>
+            <p className="mt-3 text-xs text-zinc-500">
+              The `quant_bench_scores` table (migration 076) needs to be applied + the score
+              endpoint must persist results. See `lib/quant-bench.ts` for the write hook spec.
+            </p>
+          </div>
         ) : (
-          <section className="rounded-2xl bg-zinc-900/60 p-2 ring-1 ring-zinc-800">
-            <ol className="divide-y divide-zinc-800">
+          <section className="rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-2">
+            <ol className="divide-y divide-[var(--border-soft)]">
               {rows.map((r, i) => (
-                <li key={r.github_handle}>
+                <li key={r.handle}>
                   <Link
-                    href={`/cracked/${r.github_handle}`}
-                    className="flex items-center gap-4 rounded-xl p-4 hover:bg-orange-500/5"
+                    href={`/quant-bench/${r.handle}`}
+                    className="flex items-center gap-4 rounded-[var(--r-card)] p-4 hover:bg-[var(--accent-indigo)]/5"
                   >
                     <div
                       className={`w-8 shrink-0 text-right text-sm ${
-                        i === 0 ? "font-bold text-orange-400" : i < 3 ? "text-orange-300" : "text-zinc-500"
+                        i === 0
+                          ? "font-bold text-[var(--accent-indigo)]"
+                          : i < 3
+                          ? "text-zinc-200"
+                          : "text-zinc-500"
                       }`}
                     >
                       #{i + 1}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="truncate text-base font-semibold text-zinc-100">
-                        @{r.github_handle}
+                        @{r.handle}
                       </p>
                       <p className="text-xs text-zinc-500">
-                        ⭐ {r.total_stars.toLocaleString()} · 👥{" "}
-                        {r.followers.toLocaleString()}
+                        ⭐ {r.total_stars?.toLocaleString() ?? "—"} · 👥{" "}
+                        {r.followers?.toLocaleString() ?? "—"}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-orange-400">
+                      <p className="text-2xl font-bold text-[var(--accent-indigo)]">
                         {r.overall}
                       </p>
                       <p className="text-xs uppercase tracking-wider text-zinc-500">
-                        {TIER_EMOJI[r.tier] || ""} {r.tier}
+                        {TIER_EMOJI[r.tier] || ""} {r.tier?.replace(/_/g, " ")}
                       </p>
                     </div>
                   </Link>
@@ -122,24 +122,29 @@ export default async function CrackedLeaderboardPage() {
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
-            href="/cracked"
-            className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
+            href="/quant-bench"
+            className="flex-1 rounded-[var(--r-card)] bg-[var(--accent-indigo)] px-4 py-3 text-center text-sm font-semibold text-white hover:opacity-90"
           >
-            <Bilingual en="Score yourself → /cracked" zh="测自己 → /cracked" />
+            Score yourself → /quant-bench
           </Link>
           <Link
-            href="/score/alex"
-            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+            href="/brier"
+            className="flex-1 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] px-4 py-3 text-center text-sm text-zinc-300 hover:border-[var(--border-strong)]"
           >
-            <Bilingual en="Your Creator Score → /score" zh="你的 Creator Score → /score" />
+            All Brier-audited routes →
           </Link>
         </div>
 
-        <footer className="mt-16 text-center text-xs text-zinc-600">
-          <Bilingual
-            en="Live from GitHub public data · 5-min ISR cache · Seed handles via daily cron"
-            zh="GitHub 公开数据实时 · 5 分钟 ISR 缓存 · 种子 handle 每日 cron"
-          />
+        <footer className="mt-12 text-center text-xs text-zinc-500">
+          5-voice council: Jane Street MD / Citadel / Two Sigma / Anthropic / HFT
+          · Brier-audited at 6mo · See{" "}
+          <a
+            href="https://github.com/alex-jb/council-diff"
+            className="text-[var(--accent-indigo)] hover:underline"
+          >
+            council-diff
+          </a>{" "}
+          for the engine.
         </footer>
       </div>
     </main>
