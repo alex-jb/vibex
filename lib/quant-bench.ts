@@ -202,11 +202,40 @@ export async function scoreHandle(handle: string): Promise<QuantBenchResult | nu
   const overall = Math.round(
     parsed.voices.reduce((s, v) => s + v.score, 0) / parsed.voices.length
   );
+  const tier = tierFor(overall);
+
+  // 2026-06-09: persist to supabase for /quant-bench/leaderboard.
+  // Migration 076 must be applied first. Service-role key required for write
+  // (we use anon for read on leaderboard). If anon key only or insert fails,
+  // the score still returns — leaderboard simply won't include this run.
+  try {
+    const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (SUPA_URL && SERVICE_KEY) {
+      const { createClient } = await import("@supabase/supabase-js");
+      const supa = createClient(SUPA_URL, SERVICE_KEY);
+      await supa.from("quant_bench_scores").upsert(
+        {
+          handle,
+          overall,
+          tier: tier.name,
+          summary: parsed.summary,
+          voices: parsed.voices,
+          total_stars: totalStars,
+          total_repos: gh.user.public_repos,
+          followers: gh.user.followers,
+        },
+        { onConflict: "handle" }
+      );
+    }
+  } catch {
+    // Persistence is opportunistic; never block the response.
+  }
 
   return {
     handle,
     overall,
-    tier: tierFor(overall),
+    tier,
     voices: parsed.voices,
     summary: parsed.summary,
     totalStars,
