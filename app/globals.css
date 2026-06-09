@@ -386,6 +386,17 @@
   50% { opacity: 0.3; }
 }
 
+/* Forge apprentice (/learn) — subtle idle bob, ~2px oscillation.
+   Used inline on the SVG mascot that walks across chapter cards. */
+@keyframes forge-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes forge-hammer {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-12deg); }
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    Accessibility — respect prefers-reduced-motion.
    Strips all CSS animations and transitions for users who opt out.

@@ -91,7 +91,65 @@ export default function LearnHome() {
           </p>
         </header>
 
-        <section className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
+        {/* Forge apprentice — walks across chapter map per completed count.
+            Pure inline SVG, zero asset gen, uses --accent-indigo + amber. */}
+        <div className="relative mt-12 hidden h-12 md:block">
+          <div
+            className="absolute -bottom-1"
+            style={{
+              left: `${
+                progress.completed.length === 0
+                  ? 16.67
+                  : progress.completed.length === 1
+                    ? 50
+                    : progress.completed.length === 2
+                      ? 83.33
+                      : 100
+              }%`,
+              transform: "translateX(-50%)",
+              transition: "left 900ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+            }}
+            aria-hidden="true"
+          >
+            <svg
+              width="32"
+              height="40"
+              viewBox="0 0 24 30"
+              shapeRendering="crispEdges"
+              style={{ animation: "forge-bob 1.6s ease-in-out infinite" }}
+            >
+              {/* gold helmet */}
+              <rect x="8"  y="2"  width="8"  height="2" fill="#F59E0B" />
+              <rect x="6"  y="4"  width="12" height="4" fill="#F59E0B" />
+              {/* eyes */}
+              <rect x="9"  y="6"  width="2"  height="2" fill="#0A0A0C" />
+              <rect x="13" y="6"  width="2"  height="2" fill="#0A0A0C" />
+              {/* violet apron / body */}
+              <rect x="6"  y="10" width="12" height="2" fill="#6366F1" />
+              <rect x="4"  y="12" width="16" height="6" fill="#6366F1" />
+              {/* belt */}
+              <rect x="4"  y="18" width="16" height="1" fill="#F59E0B" />
+              {/* legs */}
+              <rect x="6"  y="20" width="4"  height="6" fill="#3F3F46" />
+              <rect x="14" y="20" width="4"  height="6" fill="#3F3F46" />
+              {/* boots */}
+              <rect x="4"  y="26" width="6"  height="2" fill="#18181B" />
+              <rect x="14" y="26" width="6"  height="2" fill="#18181B" />
+              {/* hammer (swings independently) */}
+              <g
+                style={{
+                  transformOrigin: "20px 14px",
+                  animation: "forge-hammer 1.2s ease-in-out infinite",
+                }}
+              >
+                <rect x="20" y="6"  width="2"  height="8" fill="#A1A1AA" />
+                <rect x="18" y="4"  width="6"  height="4" fill="#F59E0B" />
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <section className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-3">
           {CHAPTERS.map((c) => {
             const done = completedSet.has(c.slug);
             const unlocked = isUnlocked(c, completedSet);
