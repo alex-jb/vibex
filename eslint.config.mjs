@@ -14,6 +14,12 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Vendored third-party bundle (minified, not our code).
     "lib/pretext.js",
+    // Demo recorder + asset-gen scripts: Playwright/puppeteer helper
+    // noise (unused vars, no-unused-expressions), not production code.
+    "scripts/**",
+    // Playwright e2e specs: structural step-fixture vars surface
+    // as unused; not real dead code.
+    "e2e/**",
   ]),
   // Honor the `_` prefix convention for intentionally unused args /
   // vars / caught errors. 64 of the 78 warnings on the 2026-04-18
