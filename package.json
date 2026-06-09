@@ -78,6 +78,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "happy-dom": "^20.9.0",
+    "knip": "^6.16.1",
     "remotion": "^4.0.320",
     "tailwindcss": "^4",
     "typescript": "^5",

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useLang } from "@/lib/i18n";
 
 /**
@@ -119,9 +120,9 @@ export default function QuantBenchLanding() {
           {isZh
             ? "公开榜单 · 6 月后 Brier 审 — "
             : "Public leaderboard · Brier-audited at 6mo — "}
-          <a href="/quant-bench/leaderboard" className="text-[var(--accent-indigo)] hover:underline">
+          <Link href="/quant-bench/leaderboard" className="text-[var(--accent-indigo)] hover:underline">
             {isZh ? "查看公开排名 →" : "See leaderboard →"}
-          </a>
+          </Link>
         </p>
       </div>
     </main>
