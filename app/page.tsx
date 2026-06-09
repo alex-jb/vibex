@@ -1026,7 +1026,7 @@ export default function LandingPage() {
         </motion.div>
 
         {/* === CTAs === */}
-        <div className="flex justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-4">
           <Link href="/home">
             <motion.button
               type="button"
@@ -1048,6 +1048,29 @@ export default function LandingPage() {
               transition={{ type: "spring", stiffness: 400, damping: 26 }}
             >
               ▶ PRESS START
+            </motion.button>
+          </Link>
+          <Link href="/learn">
+            <motion.button
+              type="button"
+              className="font-pixel uppercase cursor-pointer"
+              style={{
+                fontSize: 13,
+                padding: "16px 28px",
+                letterSpacing: 2,
+                background: "transparent",
+                border: `3px solid ${C.GREEN}`,
+                color: C.GREEN,
+                boxShadow: `5px 5px 0 #000, 0 0 18px ${C.GREEN}55`,
+              }}
+              whileHover={{
+                x: -2,
+                y: -2,
+                boxShadow: `7px 7px 0 #000, 0 0 28px ${C.GREEN}88`,
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 26 }}
+            >
+              ⚡ LEARN · FREE
             </motion.button>
           </Link>
           <Link href="/how-it-works" prefetch={false}>
