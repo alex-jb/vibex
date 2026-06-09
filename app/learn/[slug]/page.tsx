@@ -13,6 +13,7 @@ import {
 } from "@/lib/learn";
 import { ChapterBadge } from "@/components/learn/chapter-badge";
 import { Confetti } from "@/components/learn/confetti";
+import { trackEvent } from "@/lib/analytics";
 
 const STORAGE_KEY = "aicg-academy-progress-v1";
 
@@ -211,23 +212,79 @@ export default function LessonPage() {
               </div>
             )}
 
-            <button
-              onClick={() => setShowHint((v) => !v)}
-              className="flex w-full items-center justify-between rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-4 text-left text-sm hover:border-[var(--accent-indigo)]"
-            >
-              <span>
-                <span className="text-base">💡</span>{" "}
-                {isZh ? "卡住了?60 秒提示" : "Stuck? 60-second hint"}
-              </span>
-              <span className="text-zinc-500">{showHint ? "−" : "+"}</span>
-            </button>
-            {showHint && (
-              <div className="rounded-[var(--r-card)] border border-amber-500/30 bg-[var(--bg-elev)] p-4 text-sm text-zinc-300">
-                {isZh
-                  ? "试试 4 个槽位都填: \"a [主体] in [风格], [光线], [构图]\"。例如 \"a calico cat coding at a Brooklyn cafe, retro anime style, golden hour, dynamic side angle\"。每个槽位 2-4 个词就够。"
-                  : 'Fill all 4 slots: "a [subject] in [style], [lighting], [composition]". Example: "a calico cat coding at a Brooklyn cafe, retro anime style, golden hour, dynamic side angle." 2-4 words per slot is plenty.'}
-              </div>
-            )}
+            {/* Walkthrough video stub — 16:9 player frame, brand-tokened.
+                Click instruments to walkthrough_clicked event; expanded
+                state shows text tip until we record real video. */}
+            <div>
+              <button
+                onClick={() => {
+                  setShowHint((v) => !v);
+                  trackEvent("walkthrough_clicked", {
+                    chapter: chapter.slug,
+                    expanded: !showHint,
+                  });
+                }}
+                className="group relative block w-full overflow-hidden rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] text-left transition hover:border-[var(--accent-indigo)]"
+                aria-expanded={showHint}
+              >
+                <div className="relative aspect-video w-full">
+                  {/* faux thumbnail — radial indigo wash + dotted grid */}
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "radial-gradient(circle at 30% 40%, rgba(99,102,241,0.25), transparent 60%), radial-gradient(circle at 70% 60%, rgba(245,158,11,0.18), transparent 55%)",
+                    }}
+                  />
+                  <div
+                    className="absolute inset-0 opacity-30"
+                    style={{
+                      backgroundImage:
+                        "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)",
+                      backgroundSize: "12px 12px",
+                    }}
+                  />
+                  {/* play button overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/80 bg-[var(--bg-deep)]/60 backdrop-blur-sm transition group-hover:scale-110 group-hover:border-[var(--accent-indigo)]">
+                      <div
+                        className="ml-1 h-0 w-0"
+                        style={{
+                          borderTop: "10px solid transparent",
+                          borderBottom: "10px solid transparent",
+                          borderLeft: "16px solid #E8E8EC",
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="absolute bottom-2 right-3 rounded bg-black/70 px-1.5 py-0.5 font-mono text-[10px] text-zinc-200">
+                    60s
+                  </div>
+                </div>
+                <div className="flex items-center justify-between border-t border-[var(--border-soft)] px-4 py-3">
+                  <div>
+                    <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+                      {isZh ? "走查 · 60 秒" : "Walkthrough · 60s"}
+                    </div>
+                    <div className="mt-1 text-sm font-semibold">
+                      {isZh ? "卡住了?跟我做一遍" : "Stuck? Follow along"}
+                    </div>
+                  </div>
+                  <div className="text-xs text-zinc-500">{showHint ? "−" : "+"}</div>
+                </div>
+              </button>
+
+              {showHint && (
+                <div className="mt-3 rounded-[var(--r-card)] border border-amber-500/30 bg-[var(--bg-elev)] p-4 text-sm text-zinc-300">
+                  <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-amber-400">
+                    {isZh ? "本周视频上线 · 先看文字版" : "Video lands this week · text walkthrough below"}
+                  </div>
+                  {isZh
+                    ? "试试 4 个槽位都填: \"a [主体] in [风格], [光线], [构图]\"。例如 \"a calico cat coding at a Brooklyn cafe, retro anime style, golden hour, dynamic side angle\"。每个槽位 2-4 个词就够。"
+                    : 'Fill all 4 slots: "a [subject] in [style], [lighting], [composition]". Example: "a calico cat coding at a Brooklyn cafe, retro anime style, golden hour, dynamic side angle." 2-4 words per slot is plenty.'}
+                </div>
+              )}
+            </div>
           </aside>
 
           {/* RIGHT — interactive surface */}
