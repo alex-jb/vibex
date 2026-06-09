@@ -158,6 +158,14 @@ export default async function PredictionsPage() {
               <Bilingual en="About VibeXForge" zh="关于 VibeXForge" />
             </Link>
             <span className="px-2 text-zinc-700">·</span>
+            <Link href="/memory-wall" className="text-orange-300 hover:underline">
+              <Bilingual en="Memory Wall basket" zh="内存墙篮子" />
+            </Link>
+            <span className="px-2 text-zinc-700">·</span>
+            <Link href="/council" className="text-orange-300 hover:underline">
+              <Bilingual en="Council Diff" zh="议会决策" />
+            </Link>
+            <span className="px-2 text-zinc-700">·</span>
             <a
               href="https://github.com/alex-jb/spacex-ipo-tracker"
               className="text-orange-300 hover:underline"
