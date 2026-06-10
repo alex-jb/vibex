@@ -11,6 +11,7 @@ import {
   TOTAL_XP,
   type ChapterSlug,
 } from "@/lib/learn";
+import { getContent } from "@/lib/learn-content";
 import { ChapterBadge } from "@/components/learn/chapter-badge";
 import { Confetti } from "@/components/learn/confetti";
 import { trackEvent } from "@/lib/analytics";
@@ -217,6 +218,28 @@ export default function LessonPage() {
   const isPromptChapter = chapter.slug === "prompt-engineering";
   const isAgentChapter = chapter.slug === "ai-agent";
 
+  const content = getContent(chapter.slug);
+  const hasRun = Boolean(imageUrl || pResponse || aSpec);
+
+  function applyExample(prefill: Record<string, string>) {
+    if (isImageChapter && prefill.prompt) {
+      setPrompt(prefill.prompt);
+    } else if (isPromptChapter) {
+      setPRole(prefill.role ?? "");
+      setPContext(prefill.context ?? "");
+      setPTask(prefill.task ?? "");
+      setPConstraint(prefill.constraint ?? "");
+    } else if (isAgentChapter) {
+      setAGoal(prefill.goal ?? "");
+      setATools(prefill.tools ? prefill.tools.split(",") : []);
+      if (prefill.memory) setAMemory(prefill.memory as typeof aMemory);
+      if (prefill.reflection) setAReflection(prefill.reflection as typeof aReflection);
+    }
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: document.body.scrollHeight * 0.4, behavior: "smooth" });
+    }
+  }
+
   const TOOL_OPTIONS = [
     { id: "web_search", label: isZh ? "🌐 网络搜索" : "🌐 Web search" },
     { id: "code_exec", label: isZh ? "💻 代码执行" : "💻 Code execution" },
@@ -269,8 +292,40 @@ export default function LessonPage() {
           </div>
         </div>
 
+        {/* ─── TEACHING — "What you'll learn" + concept ──────────────── */}
+        <section className="mt-10 rounded-[var(--r-card)] border border-[var(--accent-indigo)]/30 bg-[var(--bg-elev)] p-6">
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--accent-indigo)]">
+            {isZh ? "学完这关你会" : "What you'll learn"}
+          </div>
+          <ul className="mt-3 space-y-2 text-sm text-zinc-200">
+            {(isZh ? content.learnGoalsZh : content.learnGoalsEn).map((g, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="mt-0.5 text-[var(--accent-indigo)]">✓</span>
+                <span>{g}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-6 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-6">
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+            {isZh ? "概念 · 为什么这样" : "Concept · the why"}
+          </div>
+          <p className="mt-3 text-[15px] leading-relaxed text-zinc-200">
+            {isZh ? content.conceptIntroZh : content.conceptIntroEn}
+          </p>
+          <p className="mt-4 text-[15px] leading-relaxed text-zinc-300">
+            {isZh ? content.conceptDeepZh : content.conceptDeepEn}
+          </p>
+        </section>
+
+        {/* ─── EXERCISE — 2-pane left/right ──────────────────────────── */}
+        <div className="mt-10 mb-3 font-mono text-[10px] uppercase tracking-[0.3em] text-emerald-400">
+          {isZh ? "动手 · 现在你来" : "Hands on · your turn"}
+        </div>
+
         {/* 2-pane: prose left, interactive right (collapses on mobile) */}
-        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-[1fr_1.2fr]">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_1.2fr]">
           {/* LEFT — prose + formula + hint */}
           <aside className="space-y-5">
             <div className="rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-5">
@@ -757,6 +812,54 @@ export default function LessonPage() {
             )}
           </section>
         </div>
+
+        {/* ─── AFTER RUN — debrief explaining what just happened ─────── */}
+        {hasRun && (
+          <section className="mt-8 rounded-[var(--r-card)] border border-amber-500/30 bg-[var(--bg-elev)] p-6">
+            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-amber-400">
+              {isZh ? "刚才发生了什么" : "What just happened"}
+            </div>
+            <p className="mt-3 text-[15px] leading-relaxed text-zinc-200">
+              {isZh ? content.afterRunZh : content.afterRunEn}
+            </p>
+          </section>
+        )}
+
+        {/* ─── APPLY IT — follow-up exercises with prefill ──────────── */}
+        <section className="mt-8 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-6">
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-emerald-400">
+            {isZh ? "再练一下 · 点击预填到练习场" : "Apply it · click to prefill the workspace"}
+          </div>
+          <div className="mt-4 flex flex-col gap-2">
+            {content.applyExamples.map((ex, i) => (
+              <button
+                key={i}
+                onClick={() => applyExample(ex.prefill)}
+                className="rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] p-3 text-left text-sm transition hover:border-[var(--accent-indigo)] hover:bg-[var(--bg-elev)]"
+              >
+                <div className="font-semibold text-zinc-100">
+                  → {isZh ? ex.labelZh : ex.labelEn}
+                </div>
+                <div className="mt-1 line-clamp-1 font-mono text-[11px] text-zinc-500">
+                  {Object.entries(ex.prefill)
+                    .filter(([, v]) => v)
+                    .map(([k, v]) => `${k}: ${v.slice(0, 80)}`)
+                    .join(" · ")}
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* ─── NEXT CHAPTER PREVIEW ───────────────────────────────────── */}
+        <section className="mt-6 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-5">
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+            {isZh ? "下一关" : "Next chapter"}
+          </div>
+          <p className="mt-2 text-sm text-zinc-300">
+            {isZh ? content.nextPreviewZh : content.nextPreviewEn}
+          </p>
+        </section>
 
         {done && (
           <section className="relative mt-8 overflow-hidden rounded-[var(--r-card)] border border-emerald-500/40 bg-[var(--bg-elev)] p-6">
