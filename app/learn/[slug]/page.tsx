@@ -68,6 +68,13 @@ export default function LessonPage() {
   const [pResponse, setPResponse] = useState<string | null>(null);
   const [pLoading, setPLoading] = useState(false);
 
+  // Chapter 3 (ai-agent) — Goal + Tools + Memory + Reflection
+  const [aGoal, setAGoal] = useState("");
+  const [aTools, setATools] = useState<string[]>([]);
+  const [aMemory, setAMemory] = useState<"none" | "short-term" | "long-term" | "brier-audited">("short-term");
+  const [aReflection, setAReflection] = useState<"none" | "self-critic" | "5-voice-council">("self-critic");
+  const [aSpec, setASpec] = useState<string | null>(null);
+
   useEffect(() => {
     setProgress(loadProgress());
   }, []);
@@ -171,8 +178,53 @@ export default function LessonPage() {
     }
   }
 
+  function toggleTool(t: string) {
+    setATools((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]));
+  }
+
+  function assembleAgent() {
+    if (!aGoal.trim()) {
+      setFeedback(
+        isZh
+          ? "先写 Goal — 这个 agent 要解决什么问题。"
+          : "Write the Goal first — what problem should this agent solve?"
+      );
+      return;
+    }
+    const spec = {
+      name: aGoal
+        .trim()
+        .split(/\s+/)
+        .slice(0, 4)
+        .join("-")
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, ""),
+      goal: aGoal.trim(),
+      tools: aTools,
+      memory: { type: aMemory, persistence: aMemory === "long-term" ? "disk" : aMemory === "brier-audited" ? "jsonl" : "ram" },
+      reflection: {
+        mode: aReflection,
+        on_failure: aReflection === "none" ? "skip" : "retry-with-critique",
+      },
+      brier_audit: aMemory === "brier-audited" || aReflection === "5-voice-council",
+      created_at: new Date().toISOString().slice(0, 10),
+    };
+    setASpec(JSON.stringify(spec, null, 2));
+    setFeedback("");
+  }
+
   const isImageChapter = chapter.slug === "ai-drawing";
   const isPromptChapter = chapter.slug === "prompt-engineering";
+  const isAgentChapter = chapter.slug === "ai-agent";
+
+  const TOOL_OPTIONS = [
+    { id: "web_search", label: isZh ? "🌐 网络搜索" : "🌐 Web search" },
+    { id: "code_exec", label: isZh ? "💻 代码执行" : "💻 Code execution" },
+    { id: "file_read", label: isZh ? "📁 文件读取" : "📁 File read" },
+    { id: "calculator", label: isZh ? "🧮 计算器" : "🧮 Calculator" },
+    { id: "send_email", label: isZh ? "📧 发邮件" : "📧 Send email" },
+    { id: "vibex_publish", label: isZh ? "🎴 发到 VibeX" : "🎴 Publish to VibeX" },
+  ];
 
   // Codedex-style progress bar position: chapter % within the 3-book journey.
   const chapterIndex = CHAPTERS.findIndex((c) => c.slug === chapter.slug);
@@ -251,6 +303,36 @@ export default function LessonPage() {
                       <div className="mt-1"><span className="text-rose-400">composition</span>: angle / distance</div>
                     </>
                   )}
+                </div>
+              </div>
+            )}
+
+            {isAgentChapter && (
+              <div className="rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-5">
+                <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+                  {isZh ? "公式 · G·T·M·R" : "Formula · G·T·M·R"}
+                </div>
+                <div className="mt-3 font-mono text-sm leading-relaxed">
+                  {isZh ? (
+                    <>
+                      <div><span className="text-[var(--accent-indigo)]">Goal</span>: 这个 agent 解决什么</div>
+                      <div className="mt-1"><span className="text-amber-400">Tools</span>: 它能动什么手</div>
+                      <div className="mt-1"><span className="text-emerald-400">Memory</span>: 它记不记得</div>
+                      <div className="mt-1"><span className="text-rose-400">Reflection</span>: 错了怎么纠</div>
+                    </>
+                  ) : (
+                    <>
+                      <div><span className="text-[var(--accent-indigo)]">Goal</span>: what it solves</div>
+                      <div className="mt-1"><span className="text-amber-400">Tools</span>: what it can touch</div>
+                      <div className="mt-1"><span className="text-emerald-400">Memory</span>: does it remember</div>
+                      <div className="mt-1"><span className="text-rose-400">Reflection</span>: how it self-corrects</div>
+                    </>
+                  )}
+                </div>
+                <div className="mt-3 rounded border border-amber-500/30 bg-amber-500/5 p-2 text-[11px] text-amber-300">
+                  {isZh
+                    ? "出货物 = 一份可复制的 agent JSON spec。带去 Cursor / Claude Code 直接跑。"
+                    : "Artifact = a copy-pasteable agent JSON spec. Drop into Cursor / Claude Code and run."}
                 </div>
               </div>
             )}
@@ -510,6 +592,131 @@ export default function LessonPage() {
 
                 {feedback && (
                   <div className="mt-4 rounded-[var(--r-card)] border border-emerald-500/30 bg-[var(--bg-deep)] p-3 text-sm text-zinc-200">
+                    {feedback}
+                  </div>
+                )}
+              </>
+            ) : isAgentChapter ? (
+              <>
+                <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+                  {isZh ? "练习场 · 装配 agent" : "Workspace · assemble agent"}
+                </div>
+
+                <div className="mt-3 space-y-4">
+                  <div>
+                    <label className="block font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent-indigo)]">
+                      Goal
+                    </label>
+                    <input
+                      value={aGoal}
+                      onChange={(e) => setAGoal(e.target.value)}
+                      placeholder={
+                        isZh
+                          ? "每天扫 5 个 AI 大神的 X 帖,挑出可借势的发我邮箱"
+                          : "Scan 5 AI luminaries' X posts daily, surface borrowable threads to my inbox"
+                      }
+                      maxLength={280}
+                      className="mt-1 w-full rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] p-2 font-mono text-sm text-zinc-100 outline-none focus:border-[var(--accent-indigo)]"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-amber-400">
+                      Tools <span className="text-zinc-500">({aTools.length}/{TOOL_OPTIONS.length})</span>
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {TOOL_OPTIONS.map((t) => {
+                        const on = aTools.includes(t.id);
+                        return (
+                          <button
+                            key={t.id}
+                            type="button"
+                            onClick={() => toggleTool(t.id)}
+                            className={`rounded-full border px-3 py-1.5 font-mono text-xs transition ${
+                              on
+                                ? "border-amber-400 bg-amber-400/15 text-amber-300"
+                                : "border-[var(--border-soft)] bg-[var(--bg-deep)] text-zinc-400 hover:border-amber-400/60"
+                            }`}
+                          >
+                            {t.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-mono text-[10px] uppercase tracking-[0.2em] text-emerald-400">
+                      Memory
+                    </label>
+                    <select
+                      value={aMemory}
+                      onChange={(e) => setAMemory(e.target.value as typeof aMemory)}
+                      className="mt-1 w-full rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] p-2 font-mono text-sm text-zinc-100 outline-none focus:border-emerald-400"
+                    >
+                      <option value="none">none — 一锤子买卖</option>
+                      <option value="short-term">short-term — 1 个 session 内记</option>
+                      <option value="long-term">long-term — 写盘,跨 session</option>
+                      <option value="brier-audited">brier-audited — 记 + Brier 审过去对错</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-mono text-[10px] uppercase tracking-[0.2em] text-rose-400">
+                      Reflection
+                    </label>
+                    <select
+                      value={aReflection}
+                      onChange={(e) => setAReflection(e.target.value as typeof aReflection)}
+                      className="mt-1 w-full rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] p-2 font-mono text-sm text-zinc-100 outline-none focus:border-rose-400"
+                    >
+                      <option value="none">none — 错了就错了</option>
+                      <option value="self-critic">self-critic — 自己挑毛病再写一遍</option>
+                      <option value="5-voice-council">5-voice-council — Bull/Bear/Judge/Critic/Auditor 投票</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={assembleAgent}
+                    className="rounded-[var(--r-card)] border border-[var(--accent-indigo)] bg-[var(--accent-indigo)]/15 px-5 py-2.5 text-sm font-semibold text-[var(--accent-indigo)] hover:bg-[var(--accent-indigo)]/25"
+                  >
+                    {isZh ? "🛠 装配 agent" : "🛠 Assemble agent"}
+                  </button>
+                  {!done && aSpec && (
+                    <button
+                      onClick={complete}
+                      className="rounded-[var(--r-card)] bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-400"
+                    >
+                      {isZh ? `✓ Submit · +${chapter.xpReward} XP` : `✓ Submit · +${chapter.xpReward} XP`}
+                    </button>
+                  )}
+                  {aSpec && (
+                    <button
+                      onClick={() => {
+                        navigator.clipboard?.writeText(aSpec).catch(() => {});
+                      }}
+                      className="rounded-[var(--r-card)] border border-[var(--border-soft)] px-4 py-2.5 text-sm text-zinc-100 hover:border-[var(--accent-indigo)]"
+                    >
+                      {isZh ? "📋 复制 JSON" : "📋 Copy JSON"}
+                    </button>
+                  )}
+                </div>
+
+                {aSpec && (
+                  <div className="mt-5 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] p-4">
+                    <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+                      {isZh ? "agent.json · 你的出货物" : "agent.json · your artifact"}
+                    </div>
+                    <pre className="mt-2 whitespace-pre-wrap font-mono text-xs leading-relaxed text-zinc-100">
+                      {aSpec}
+                    </pre>
+                  </div>
+                )}
+
+                {feedback && (
+                  <div className="mt-4 rounded-[var(--r-card)] border border-amber-500/30 bg-[var(--bg-deep)] p-3 text-sm text-amber-300">
                     {feedback}
                   </div>
                 )}
