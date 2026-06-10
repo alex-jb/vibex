@@ -429,9 +429,18 @@ export default function LessonPage() {
                   <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-amber-400">
                     {isZh ? "本周视频上线 · 先看文字版" : "Video lands this week · text walkthrough below"}
                   </div>
-                  {isZh
-                    ? "试试 4 个槽位都填: \"a [主体] in [风格], [光线], [构图]\"。例如 \"a calico cat coding at a Brooklyn cafe, retro anime style, golden hour, dynamic side angle\"。每个槽位 2-4 个词就够。"
-                    : 'Fill all 4 slots: "a [subject] in [style], [lighting], [composition]". Example: "a calico cat coding at a Brooklyn cafe, retro anime style, golden hour, dynamic side angle." 2-4 words per slot is plenty.'}
+                  {isImageChapter &&
+                    (isZh
+                      ? "试试 4 个槽位都填: \"a [主体] in [风格], [光线], [构图]\"。例如 \"a calico cat coding at a Brooklyn cafe, retro anime style, golden hour, dynamic side angle\"。每个槽位 2-4 个词就够。"
+                      : 'Fill all 4 slots: "a [subject] in [style], [lighting], [composition]". Example: "a calico cat coding at a Brooklyn cafe, retro anime style, golden hour, dynamic side angle." 2-4 words per slot is plenty.')}
+                  {isPromptChapter &&
+                    (isZh
+                      ? "Task 是必填的(那个让 Claude 做的动作)。Role/Context/Constraint 是 0-3 个的调味料。试试 Task=\"评估一个 startup idea 找 3 个最大漏洞\",再试加上 Role=\"YC partner\" + Constraint=\"每条 < 80 词\",看 Claude 回答的差距 — 这就是 prompt engineering。"
+                      : 'Task is required (the verb you want Claude to do). Role/Context/Constraint are 0-3 seasonings. Try Task="Evaluate a startup idea — name the 3 biggest holes". Then add Role="YC partner" + Constraint="each < 80 words" and compare the responses. The delta IS prompt engineering.')}
+                  {isAgentChapter &&
+                    (isZh
+                      ? "记住: agent = Goal + Tools + Memory + Reflection。Goal 越窄越好(\"每天扫 5 个 X 帖\" 比 \"帮我做 marketing\" 好 10 倍)。Tools 选 2-3 个就够 — 多了 LLM 反而 confused。Memory=brier-audited 给你的 spec 加我们 stack 的校准纹身。"
+                      : 'Remember: agent = Goal + Tools + Memory + Reflection. Narrower goals win ("scan 5 X posts daily" beats "help with marketing" 10x). Pick 2-3 tools, not 6 — more confuses the LLM. Memory=brier-audited tattoos our calibration moat onto your spec.')}
                 </div>
               )}
             </div>
