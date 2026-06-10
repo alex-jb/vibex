@@ -60,6 +60,14 @@ export default function LessonPage() {
   const [showHint, setShowHint] = useState(false);
   const [celebrate, setCelebrate] = useState(0); // counter, increments on complete to refire confetti
 
+  // Chapter 2 (prompt-engineering) — 4 slots state
+  const [pRole, setPRole] = useState("");
+  const [pContext, setPContext] = useState("");
+  const [pTask, setPTask] = useState("");
+  const [pConstraint, setPConstraint] = useState("");
+  const [pResponse, setPResponse] = useState<string | null>(null);
+  const [pLoading, setPLoading] = useState(false);
+
   useEffect(() => {
     setProgress(loadProgress());
   }, []);
@@ -129,7 +137,42 @@ export default function LessonPage() {
     setImgLoading(false);
   }
 
+  async function runPromptEngineering() {
+    if (!pTask.trim()) {
+      setFeedback(
+        isZh ? "至少要写 Task —— 让 AI 做什么。" : "At least fill the Task — what should the AI do?"
+      );
+      return;
+    }
+    setPLoading(true);
+    setFeedback("");
+    setPResponse(null);
+    try {
+      const r = await fetch("/api/learn/prompt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role: pRole,
+          context: pContext,
+          task: pTask,
+          constraint: pConstraint,
+        }),
+      });
+      const json = await r.json();
+      if (!r.ok) {
+        setFeedback(json?.error || "Claude call failed");
+      } else {
+        setPResponse(String(json?.response || ""));
+      }
+    } catch {
+      setFeedback(isZh ? "网络断了 — 重试一次" : "Network blip — try again");
+    } finally {
+      setPLoading(false);
+    }
+  }
+
   const isImageChapter = chapter.slug === "ai-drawing";
+  const isPromptChapter = chapter.slug === "prompt-engineering";
 
   // Codedex-style progress bar position: chapter % within the 3-book journey.
   const chapterIndex = CHAPTERS.findIndex((c) => c.slug === chapter.slug);
@@ -206,6 +249,31 @@ export default function LessonPage() {
                       <div className="mt-1"><span className="text-amber-400">style</span>: whose hand drew it</div>
                       <div className="mt-1"><span className="text-emerald-400">lighting</span>: time of day / mood</div>
                       <div className="mt-1"><span className="text-rose-400">composition</span>: angle / distance</div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {isPromptChapter && (
+              <div className="rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-5">
+                <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+                  {isZh ? "公式 · R·C·T·C" : "Formula · R·C·T·C"}
+                </div>
+                <div className="mt-3 font-mono text-sm leading-relaxed">
+                  {isZh ? (
+                    <>
+                      <div><span className="text-[var(--accent-indigo)]">Role</span>: 你是谁(YC partner / 高级编辑 / 风控 PM)</div>
+                      <div className="mt-1"><span className="text-amber-400">Context</span>: 背景假设(我们 PMF 阶段 / 用户 B2B SaaS / 中国市场)</div>
+                      <div className="mt-1"><span className="text-emerald-400">Task</span>: 干什么(写 5 条邮件 / 评估这个 idea / 找出 3 个漏洞)</div>
+                      <div className="mt-1"><span className="text-rose-400">Constraint</span>: 边界(每条 &lt; 80 词 / 不夸 / 用 1 个数字支持每条)</div>
+                    </>
+                  ) : (
+                    <>
+                      <div><span className="text-[var(--accent-indigo)]">Role</span>: who you are (YC partner / senior editor / risk PM)</div>
+                      <div className="mt-1"><span className="text-amber-400">Context</span>: the assumptions (PMF stage / B2B SaaS user / China market)</div>
+                      <div className="mt-1"><span className="text-emerald-400">Task</span>: what to do (draft 5 emails / evaluate this idea / find 3 holes)</div>
+                      <div className="mt-1"><span className="text-rose-400">Constraint</span>: boundaries (each &lt; 80 words / no hype / 1 number per claim)</div>
                     </>
                   )}
                 </div>
@@ -289,7 +357,115 @@ export default function LessonPage() {
 
           {/* RIGHT — interactive surface */}
           <section className="rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-5">
-            {isImageChapter ? (
+            {isPromptChapter ? (
+              <>
+                <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+                  {isZh ? "练习场 · 4 个槽位" : "Workspace · 4 slots"}
+                </div>
+
+                <div className="mt-3 space-y-3">
+                  <div>
+                    <label className="block font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent-indigo)]">
+                      Role
+                    </label>
+                    <input
+                      value={pRole}
+                      onChange={(e) => setPRole(e.target.value)}
+                      placeholder={
+                        isZh ? "你是一位 YC partner" : "You are a YC partner"
+                      }
+                      maxLength={280}
+                      className="mt-1 w-full rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] p-2 font-mono text-sm text-zinc-100 outline-none focus:border-[var(--accent-indigo)]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-mono text-[10px] uppercase tracking-[0.2em] text-amber-400">
+                      Context
+                    </label>
+                    <input
+                      value={pContext}
+                      onChange={(e) => setPContext(e.target.value)}
+                      placeholder={
+                        isZh
+                          ? "B2B SaaS, 中国市场, pre-PMF"
+                          : "B2B SaaS, China market, pre-PMF"
+                      }
+                      maxLength={280}
+                      className="mt-1 w-full rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] p-2 font-mono text-sm text-zinc-100 outline-none focus:border-amber-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-mono text-[10px] uppercase tracking-[0.2em] text-emerald-400">
+                      Task
+                    </label>
+                    <input
+                      value={pTask}
+                      onChange={(e) => setPTask(e.target.value)}
+                      placeholder={
+                        isZh
+                          ? "评估这个 startup idea 的 3 个最大漏洞"
+                          : "Evaluate this startup idea — name the 3 biggest holes"
+                      }
+                      maxLength={280}
+                      className="mt-1 w-full rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] p-2 font-mono text-sm text-zinc-100 outline-none focus:border-emerald-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-mono text-[10px] uppercase tracking-[0.2em] text-rose-400">
+                      Constraint
+                    </label>
+                    <input
+                      value={pConstraint}
+                      onChange={(e) => setPConstraint(e.target.value)}
+                      placeholder={
+                        isZh
+                          ? "每条 < 80 词,1 个数字支持,不夸"
+                          : "Each < 80 words, 1 number per claim, no hype"
+                      }
+                      maxLength={280}
+                      className="mt-1 w-full rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] p-2 font-mono text-sm text-zinc-100 outline-none focus:border-rose-400"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={runPromptEngineering}
+                    disabled={pLoading}
+                    className="rounded-[var(--r-card)] border border-[var(--accent-indigo)] bg-[var(--accent-indigo)]/15 px-5 py-2.5 text-sm font-semibold text-[var(--accent-indigo)] hover:bg-[var(--accent-indigo)]/25 disabled:opacity-50"
+                  >
+                    {pLoading
+                      ? isZh ? "Claude 正在写..." : "Claude is writing..."
+                      : isZh ? "▶ Run (Claude Haiku)" : "▶ Run (Claude Haiku)"}
+                  </button>
+                  {!done && pResponse && (
+                    <button
+                      onClick={complete}
+                      className="rounded-[var(--r-card)] bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-400"
+                    >
+                      {isZh ? `✓ Submit · +${chapter.xpReward} XP` : `✓ Submit · +${chapter.xpReward} XP`}
+                    </button>
+                  )}
+                </div>
+
+                {pResponse && (
+                  <div className="mt-5 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-deep)] p-4">
+                    <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+                      {isZh ? "Claude 回应" : "Claude response"}
+                    </div>
+                    <pre className="mt-2 whitespace-pre-wrap font-mono text-sm leading-relaxed text-zinc-100">
+                      {pResponse}
+                    </pre>
+                  </div>
+                )}
+
+                {feedback && (
+                  <div className="mt-4 rounded-[var(--r-card)] border border-amber-500/30 bg-[var(--bg-deep)] p-3 text-sm text-amber-300">
+                    {feedback}
+                  </div>
+                )}
+              </>
+            ) : isImageChapter ? (
               <>
                 <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
                   {isZh ? "练习场" : "Workspace"}
