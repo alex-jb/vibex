@@ -65,6 +65,19 @@ const ALLOWLIST_TABLES = new Set([
   // are wired and ready. Remove this entry after running
   // `npm run audit:dump` post-apply.
   "tip_interest",
+
+  // 2026-06-09 SFOS-obs landing + 2026-06-10 Pair Cohort landing — both
+  // POST to /api/{sfos-obs,cohort}-waitlist which insert into `waitlist`
+  // table. Migration 077_waitlist.sql is committed but pending manual
+  // Supabase Dashboard apply by Alex. Remove this entry after running
+  // `npm run audit:dump` post-apply.
+  "waitlist",
+
+  // 2026-06-09 Quant Bench public leaderboard — app/quant-bench/leaderboard
+  // + lib/quant-bench.ts upsert to `quant_bench_scores`. Migration
+  // 076_quant_bench_scores.sql is committed but pending manual Supabase
+  // Dashboard apply by Alex. Remove after `npm run audit:dump` post-apply.
+  "quant_bench_scores",
 ]);
 const ALLOWLIST_FUNCTIONS = new Set([]);
 
