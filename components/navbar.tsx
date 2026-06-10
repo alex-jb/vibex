@@ -21,6 +21,7 @@ import { ExplorerChrome } from "@/components/explorer-chrome";
 const fullNavItems = [
   { href: "/home", key: "nav.home" as const },
   { href: "/learn", key: "nav.learn" as const },
+  { href: "/cohort", key: "nav.cohort" as const },
   { href: "/creators", key: "nav.creators" as const },
   { href: "/dojo", key: "nav.dojo" as const },
   { href: "/insights", key: "nav.insights" as const },

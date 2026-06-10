@@ -10,6 +10,7 @@ const translations = {
     // Nav items
     "nav.home": "HQ",
     "nav.learn": "Learn",
+    "nav.cohort": "Cohort",
     // 2026-05-08 IA realignment — new primary nav items below
     "nav.dashboard": "Dashboard",
     "nav.howItWorks": "How it works",
@@ -901,6 +902,7 @@ const translations = {
     // Nav items
     "nav.home": "基地",
     "nav.learn": "学院",
+    "nav.cohort": "Cohort",
     "nav.dashboard": "工作台",
     "nav.howItWorks": "怎么用",
     "nav.showcase": "案例",
