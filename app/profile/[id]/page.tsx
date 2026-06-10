@@ -183,8 +183,14 @@ export default function PublicProfilePage({
         }}
       />
 
-      {/* ═══ GAME BOY CONSOLE BEZEL ═══ */}
-      <div
+      {/* ═══ GAME BOY CONSOLE BEZEL ═══
+          Boot animation borrowed from xhs 灵灵妮 "Annie Creative OS" — power
+          on the console as the page mounts. 600ms scale + opacity, then the
+          inner identity block does its own stagger.  */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
         className="relative mx-auto"
         style={{
           maxWidth: 960,
