@@ -41,6 +41,14 @@ export interface CouncilVoice {
   gap: string;            // single biggest risk / counter
 }
 
+export interface OracleVerdict {
+  model: string;                // e.g. "claude-fable-5"
+  recommendation: "go" | "wait" | "kill" | "split";
+  score: number;                // 0-100
+  verdict: string;              // 2-3 sentences adjudicating the 5 voices
+  override_reason?: string;     // set when Oracle disagrees with council consensus
+}
+
 export interface CouncilResult {
   domain: CouncilDomain;
   decision: string;
@@ -49,6 +57,7 @@ export interface CouncilResult {
   agreement_score: number;      // 0-1 — std dev of voice scores, inverted
   recommendation: "go" | "wait" | "kill" | "split";
   computed_at: string;          // ISO timestamp
+  oracle?: OracleVerdict;       // optional Mythos-class adjudication (Fable 5)
 }
 
 export interface DeliberateInput {
@@ -56,6 +65,12 @@ export interface DeliberateInput {
   decision: string;
   context?: string;
   custom_voices?: { slug: string; display: string; role_brief: string }[];
+  /**
+   * Opt-in: run a single Mythos-class adjudication after the 5 voices.
+   * "fable-5" → claude-fable-5 (Anthropic's flagship as of 2026-06-10).
+   * Pass a raw model ID to override.
+   */
+  oracle?: "fable-5" | string;
 }
 
 const DOMAIN_VOICES: Record<CouncilDomain, { slug: string; display: string; role: string }[]> = {
@@ -215,7 +230,7 @@ Schema:
     const stddev = Math.sqrt(variance);
     const agreement_score = Math.max(0, Math.min(1, 1 - stddev / 50));
 
-    return {
+    const result: CouncilResult = {
       domain: input.domain,
       decision: input.decision,
       voices: parsed.voices,
@@ -223,6 +238,90 @@ Schema:
       agreement_score: Math.round(agreement_score * 100) / 100,
       recommendation: parsed.recommendation,
       computed_at: new Date().toISOString(),
+    };
+
+    if (input.oracle) {
+      result.oracle = await this.adjudicate(input, result);
+    }
+
+    return result;
+  }
+
+  /**
+   * Oracle mode — single Mythos-class model adjudicates the 5 voice debate.
+   *
+   * Why: 5 mid-tier voices often hit "split" on hard calls. A flagship model
+   * with full context window can weigh which voice has the strongest grounding
+   * and either ratify or override the council. Brier-audited at resolution
+   * separately so we can see when the Oracle beats vs underperforms the council.
+   */
+  private async adjudicate(
+    input: DeliberateInput,
+    council: CouncilResult,
+  ): Promise<OracleVerdict> {
+    const oracleModel =
+      input.oracle === "fable-5" ? "claude-fable-5" : (input.oracle as string);
+
+    const voicesSummary = council.voices
+      .map(
+        (v) =>
+          `- ${v.voice_display} (${v.score}/100): ${v.verdict}\n    strength: ${v.strength}\n    gap: ${v.gap}`,
+      )
+      .join("\n");
+
+    const system = `You are the Oracle. The council of 5 specialists has deliberated. Your job: read the 5 verdicts, weigh which voice has the strongest grounding, and issue a single adjudication. You have authority to OVERRIDE the council if their consensus misses something a flagship-tier reasoner would catch.
+
+Output STRICT JSON. Be concrete. No hedging.
+
+Schema:
+{
+  "recommendation": "go|wait|kill|split",
+  "score": <0-100, your confidence the decision is correct>,
+  "verdict": "<2-3 sentences. Name which voices you side with and why.>",
+  "override_reason": "<only if your recommendation differs from the council. Empty string otherwise.>"
+}`;
+
+    const user = `DECISION: ${input.decision}
+
+CONTEXT:
+${input.context ?? "(no additional context)"}
+
+COUNCIL CONSENSUS: ${council.recommendation} (agreement ${council.agreement_score})
+${council.consensus}
+
+THE 5 VOICES:
+${voicesSummary}
+
+Adjudicate.`;
+
+    const msg = await this.client.messages.create({
+      model: oracleModel,
+      max_tokens: 800,
+      system,
+      messages: [{ role: "user", content: user }],
+    });
+
+    const textBlock = msg.content.find((c) => c.type === "text");
+    if (!textBlock || textBlock.type !== "text") {
+      throw new Error("Empty response from Oracle");
+    }
+    const cleaned = textBlock.text
+      .replace(/^```json\n/, "")
+      .replace(/^```\n/, "")
+      .replace(/\n```$/, "");
+    const parsed = JSON.parse(cleaned) as {
+      recommendation: OracleVerdict["recommendation"];
+      score: number;
+      verdict: string;
+      override_reason?: string;
+    };
+
+    return {
+      model: oracleModel,
+      recommendation: parsed.recommendation,
+      score: parsed.score,
+      verdict: parsed.verdict,
+      override_reason: parsed.override_reason || undefined,
     };
   }
 }

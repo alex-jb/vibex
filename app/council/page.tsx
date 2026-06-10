@@ -24,6 +24,7 @@ export default function CouncilLanding() {
   const [domain, setDomain] = useState("founder");
   const [decision, setDecision] = useState("");
   const [context, setContext] = useState("");
+  const [oracle, setOracle] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting">("idle");
 
   async function deliberate(e: React.FormEvent) {
@@ -34,6 +35,7 @@ export default function CouncilLanding() {
       domain,
       decision: decision.trim(),
       ...(context.trim() ? { context: context.trim() } : {}),
+      ...(oracle ? { oracle: "fable-5" } : {}),
     });
     router.push(`/council/result?${params.toString()}`);
   }
@@ -112,17 +114,35 @@ export default function CouncilLanding() {
               maxLength={2000}
             />
           </div>
+          <label className="flex items-start gap-3 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-4 cursor-pointer hover:border-[var(--border-strong)] transition-colors">
+            <input
+              type="checkbox"
+              checked={oracle}
+              onChange={(e) => setOracle(e.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-[var(--accent-indigo)]"
+            />
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-sm font-semibold text-zinc-200">
+                <span>🔮 Oracle mode</span>
+                <span className="text-[10px] uppercase tracking-widest text-[var(--accent-indigo)]">Fable 5</span>
+              </div>
+              <div className="mt-1 text-xs text-zinc-500 leading-snug">
+                After the council deliberates, Claude Fable 5 reads all 5 verdicts and issues a single adjudication with override authority. Adds ~$0.07.
+              </div>
+            </div>
+          </label>
+
           <button
             type="submit"
             disabled={status === "submitting" || !decision.trim()}
             className="w-full rounded-[var(--r-card)] bg-[var(--accent-indigo)] px-6 py-3 font-semibold text-white hover:opacity-90 disabled:opacity-50"
           >
-            {status === "submitting" ? "Council deliberating..." : "Convene the council →"}
+            {status === "submitting" ? "Council deliberating..." : oracle ? "Convene the council + Oracle →" : "Convene the council →"}
           </button>
         </form>
 
         <p className="mt-4 text-center text-xs text-zinc-500">
-          Free · 5 voices in parallel · ~$0.03 per deliberation · 30 second result
+          Free · 5 voices in parallel · {oracle ? "~$0.10 (council + Oracle)" : "~$0.03 per deliberation"} · 30 second result
         </p>
 
         <div className="mt-16 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-6">
