@@ -1,7 +1,33 @@
 import { executeAgent } from "@/lib/agent-engine";
 import { getAgentById } from "@/lib/db";
+import { getAuthUser } from "@/lib/supabase-server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  // Wallet protection. This endpoint streams the output of executeAgent,
+  // which makes paid LLM calls. Fable 5 audit 2026-06-11 flagged this
+  // route as having zero auth AND zero rate limit — anyone hitting it
+  // burns Anthropic credits. Auth + per-user rate limit close the hole.
+  // The in-memory checkRateLimit() is still imperfect on serverless (it
+  // resets per cold start), but combined with auth-gating it raises the
+  // bar from "free for the internet" to "free for any signed-in user up
+  // to ~5/min per instance," which the audit followup will tighten to a
+  // shared store. For now: auth first, finer-grained later.
+  const user = await getAuthUser();
+  if (!user) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  const { allowed } = await checkRateLimit(`${user.id}:agents-stream`, 5, 60_000);
+  if (!allowed) {
+    return new Response(
+      JSON.stringify({ error: "Rate limit exceeded. Try again later." }),
+      { status: 429, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
   let body: { agentId?: string; input?: string };
   try {
     body = await request.json();
