@@ -37,8 +37,39 @@ export default async function ArchetypePage({ params }: PageProps) {
   const prev = HOOK_ARCHETYPES[(idx - 1 + HOOK_ARCHETYPES.length) % HOOK_ARCHETYPES.length];
   const next = HOOK_ARCHETYPES[(idx + 1) % HOOK_ARCHETYPES.length];
 
+  // JSON-LD DefinedTerm + IsPartOf TaxonomicConcept — surfaces this
+  // archetype as a structured entry in Google + AI Overviews. The
+  // schema.org/DefinedTerm pattern is what dictionaries + glossaries use,
+  // which is closer to the spirit of our taxonomy than Article schema.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    "@id": `https://www.vibexforge.com/hooks/${a.slug}`,
+    name: `${a.display_en} · ${a.display_zh}`,
+    alternateName: [a.display_en, a.display_zh],
+    description: a.description_en,
+    termCode: a.slug,
+    inDefinedTermSet: {
+      "@type": "DefinedTermSet",
+      "@id": "https://www.vibexforge.com/hooks",
+      name: "12 Hook Archetypes for Chinese Short-Form Video",
+      url: "https://www.vibexforge.com/hooks",
+    },
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": "https://www.vibexforge.com/#website",
+      name: "VibeXForge",
+      url: "https://www.vibexforge.com",
+    },
+    keywords: [a.common_in, "Douyin", "Xiaohongshu", "viral hook", "短视频", "病毒钩"].join(", "),
+  };
+
   return (
     <main className="min-h-screen px-6 py-12 text-zinc-100" style={{ background: "var(--bg-deep)" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="mx-auto max-w-3xl">
         <Link
           href="/hooks"

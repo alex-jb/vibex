@@ -24,8 +24,30 @@ const C = {
 };
 
 export default function HookArchetypesPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    "@id": "https://www.vibexforge.com/hooks",
+    name: "12 Hook Archetypes for Chinese Short-Form Video",
+    description:
+      "Open taxonomy of viral hook patterns from Douyin and Xiaohongshu. 12 archetypes with descriptions and common-in tags, classified per video by AI at decode time. Open data, MIT.",
+    url: "https://www.vibexforge.com/hooks",
+    inLanguage: ["en", "zh"],
+    hasDefinedTerm: HOOK_ARCHETYPES.map((a) => ({
+      "@type": "DefinedTerm",
+      "@id": `https://www.vibexforge.com/hooks/${a.slug}`,
+      name: `${a.display_en} · ${a.display_zh}`,
+      termCode: a.slug,
+      description: a.description_en,
+    })),
+  };
+
   return (
     <main className="min-h-screen px-6 py-12 text-zinc-100" style={{ background: C.BG }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="mx-auto max-w-5xl">
         <header className="text-center mb-12">
           <p className="text-xs uppercase tracking-widest text-[var(--accent-indigo)]">
