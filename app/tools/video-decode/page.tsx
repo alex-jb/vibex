@@ -518,14 +518,18 @@ export default function VideoDecodePage() {
                   fromGemini ?? matchArchetype(result.analysis.hook_first_3s.formula);
                 if (!matched) return null;
                 return (
-                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[var(--accent-indigo)]/40 bg-[var(--accent-indigo)]/10 px-3 py-1 text-xs">
+                  <a
+                    href={`/hooks/${matched.slug}`}
+                    className="mb-2 inline-flex items-center gap-2 rounded-full border border-[var(--accent-indigo)]/40 bg-[var(--accent-indigo)]/10 px-3 py-1 text-xs hover:bg-[var(--accent-indigo)]/20 transition-colors"
+                  >
                     <span className="text-[var(--accent-indigo)]">🎯</span>
                     <span className="font-medium text-zinc-200">
                       {lang === "zh" ? matched.display_zh : matched.display_en}
                     </span>
                     <span className="text-zinc-500">·</span>
                     <span className="text-zinc-500">{matched.common_in}</span>
-                  </div>
+                    <span className="text-[var(--accent-indigo)] ml-1">→</span>
+                  </a>
                 );
               })()}
               <blockquote className="border-l-2 border-[var(--accent-indigo)] pl-4 italic text-zinc-300 my-3">
