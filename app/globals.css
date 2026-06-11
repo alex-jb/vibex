@@ -51,6 +51,15 @@
   --text-h1:      48px;   /* page titles */
   --text-display: 88px;   /* hero h1 (mobile fallback to h1) */
 
+  /* 2026-06-11 WCAG audit pass — `--text-muted-safe` was referenced from
+     app/page.tsx but never defined as a CSS var, so every site of the
+     subtitle line silently fell back to its inline #8B8E96 default.
+     #B5B7BD on bg-deep #0A0A0C measures ≈8.0:1 (AA + AAA passing for
+     normal text), gives the 12px+13px subtitles real headroom under
+     CRT scanline + glow overlays without lifting the entire muted
+     palette. */
+  --text-muted-safe: #B5B7BD;
+
   /* 2026-06-08 Linear/Vercel polish pass (大神 research delivery)
      - Indigo accent for Linear-style focus / link state
      - 4-tier radius scale matching Geist + Vercel

@@ -893,15 +893,23 @@ export default function LandingPage() {
         {/* === Live social-proof counter === */}
         <ForgeCounter delay={5.0} />
 
-        {/* === Headline === */}
+        {/* === Headline ===
+            2026-06-11: dropped delay from 5.2s → 0.3s. Visitors were
+            staring at the boot log for 5 seconds before the value prop
+            appeared — the design-review critic was right that animation
+            was gating comprehension. Boot log still plays in the left
+            column as background atmosphere; the headline no longer
+            waits on it. fontSize bumped from 26 (off-token) to
+            var(--text-h2) (32) so the type scale lockdown actually
+            holds at the most-trafficked surface. */}
         <motion.div
           initial={{ opacity: 0, x: -6 }}
           animate={{ opacity: [0, 0.6, 0.8, 1], x: [-6, 4, -2, 0] }}
-          transition={{ duration: 0.5, delay: 5.2, times: [0, 0.33, 0.66, 1] }}
+          transition={{ duration: 0.5, delay: 0.3, times: [0, 0.33, 0.66, 1] }}
           className="text-center mb-5"
           style={{
             fontFamily: "var(--font-press-start), monospace",
-            fontSize: 26,
+            fontSize: "var(--text-h2)",
             lineHeight: 1.5,
             color: "var(--text)",
             letterSpacing: 2,
@@ -944,10 +952,10 @@ export default function LandingPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 5.5, ease: pixelEase }}
+          transition={{ duration: 0.6, delay: 0.6, ease: pixelEase }}
           className="text-center mb-2"
           style={{
-            fontSize: 13,
+            fontSize: "var(--text-body)",
             lineHeight: 1.6,
             letterSpacing: 0.6,
             color: "var(--text)",
@@ -963,12 +971,12 @@ export default function LandingPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 5.7, ease: pixelEase }}
+          transition={{ duration: 0.6, delay: 0.9, ease: pixelEase }}
           className="text-center mb-7"
           style={{
-            fontSize: 10,
+            fontSize: "var(--text-caption)",
             letterSpacing: 1.5,
-            color: "var(--text-muted-safe, #8B8E96)",
+            color: "var(--text-muted-safe)",
             fontFamily: "var(--font-press-start), monospace",
           }}
         >
@@ -985,7 +993,7 @@ export default function LandingPage() {
         <motion.div
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 5.85, ease: pixelEase }}
+          transition={{ duration: 0.5, delay: 1.1, ease: pixelEase }}
           className="mb-6 flex justify-center"
           aria-label="Creator lifecycle"
         >
@@ -1105,7 +1113,7 @@ export default function LandingPage() {
         <motion.div
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 5.8, ease: pixelEase }}
+          transition={{ duration: 0.5, delay: 1.3, ease: pixelEase }}
           className="mt-6 flex flex-wrap items-center justify-center gap-2"
           aria-label="Browse by category"
         >
@@ -1157,7 +1165,7 @@ export default function LandingPage() {
         <motion.div
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 5.95, ease: pixelEase }}
+          transition={{ duration: 0.5, delay: 1.5, ease: pixelEase }}
           className="mt-3 flex flex-wrap items-center justify-center gap-2"
           aria-label="Creator lifecycle"
         >
