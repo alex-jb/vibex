@@ -12,7 +12,7 @@
 
 <p align="center">
   <strong>Distribution amplifier for solo AI creators.</strong><br/>
-  <sub>Submit your AI project once. Our agents auto-write 17 platform-native posts in ~10 seconds — X, Reddit, Hacker News, Dev.to, LinkedIn, Bluesky, Threads, Xiaohongshu (小红书), Jike (即刻), and more. Edit inline, one-click publish, track engagement across all channels from one dashboard.</sub>
+  <sub>Submit your AI project once. Our agents auto-write 10+ platform-native posts in ~10 seconds — X, Reddit, Hacker News, Dev.to, LinkedIn, Bluesky, Threads, Xiaohongshu (小红书), Jike (即刻), and more. Edit inline, one-click publish, track engagement across all channels from one dashboard.</sub>
 </p>
 
 <p align="center">
@@ -46,7 +46,7 @@ Solo founders skip platforms. The best one becomes the only one. Reach collapses
 ## The Loop
 
 ```
-Submit URL  →  Claude writes 17 platform-native drafts (~10s)
+Submit URL  →  Claude writes 10+ platform-native drafts (~10s)
             →  Review inline, edit, approve
             →  1-click open platform with text pre-filled
             →  Mark posted, paste the URL
@@ -64,7 +64,7 @@ Submit URL  →  Claude writes 17 platform-native drafts (~10s)
 
 ## Demo
 
-> **Live:** [vibexforge.com](https://www.vibexforge.com) — sign in with GitHub or Google, paste any URL, get 17 platform-native drafts in ~10 seconds.
+> **Live:** [vibexforge.com](https://www.vibexforge.com) — sign in with GitHub or Google, paste any URL, get 10+ platform-native drafts in ~10 seconds.
 
 ---
 
@@ -112,7 +112,7 @@ Run the SQL migrations in `.private/migrations/*.sql` through the Supabase Dashb
 | UI | React 19 + Tailwind v4 + Framer Motion | Zero-config, fast, smooth |
 | DB | Supabase (Postgres + RLS + Realtime) | One stack, one auth, realtime drafts |
 | Auth | Supabase Auth (GitHub + Google OAuth + PKCE) | Cookies, not localStorage |
-| Drafts | Claude Sonnet 4.6 + prompt caching | Parallel generation, ~10s for 17 drafts |
+| Drafts | Claude Sonnet 4.6 + prompt caching | Parallel generation, ~10s for 10+ drafts |
 | Translation | Claude Sonnet 4.6 (daily batch) | EN ↔ ZH for creator-submitted content |
 | Visual | OpenAI gpt-image-2 | On-demand Xiaohongshu cover generation |
 | Storage | Vercel Blob | Cover images + demo videos |
@@ -129,11 +129,11 @@ Run the SQL migrations in `.private/migrations/*.sql` through the Supabase Dashb
 ```
 vibex/
 ├── app/                                  # Next.js 16 App Router
-│   ├── page.tsx                          # Landing — IH-style, 17 drafts pitch
+│   ├── page.tsx                          # Landing — IH-style, 10+ drafts pitch
 │   ├── arcade/                           # Original RPG splash (preserved)
 │   ├── how-it-works/                     # Marketing landing for inbound traffic
 │   ├── dashboard/                        # Creator's projects + drafts pipeline
-│   ├── launch/                           # Submit a project → 17 drafts in ~10s
+│   ├── launch/                           # Submit a project → 10+ drafts in ~10s
 │   ├── project/[id]/
 │   │   ├── drafts/                       # HITL review UI: edit / re-roll / publish
 │   │   └── analytics/                    # Per-platform engagement + 30D sparklines
@@ -165,7 +165,7 @@ vibex/
 ## Roadmap
 
 **Shipped**
-- [x] Submit project → Claude writes 17 platform-native drafts in ~10s
+- [x] Submit project → Claude writes 10+ platform-native drafts in ~10s
 - [x] HITL review UI: inline edit, single-draft re-roll, status filter
 - [x] 1-click publish — text auto-copied + intent URL opened per platform
 - [x] Engagement tracking — 6h cron scrapes Reddit / HN / Dev.to / Bluesky / X

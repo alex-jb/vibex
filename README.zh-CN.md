@@ -12,7 +12,7 @@
 
 <p align="center">
   <strong>给独立 AI 创作者的多渠道发行放大器。</strong><br/>
-  <sub>提交一次 AI 作品,我们的 agent 在 10 秒内自动生成 17 篇平台原生帖子 —— X、Reddit、Hacker News、Dev.to、LinkedIn、Bluesky、Threads、小红书、即刻、知乎、B 站。审核、修改、一键发布,跨平台 engagement 一个 dashboard 全看见。</sub>
+  <sub>提交一次 AI 作品,我们的 agent 在 10 秒内自动生成 10+ 篇平台原生帖子 —— X、Reddit、Hacker News、Dev.to、LinkedIn、Bluesky、Threads、小红书、即刻、知乎、B 站。审核、修改、一键发布,跨平台 engagement 一个 dashboard 全看见。</sub>
 </p>
 
 <p align="center">
@@ -34,7 +34,7 @@
 ## 核心闭环
 
 ```
-提交 URL  →  Claude 并行生成 17 张平台原生草稿(~10 秒)
+提交 URL  →  Claude 并行生成 10+ 张平台原生草稿(~10 秒)
           →  逐张审核、内联编辑、批准
           →  一键打开平台,文案已预填
           →  标记已发布,粘贴 URL
@@ -52,7 +52,7 @@
 
 ## Demo
 
-> **生产环境:** [vibexforge.com](https://www.vibexforge.com) —— GitHub / Google 登录,提交任意 URL,10 秒拿到 17 张平台原生草稿。
+> **生产环境:** [vibexforge.com](https://www.vibexforge.com) —— GitHub / Google 登录,提交任意 URL,10 秒拿到 10+ 张平台原生草稿。
 
 ---
 
@@ -100,7 +100,7 @@ npm run dev
 | UI | React 19 + Tailwind v4 + Framer Motion | 零配置、快、平滑 |
 | 数据库 | Supabase(Postgres + RLS + Realtime)| 一套栈、一套 auth、realtime 草稿 |
 | Auth | Supabase Auth(GitHub + Google + PKCE)| Cookies 不是 localStorage |
-| 草稿 | Claude Sonnet 4.6 + prompt cache | 并行调用,~10 秒 17 张 |
+| 草稿 | Claude Sonnet 4.6 + prompt cache | 并行调用,~10 秒 10+ 张 |
 | 翻译 | Claude Sonnet 4.6(每日 batch)| EN ↔ ZH 创作者内容自动翻译 |
 | 视觉 | OpenAI gpt-image-2 | 按需生成小红书封面 |
 | 存储 | Vercel Blob | 封面图 + demo 视频 |
@@ -115,7 +115,7 @@ npm run dev
 ## 路线图
 
 **已上线**
-- [x] 提交 URL → Claude 写 17 张平台专属草稿,~10 秒
+- [x] 提交 URL → Claude 写 10+ 张平台专属草稿,~10 秒
 - [x] HITL 审核 UI:内联编辑、单张 re-roll、状态筛选
 - [x] 一键发布 —— 文案自动复制 + 平台 intent URL 打开
 - [x] Engagement 跟踪 —— 6 小时 cron 抓 Reddit / HN / Dev.to / Bluesky / X

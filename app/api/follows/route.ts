@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { serverLog } from "@/lib/logger";
 import { insertNotification } from "@/lib/notifications";
+import { getAuthUser } from "@/lib/supabase-server";
 
 const SUPABASE_CONFIGURED =
   !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -60,15 +61,27 @@ export async function GET(request: NextRequest) {
 
 // ---------- POST: toggle follow ----------
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { creatorId, userId } = body;
+  // Follower identity MUST come from the session. The previous version
+  // trusted body-supplied `userId`, which let anyone follow on behalf of
+  // any user (and fire the follow-notification side effect with a forged
+  // actor). Fable 5 audit 2026-06-11 flagged this on /api/comments and
+  // /api/follows together.
+  const sessionUser = await getAuthUser();
+  if (!sessionUser) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  if (!creatorId || !userId) {
+  const body = await request.json().catch(() => ({}));
+  const { creatorId } = body as { creatorId?: string };
+
+  if (!creatorId) {
     return NextResponse.json(
-      { error: "Missing required fields: creatorId, userId" },
+      { error: "Missing required field: creatorId" },
       { status: 400 },
     );
   }
+
+  const userId = sessionUser.id;
 
   if (!SUPABASE_CONFIGURED) {
     // Mock toggle: always returns "now following"

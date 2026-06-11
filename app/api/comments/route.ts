@@ -4,6 +4,7 @@ import { validateString, sanitize } from "@/lib/validate";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { USE_SUPABASE } from "@/lib/mock-adapter";
 import { createNotification } from "@/lib/db";
+import { getAuthUser } from "@/lib/supabase-server";
 
 interface CommentRow {
   id: string;
@@ -92,8 +93,16 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const { allowed } = await checkRateLimit(`${ip}:comments-post`, 10, 60_000);
+  // Identity MUST come from the session, not the body. Fable 5 audit
+  // 2026-06-11 found that the previous version trusted client-supplied
+  // userId/userName, allowing anyone to comment as any user (and trigger
+  // notification emails as them).
+  const user = await getAuthUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { allowed } = await checkRateLimit(`${user.id}:comments-post`, 10, 60_000);
   if (!allowed) {
     return NextResponse.json(
       { error: "Rate limit exceeded. Try again later." },
@@ -118,19 +127,20 @@ export async function POST(request: Request) {
     );
   }
 
-  const { userId, userName, content, projectId, parentId } = body as {
-    userId?: string;
-    userName?: string;
+  const { content, projectId, parentId } = body as {
     content?: string;
     projectId?: string;
     parentId?: string;
   };
 
+  const userId = user.id;
+  const userName =
+    (user.user_metadata?.full_name as string | undefined) ||
+    (user.user_metadata?.user_name as string | undefined) ||
+    (user.email?.split("@")[0]) ||
+    "Anonymous";
+
   const errors: string[] = [];
-  const userIdErr = validateString(userId, "userId");
-  if (userIdErr) errors.push(userIdErr);
-  const userNameErr = validateString(userName, "userName");
-  if (userNameErr) errors.push(userNameErr);
   const contentErr = validateString(content, "content", { min: 1, max: 2000 });
   if (contentErr) errors.push(contentErr);
   const projectIdErr = validateString(projectId, "projectId");

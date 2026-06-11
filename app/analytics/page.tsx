@@ -142,6 +142,28 @@ export default function AnalyticsPage() {
         }}
       />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 space-y-12" style={{ position: "relative", zIndex: 2 }}>
+        {/* ── Honest banner: this whole page is mock data ──
+            Fable 5 audit 2026-06-11 flagged that /analytics renders
+            hardcoded numbers (`"$127.50"`, fake top creators, dailyRuns
+            array, recentRuns inline) but presents itself as live
+            telemetry. Until the page is wired to real analytics, lead
+            with a banner that says so so a visitor isn't misled. */}
+        <div
+          role="status"
+          aria-label="Sample data notice"
+          className="rounded-md border border-[color:var(--brand-amber)] bg-[rgba(245,158,11,0.08)] px-4 py-3 text-[color:var(--text-muted-safe)]"
+          style={{
+            fontSize: "var(--text-body)",
+            lineHeight: 1.5,
+          }}
+        >
+          <strong style={{ color: "var(--brand-amber)" }}>Demo dashboard</strong>{" "}
+          — every number on this page is sample data so you can see what
+          a real analytics view will look like. Live telemetry ships
+          after the analytics pipeline lands. The /admin/metrics route
+          shows real numbers today.
+        </div>
+
         {/* ── Hero — pixel treatment matching other gold-title pages ── */}
         <motion.section variants={fadeUp} initial="hidden" animate="visible" className="text-center space-y-3">
           <div
