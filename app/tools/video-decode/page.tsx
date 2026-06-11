@@ -475,12 +475,27 @@ export default function VideoDecodePage() {
               </section>
             )}
 
-            <button
-              onClick={reset}
-              className="w-full rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] px-6 py-3 text-zinc-200 hover:border-[var(--border-strong)]"
-            >
-              ← {t.rerun}
-            </button>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => {
+                  const text =
+                    lang === "zh"
+                      ? `🎬 AI 拆解视频 hook:\n\n前 3 秒 hook: ${result.analysis.hook_first_3s.formula}\n情感钩: ${result.analysis.emotional_hook}\nVirality: ${result.analysis.virality_score}/100\n\n你的视频也想拆解? vibexforge.com/tools/video-decode`
+                      : `🎬 AI hook breakdown:\n\nFirst-3s hook: ${result.analysis.hook_first_3s.formula}\nEmotional hook: ${result.analysis.emotional_hook}\nVirality: ${result.analysis.virality_score}/100\n\nDecode yours: vibexforge.com/tools/video-decode`;
+                  const url = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}`;
+                  window.open(url, "_blank", "noopener,noreferrer");
+                }}
+                className="rounded-[var(--r-card)] border border-[var(--accent-indigo)] bg-[var(--accent-indigo)]/10 px-6 py-3 text-zinc-100 hover:bg-[var(--accent-indigo)]/20 font-medium"
+              >
+                𝕏 {lang === "zh" ? "分享到 X" : "Share to X"}
+              </button>
+              <button
+                onClick={reset}
+                className="rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] px-6 py-3 text-zinc-200 hover:border-[var(--border-strong)]"
+              >
+                ← {t.rerun}
+              </button>
+            </div>
           </div>
         )}
       </div>
