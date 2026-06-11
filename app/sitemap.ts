@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { supabase } from "@/lib/supabase";
 import { projects as mockProjects } from "@/lib/mock-data";
+import { HOOK_ARCHETYPES } from "@/lib/hook-archetypes";
 
 /**
  * Sitemap for crawlers.
@@ -41,6 +42,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/events", priority: 0.7, changeFrequency: "weekly" },
     { path: "/messages", priority: 0.5, changeFrequency: "monthly" },
     // Creator tools
+    { path: "/tools/video-decode", priority: 0.85, changeFrequency: "weekly" },
+    { path: "/hooks", priority: 0.8, changeFrequency: "weekly" },
     { path: "/create-card", priority: 0.75, changeFrequency: "monthly" },
     { path: "/agents/builder", priority: 0.7, changeFrequency: "weekly" },
     { path: "/workflows", priority: 0.7, changeFrequency: "weekly" },
@@ -125,5 +128,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.82,
   }));
 
-  return [...staticPages, ...categoryPages, ...projectPages];
+  // Hook archetype detail pages — 12 SSG routes with long-tail SEO
+  // value ("douyin pain reveal hook", "抖音权威背书公式"). Static, so
+  // safe to enumerate unconditionally.
+  const archetypePages: MetadataRoute.Sitemap = HOOK_ARCHETYPES.map((a) => ({
+    url: `${baseUrl}/hooks/${a.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }));
+
+  return [...staticPages, ...categoryPages, ...projectPages, ...archetypePages];
 }
