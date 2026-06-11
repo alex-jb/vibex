@@ -56,6 +56,15 @@ export default function VideoDecodePage() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [history, setHistory] = useState<DecodeHistoryEntry[]>([]);
 
+  // Snapshot "now" on mount + when history changes so relative-time
+  // formatting in render stays a pure function. useState + useEffect is
+  // the lint-compliant pattern; useMemo with Date.now() still trips
+  // react-hooks/rule-of-purity in eslint-plugin-react v5+.
+  const [renderTimeMs, setRenderTimeMs] = useState(0);
+  useEffect(() => {
+    setRenderTimeMs(Date.now());
+  }, [history]);
+
   // Quota check + ?pack=N redirect handler — refreshes on mount only.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -65,9 +74,7 @@ export default function VideoDecodePage() {
       // Scrub the params so a refresh doesn't double-credit.
       window.history.replaceState({}, "", "/tools/video-decode");
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- mount-only initial load
     setQuota(checkQuota());
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- mount-only initial load
     setHistory(getHistory());
   }, []);
 
@@ -367,7 +374,7 @@ export default function VideoDecodePage() {
                       ? e.source.url.replace(/^https?:\/\//, "").slice(0, 40)
                       : e.source.filename ?? "video";
                     const when = new Date(e.decoded_at);
-                    const ago = Math.max(0, Math.floor((Date.now() - when.getTime()) / 60000));
+                    const ago = Math.max(0, Math.floor((renderTimeMs - when.getTime()) / 60000));
                     const agoStr =
                       ago < 1
                         ? lang === "zh" ? "刚刚" : "just now"
