@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { USE_SUPABASE } from "@/lib/mock-adapter";
+import { requireRole } from "@/lib/rbac";
 
 // GET: platform analytics
+// Access: moderator+ (matches the /api/admin/moderation route policy).
+// The mock branch is left open because it returns canned demo data with no
+// real user info — same posture as the rest of the mock layer.
 export async function GET() {
   if (!USE_SUPABASE) {
     return NextResponse.json({
@@ -41,6 +45,9 @@ export async function GET() {
       },
     });
   }
+
+  const auth = await requireRole("moderator");
+  if (auth instanceof Response) return auth;
 
   // Real queries
   const [postsResult, reactionsResult, reportsResult] = await Promise.all([

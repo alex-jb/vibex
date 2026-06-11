@@ -3,6 +3,7 @@ import { validateString } from "@/lib/validate";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { WEBHOOK_EVENTS } from "@/lib/webhook-engine";
 import { apiSuccess, apiError } from "@/lib/api-response";
+import { getAuthUser } from "@/lib/supabase-server";
 
 const USE_SUPABASE = !!(
   process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -45,24 +46,22 @@ function isValidUrl(str: string): boolean {
   }
 }
 
-/* ─── GET: List user's webhooks ─── */
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get("userId");
-
-  if (!userId) {
-    return apiError("Missing required query parameter: userId", 400);
+/* ─── GET: List the AUTHENTICATED user's webhooks ─── */
+export async function GET() {
+  const user = await getAuthUser();
+  if (!user) {
+    return apiError("Unauthorized", 401);
   }
 
   if (!USE_SUPABASE) {
-    const filtered = MOCK_WEBHOOKS.filter((w) => w.user_id === userId);
+    const filtered = MOCK_WEBHOOKS.filter((w) => w.user_id === user.id);
     return apiSuccess(filtered);
   }
 
   const { data, error } = await supabase
     .from("webhooks")
     .select("id, url, events, is_active, last_triggered_at, failure_count, created_at")
-    .eq("user_id", userId)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -72,10 +71,14 @@ export async function GET(request: Request) {
   return apiSuccess(data ?? []);
 }
 
-/* ─── POST: Create a webhook ─── */
+/* ─── POST: Create a webhook for the AUTHENTICATED user ─── */
 export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const { allowed } = await checkRateLimit(`${ip}:webhooks-post`, 5, 60_000);
+  const user = await getAuthUser();
+  if (!user) {
+    return apiError("Unauthorized", 401);
+  }
+
+  const { allowed } = await checkRateLimit(`${user.id}:webhooks-post`, 5, 60_000);
   if (!allowed) {
     return apiError("Rate limit exceeded. Try again later.", 429);
   }
@@ -87,17 +90,13 @@ export async function POST(request: Request) {
     return apiError("Invalid JSON body", 400);
   }
 
-  const { url, events, userId } = body as {
+  const { url, events } = body as {
     url?: string;
     events?: string[];
-    userId?: string;
   };
 
   /* Validate fields */
   const errors: string[] = [];
-
-  const userIdErr = validateString(userId, "userId");
-  if (userIdErr) errors.push(userIdErr);
 
   const urlErr = validateString(url, "url", { max: 2048 });
   if (urlErr) {
@@ -123,7 +122,7 @@ export async function POST(request: Request) {
   if (!USE_SUPABASE) {
     const mock = {
       id: `wh-mock-${Date.now()}`,
-      user_id: userId,
+      user_id: user.id,
       url,
       secret: "whsec_mock_generated",
       events,
@@ -137,7 +136,7 @@ export async function POST(request: Request) {
 
   const { data, error } = await supabase
     .from("webhooks")
-    .insert({ user_id: userId, url, events })
+    .insert({ user_id: user.id, url, events })
     .select()
     .single();
 
