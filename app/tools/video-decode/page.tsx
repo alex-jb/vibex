@@ -12,6 +12,7 @@
 import { useState, useEffect } from "react";
 import { useLang } from "@/lib/i18n";
 import { checkQuota, consumeDecode, grantPack, type QuotaStatus } from "@/lib/video-quota";
+import { saveDecode, getHistory, deleteEntry, type DecodeHistoryEntry } from "@/lib/video-history";
 
 interface DecodeResponse {
   ok: boolean;
@@ -53,6 +54,7 @@ export default function VideoDecodePage() {
   const [result, setResult] = useState<DecodeResponse["result"] | null>(null);
   const [quota, setQuota] = useState<QuotaStatus | null>(null);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [history, setHistory] = useState<DecodeHistoryEntry[]>([]);
 
   // Quota check + ?pack=N redirect handler — refreshes on mount only.
   useEffect(() => {
@@ -63,7 +65,10 @@ export default function VideoDecodePage() {
       // Scrub the params so a refresh doesn't double-credit.
       window.history.replaceState({}, "", "/tools/video-decode");
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mount-only initial load
     setQuota(checkQuota());
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mount-only initial load
+    setHistory(getHistory());
   }, []);
 
   function onPick(e: React.ChangeEvent<HTMLInputElement>) {
@@ -99,10 +104,33 @@ export default function VideoDecodePage() {
       const json: DecodeResponse = await res.json();
       if (!json.ok || !json.result) {
         setStatus("error");
-        setError(json.error ?? "decode failed");
+        // XHS Phase 2 sentinel — auto-suggest mp4 upload as the actual path
+        const err = json.error ?? "decode failed";
+        if (/501|xiaohongshu|not yet implemented|phase 2/i.test(err)) {
+          setError(
+            lang === "zh"
+              ? "小红书 URL 抓取还在 Phase 2(yt-dlp 没 extractor)。请下载 mp4 后切到上传模式 ↑"
+              : "Xiaohongshu URL extraction is Phase 2 (yt-dlp has no extractor). Download the mp4 and switch to upload mode ↑",
+          );
+          setMode("upload");
+          return;
+        }
+        setError(err);
         return;
       }
       setQuota(consumeDecode());
+      setHistory(
+        saveDecode({
+          source: { mode: "url", url: url.trim() },
+          analysis: {
+            virality_score: json.result.analysis.virality_score,
+            hook_formula: json.result.analysis.hook_first_3s.formula,
+            emotional_hook: json.result.analysis.emotional_hook,
+            cta_type: json.result.analysis.cta.type,
+            duration_sec: json.result.analysis.duration_sec_estimate,
+          },
+        }),
+      );
       setResult(json.result);
       setStatus("done");
     } catch (e) {
@@ -135,6 +163,18 @@ export default function VideoDecodePage() {
         return;
       }
       setQuota(consumeDecode());
+      setHistory(
+        saveDecode({
+          source: { mode: "upload", filename: file.name },
+          analysis: {
+            virality_score: json.result.analysis.virality_score,
+            hook_formula: json.result.analysis.hook_first_3s.formula,
+            emotional_hook: json.result.analysis.emotional_hook,
+            cta_type: json.result.analysis.cta.type,
+            duration_sec: json.result.analysis.duration_sec_estimate,
+          },
+        }),
+      );
       setResult(json.result);
       setStatus("done");
     } catch (e) {
@@ -313,6 +353,60 @@ export default function VideoDecodePage() {
                 )}
                 {lang === "zh" ? "成本 ~$0.015/视频" : "~$0.015/video cost"}
               </p>
+            )}
+
+            {/* Recent decodes — local-only history, last 20 */}
+            {history.length > 0 && (
+              <section className="mt-10">
+                <div className="mb-3 flex items-center justify-between text-xs uppercase tracking-widest text-zinc-500">
+                  <span>📚 {lang === "zh" ? "你的最近拆解" : "Your recent decodes"} · {history.length}</span>
+                </div>
+                <div className="space-y-2">
+                  {history.slice(0, 8).map((e) => {
+                    const label = e.source.url
+                      ? e.source.url.replace(/^https?:\/\//, "").slice(0, 40)
+                      : e.source.filename ?? "video";
+                    const when = new Date(e.decoded_at);
+                    const ago = Math.max(0, Math.floor((Date.now() - when.getTime()) / 60000));
+                    const agoStr =
+                      ago < 1
+                        ? lang === "zh" ? "刚刚" : "just now"
+                        : ago < 60
+                          ? lang === "zh" ? `${ago} 分钟前` : `${ago}m ago`
+                          : ago < 1440
+                            ? lang === "zh" ? `${Math.floor(ago / 60)} 小时前` : `${Math.floor(ago / 60)}h ago`
+                            : lang === "zh" ? `${Math.floor(ago / 1440)} 天前` : `${Math.floor(ago / 1440)}d ago`;
+                    return (
+                      <div
+                        key={e.id}
+                        className="flex items-center justify-between rounded-md border border-[var(--border-soft)] bg-[var(--bg-elev)] px-4 py-2.5 hover:border-[var(--border-strong)] transition-colors"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium tabular-nums text-[var(--accent-indigo)]">
+                              {e.analysis.virality_score}
+                            </span>
+                            <span className="text-xs text-zinc-500">·</span>
+                            <span className="text-xs text-zinc-300 truncate">
+                              {e.analysis.hook_formula}
+                            </span>
+                          </div>
+                          <div className="mt-1 text-[10px] text-zinc-500 truncate">
+                            {label} · {agoStr}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setHistory(deleteEntry(e.id))}
+                          className="ml-3 text-xs text-zinc-600 hover:text-rose-400"
+                          aria-label="delete"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
             )}
           </>
         )}
