@@ -30,6 +30,7 @@ export interface VideoHookAnalysis {
   duration_sec_estimate: number;
   hook_first_3s: {
     formula: string; // "shock + question" / "pain reveal" / "speed run" etc
+    archetype_slug?: string; // matches one of HOOK_ARCHETYPES slugs in lib/hook-archetypes.ts
     transcript: string;
     why_it_works: string;
   };
@@ -64,6 +65,7 @@ Schema:
   "duration_sec_estimate": <number>,
   "hook_first_3s": {
     "formula": "<one phrase: e.g. 'shock+question' / 'pain reveal' / 'speed run' / 'before-after'>",
+    "archetype_slug": "<MUST be exactly one of: shock_question | pain_reveal | speed_run | before_after | contrarian_take | list_with_count | story_arc | authority_proof | viewer_jealousy | ai_dare | emotional_resonance | controversy_bait. Pick the best match. If none clearly fit, return empty string.>",
     "transcript": "<exact words spoken or shown in first 3 seconds>",
     "why_it_works": "<1-2 sentences in Chinese>"
   },

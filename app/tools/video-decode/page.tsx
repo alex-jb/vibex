@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import { useLang } from "@/lib/i18n";
 import { checkQuota, consumeDecode, grantPack, type QuotaStatus } from "@/lib/video-quota";
 import { saveDecode, getHistory, deleteEntry, type DecodeHistoryEntry } from "@/lib/video-history";
+import { matchArchetype, HOOK_ARCHETYPES } from "@/lib/hook-archetypes";
 
 interface DecodeResponse {
   ok: boolean;
@@ -23,6 +24,7 @@ interface DecodeResponse {
       duration_sec_estimate: number;
       hook_first_3s: {
         formula: string;
+        archetype_slug?: string;
         transcript: string;
         why_it_works: string;
       };
@@ -504,6 +506,28 @@ export default function VideoDecodePage() {
               <div className="text-2xl font-semibold text-[var(--accent-indigo)] mb-2">
                 {result.analysis.hook_first_3s.formula}
               </div>
+              {(() => {
+                // Prefer Gemini's direct archetype_slug if it returned one
+                // from the explicit enum; fall back to fuzzy match on the
+                // formula string for back-compat.
+                const slug = result.analysis.hook_first_3s.archetype_slug;
+                const fromGemini = slug
+                  ? HOOK_ARCHETYPES.find((a) => a.slug === slug)
+                  : null;
+                const matched =
+                  fromGemini ?? matchArchetype(result.analysis.hook_first_3s.formula);
+                if (!matched) return null;
+                return (
+                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[var(--accent-indigo)]/40 bg-[var(--accent-indigo)]/10 px-3 py-1 text-xs">
+                    <span className="text-[var(--accent-indigo)]">🎯</span>
+                    <span className="font-medium text-zinc-200">
+                      {lang === "zh" ? matched.display_zh : matched.display_en}
+                    </span>
+                    <span className="text-zinc-500">·</span>
+                    <span className="text-zinc-500">{matched.common_in}</span>
+                  </div>
+                );
+              })()}
               <blockquote className="border-l-2 border-[var(--accent-indigo)] pl-4 italic text-zinc-300 my-3">
                 {result.analysis.hook_first_3s.transcript}
               </blockquote>
