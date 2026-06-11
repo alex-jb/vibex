@@ -986,7 +986,7 @@ export default function LaunchPage() {
               <div
                 className="font-pixel truncate"
                 style={{
-                  fontSize: 10,
+                  fontSize: "var(--text-caption)",
                   letterSpacing: 0.5,
                   color: "#FFFCEB",
                   textShadow: "1px 1px 0 #000",
@@ -1013,7 +1013,11 @@ export default function LaunchPage() {
             <div className="flex flex-col items-end" style={{ flexShrink: 0 }}>
               <span
                 className="font-ui"
-                style={{ fontSize: 7, letterSpacing: 1.5, color: "#8B7AA0" }}
+                style={{
+                  fontSize: "var(--text-caption)",
+                  letterSpacing: 1.5,
+                  color: "var(--text-muted-safe)",
+                }}
               >
                 COMPOUND
               </span>
@@ -1108,7 +1112,7 @@ export default function LaunchPage() {
             <span
               className="font-pixel"
               style={{
-                fontSize: 10,
+                fontSize: "var(--text-caption)",
                 letterSpacing: 1.5,
                 color: "#E9BDFF",
               }}
