@@ -9,8 +9,9 @@
  *
  * Phase 2: URL 粘贴 + Railway Python sidecar 跑 yt-dlp / ReaJason/xhs。
  */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLang } from "@/lib/i18n";
+import { checkQuota, consumeDecode, grantPack, type QuotaStatus } from "@/lib/video-quota";
 
 interface DecodeResponse {
   ok: boolean;
@@ -50,6 +51,20 @@ export default function VideoDecodePage() {
   const [status, setStatus] = useState<"idle" | "fetching" | "uploading" | "decoding" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<DecodeResponse["result"] | null>(null);
+  const [quota, setQuota] = useState<QuotaStatus | null>(null);
+  const [showPaywall, setShowPaywall] = useState(false);
+
+  // Quota check + ?pack=N redirect handler — refreshes on mount only.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pack = params.get("pack");
+    if (pack && !Number.isNaN(Number(pack))) {
+      grantPack(Number(pack));
+      // Scrub the params so a refresh doesn't double-credit.
+      window.history.replaceState({}, "", "/tools/video-decode");
+    }
+    setQuota(checkQuota());
+  }, []);
 
   function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
@@ -65,6 +80,11 @@ export default function VideoDecodePage() {
 
   async function decodeUrl() {
     if (!url.trim()) return;
+    const q = checkQuota();
+    if (!q.can_decode) {
+      setShowPaywall(true);
+      return;
+    }
     setStatus("fetching");
     setError(null);
     setResult(null);
@@ -82,6 +102,7 @@ export default function VideoDecodePage() {
         setError(json.error ?? "decode failed");
         return;
       }
+      setQuota(consumeDecode());
       setResult(json.result);
       setStatus("done");
     } catch (e) {
@@ -92,6 +113,11 @@ export default function VideoDecodePage() {
 
   async function decodeUpload() {
     if (!file) return;
+    const q = checkQuota();
+    if (!q.can_decode) {
+      setShowPaywall(true);
+      return;
+    }
     setStatus("uploading");
     setError(null);
     setResult(null);
@@ -108,6 +134,7 @@ export default function VideoDecodePage() {
         setError(json.error ?? "decode failed");
         return;
       }
+      setQuota(consumeDecode());
       setResult(json.result);
       setStatus("done");
     } catch (e) {
@@ -271,7 +298,82 @@ export default function VideoDecodePage() {
                 ⚠ {error}
               </div>
             )}
+
+            {quota && (
+              <p className="mt-3 text-center text-xs text-zinc-500">
+                {quota.paid_credits > 0 ? (
+                  <>
+                    💳 {quota.paid_credits} {lang === "zh" ? "次预付剩余" : "prepaid left"} ·{" "}
+                  </>
+                ) : (
+                  <>
+                    🎁 {quota.free_remaining}/{quota.free_per_day}{" "}
+                    {lang === "zh" ? "今日免费" : "free today"} ·{" "}
+                  </>
+                )}
+                {lang === "zh" ? "成本 ~$0.015/视频" : "~$0.015/video cost"}
+              </p>
+            )}
           </>
+        )}
+
+        {/* Paywall modal — shown when quota hits 0 */}
+        {showPaywall && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={() => setShowPaywall(false)}
+          >
+            <div
+              className="max-w-md w-full rounded-[var(--r-card)] border border-[var(--accent-indigo)] bg-[var(--bg-elev)] p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center mb-5">
+                <div className="text-5xl mb-3">🎯</div>
+                <h3 className="text-2xl font-bold text-zinc-100">
+                  {lang === "zh" ? "今日免费额度用完" : "Daily free limit reached"}
+                </h3>
+                <p className="mt-2 text-sm text-zinc-400">
+                  {lang === "zh"
+                    ? "买个 $5 包,100 次视频拆解,永不过期。"
+                    : "Grab a $5 pack — 100 video decodes, never expire."}
+                </p>
+              </div>
+
+              <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--bg-deep)] p-4 mb-4">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-3xl font-bold text-zinc-100">$5</span>
+                  <span className="text-sm text-zinc-500">/ 100 decodes</span>
+                </div>
+                <ul className="mt-3 text-xs text-zinc-400 space-y-1">
+                  <li>✓ {lang === "zh" ? "$0.05/视频 · 平台 ~$0.015 成本" : "$0.05 each · ~$0.015 platform cost"}</li>
+                  <li>✓ {lang === "zh" ? "永不过期" : "Never expires"}</li>
+                  <li>✓ {lang === "zh" ? "同样的拆解 + 仿写脚本" : "Same hook analysis + remix scripts"}</li>
+                </ul>
+              </div>
+
+              {process.env.NEXT_PUBLIC_STRIPE_VIDEO_DECODE_URL ? (
+                <a
+                  href={process.env.NEXT_PUBLIC_STRIPE_VIDEO_DECODE_URL}
+                  className="block w-full text-center rounded-[var(--r-card)] bg-[var(--accent-indigo)] px-6 py-3 font-semibold text-white hover:opacity-90"
+                >
+                  {lang === "zh" ? "去 Stripe 付款 →" : "Pay via Stripe →"}
+                </a>
+              ) : (
+                <div className="rounded-md bg-amber-500/10 border border-amber-500/40 px-4 py-3 text-sm text-amber-200">
+                  ⚠ {lang === "zh"
+                    ? "Stripe Payment Link 尚未配置。请管理员设 NEXT_PUBLIC_STRIPE_VIDEO_DECODE_URL"
+                    : "Stripe Payment Link not configured. Admin: set NEXT_PUBLIC_STRIPE_VIDEO_DECODE_URL"}
+                </div>
+              )}
+
+              <button
+                onClick={() => setShowPaywall(false)}
+                className="mt-3 w-full text-center text-sm text-zinc-500 hover:text-zinc-300"
+              >
+                {lang === "zh" ? "稍后" : "Maybe later"}
+              </button>
+            </div>
+          </div>
         )}
 
         {result && status === "done" && (
