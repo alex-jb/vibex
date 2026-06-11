@@ -670,7 +670,7 @@ export default function PublicProfilePage({
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* ═══ EVOLVED HEROES (outside the Game Boy) ═══ */}
       <div className="mx-auto mt-8" style={{ maxWidth: 960 }}>

@@ -43,9 +43,11 @@ interface DecodeResponse {
 
 export default function VideoDecodePage() {
   const { lang } = useLang();
+  const [mode, setMode] = useState<"url" | "upload">("url");
+  const [url, setUrl] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
-  const [status, setStatus] = useState<"idle" | "uploading" | "decoding" | "done" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "fetching" | "uploading" | "decoding" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<DecodeResponse["result"] | null>(null);
 
@@ -61,7 +63,34 @@ export default function VideoDecodePage() {
     if (f) setFile(f);
   }
 
-  async function decode() {
+  async function decodeUrl() {
+    if (!url.trim()) return;
+    setStatus("fetching");
+    setError(null);
+    setResult(null);
+
+    try {
+      setStatus("decoding");
+      const res = await fetch("/api/video-decode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: url.trim() }),
+      });
+      const json: DecodeResponse = await res.json();
+      if (!json.ok || !json.result) {
+        setStatus("error");
+        setError(json.error ?? "decode failed");
+        return;
+      }
+      setResult(json.result);
+      setStatus("done");
+    } catch (e) {
+      setStatus("error");
+      setError(e instanceof Error ? e.message : "network error");
+    }
+  }
+
+  async function decodeUpload() {
     if (!file) return;
     setStatus("uploading");
     setError(null);
@@ -87,8 +116,12 @@ export default function VideoDecodePage() {
     }
   }
 
+  const decode = mode === "url" ? decodeUrl : decodeUpload;
+  const canDecode = mode === "url" ? !!url.trim() : !!file;
+
   function reset() {
     setFile(null);
+    setUrl("");
     setResult(null);
     setError(null);
     setStatus("idle");
@@ -97,35 +130,33 @@ export default function VideoDecodePage() {
   const t = lang === "zh"
     ? {
         title: "AI 视频拆解",
-        subtitle: "抖音 / 小红书的 mp4 文件,Gemini 2.5 Flash 在 30 秒内告诉你前 3 秒 hook 公式、节奏切点、CTA、情感钩,生成 3 条仿写脚本。",
+        subtitle: "粘一个抖音链接,Gemini 2.5 Flash 在 30 秒内告诉你前 3 秒 hook 公式、节奏切点、CTA、情感钩,生成 3 条仿写脚本。",
+        modeUrl: "🔗 粘链接",
+        modeUpload: "📹 上传 mp4",
+        urlPlaceholder: "粘抖音链接,e.g. https://v.douyin.com/...",
+        urlHint: "支持抖音 / TikTok。小红书 Phase 2 上(可以先用上传 mp4)。",
         dropHint: "拖一个 .mp4 进来",
         orPick: "或点这里选文件",
         decoding: "Gemini 正在看...",
+        fetching: "正在从平台抓视频...",
         uploading: "上传中...",
         rerun: "再试一个",
-        howGet: "怎么拿到 .mp4?",
-        howGetSteps: [
-          "抖音: 用 douyin-downloader (GitHub OSS) 或浏览器 F12 抓 mp4 直链",
-          "小红书: 用 xhs-downloader / ReaJason/xhs OSS Python 库",
-          "图省事: tikmate.online / snaptik 等第三方网站 (有水印)",
-        ],
-        legalNote: "我们只分析你已经下载到本地的视频,不替你抓。这是合规的唯一姿态。",
+        cta: "开始拆解 →",
       }
     : {
         title: "AI Video Decoder",
-        subtitle: "Drop a Douyin / Xiaohongshu mp4. Gemini 2.5 Flash returns the first-3-second hook formula, rhythm beats, CTA, emotional hook, and 3 remix scripts in ~30 seconds.",
+        subtitle: "Paste a Douyin link. Gemini 2.5 Flash returns the first-3-second hook formula, rhythm beats, CTA, emotional hook, and 3 remix scripts in ~30 seconds.",
+        modeUrl: "🔗 Paste URL",
+        modeUpload: "📹 Upload mp4",
+        urlPlaceholder: "Paste Douyin URL, e.g. https://v.douyin.com/...",
+        urlHint: "Supports Douyin / TikTok. Xiaohongshu coming in Phase 2 (use mp4 upload for now).",
         dropHint: "Drop an .mp4 here",
         orPick: "or click to pick a file",
         decoding: "Gemini is watching...",
+        fetching: "Fetching from platform...",
         uploading: "Uploading...",
         rerun: "Try another",
-        howGet: "How to get the .mp4?",
-        howGetSteps: [
-          "Douyin: douyin-downloader (GitHub OSS) or F12 → Network tab",
-          "Xiaohongshu: xhs-downloader / ReaJason/xhs Python lib",
-          "Quick: tikmate.online / snaptik (third-party, may add watermark)",
-        ],
-        legalNote: "We only analyze videos you've already downloaded. Not a scraper. That's the only compliant stance.",
+        cta: "Decode →",
       };
 
   return (
@@ -142,56 +173,97 @@ export default function VideoDecodePage() {
 
         {!result && status !== "done" && (
           <>
-            <div
-              onDrop={onDrop}
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragOver(true);
-              }}
-              onDragLeave={() => setDragOver(false)}
-              className={`relative rounded-[var(--r-card)] border-2 border-dashed p-12 text-center transition-colors cursor-pointer ${
-                dragOver
-                  ? "border-[var(--accent-indigo)] bg-[var(--accent-indigo)]/5"
-                  : "border-[var(--border-soft)] bg-[var(--bg-elev)] hover:border-[var(--border-strong)]"
-              }`}
-              onClick={() => document.getElementById("video-input")?.click()}
-            >
-              <input
-                id="video-input"
-                type="file"
-                accept="video/mp4,video/*"
-                onChange={onPick}
-                className="hidden"
-              />
-              {file ? (
-                <>
-                  <div className="text-4xl mb-3">📹</div>
-                  <div className="text-zinc-200 font-medium">{file.name}</div>
-                  <div className="text-xs text-zinc-500 mt-1">
-                    {(file.size / 1024 / 1024).toFixed(2)} MB · {file.type || "video/mp4"}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="text-4xl mb-3">⬆️</div>
-                  <div className="text-zinc-200 font-medium">{t.dropHint}</div>
-                  <div className="text-xs text-zinc-500 mt-1">{t.orPick}</div>
-                </>
-              )}
+            {/* Mode toggle — URL paste vs mp4 upload */}
+            <div className="mb-4 flex gap-2 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-1">
+              <button
+                type="button"
+                onClick={() => setMode("url")}
+                className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                  mode === "url"
+                    ? "bg-[var(--accent-indigo)] text-white"
+                    : "text-zinc-400 hover:text-zinc-200"
+                }`}
+              >
+                {t.modeUrl}
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("upload")}
+                className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                  mode === "upload"
+                    ? "bg-[var(--accent-indigo)] text-white"
+                    : "text-zinc-400 hover:text-zinc-200"
+                }`}
+              >
+                {t.modeUpload}
+              </button>
             </div>
+
+            {mode === "url" ? (
+              <div>
+                <input
+                  type="url"
+                  placeholder={t.urlPlaceholder}
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  className="w-full rounded-[var(--r-card)] border border-[var(--border-strong)] bg-[var(--bg-elev)] px-4 py-4 text-zinc-100 placeholder:text-zinc-500 focus:border-[var(--accent-indigo)] focus:outline-none font-mono text-sm"
+                  spellCheck={false}
+                  autoComplete="off"
+                />
+                <p className="mt-2 text-xs text-zinc-500">{t.urlHint}</p>
+              </div>
+            ) : (
+              <div
+                onDrop={onDrop}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragOver(true);
+                }}
+                onDragLeave={() => setDragOver(false)}
+                className={`relative rounded-[var(--r-card)] border-2 border-dashed p-12 text-center transition-colors cursor-pointer ${
+                  dragOver
+                    ? "border-[var(--accent-indigo)] bg-[var(--accent-indigo)]/5"
+                    : "border-[var(--border-soft)] bg-[var(--bg-elev)] hover:border-[var(--border-strong)]"
+                }`}
+                onClick={() => document.getElementById("video-input")?.click()}
+              >
+                <input
+                  id="video-input"
+                  type="file"
+                  accept="video/mp4,video/*"
+                  onChange={onPick}
+                  className="hidden"
+                />
+                {file ? (
+                  <>
+                    <div className="text-4xl mb-3">📹</div>
+                    <div className="text-zinc-200 font-medium">{file.name}</div>
+                    <div className="text-xs text-zinc-500 mt-1">
+                      {(file.size / 1024 / 1024).toFixed(2)} MB · {file.type || "video/mp4"}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-4xl mb-3">⬆️</div>
+                    <div className="text-zinc-200 font-medium">{t.dropHint}</div>
+                    <div className="text-xs text-zinc-500 mt-1">{t.orPick}</div>
+                  </>
+                )}
+              </div>
+            )}
 
             <button
               onClick={decode}
-              disabled={!file || status === "uploading" || status === "decoding"}
+              disabled={!canDecode || status === "fetching" || status === "uploading" || status === "decoding"}
               className="mt-4 w-full rounded-[var(--r-card)] bg-[var(--accent-indigo)] px-6 py-3 font-semibold text-white hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              {status === "uploading"
+              {status === "fetching"
+                ? t.fetching
+                : status === "uploading"
                 ? t.uploading
                 : status === "decoding"
                 ? t.decoding
-                : lang === "zh"
-                ? "开始拆解 →"
-                : "Decode →"}
+                : t.cta}
             </button>
 
             {error && (
@@ -199,18 +271,6 @@ export default function VideoDecodePage() {
                 ⚠ {error}
               </div>
             )}
-
-            <details className="mt-10 rounded-[var(--r-card)] border border-[var(--border-soft)] bg-[var(--bg-elev)] p-5">
-              <summary className="cursor-pointer text-sm font-semibold text-zinc-200">
-                {t.howGet}
-              </summary>
-              <ul className="mt-3 list-disc list-inside space-y-1.5 text-sm text-zinc-400">
-                {t.howGetSteps.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
-              <p className="mt-4 text-xs text-zinc-500 italic">{t.legalNote}</p>
-            </details>
           </>
         )}
 

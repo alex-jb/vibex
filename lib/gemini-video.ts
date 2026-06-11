@@ -1,5 +1,6 @@
 /**
- * Server-only video understanding via Gemini 2.5 Flash File API.
+ * Server-only video understanding via Gemini 2.5 Flash File API,
+ * plus URL extraction via the vibex-video-extractor Railway sidecar.
  *
  * Takes an mp4 buffer, uploads it to Gemini's file store, polls until ACTIVE,
  * runs a structured prompt that extracts viral-hook anatomy (前 3 秒 hook /
@@ -175,4 +176,69 @@ function stripFences(text: string): string {
   else if (s.startsWith("```")) s = s.slice(3);
   if (s.endsWith("```")) s = s.slice(0, -3);
   return s.trim();
+}
+
+export interface ExtractedVideo {
+  buffer: Buffer;
+  platform: string;
+  title?: string;
+  duration_sec?: number;
+}
+
+/**
+ * Pull a video from a Douyin / Xiaohongshu URL via the Railway sidecar.
+ *
+ * The sidecar (github.com/alex-jb/vibex-video-extractor) runs yt-dlp +
+ * Python in a $5/mo Railway container because Vercel can't host it.
+ * Returns the raw mp4 buffer + platform metadata so the caller can hand
+ * it straight to decodeVideo().
+ *
+ * Throws with a tidy message on:
+ *   - missing env (sidecar not configured)
+ *   - sidecar down
+ *   - 401 token rejection
+ *   - 403 cookies needed (Douyin session expired — Alex re-export task)
+ *   - 501 Xiaohongshu Phase 2 not implemented
+ */
+export async function extractFromUrl(url: string): Promise<ExtractedVideo> {
+  const base = process.env.VIDEO_EXTRACTOR_URL;
+  const token = process.env.VIDEO_EXTRACTOR_TOKEN;
+  if (!base) {
+    throw new Error(
+      "VIDEO_EXTRACTOR_URL not set — Railway sidecar required for URL decode. " +
+        "Deploy github.com/alex-jb/vibex-video-extractor and set the env var.",
+    );
+  }
+
+  const res = await fetch(`${base.replace(/\/$/, "")}/extract`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ url }),
+  });
+
+  if (!res.ok) {
+    let detail = "";
+    try {
+      const body = (await res.json()) as { detail?: string };
+      detail = body.detail ?? "";
+    } catch {
+      detail = await res.text().catch(() => "");
+    }
+    throw new Error(
+      `extractor returned ${res.status}: ${detail.slice(0, 200)}`,
+    );
+  }
+
+  const arrayBuf = await res.arrayBuffer();
+  return {
+    buffer: Buffer.from(arrayBuf),
+    platform: res.headers.get("x-video-platform") ?? "unknown",
+    title: res.headers.get("x-video-title") ?? undefined,
+    duration_sec: res.headers.get("x-video-duration")
+      ? Number(res.headers.get("x-video-duration"))
+      : undefined,
+  };
 }
