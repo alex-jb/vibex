@@ -147,7 +147,7 @@ export async function decodeVideo(
   let analysis: VideoHookAnalysis;
   try {
     analysis = JSON.parse(cleaned) as VideoHookAnalysis;
-  } catch (e) {
+  } catch {
     throw new Error(
       `Gemini returned non-JSON output: ${cleaned.slice(0, 200)}...`,
     );

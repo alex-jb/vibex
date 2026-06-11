@@ -431,7 +431,7 @@ export default function VideoDecodePage() {
                   )}
                 </div>
                 {result.analysis.cta.line && (
-                  <div className="mt-2 text-sm text-zinc-300">"{result.analysis.cta.line}"</div>
+                  <div className="mt-2 text-sm text-zinc-300">&ldquo;{result.analysis.cta.line}&rdquo;</div>
                 )}
               </section>
             </div>

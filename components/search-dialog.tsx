@@ -51,6 +51,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset-on-open is the intent
       setQuery("");
       // Small delay so the dialog renders before focus
       const id = setTimeout(() => inputRef.current?.focus(), 50);
@@ -139,6 +140,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
 
   // Reset selectedIndex when query changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset derived index on query change
     setSelectedIndex(0);
   }, [query]);
 
