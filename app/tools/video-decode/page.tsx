@@ -247,6 +247,51 @@ export default function VideoDecodePage() {
           <p className="mt-4 text-zinc-400 leading-relaxed">{t.subtitle}</p>
         </header>
 
+        {/* OSS template banner — this UI is the showcase for a self-host pattern.
+            We do not subsidize Gemini / Railway costs centrally. Fork the repos,
+            bring your own API key, run the sidecar on $5/mo Railway. */}
+        <div className="mb-8 rounded-[var(--r-card)] border border-amber-500/40 bg-amber-500/5 p-5">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">🔧</span>
+            <div className="flex-1 text-sm">
+              <div className="font-semibold text-amber-200 mb-1">
+                {lang === "zh" ? "这是一个开源模板 — fork 后 self-host" : "This is an OSS template — fork to self-host"}
+              </div>
+              <p className="text-zinc-300 leading-relaxed">
+                {lang === "zh"
+                  ? "VibeXForge 不提供托管 SaaS。下方界面是参考实现,你需要自己跑 Railway sidecar + 自己的 Gemini API key 才能拆解视频。10 分钟 setup。"
+                  : "VibeXForge does not host this as paid SaaS. The UI below is a reference implementation. Fork the 2 repos, run the Python sidecar on $5/mo Railway, bring your own Gemini API key. 10-minute setup."}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                <a
+                  href="https://github.com/alex-jb/vibex-video-extractor"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded border border-amber-500/40 bg-amber-500/10 px-3 py-1 text-amber-200 hover:bg-amber-500/20"
+                >
+                  📦 sidecar repo →
+                </a>
+                <a
+                  href="https://github.com/alex-jb/vibex-video-decoder-skill"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded border border-amber-500/40 bg-amber-500/10 px-3 py-1 text-amber-200 hover:bg-amber-500/20"
+                >
+                  🤖 Claude Skill →
+                </a>
+                <a
+                  href="https://github.com/alex-jb/vibex"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded border border-amber-500/40 bg-amber-500/10 px-3 py-1 text-amber-200 hover:bg-amber-500/20"
+                >
+                  🎬 this UI source →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {!result && status !== "done" && (
           <>
             {/* Mode toggle — URL paste vs mp4 upload */}
@@ -442,32 +487,25 @@ export default function VideoDecodePage() {
                 </p>
               </div>
 
-              <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--bg-deep)] p-4 mb-4">
-                <div className="flex items-baseline justify-between">
-                  <span className="text-3xl font-bold text-zinc-100">$5</span>
-                  <span className="text-sm text-zinc-500">/ 100 decodes</span>
+              <div className="rounded-lg border border-amber-500/40 bg-amber-500/5 p-4 mb-4">
+                <div className="text-sm font-semibold text-amber-200 mb-2">
+                  🔧 {lang === "zh" ? "这是开源模板" : "This is OSS template"}
                 </div>
-                <ul className="mt-3 text-xs text-zinc-400 space-y-1">
-                  <li>✓ {lang === "zh" ? "$0.05/视频 · 平台 ~$0.015 成本" : "$0.05 each · ~$0.015 platform cost"}</li>
-                  <li>✓ {lang === "zh" ? "永不过期" : "Never expires"}</li>
-                  <li>✓ {lang === "zh" ? "同样的拆解 + 仿写脚本" : "Same hook analysis + remix scripts"}</li>
-                </ul>
+                <p className="text-xs text-zinc-300 leading-relaxed">
+                  {lang === "zh"
+                    ? "VibeXForge 不卖付费额度 — 免费额度由 Gemini API key 持有者(你)决定。Fork 仓库,部署自己的 sidecar,用自己的 key,自己控制成本。"
+                    : "VibeXForge does not sell paid credits. The free quota is whatever your own Gemini API key allows. Fork the repos, run your own sidecar, bring your own key, control your own cost."}
+                </p>
               </div>
 
-              {process.env.NEXT_PUBLIC_STRIPE_VIDEO_DECODE_URL ? (
-                <a
-                  href={process.env.NEXT_PUBLIC_STRIPE_VIDEO_DECODE_URL}
-                  className="block w-full text-center rounded-[var(--r-card)] bg-[var(--accent-indigo)] px-6 py-3 font-semibold text-white hover:opacity-90"
-                >
-                  {lang === "zh" ? "去 Stripe 付款 →" : "Pay via Stripe →"}
-                </a>
-              ) : (
-                <div className="rounded-md bg-amber-500/10 border border-amber-500/40 px-4 py-3 text-sm text-amber-200">
-                  ⚠ {lang === "zh"
-                    ? "Stripe Payment Link 尚未配置。请管理员设 NEXT_PUBLIC_STRIPE_VIDEO_DECODE_URL"
-                    : "Stripe Payment Link not configured. Admin: set NEXT_PUBLIC_STRIPE_VIDEO_DECODE_URL"}
-                </div>
-              )}
+              <a
+                href="https://github.com/alex-jb/vibex-video-extractor"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center rounded-[var(--r-card)] bg-[var(--accent-indigo)] px-6 py-3 font-semibold text-white hover:opacity-90"
+              >
+                {lang === "zh" ? "📦 Fork + Self-host →" : "📦 Fork + Self-host →"}
+              </a>
 
               <button
                 onClick={() => setShowPaywall(false)}

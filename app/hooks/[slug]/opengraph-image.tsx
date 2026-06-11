@@ -1,7 +1,9 @@
 import { ImageResponse } from "next/og";
 import { HOOK_ARCHETYPES } from "@/lib/hook-archetypes";
 
-export const runtime = "edge";
+// nodejs runtime (not edge) because the parent route uses
+// generateStaticParams. Next.js currently disallows edge runtime alongside
+// SSG params on the same dynamic segment.
 export const alt = "Hook archetype · VibeXForge";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
