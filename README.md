@@ -162,6 +162,20 @@ vibex/
 
 ---
 
+## Companion Claude Code skills
+
+VibeXForge is the hosted product. These are the open-source Claude Code skills that came out of the same agent stack — they install as `/<command>` in any Claude Code session and work on any machine.
+
+| Skill | Install | What it does |
+|---|---|---|
+| **[council-diff](https://github.com/alex-jb/council-diff)** | `npm install council-diff` | 5 voices (Garry / Naval / PG / Suster / Cuban) answer a decision in parallel; Fable 5 Oracle adjudicates; Brier-score per voice over 30 days. The disagree-and-resolve shape for product decisions. |
+| **[polymarket-brier](https://github.com/alex-jb/polymarket-brier-skill)** | `clawhub install polymarket-brier` | Forecast a Polymarket question with Haiku, persist the prediction, Brier-score after resolution. Per-source calibration table tells you whether the loudest forecaster was actually right. |
+| **[solo-founder-os / splunk_obs](https://github.com/alex-jb/solo-founder-os/tree/master/solo_founder_os/splunk_obs)** | `pip install solo-founder-os` | Splunk HEC adapter for cron-scheduled AI agents. Three sourcetypes (reflection / eval drift / bandit regret), 6-panel dashboard.xml ready to import. |
+
+All three are MIT, all three have GitHub Releases, all three Brier-audit their own quality over time. The pattern is the same: build the thing, persist the predictions, score against reality, publish the calibration table.
+
+---
+
 ## Roadmap
 
 **Shipped**
