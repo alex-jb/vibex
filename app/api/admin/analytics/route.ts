@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { createServerSupabase } from "@/lib/supabase-server";
 import { USE_SUPABASE } from "@/lib/mock-adapter";
 import { requireRole } from "@/lib/rbac";
 
@@ -48,6 +48,8 @@ export async function GET() {
 
   const auth = await requireRole("moderator");
   if (auth instanceof Response) return auth;
+
+  const supabase = await createServerSupabase();
 
   // Real queries
   const [postsResult, reactionsResult, reportsResult] = await Promise.all([

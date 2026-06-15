@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
 import { createServerSupabase } from "@/lib/supabase-server";
 import { requireRole } from "@/lib/rbac";
 import { USE_SUPABASE } from "@/lib/mock-adapter";
@@ -21,6 +20,8 @@ export async function GET() {
 
   const auth = await requireRole("moderator");
   if (auth instanceof Response) return auth;
+
+  const supabase = await createServerSupabase();
 
   const [flaggedResult, reportsResult] = await Promise.all([
     supabase
@@ -68,14 +69,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, action });
   }
 
-  const serverSupabase = await createServerSupabase();
+  const supabase = await createServerSupabase();
 
   switch (action) {
     case "approve": {
       // Mark post as active, dismiss related reports
       if (postId) {
         await supabase.from("posts").update({ moderation_status: "active" }).eq("id", postId);
-        await supabase.from("post_reports").update({ status: "dismissed", reviewed_at: new Date().toISOString() }).eq("post_id", postId);
+        await supabase.rpc("admin_update_report_status", {
+          p_post_id: postId,
+          p_new_status: "dismissed",
+        });
       }
       return NextResponse.json({ success: true, action: "approved" });
     }
@@ -83,7 +87,10 @@ export async function POST(request: Request) {
     case "hide": {
       if (postId) {
         await supabase.from("posts").update({ moderation_status: "hidden" }).eq("id", postId);
-        await supabase.from("post_reports").update({ status: "actioned", reviewed_at: new Date().toISOString() }).eq("post_id", postId);
+        await supabase.rpc("admin_update_report_status", {
+          p_post_id: postId,
+          p_new_status: "actioned",
+        });
       }
       return NextResponse.json({ success: true, action: "hidden" });
     }
@@ -91,14 +98,17 @@ export async function POST(request: Request) {
     case "remove": {
       if (postId) {
         await supabase.from("posts").update({ moderation_status: "removed" }).eq("id", postId);
-        await supabase.from("post_reports").update({ status: "actioned", reviewed_at: new Date().toISOString() }).eq("post_id", postId);
+        await supabase.rpc("admin_update_report_status", {
+          p_post_id: postId,
+          p_new_status: "actioned",
+        });
       }
       return NextResponse.json({ success: true, action: "removed" });
     }
 
     case "dismiss": {
       if (reportIds && Array.isArray(reportIds)) {
-        await supabase.from("post_reports").update({ status: "dismissed", reviewed_at: new Date().toISOString() }).in("id", reportIds);
+        await supabase.rpc("admin_dismiss_reports", { p_report_ids: reportIds });
       }
       return NextResponse.json({ success: true, action: "dismissed" });
     }
@@ -108,7 +118,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Only admins can ban users" }, { status: 403 });
       }
       if (targetUserId && banReason) {
-        await serverSupabase.from("user_bans").insert({
+        await supabase.from("user_bans").insert({
           user_id: targetUserId,
           banned_by: authUser.id,
           reason: banReason,
@@ -123,7 +133,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Only admins can unban users" }, { status: 403 });
       }
       if (targetUserId) {
-        await serverSupabase.from("user_bans")
+        await supabase.from("user_bans")
           .update({ lifted_at: new Date().toISOString(), lifted_by: authUser.id })
           .eq("user_id", targetUserId)
           .is("lifted_at", null);
