@@ -252,6 +252,7 @@ export type DetectedStack =
   | "replit"
   | "bolt"
   | "claude-artifacts"
+  | "touchdesigner"
   | null;
 
 export function detectStack(demoUrl?: string): DetectedStack {
@@ -294,6 +295,10 @@ const STACK_HINT: Record<
   "claude-artifacts": {
     en: " STACK CONTEXT: Built as a Claude Artifact. Audience is AI-curious — mention the conversation → artifact → live URL flow.",
     zh: " 技术栈背景: Claude Artifact 做的。读者对 AI 感兴趣,可以讲对话 → artifact → 上线 这个流。",
+  },
+  touchdesigner: {
+    en: " STACK CONTEXT: Built in TouchDesigner — node-based real-time interactive visuals. Audience is creative-tech / VJ / projection-mapping / generative artists, NOT general software devs. Lead with the visual hook (audio-reactive? projection on physical surface? live VJ set?), not 'I built a tool'. Mention .toe + GLSL or Python if technical, but frame it as an art piece not a SaaS. Best demo formats are Vimeo / Instagram Reels / a screen-recording of the running patch — generic localhost URLs feel wrong here.",
+    zh: " 技术栈背景: TouchDesigner 做的 —— 节点式实时交互视觉。读者是创意编程 / VJ / 投影映射 / 生成艺术圈,**不是**通用软件开发者。开头讲视觉钩子(声音反应?物理表面投影?Live VJ?),不要写「我做了个工具」。可以提 .toe / GLSL / Python 但要包装成艺术作品,不是 SaaS。最佳 demo 形式是 Vimeo / Instagram Reels / patch 运行的录屏,普通 localhost URL 在这里读起来违和。",
   },
 };
 

@@ -49,4 +49,16 @@ describe("detectStack", () => {
   it("is case-insensitive on host", () => {
     expect(detectStack("https://MY-APP.LOVABLE.APP")).toBe("lovable");
   });
+
+  // touchdesigner is a desktop-app stack — no canonical hosted URL pattern,
+  // so detectStack should NOT false-positive on common TD-creator demo hosts
+  // like vimeo.com / instagram.com / youtube.com. Creators select it manually
+  // at submit time, then STACK_HINT picks it up downstream.
+  it("never auto-detects touchdesigner from URLs (manual-selection only)", () => {
+    expect(detectStack("https://vimeo.com/123456789")).toBeNull();
+    expect(detectStack("https://www.instagram.com/reel/abc/")).toBeNull();
+    expect(detectStack("https://youtube.com/watch?v=xyz")).toBeNull();
+    // Even if someone names a domain "touchdesigner.com", we don't try to detect
+    expect(detectStack("https://touchdesigner.example.com")).toBeNull();
+  });
 });
