@@ -1,19 +1,20 @@
 import { ImageResponse } from "next/og";
 import { createClient } from "@supabase/supabase-js";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const alt = "AI Side Project Funeral — Memorial";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+// Funeral palette per docs/specs/2026-06-14-funeral-visual-upgrade-spec.md
 const C = {
-  BG: "#0A0A0A",
-  PANEL: "#161619",
-  BORDER: "#3A3A42",
-  TEXT: "#E8E8EC",
-  MUTED: "#8B7AA0",
-  ORANGE: "#F97316",
-  RED: "#DC2626",
+  PARCHMENT: "#F2E8D5",
+  BURGUNDY:  "#4A1419",
+  CANDLE:    "#FFE27D",
+  SMOKE:     "#6b6258",
+  INK:       "#1a0508",
 };
 
 async function loadMemorial(id: string): Promise<{
@@ -21,7 +22,7 @@ async function loadMemorial(id: string): Promise<{
   ownerRepo: string;
   stars: number;
   lifespan: string;
-  eulogySnippet: string;
+  causeLine: string;
 } | null> {
   const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const SUPA_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -29,22 +30,47 @@ async function loadMemorial(id: string): Promise<{
   const supa = createClient(SUPA_URL, SUPA_ANON_KEY);
   const { data } = await supa
     .from("funerals")
-    .select("deceased_name, repo_owner, repo_name, stars, age_days_alive, eulogy")
+    .select("deceased_name, repo_owner, repo_name, stars, age_days_alive, cause_of_death")
     .eq("id", id)
     .maybeSingle();
   if (!data) return null;
+  const cause = data.cause_of_death
+    ? `died of ${(data.cause_of_death as string).replace(/_/g, " ")}`
+    : "";
   return {
     deceased: data.deceased_name,
     ownerRepo: `${data.repo_owner}/${data.repo_name}`,
     stars: data.stars ?? 0,
     lifespan: data.age_days_alive ? `lived ${data.age_days_alive} days` : "",
-    eulogySnippet: (data.eulogy || "").split(".")[0] + ".",
+    causeLine: cause,
   };
+}
+
+// Cormorant Garamond TTF loaders — Satori requires TTF, not WOFF2
+// per memory rule feedback_satori_ttf_not_woff2.md. Variable font with
+// wght axis; Satori reads the weight option per font registration.
+async function loadCormorant(italic: boolean): Promise<Buffer> {
+  const filename = italic
+    ? "CormorantGaramond-Italic-wght.ttf"
+    : "CormorantGaramond-wght.ttf";
+  const path = join(process.cwd(), "public", "fonts", filename);
+  return readFile(path);
 }
 
 export default async function FuneralOG({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const m = await loadMemorial(id);
+
+  const [cormorantItalic, cormorantRegular] = await Promise.all([
+    loadCormorant(true),
+    loadCormorant(false),
+  ]);
+
+  const fonts = [
+    { name: "CormorantItalic",  data: cormorantItalic,  weight: 700 as const, style: "italic" as const },
+    { name: "CormorantRegular", data: cormorantRegular, weight: 400 as const, style: "normal" as const },
+  ];
+
   if (!m) {
     return new ImageResponse(
       (
@@ -55,18 +81,19 @@ export default async function FuneralOG({ params }: { params: Promise<{ id: stri
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: C.BG,
-            color: C.MUTED,
+            background: C.PARCHMENT,
+            color: C.SMOKE,
             fontSize: 32,
-            fontFamily: "ui-sans-serif",
+            fontFamily: "CormorantRegular",
           }}
         >
-          🕯️ Memorial not found
+          Memorial not found
         </div>
       ),
-      { ...size },
+      { ...size, fonts },
     );
   }
+
   return new ImageResponse(
     (
       <div
@@ -75,63 +102,103 @@ export default async function FuneralOG({ params }: { params: Promise<{ id: stri
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background: C.BG,
-          padding: 56,
-          color: C.TEXT,
-          fontFamily: "ui-serif, Georgia, serif",
+          background: C.PARCHMENT,
+          color: C.INK,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ fontSize: 56 }}>🕯️</div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: 22, color: C.MUTED, letterSpacing: 4, textTransform: "uppercase" }}>
-              In Memoriam
-            </div>
-            <div style={{ fontSize: 18, color: C.MUTED }}>vibexforge.com/funeral</div>
+        {/* Top burgundy ribbon */}
+        <div style={{ width: "100%", height: 24, background: C.BURGUNDY, display: "flex" }} />
+
+        {/* Centered scroll content */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "32px 64px",
+          }}
+        >
+          {/* "IN MEMORIAM" eyebrow */}
+          <div
+            style={{
+              fontSize: 18,
+              color: C.SMOKE,
+              letterSpacing: 6,
+              textTransform: "uppercase",
+              fontFamily: "CormorantRegular",
+              marginBottom: 18,
+            }}
+          >
+            In Memoriam
+          </div>
+
+          {/* Deceased name — Cormorant 700 italic burgundy */}
+          <div
+            style={{
+              fontSize: 92,
+              fontFamily: "CormorantItalic",
+              fontStyle: "italic",
+              fontWeight: 700,
+              color: C.BURGUNDY,
+              lineHeight: 1.0,
+              textAlign: "center",
+              maxWidth: 1000,
+              display: "flex",
+              padding: "0 24px",
+            }}
+          >
+            {m.deceased}
+          </div>
+
+          {/* Thin candle-gold divider 240px wide */}
+          <div
+            style={{
+              width: 240,
+              height: 2,
+              background: C.CANDLE,
+              marginTop: 28,
+              marginBottom: 28,
+              display: "flex",
+            }}
+          />
+
+          {/* Metadata: owner/repo · stars · lifespan · cause */}
+          <div
+            style={{
+              fontSize: 26,
+              color: C.SMOKE,
+              fontFamily: "CormorantRegular",
+              textAlign: "center",
+              display: "flex",
+            }}
+          >
+            {m.ownerRepo}  ·  {m.stars} stars  {m.lifespan ? `· ${m.lifespan}` : ""}{m.causeLine ? `  ·  ${m.causeLine}` : ""}
           </div>
         </div>
 
-        <div style={{ marginTop: 36, fontSize: 84, fontWeight: 700, lineHeight: 1.1 }}>
-          {m.deceased}
-        </div>
-
-        <div style={{ marginTop: 12, fontSize: 26, color: C.MUTED }}>
-          {m.ownerRepo} · ⭐ {m.stars}
-          {m.lifespan ? ` · ${m.lifespan}` : ""}
-        </div>
-
+        {/* Bottom burgundy ribbon with attribution */}
         <div
           style={{
-            marginTop: 36,
-            padding: 32,
-            background: C.PANEL,
-            borderRadius: 24,
-            border: `2px solid ${C.BORDER}`,
-            fontSize: 32,
-            lineHeight: 1.4,
-            fontStyle: "italic",
-            color: C.TEXT,
+            width: "100%",
+            height: 24,
+            background: C.BURGUNDY,
             display: "flex",
-          }}
-        >
-          &ldquo;{m.eulogySnippet.slice(0, 220)}&rdquo;
-        </div>
-
-        <div
-          style={{
-            marginTop: "auto",
-            display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
-            fontSize: 22,
-            color: C.MUTED,
+            justifyContent: "flex-end",
+            paddingRight: 32,
+            color: C.PARCHMENT,
+            fontSize: 14,
+            fontFamily: "CormorantRegular",
+            letterSpacing: 2,
+            textTransform: "uppercase",
           }}
         >
-          <div>Every dev has 5 of these. Give yours a proper goodbye.</div>
-          <div style={{ color: C.ORANGE }}>vibexforge.com/funeral →</div>
+          vibexforge.com/funeral
         </div>
       </div>
     ),
-    { ...size },
+    { ...size, fonts },
   );
 }
