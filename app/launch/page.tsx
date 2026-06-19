@@ -25,6 +25,11 @@ import {
 import { useLang } from "@/lib/i18n";
 import { trackEvent } from "@/lib/analytics";
 import { triggerQuestComplete } from "@/lib/onboarding";
+// Sensory layer scaffold 2026-06-14 — see docs/sound-vocab-2026-06-14.md.
+// One proof-point wire-up; expand to anvil tap / level-up / upvote / evolution
+// in phase 2 after Alex approves the pattern.
+import { playForge } from "@/lib/sound";
+import { vibrate } from "@/lib/haptics";
 import type { LaunchPackage } from "@/lib/ai";
 import { PHDayBanner } from "@/components/launch/ph-day-banner";
 import { categories } from "@/lib/mock-data";
@@ -444,6 +449,11 @@ export default function LaunchPage() {
     e.preventDefault();
     setSubmitError(null);
     setSubmitLoading(true);
+    // Sensory layer proof point — anvil-clang on submit + double-tap haptic
+    // on Android. SSR-safe + reduced-motion-safe (both helpers are no-ops
+    // server-side and when prefers-reduced-motion is set).
+    playForge("submit");
+    vibrate("submit");
     trackEvent("project_submit_started", {
       category,
       hasVideo: Boolean(demoVideoUrl.trim()),
