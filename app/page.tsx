@@ -9,6 +9,7 @@ import { ForgeCounter } from "@/components/landing/forge-counter";
 import { SeasonBanner } from "@/components/landing/season-banner";
 import { useLang } from "@/lib/i18n";
 import DecryptedText from "@/components/react-bits/DecryptedText";
+import { CustomCursor } from "@/components/forge/custom-cursor";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    LANDING PAGE — v8 VibeXForge forge treatment.
@@ -128,6 +129,10 @@ export default function LandingPage() {
       className="relative h-screen w-screen overflow-hidden"
       style={{ background: "var(--bg-deep)" }}
     >
+      {/* Locomotive/Cuberto-style cursor — scoped to this page only
+          (the landing IS the forge surface). See
+          `docs/custom-cursor-2026-06-14.md` for expansion notes. */}
+      <CustomCursor />
       {/* Visually-hidden page introduction so crawlers + screen readers
           get a proper heading + definitional prose without breaking the
           arcade splash. The press-start screen is intentionally one
@@ -1038,6 +1043,7 @@ export default function LandingPage() {
           <Link href="/home">
             <motion.button
               type="button"
+              data-cursor="hammer"
               className="font-pixel uppercase cursor-pointer"
               style={{
                 fontSize: 13,
