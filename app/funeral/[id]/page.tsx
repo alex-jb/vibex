@@ -105,56 +105,191 @@ export default async function FuneralMemorialPage({ params }: PageProps) {
       )
     : null;
 
+  // Benediction split — render the eulogy as body + last sentence styled
+  // as a centered italic benediction with a candle-gold divider above.
+  // Server-side splitting to keep this a pure server component.
+  // Per docs/specs/2026-06-14-funeral-visual-upgrade-spec.md memorial layout.
+  const eulogy = funeral.eulogy.trim();
+  const lastSplit = eulogy.search(/[.!?…]\s*$/);
+  let bodyText = eulogy;
+  let benediction: string | null = null;
+  if (lastSplit > 0) {
+    // Find the start of the last sentence by walking back to the previous
+    // sentence terminator. Falls back to last 140 chars if no prior
+    // terminator (single long block).
+    const trimmedEnd = eulogy.slice(0, lastSplit + 1);
+    const priorBreak = Math.max(
+      trimmedEnd.lastIndexOf(". ", trimmedEnd.length - 2),
+      trimmedEnd.lastIndexOf("! ", trimmedEnd.length - 2),
+      trimmedEnd.lastIndexOf("? ", trimmedEnd.length - 2),
+    );
+    const start = priorBreak > 0 ? priorBreak + 2 : Math.max(0, eulogy.length - 140);
+    const candidate = eulogy.slice(start).trim();
+    // Only promote as benediction if it's a reasonable last-sentence length.
+    if (candidate.length >= 12 && candidate.length <= 200) {
+      bodyText = eulogy.slice(0, start).trim();
+      benediction = candidate;
+    }
+  }
+
+  // Style tokens reused across the parchment surface.
+  const parchmentBg = "var(--funeral-parchment)";
+  const burgundy = "var(--funeral-burgundy)";
+  const ink = "#1a0508"; // darker than burgundy for body legibility on parchment
+  const smoke = "#6b6258"; // smoke-on-parchment metadata color
+
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-zinc-200 px-6 py-12">
-      <div className="mx-auto max-w-2xl">
-        <header className="mb-8 text-center">
-          <div className="mb-3 text-5xl">🕯️</div>
-          <h1 className="font-serif text-4xl font-bold">
-            {funeral.deceased_name}
-          </h1>
-          <p className="mt-2 text-sm text-zinc-500">
-            {funeral.repo_owner}/{funeral.repo_name}
-          </p>
-          <p className="mt-2 text-xs text-zinc-600">
-            ⭐ {funeral.stars} · 🍴 {funeral.forks}
-            {funeral.language && ` · ${funeral.language}`}
-            {funeral.age_days_alive !== null &&
-              ` · lived ${funeral.age_days_alive} days`}
-            {sinceDeath !== null && ` · silent ${sinceDeath} days`}
-          </p>
-        </header>
+    <main
+      className="min-h-screen px-6 py-12"
+      style={{ background: parchmentBg, color: ink }}
+    >
+      <div className="mx-auto max-w-3xl">
+        {/* Parchment scroll card with burgundy ribbon borders top + bottom.
+            The ribbons read as "the ends of an unrolled scroll" per spec. */}
+        <article
+          className="relative overflow-hidden rounded-sm shadow-2xl"
+          style={{
+            background: parchmentBg,
+            // 4px burgundy ribbons top + bottom
+            borderTop: `4px solid ${burgundy}`,
+            borderBottom: `4px solid ${burgundy}`,
+            boxShadow:
+              "inset 0 8px 16px -8px rgba(74, 20, 25, 0.18), 0 24px 48px -24px rgba(74, 20, 25, 0.35)",
+          }}
+        >
+          {/* Mascot badge top-left — 🕯️ placeholder for the mourning lamb. */}
+          <div
+            aria-hidden="true"
+            className="absolute left-6 top-6 select-none text-4xl"
+            style={{ color: burgundy }}
+          >
+            🕯️
+          </div>
 
-        {funeral.ash_image_url && (
-          <img
-            src={funeral.ash_image_url}
-            alt={`Ash memorial for ${funeral.deceased_name}`}
-            className="mx-auto mb-8 max-w-md rounded-2xl ring-1 ring-zinc-800"
-          />
-        )}
-
-        <article className="rounded-2xl bg-black/40 p-8 ring-1 ring-zinc-800">
-          <p className="whitespace-pre-wrap font-serif text-lg leading-8 text-zinc-100">
-            {funeral.eulogy}
-          </p>
-          {funeral.mourner_name && (
-            <p className="mt-6 text-right text-sm italic text-zinc-500">
-              — read by {funeral.mourner_name}
+          <header className="px-8 pb-2 pt-14 text-center">
+            <h1
+              className="font-eulogy italic"
+              style={{
+                color: burgundy,
+                fontSize: "clamp(2.25rem, 5vw + 1rem, 3rem)",
+                fontWeight: 700,
+                letterSpacing: "-0.01em",
+                lineHeight: 1.05,
+              }}
+            >
+              {funeral.deceased_name}
+            </h1>
+            <p className="mt-3 text-xs uppercase tracking-widest" style={{ color: smoke }}>
+              {funeral.repo_owner} · {funeral.repo_name}
             </p>
+            <p className="mt-1.5 text-xs" style={{ color: smoke }}>
+              {funeral.stars} stars · {funeral.forks} forks
+              {funeral.language && ` · ${funeral.language}`}
+              {funeral.age_days_alive !== null && ` · lived ${funeral.age_days_alive} days`}
+              {sinceDeath !== null && ` · silent ${sinceDeath} days`}
+            </p>
+          </header>
+
+          {funeral.ash_image_url && (
+            <div className="mx-auto mt-6 max-w-md px-8">
+              <img
+                src={funeral.ash_image_url}
+                alt={`Ash memorial for ${funeral.deceased_name}`}
+                className="w-full rounded-sm"
+                style={{ border: `1px solid ${burgundy}` }}
+              />
+            </div>
           )}
+
+          {/* Eulogy body — Cormorant Garamond 400 with a 56px burgundy
+              drop-cap on the first letter via .font-eulogy-body utility. */}
+          <div className="eulogy-block px-8 pb-8 pt-8">
+            <p
+              className="font-eulogy whitespace-pre-wrap"
+              style={{
+                color: ink,
+                fontSize: "20px",
+                lineHeight: 1.7,
+                fontWeight: 400,
+              }}
+            >
+              {bodyText}
+            </p>
+
+            {benediction && (
+              <>
+                <div
+                  aria-hidden="true"
+                  className="mx-auto my-7 h-px w-40"
+                  style={{ background: "var(--brand-cream)", opacity: 0.85 }}
+                />
+                <p
+                  className="font-eulogy italic"
+                  style={{
+                    color: ink,
+                    fontSize: "20px",
+                    lineHeight: 1.6,
+                    fontWeight: 500,
+                    textAlign: "center",
+                  }}
+                >
+                  {benediction}
+                </p>
+              </>
+            )}
+
+            {funeral.mourner_name && (
+              <p
+                className="mt-8 text-right font-eulogy italic"
+                style={{ color: smoke, fontSize: "14px" }}
+              >
+                — read by {funeral.mourner_name}
+              </p>
+            )}
+          </div>
+
+          {/* Drop-cap injected as scoped style — :first-letter targets the
+              first paragraph child of .eulogy-block. */}
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+                .eulogy-block p:first-of-type::first-letter {
+                  font-family: var(--font-eulogy), "Cormorant Garamond", serif;
+                  font-weight: 700;
+                  font-size: 56px;
+                  line-height: 0.9;
+                  color: ${burgundy};
+                  float: left;
+                  padding: 4px 10px 0 0;
+                  font-feature-settings: "liga", "kern";
+                }
+              `,
+            }}
+          />
         </article>
 
+        {/* Resurrection callout — kept on parchment surface with burgundy ink */}
         {resurrections.length > 0 && (
-          <aside className="mt-8 rounded-2xl bg-orange-500/10 p-6 ring-1 ring-orange-500/30">
-            <p className="text-xs uppercase tracking-widest text-orange-400">
-              🪦 → 🚀 Now lives as
+          <aside
+            className="mt-8 rounded-sm px-6 py-5"
+            style={{
+              background: "rgba(74, 20, 25, 0.06)",
+              border: `1px solid ${burgundy}`,
+            }}
+          >
+            <p
+              className="text-xs uppercase tracking-widest"
+              style={{ color: burgundy }}
+            >
+              Now lives as
             </p>
             <ul className="mt-2 space-y-1 text-sm">
               {resurrections.map((p) => (
                 <li key={p.id}>
                   <Link
                     href={`/project/${p.id}`}
-                    className="text-orange-200 hover:text-orange-100 hover:underline"
+                    className="underline hover:no-underline"
+                    style={{ color: burgundy }}
                   >
                     → {p.title}
                   </Link>
@@ -164,7 +299,12 @@ export default async function FuneralMemorialPage({ params }: PageProps) {
           </aside>
         )}
 
-        <RevivalPanel funeralId={funeral.id} prefetched={funeral.revival_judgment} />
+        {/* Revival panel kept on dark elevation surface on purpose — the
+            modern intrusion that breaks the ritual moment and signals
+            "back to product reality." Per spec anti-pattern guidance. */}
+        <div className="mt-8">
+          <RevivalPanel funeralId={funeral.id} prefetched={funeral.revival_judgment} />
+        </div>
 
         {(() => {
           const tweetText =
@@ -175,13 +315,21 @@ export default async function FuneralMemorialPage({ params }: PageProps) {
           const memorialUrl = `https://www.vibexforge.com/funeral/${funeral.id}`;
           const tweetIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(memorialUrl)}`;
           const redditIntent = `https://www.reddit.com/r/SideProject/submit?title=${encodeURIComponent(`RIP ${funeral.deceased_name} — someone gave it a proper funeral`)}&url=${encodeURIComponent(memorialUrl)}`;
+          const shareBtn =
+            "flex-1 rounded-sm px-4 py-3 text-center text-sm font-semibold transition";
+          const shareStyle = {
+            background: parchmentBg,
+            color: burgundy,
+            border: `1px solid ${burgundy}`,
+          } as const;
           return (
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              {/* Orange Tweet button preserved per spec — conversion path */}
               <a
                 href={tweetIntent}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
+                className="flex-1 rounded-sm bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
               >
                 𝕏 Share the eulogy
               </a>
@@ -189,7 +337,8 @@ export default async function FuneralMemorialPage({ params }: PageProps) {
                 href={redditIntent}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+                className={shareBtn}
+                style={shareStyle}
               >
                 Share to r/SideProject
               </a>
@@ -197,7 +346,8 @@ export default async function FuneralMemorialPage({ params }: PageProps) {
                 href={funeral.github_url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+                className={shareBtn}
+                style={shareStyle}
               >
                 Visit the body →
               </a>
@@ -208,22 +358,35 @@ export default async function FuneralMemorialPage({ params }: PageProps) {
         <div className="mt-3 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/funeral"
-            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+            className="flex-1 rounded-sm px-4 py-3 text-center text-sm font-medium"
+            style={{
+              background: parchmentBg,
+              color: burgundy,
+              border: `1px solid ${burgundy}`,
+            }}
           >
             Bury another project
           </Link>
           <Link
             href="/funeral/wall"
-            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+            className="flex-1 rounded-sm px-4 py-3 text-center text-sm font-medium"
+            style={{
+              background: parchmentBg,
+              color: burgundy,
+              border: `1px solid ${burgundy}`,
+            }}
           >
             Public wall →
           </Link>
         </div>
 
-        <footer className="mt-16 text-center text-xs text-zinc-600">
+        <footer
+          className="mt-16 text-center text-xs"
+          style={{ color: smoke }}
+        >
           {funeral.view_count > 0 && `${funeral.view_count} mourners visited · `}
           A side project of{" "}
-          <Link href="/" className="text-orange-400 hover:underline">
+          <Link href="/" className="underline hover:no-underline" style={{ color: burgundy }}>
             VibeXForge
           </Link>
         </footer>

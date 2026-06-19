@@ -81,56 +81,168 @@ export default async function IdeaFuneralMemorialPage({ params }: PageProps) {
   if (!f) notFound();
   const resurrections = await fetchResurrections(id);
 
+  // Benediction split — same treatment as /funeral/[id].
+  const eulogy = f.eulogy.trim();
+  let bodyText = eulogy;
+  let benediction: string | null = null;
+  const trimmedEnd = eulogy.search(/[.!?…]\s*$/);
+  if (trimmedEnd > 0) {
+    const head = eulogy.slice(0, trimmedEnd + 1);
+    const priorBreak = Math.max(
+      head.lastIndexOf(". ", head.length - 2),
+      head.lastIndexOf("! ", head.length - 2),
+      head.lastIndexOf("? ", head.length - 2),
+    );
+    const start = priorBreak > 0 ? priorBreak + 2 : Math.max(0, eulogy.length - 140);
+    const candidate = eulogy.slice(start).trim();
+    if (candidate.length >= 12 && candidate.length <= 200) {
+      bodyText = eulogy.slice(0, start).trim();
+      benediction = candidate;
+    }
+  }
+
+  const parchmentBg = "var(--funeral-parchment)";
+  const burgundy = "var(--funeral-burgundy)";
+  const ink = "#1a0508";
+  const smoke = "#6b6258";
+
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-zinc-200 px-6 py-12">
-      <div className="mx-auto max-w-2xl">
-        <header className="mb-8 text-center">
-          <div className="mb-3 text-5xl">💭</div>
-          <h1 className="font-serif text-3xl font-bold leading-tight md:text-4xl">
-            {f.deceased_name}
-          </h1>
-          {f.category && (
-            <p className="mt-2 text-sm uppercase tracking-wider text-zinc-500">
-              {f.category}
-            </p>
-          )}
-          {f.age_when_buried && (
-            <p className="mt-1 text-xs text-zinc-600">
-              {f.age_when_buried}
-            </p>
-          )}
-        </header>
+    <main
+      className="min-h-screen px-6 py-12"
+      style={{ background: parchmentBg, color: ink }}
+    >
+      <div className="mx-auto max-w-3xl">
+        <article
+          className="relative overflow-hidden rounded-sm shadow-2xl"
+          style={{
+            background: parchmentBg,
+            borderTop: `4px solid ${burgundy}`,
+            borderBottom: `4px solid ${burgundy}`,
+            boxShadow:
+              "inset 0 8px 16px -8px rgba(74, 20, 25, 0.18), 0 24px 48px -24px rgba(74, 20, 25, 0.35)",
+          }}
+        >
+          {/* Mascot badge — 💭 placeholder for the dreamed-of-idea variant. */}
+          <div
+            aria-hidden="true"
+            className="absolute left-6 top-6 select-none text-4xl"
+            style={{ color: burgundy }}
+          >
+            💭
+          </div>
 
-        {f.ash_image_url && (
-          <img
-            src={f.ash_image_url}
-            alt={`Memorial for ${f.deceased_name}`}
-            className="mx-auto mb-8 max-w-md rounded-2xl ring-1 ring-zinc-800"
+          <header className="px-8 pb-2 pt-14 text-center">
+            <h1
+              className="font-eulogy italic"
+              style={{
+                color: burgundy,
+                fontSize: "clamp(2.25rem, 5vw + 1rem, 3rem)",
+                fontWeight: 700,
+                letterSpacing: "-0.01em",
+                lineHeight: 1.05,
+              }}
+            >
+              {f.deceased_name}
+            </h1>
+            {f.category && (
+              <p className="mt-3 text-xs uppercase tracking-widest" style={{ color: smoke }}>
+                {f.category}
+              </p>
+            )}
+            {f.age_when_buried && (
+              <p className="mt-1.5 text-xs" style={{ color: smoke }}>
+                {f.age_when_buried}
+              </p>
+            )}
+          </header>
+
+          {f.ash_image_url && (
+            <div className="mx-auto mt-6 max-w-md px-8">
+              <img
+                src={f.ash_image_url}
+                alt={`Memorial for ${f.deceased_name}`}
+                className="w-full rounded-sm"
+                style={{ border: `1px solid ${burgundy}` }}
+              />
+            </div>
+          )}
+
+          <div className="eulogy-block px-8 pb-8 pt-8">
+            <p
+              className="font-eulogy whitespace-pre-wrap"
+              style={{ color: ink, fontSize: "20px", lineHeight: 1.7, fontWeight: 400 }}
+            >
+              {bodyText}
+            </p>
+
+            {benediction && (
+              <>
+                <div
+                  aria-hidden="true"
+                  className="mx-auto my-7 h-px w-40"
+                  style={{ background: "var(--brand-cream)", opacity: 0.85 }}
+                />
+                <p
+                  className="font-eulogy italic"
+                  style={{
+                    color: ink,
+                    fontSize: "20px",
+                    lineHeight: 1.6,
+                    fontWeight: 500,
+                    textAlign: "center",
+                  }}
+                >
+                  {benediction}
+                </p>
+              </>
+            )}
+
+            {f.mourner_name && (
+              <p
+                className="mt-8 text-right font-eulogy italic"
+                style={{ color: smoke, fontSize: "14px" }}
+              >
+                — read by {f.mourner_name}
+              </p>
+            )}
+          </div>
+
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+                .eulogy-block p:first-of-type::first-letter {
+                  font-family: var(--font-eulogy), "Cormorant Garamond", serif;
+                  font-weight: 700;
+                  font-size: 56px;
+                  line-height: 0.9;
+                  color: ${burgundy};
+                  float: left;
+                  padding: 4px 10px 0 0;
+                  font-feature-settings: "liga", "kern";
+                }
+              `,
+            }}
           />
-        )}
-
-        <article className="rounded-2xl bg-black/40 p-8 ring-1 ring-zinc-800">
-          <p className="whitespace-pre-wrap font-serif text-lg leading-8 text-zinc-100">
-            {f.eulogy}
-          </p>
-          {f.mourner_name && (
-            <p className="mt-6 text-right text-sm italic text-zinc-500">
-              — read by {f.mourner_name}
-            </p>
-          )}
         </article>
 
         {resurrections.length > 0 && (
-          <aside className="mt-6 rounded-2xl bg-orange-500/10 p-6 ring-1 ring-orange-500/30">
-            <p className="text-xs uppercase tracking-widest text-orange-400">
-              💭 → 🚀 Now lives as
+          <aside
+            className="mt-8 rounded-sm px-6 py-5"
+            style={{
+              background: "rgba(74, 20, 25, 0.06)",
+              border: `1px solid ${burgundy}`,
+            }}
+          >
+            <p className="text-xs uppercase tracking-widest" style={{ color: burgundy }}>
+              Now lives as
             </p>
             <ul className="mt-2 space-y-1 text-sm">
               {resurrections.map((p) => (
                 <li key={p.id}>
                   <Link
                     href={`/project/${p.id}`}
-                    className="text-orange-200 hover:text-orange-100 hover:underline"
+                    className="underline hover:no-underline"
+                    style={{ color: burgundy }}
                   >
                     → {p.title}
                   </Link>
@@ -140,8 +252,15 @@ export default async function IdeaFuneralMemorialPage({ params }: PageProps) {
           </aside>
         )}
 
-        <details className="mt-6 rounded-2xl bg-zinc-900/40 p-4 text-sm text-zinc-400 ring-1 ring-zinc-800">
-          <summary className="cursor-pointer font-medium text-zinc-300">
+        <details
+          className="mt-6 rounded-sm p-4 text-sm"
+          style={{
+            background: "rgba(74, 20, 25, 0.04)",
+            border: `1px solid ${burgundy}`,
+            color: ink,
+          }}
+        >
+          <summary className="cursor-pointer font-medium" style={{ color: burgundy }}>
             The original idea (as told to me)
           </summary>
           <p className="mt-3 whitespace-pre-wrap leading-6">{f.idea_text}</p>
@@ -155,13 +274,21 @@ export default async function IdeaFuneralMemorialPage({ params }: PageProps) {
           const memorialUrl = `https://www.vibexforge.com/funeral/idea/${f.id}`;
           const tweetIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(memorialUrl)}`;
           const redditIntent = `https://www.reddit.com/r/SideProject/submit?title=${encodeURIComponent(`Someone buried an idea today. The eulogy was for "${f.deceased_name}"`)}&url=${encodeURIComponent(memorialUrl)}`;
+          const shareBtn =
+            "flex-1 rounded-sm px-4 py-3 text-center text-sm font-semibold transition";
+          const shareStyle = {
+            background: parchmentBg,
+            color: burgundy,
+            border: `1px solid ${burgundy}`,
+          } as const;
           return (
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              {/* Orange Tweet button preserved per spec — conversion path */}
               <a
                 href={tweetIntent}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 rounded-xl bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
+                className="flex-1 rounded-sm bg-orange-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-orange-400"
               >
                 𝕏 Share the eulogy
               </a>
@@ -169,13 +296,15 @@ export default async function IdeaFuneralMemorialPage({ params }: PageProps) {
                 href={redditIntent}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+                className={shareBtn}
+                style={shareStyle}
               >
                 Share to r/SideProject
               </a>
               <Link
                 href="/validator"
-                className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+                className={shareBtn}
+                style={shareStyle}
               >
                 Validate the next one →
               </Link>
@@ -186,22 +315,32 @@ export default async function IdeaFuneralMemorialPage({ params }: PageProps) {
         <div className="mt-3 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/funeral/idea"
-            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+            className="flex-1 rounded-sm px-4 py-3 text-center text-sm font-medium"
+            style={{
+              background: parchmentBg,
+              color: burgundy,
+              border: `1px solid ${burgundy}`,
+            }}
           >
             Bury another
           </Link>
           <Link
             href="/funeral/wall"
-            className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-800"
+            className="flex-1 rounded-sm px-4 py-3 text-center text-sm font-medium"
+            style={{
+              background: parchmentBg,
+              color: burgundy,
+              border: `1px solid ${burgundy}`,
+            }}
           >
             Public wall →
           </Link>
         </div>
 
-        <footer className="mt-16 text-center text-xs text-zinc-600">
+        <footer className="mt-16 text-center text-xs" style={{ color: smoke }}>
           {f.view_count > 0 && `${f.view_count} mourners visited · `}
           A side project of{" "}
-          <Link href="/" className="text-orange-400 hover:underline">
+          <Link href="/" className="underline hover:no-underline" style={{ color: burgundy }}>
             VibeXForge
           </Link>
         </footer>
