@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { playForge } from "@/lib/sound";
 
 /**
  * /funeral — AI Side Project Funeral landing.
@@ -28,6 +29,10 @@ export default function FuneralLanding() {
   async function bury(e: React.FormEvent) {
     e.preventDefault();
     if (!url) return;
+    // Single low bell toll at the moment of burial. 1.8s tail covers the
+    // eulogy generation latency. Sound module honors prefers-reduced-motion
+    // + localStorage opt-out automatically.
+    playForge("funeral-toll");
     setLoading(true);
     setResult(null);
     try {
@@ -74,24 +79,43 @@ export default function FuneralLanding() {
           </Link>
         </nav>
 
-        {/* Hero */}
+        {/* Hero — Cormorant Garamond ritual moment per
+            docs/specs/2026-06-14-funeral-visual-upgrade-spec.md.
+            Lamb mascot placeholder is the 🐑 emoji until a generated
+            pixel-art lamb-in-hood asset lands at /public/funeral-lamb-v1.png. */}
         <header className="mb-12 text-center">
-          <div className="mb-3 text-6xl">🕯️</div>
-          <h1 className="text-4xl font-serif font-bold leading-tight md:text-5xl">
-            A Funeral for Your Side Project
+          <div className="mb-4 text-7xl" aria-hidden="true">🕯️</div>
+          <h1
+            className="font-eulogy font-semibold leading-[1.06] tracking-tight text-zinc-100"
+            style={{
+              fontSize: "clamp(2.5rem, 6vw + 1rem, 3.5rem)",
+              textShadow: "0 0 32px rgba(255, 226, 125, 0.08)",
+            }}
+          >
+            A Funeral for the Project<br />You Stopped Shipping
           </h1>
-          <p className="mt-4 text-base text-zinc-400">
+          <p className="mt-5 text-base" style={{ color: "var(--text-muted-safe)" }}>
             Every developer has 5 dead repos. They deserve a proper goodbye.
             <br />
             Paste the GitHub URL. We&apos;ll write the eulogy.
           </p>
         </header>
 
-        {/* Form */}
+        {/* Form — wrapped in burgundy border + candle-gold top edge. */}
         <form
           onSubmit={bury}
-          className="rounded-2xl bg-zinc-900/60 p-6 ring-1 ring-zinc-800"
+          className="relative overflow-hidden rounded-2xl p-6"
+          style={{
+            background: "var(--bg-elev)",
+            border: "1px solid var(--funeral-burgundy)",
+          }}
         >
+          {/* Candle-gold top edge highlight */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px"
+            style={{ background: "var(--brand-cream)", opacity: 0.5 }}
+          />
           <label className="mb-2 block text-sm font-medium text-zinc-300">
             The deceased&apos;s GitHub URL
           </label>

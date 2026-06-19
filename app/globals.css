@@ -28,6 +28,15 @@
   --brand-amber: #F59E0B;        /* status: pending / warning */
   --brand-rose: #F43F5E;         /* status: error / rejected */
 
+  /* Funeral surface tokens — scoped to /funeral routes only.
+     Per docs/specs/2026-06-14-funeral-visual-upgrade-spec.md.
+     Parchment + deep oxblood burgundy turns the memorial pages
+     into a coherent ritual surface instead of generic dark Tailwind.
+     Other 3 swatches in the spec (candle, smoke, forge) reuse
+     existing brand tokens — only these two are genuinely new. */
+  --funeral-parchment: #F2E8D5;
+  --funeral-burgundy:  #4A1419;
+
   /* Background depth tokens — used by main wrappers + RPG surfaces.
      bg-deep = neutral near-black for full-page surfaces;
      bg-elev = slightly lighter tone for elevated cards. */
@@ -116,6 +125,18 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Eulogy utility — Cormorant Garamond reserved for /funeral ritual moments.
+   Per docs/specs/2026-06-14-funeral-visual-upgrade-spec.md. Apply to:
+   deceased name H1, eulogy body paragraph, benediction line, landing hero
+   on /funeral. NEVER on form inputs, buttons, navigation, metadata chips,
+   or anything in /funeral/wall grid (which keeps Geist sans). The serif
+   moment IS the design — mixing it into UI chrome destroys the contrast. */
+.font-eulogy {
+  font-family: var(--font-eulogy), "Cormorant Garamond", "EB Garamond",
+               "Garamond", "Georgia", serif;
+  font-feature-settings: "liga", "kern";
 }
 
 :root {

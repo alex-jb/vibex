@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import dynamic from "next/dynamic";
-import { Geist, Geist_Mono, Press_Start_2P, VT323, Silkscreen } from "next/font/google";
+import { Geist, Geist_Mono, Press_Start_2P, VT323, Silkscreen, Cormorant_Garamond } from "next/font/google";
 import localFont from "next/font/local";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -66,6 +66,19 @@ const silkscreen = Silkscreen({
   subsets: ["latin"],
 });
 
+// Cormorant Garamond — eulogy / ritual moments on /funeral surfaces only.
+// Per docs/specs/2026-06-14-funeral-visual-upgrade-spec.md. NOT for chrome
+// or body — reserved for the deceased name H1, eulogy body, and benediction.
+// Loaded with preload:false because no above-fold use outside /funeral.
+const cormorant = Cormorant_Garamond({
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-eulogy",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+});
+
 const zpix = localFont({
   src: "../public/fonts/zpix.ttf",
   variable: "--font-zpix",
@@ -119,7 +132,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${pressStart.variable} ${vt323.variable} ${silkscreen.variable} ${zpix.variable} dark h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${pressStart.variable} ${vt323.variable} ${silkscreen.variable} ${zpix.variable} ${cormorant.variable} dark h-full antialiased`}
     >
       <head>
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

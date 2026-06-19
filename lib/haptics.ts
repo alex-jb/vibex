@@ -35,6 +35,9 @@ const PATTERNS: Record<ForgeEvent, number | number[]> = {
   "level-up": [10, 40, 10, 40, 60], // ascending celebration
   upvote: 12, // subtle feedback
   "evolution-stage": [40, 80, 80], // weighty stage-change
+  // Funeral toll: single slow weighted pulse. Not multi-pulse — the spec
+  // is "single low bell", a one-tap haptic matches that tonal register.
+  "funeral-toll": 80,
 };
 
 /**

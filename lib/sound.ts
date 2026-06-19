@@ -26,7 +26,8 @@ export type ForgeEvent =
   | "submit"
   | "level-up"
   | "upvote"
-  | "evolution-stage";
+  | "evolution-stage"
+  | "funeral-toll";
 
 const STORAGE_KEY = "vibex_sound_enabled";
 
@@ -83,6 +84,17 @@ const RECIPES: Record<
     durationMs: 300,
     overtone: { freq: 330, gain: 0.14 },
     envelope: "thud",
+  },
+  // Funeral toll: single low bell. F3 fundamental + C4 5th harmonic for
+  // bell character. 1.8s sustain covers the eulogy generation latency so
+  // the page feels like the bell tolled and the eulogy emerged from the
+  // silence after. Triggered on bury() submit only — NEVER on page load.
+  // Per docs/specs/2026-06-14-funeral-visual-upgrade-spec.md sensory layer.
+  "funeral-toll": {
+    freq: 174,
+    durationMs: 1800,
+    overtone: { freq: 261, gain: 0.06 },
+    envelope: "chime",
   },
 };
 
