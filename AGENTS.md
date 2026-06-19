@@ -57,3 +57,7 @@ This repo is a solo indie project. When an obvious workflow match exists, **invo
 ### Design
 
 Taste Skill available at `.claude/skills/taste-skill/` — invoke for visual design decisions (anti-AI-slop guidance for landing pages / hero surfaces / redesigns). See also `DESIGN.md` (root) and `app/predictions/DESIGN.md` (page-scoped).
+
+### AI provider abstraction (scaffold 2026-06-14)
+
+`lib/ai-provider.ts` lets us run AI calls on Claude (default) OR Kimi K2 / DeepSeek V3 / GLM-4 / Qwen via OpenAI-compatible endpoints. Local dev: `AI_PROVIDER=kimi KIMI_API_KEY=... npm run dev`. Currently only `generateProjectReview` is routed through it as a proof point — see `docs/provider-abstraction-2026-06-14.md` for the phase-2 port list.

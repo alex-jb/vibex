@@ -1,6 +1,7 @@
 // Public stub — full implementation is proprietary. See LICENSE.
 
 import Anthropic from "@anthropic-ai/sdk";
+import { runStructuredCall } from "./ai-provider";
 import type {
   StructuredReview,
   FeedbackAction,
@@ -38,15 +39,44 @@ const STUB_REVIEW: AIReviewResult = {
 };
 
 /**
- * Five-dimension Claude-scored review. Calls the Anthropic API when
- * ANTHROPIC_API_KEY is present, else returns a neutral stub so local dev
- * (no key) and first-boot prod don't crash.
+ * Five-dimension AI-scored review.
  *
- * Pattern mirrors generateStructuredReview() below — same fallback shape.
- * Previously this was a hardcoded stub even with a key in env; that was
- * the reason /api/projects/submit wrote 0/empty AI fields to every new
- * user's project page. Fixed 2026-04-17.
+ * Routes through `lib/ai-provider.ts` so the call hits Claude (default)
+ * OR Kimi / DeepSeek / GLM / Qwen depending on the `AI_PROVIDER` env
+ * var. See docs/provider-abstraction-2026-06-14.md for the switch.
+ *
+ * Returns a neutral stub when no API key is configured for the active
+ * provider so local dev and first-boot prod don't crash.
+ *
+ * Previously called Anthropic directly + parsed JSON via regex from a
+ * text response. Now uses forced structured output (tool_use on Claude,
+ * function-call on OpenAI-compatible providers) — more reliable across
+ * providers and removes the regex.
  */
+const PROJECT_REVIEW_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    originality: { type: "integer", minimum: 0, maximum: 100, description: "How novel and unique is this idea?" },
+    clarity: { type: "integer", minimum: 0, maximum: 100, description: "How well-defined and understandable is the project?" },
+    uxPotential: { type: "integer", minimum: 0, maximum: 100, description: "How good could the user experience be?" },
+    viralityPotential: { type: "integer", minimum: 0, maximum: 100, description: "How likely is this to spread organically?" },
+    investorCuriosity: { type: "integer", minimum: 0, maximum: 100, description: "How interesting would this be to investors?" },
+    strengths: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 3 },
+    weaknesses: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 3 },
+    suggestions: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 3 },
+  },
+  required: [
+    "originality",
+    "clarity",
+    "uxPotential",
+    "viralityPotential",
+    "investorCuriosity",
+    "strengths",
+    "weaknesses",
+    "suggestions",
+  ],
+};
+
 export async function generateProjectReview(project: {
   title: string;
   tagline: string;
@@ -54,15 +84,8 @@ export async function generateProjectReview(project: {
   category: string;
   tags: string[];
 }): Promise<AIReviewResult> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return STUB_REVIEW;
-
-  try {
-    const client = new Anthropic({ apiKey });
-    const response = await client.messages.create({
-      model: REVIEW_MODEL,
-      max_tokens: 2000,
-      system: `You are an expert AI project reviewer for VibeX, a platform for AI-native creations.
+  const result = await runStructuredCall<AIReviewResult>({
+    systemPrompt: `You are an expert AI project reviewer for VibeX, a platform for AI-native creations.
 Evaluate projects on these dimensions (0-100 scale):
 - originality: How novel and unique is this idea?
 - clarity: How well-defined and understandable is the project?
@@ -70,40 +93,30 @@ Evaluate projects on these dimensions (0-100 scale):
 - viralityPotential: How likely is this to spread organically?
 - investorCuriosity: How interesting would this be to investors?
 
-Also provide 2-3 strengths, 2-3 weaknesses, and 2-3 actionable suggestions.
-Respond ONLY with valid JSON matching the exact schema.`,
-      messages: [
-        {
-          role: "user",
-          content: `Review this project:
+Also provide 2-3 strengths, 2-3 weaknesses, and 2-3 actionable suggestions. Be specific, not generic.`,
+    userPrompt: `Review this project:
 Title: ${project.title}
 Tagline: ${project.tagline}
 Description: ${project.description}
 Category: ${project.category}
-Tags: ${project.tags.join(", ")}
+Tags: ${project.tags.join(", ")}`,
+    schema: PROJECT_REVIEW_SCHEMA,
+    schemaName: "submit_project_review",
+    schemaDescription: "Submit the five-dimension project review with strengths, weaknesses, and suggestions.",
+    model: REVIEW_MODEL,
+    maxTokens: 2000,
+  });
 
-Respond with JSON: {"originality":N,"clarity":N,"uxPotential":N,"viralityPotential":N,"investorCuriosity":N,"strengths":["..."],"weaknesses":["..."],"suggestions":["..."]}`,
-        },
-      ],
-    });
+  if (!result) return STUB_REVIEW;
 
-    const text = response.content.find((b) => b.type === "text")?.text || "{}";
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    const parsed = JSON.parse(jsonMatch?.[0] || "{}") as Partial<AIReviewResult>;
-
-    // Defensive: Claude can omit fields on rare malformed responses.
-    // Merge with the stub so every field always has a safe default.
-    return {
-      ...STUB_REVIEW,
-      ...parsed,
-      strengths: parsed.strengths?.length ? parsed.strengths : STUB_REVIEW.strengths,
-      weaknesses: parsed.weaknesses?.length ? parsed.weaknesses : STUB_REVIEW.weaknesses,
-      suggestions: parsed.suggestions?.length ? parsed.suggestions : STUB_REVIEW.suggestions,
-    };
-  } catch (err) {
-    console.error("[ai] generateProjectReview failed, returning stub:", err);
-    return STUB_REVIEW;
-  }
+  // Defensive: merge with stub so any omitted array field stays populated.
+  return {
+    ...STUB_REVIEW,
+    ...result,
+    strengths: result.strengths?.length ? result.strengths : STUB_REVIEW.strengths,
+    weaknesses: result.weaknesses?.length ? result.weaknesses : STUB_REVIEW.weaknesses,
+    suggestions: result.suggestions?.length ? result.suggestions : STUB_REVIEW.suggestions,
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════
