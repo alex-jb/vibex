@@ -298,9 +298,19 @@ export default async function MemorialWall({ searchParams }: PageProps) {
                       </div>
                     </div>
                     {meta && (
+                      // Parchment chip per
+                      // docs/specs/2026-06-14-funeral-visual-upgrade-spec.md
+                      // step 7. Wall background stays dark (density matters here);
+                      // identity comes from the cards previewing the parchment
+                      // surface used on memorial pages.
                       <span
-                        className="shrink-0 rounded-full bg-black/40 px-2 py-1 text-[10px] uppercase tracking-wider text-zinc-400 ring-1 ring-zinc-800"
+                        className="shrink-0 rounded-full px-2 py-1 text-[10px] uppercase tracking-wider"
                         title={meta.label}
+                        style={{
+                          background: "var(--funeral-parchment)",
+                          color: "var(--funeral-burgundy)",
+                          border: "1px solid var(--funeral-burgundy)",
+                        }}
                       >
                         {meta.emoji} {meta.label}
                       </span>
