@@ -213,7 +213,7 @@ const SPRITE_DATA: Record<string, string[][]> = {
   })(),
 
   "frost-cat": (() => {
-    const d = "#4488AA", c = "#88DDFF", l = "#BBEEFF", w = "#FFFFFF", k = "#222222", p = "#FFAACC", n = "#FF88AA", s = "#6699BB";
+    const _d = "#4488AA", c = "#88DDFF", l = "#BBEEFF", w = "#FFFFFF", k = "#222222", p = "#FFAACC", _n = "#FF88AA", s = "#6699BB";
     return [
       [_,_,_,c,c,_,_,_,_,_,_,c,c,_,_,_],
       [_,_,c,l,l,c,_,_,_,_,c,l,l,c,_,_],
@@ -235,7 +235,7 @@ const SPRITE_DATA: Record<string, string[][]> = {
   })(),
 
   "shadow-bat": (() => {
-    const d = "#2D1B4E", p = "#8B5CF6", l = "#A78BFA", b = "#C4B5FD", w = "#FFFFFF", k = "#222222", r = "#FF4444", s = "#1a1030";
+    const d = "#2D1B4E", p = "#8B5CF6", l = "#A78BFA", _b = "#C4B5FD", w = "#FFFFFF", _k = "#222222", r = "#FF4444", s = "#1a1030";
     return [
       [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
       [p,_,_,_,_,_,_,_,_,_,_,_,_,_,_,p],
@@ -257,7 +257,7 @@ const SPRITE_DATA: Record<string, string[][]> = {
   })(),
 
   "volt-rabbit": (() => {
-    const d = "#CC9900", y = "#FFE033", l = "#FFF177", w = "#FFFFFF", k = "#222222", p = "#FFAAAA", o = "#FFB800", s = "#AA7700";
+    const _d = "#CC9900", y = "#FFE033", l = "#FFF177", w = "#FFFFFF", k = "#222222", p = "#FFAAAA", o = "#FFB800", s = "#AA7700";
     return [
       [_,_,_,_,y,y,_,_,_,_,y,y,_,_,_,_],
       [_,_,_,y,l,l,y,_,_,y,l,l,y,_,_,_],
@@ -301,7 +301,7 @@ const SPRITE_DATA: Record<string, string[][]> = {
   })(),
 
   "stellar-jellyfish": (() => {
-    const d = "#AA2266", p = "#FF69B4", l = "#FFB3D9", b = "#FFCCE5", w = "#FFFFFF", k = "#222222", c = "#CC44FF", s = "#FF44AA", g = "#FF99CC";
+    const _d = "#AA2266", p = "#FF69B4", l = "#FFB3D9", b = "#FFCCE5", w = "#FFFFFF", k = "#222222", c = "#CC44FF", s = "#FF44AA", g = "#FF99CC";
     return [
       [_,_,_,_,_,_,_,c,_,_,_,_,_,_,_,_],
       [_,_,_,_,_,c,c,w,c,c,_,_,_,_,_,_],

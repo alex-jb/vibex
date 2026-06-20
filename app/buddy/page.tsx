@@ -124,7 +124,7 @@ export default function BuddyPage() {
   const [summonResult, setSummonResult] = useState<SummonResult | null>(null);
 
   // Evolution state
-  const [buddyStages, setBuddyStages] = useState<Record<string, number>>({});
+  const [_buddyStages, setBuddyStages] = useState<Record<string, number>>({});
   const [evolvingId, setEvolvingId] = useState<string | null>(null);
 
   // Interaction state
@@ -135,7 +135,7 @@ export default function BuddyPage() {
   const [petCount, setPetCount] = useState(0);
 
   const userLevel = computeUserLevel(totalExp);
-  const nextSummonLevel = SUMMON_LEVELS.find((lv) => lv > userLevel.level) ?? null;
+  const _nextSummonLevel = SUMMON_LEVELS.find((lv) => lv > userLevel.level) ?? null;
 
   const handleSummon = useCallback(() => {
     if (!userLevel.canSummon) return;

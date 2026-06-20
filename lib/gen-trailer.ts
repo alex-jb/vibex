@@ -170,7 +170,7 @@ export async function generateTrailer(
  * Rough cost estimate per trailer: Azure TTS + Pexels (free) + Vercel
  * compute time + Blob storage. ~$0.02 typical.
  */
-function estimateCost(wallSeconds: number): number {
+function estimateCost(_wallSeconds: number): number {
   // Azure neural TTS ~$0.016 per 1000 chars; ~600 chars/trailer = $0.01
   // ffmpeg compute time: Vercel Fluid Compute ~$0.000002/s × 30s = $0.0001
   // Stock footage: free (Pexels)

@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useLang } from "@/lib/i18n";
 import { EmptyState } from "@/components/empty-state";
-import { SkeletonStatTile } from "@/components/skeleton";
+import { SkeletonStatTile as _SkeletonStatTile } from "@/components/skeleton";
 
 const ONBOARDING_DISMISSED_KEY = "vibex-onboarding-dismissed";
 

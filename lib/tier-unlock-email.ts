@@ -6,7 +6,7 @@
  * Best-effort: silent if RESEND_API_KEY missing (sendEmail dry-runs).
  */
 import { sendEmail } from "./email";
-import { tierFromScore, TIER_LADDER } from "./score";
+import { tierFromScore as _tierFromScore, TIER_LADDER } from "./score";
 
 type Tier = "unranked" | "bronze" | "silver" | "gold" | "platinum" | "diamond";
 

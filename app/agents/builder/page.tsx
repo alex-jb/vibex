@@ -76,7 +76,7 @@ function stepIcon(type: string) {
 
 export default function AgentBuilderPage() {
   const { lang, t } = useLang();
-  const zh = lang === "zh";
+  const _zh = lang === "zh";
 
   // Form state
   const [name, setName] = useState("");
