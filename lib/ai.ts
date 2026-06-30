@@ -1,7 +1,7 @@
 // Public stub — full implementation is proprietary. See LICENSE.
 
 import Anthropic from "@anthropic-ai/sdk";
-import { runStructuredCall } from "./ai-provider";
+import { runStructuredCall, runStructuredCallWithFallback } from "./ai-provider";
 import type {
   StructuredReview,
   FeedbackAction,
@@ -162,36 +162,29 @@ export async function evaluateIdea(idea: {
   description: string;
   category: string;
 }): Promise<AIIdeaEvalResult> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return IDEA_EVAL_STUB;
-  try {
-    const client = new Anthropic({ apiKey });
-    const response = await client.messages.create({
-      model: REVIEW_MODEL,
-      max_tokens: 1200,
-      system: [
-        {
-          type: "text" as const,
-          text: `You evaluate AI project ideas at YC-partner level. No hedging. Name real competitors. Numbers over adjectives.`,
-          cache_control: { type: "ephemeral" as const },
-        },
-      ],
-      tools: [{
-        name: "submit_idea_eval",
-        description: "Submit idea evaluation.",
-        input_schema: IDEA_EVAL_TOOL_SCHEMA,
-        cache_control: { type: "ephemeral" as const },
-      }],
-      tool_choice: { type: "tool", name: "submit_idea_eval" },
-      messages: [{ role: "user", content: `Title: ${idea.title}\nCategory: ${idea.category}\n\nDescription:\n${idea.description}` }],
-    });
-    const block = response.content.find((b) => b.type === "tool_use");
-    if (!block || block.type !== "tool_use") throw new Error("no tool_use");
-    return block.input as AIIdeaEvalResult;
-  } catch (err) {
-    console.error("[ai] evaluateIdea failed:", err);
-    return IDEA_EVAL_STUB;
-  }
+  // 2026-06-30 port: was raw Anthropic SDK call, now goes through
+  // runStructuredCallWithFallback so a single-provider billing
+  // envelope (Anthropic monthly cap, OpenAI insufficient_quota etc.)
+  // doesn't immediately drop user-facing reviews to the stub. Multi-
+  // provider chain attempts Claude → Kimi → DeepSeek → GLM → Qwen in
+  // priority order; falls to stub only when entire chain exhausts.
+  //
+  // Note on cache_control: the fallback chain drops Anthropic
+  // ephemeral cache when routed to OpenAI-compat providers (none of
+  // Kimi/DeepSeek/GLM/Qwen have an equivalent server-side cache
+  // contract). For idea evaluations cached prompts save ~70% input
+  // cost during launch surges; tolerable to lose this on fallback
+  // tier since fallback is the unhappy path.
+  const result = await runStructuredCallWithFallback<AIIdeaEvalResult>({
+    systemPrompt: `You evaluate AI project ideas at YC-partner level. No hedging. Name real competitors. Numbers over adjectives.`,
+    userPrompt: `Title: ${idea.title}\nCategory: ${idea.category}\n\nDescription:\n${idea.description}`,
+    schema: IDEA_EVAL_TOOL_SCHEMA as Record<string, unknown>,
+    schemaName: "submit_idea_eval",
+    schemaDescription: "Submit idea evaluation.",
+    maxTokens: 1200,
+  });
+  if (!result) return IDEA_EVAL_STUB;
+  return result.data;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -222,16 +215,99 @@ type ProjectForReview = {
 export async function generateStructuredReview(
   project: ProjectForReview,
 ): Promise<StructuredReview> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (apiKey) {
-    try {
-      return await generateClaudeReview(project, apiKey);
-    } catch (err) {
-      console.error("[ai] Claude review failed, falling back to stub:", err);
-      // fall through to stub
-    }
+  // 2026-06-30 port: was direct Anthropic call → fall-to-stub, now
+  // routes through runStructuredCallWithFallback so a Claude billing
+  // envelope mid-launch falls to Kimi/GLM/DeepSeek/Qwen before
+  // dropping the structured review (which the / submit flow depends on).
+  // generateClaudeReview() retained as private fallback if WithFallback
+  // ever needs to be bypassed for cache-control-only path.
+  try {
+    return await generateReviewViaProviderChain(project);
+  } catch (err) {
+    console.error("[ai] structured review chain failed, falling back to stub:", err);
+    return generateStubReview(project);
   }
-  return generateStubReview(project);
+}
+
+async function generateReviewViaProviderChain(
+  project: ProjectForReview,
+): Promise<StructuredReview> {
+  const review_id = `cl-${project.id}-${Date.now().toString(36)}`;
+  const systemPrompt = `You are VibeX Launch Coach — a sharp, direct reviewer of AI projects on a launch platform. You have the instincts of a YC partner reviewing a demo day pitch: you name specific, fixable issues and reject vague advice.
+
+Your job: return 5 to 7 concrete actions the creator can apply RIGHT NOW to improve how this project lands with users. Each action must have:
+- ONE problem named (not "could be better" — what specifically is weak)
+- TWO or THREE suggested_values — each a real, usable rewrite or concrete instruction (not "improve the X", the actual new X)
+- WHY it matters tied to a metric the platform tracks
+
+Tone: direct, founder-to-founder. No AI hedging words. No "consider thinking about potentially". Name the problem, name the fix.
+
+Action type distribution — aim for:
+- 1-2 must_fix (the thing that will lose the most users if not fixed)
+- 2-3 should_try (high-leverage improvements)
+- 1-2 consider (nice-to-haves)
+
+Pick action TYPES that match what's actually weak. Don't generate all 10 types — pick the 5-7 most relevant.`;
+  const userPrompt = `Review this project and submit your structured review via the submit_review tool.
+
+PROJECT METADATA
+────────────────
+Title:       ${project.title}
+Tagline:     ${project.tagline}
+Category:    ${project.category}
+Tags:        ${project.tags.length ? project.tags.join(", ") : "(none)"}
+
+Description:
+${project.description}`;
+
+  const result = await runStructuredCallWithFallback<{
+    actions: Array<{
+      type: FeedbackActionType;
+      severity: FeedbackSeverity;
+      rationale: string;
+      current_value: string | null;
+      suggested_values: string[];
+      success_metric: FeedbackSuccessMetric;
+    }>;
+    originality: number;
+    clarity: number;
+    ux_potential: number;
+    virality_potential: number;
+    investor_curiosity: number;
+  }>({
+    systemPrompt,
+    userPrompt,
+    schema: REVIEW_TOOL_SCHEMA as Record<string, unknown>,
+    schemaName: "submit_review",
+    schemaDescription:
+      "Submit the structured review with 5-7 actionable items and aggregate scores.",
+    maxTokens: 3000,
+  });
+  if (!result) throw new Error("provider chain returned null (all tiers exhausted)");
+  const parsed = result.data;
+
+  // Hand back the parsed tool output in the shape the caller expects.
+  // (Mirror of the build logic in generateClaudeReview below.)
+  const actions: FeedbackAction[] = parsed.actions.map((a, i) => ({
+    action_id: `${a.type}-${i + 1}`,
+    review_id,
+    type: a.type,
+    severity: a.severity,
+    rationale: a.rationale,
+    current_value: a.current_value,
+    suggested_values: a.suggested_values,
+    success_metric: a.success_metric,
+    status: "suggested" as const,
+  }));
+  return {
+    review_id,
+    actions,
+    originality: parsed.originality,
+    clarity: parsed.clarity,
+    ux_potential: parsed.ux_potential,
+    virality_potential: parsed.virality_potential,
+    investor_curiosity: parsed.investor_curiosity,
+  };
 }
 
 /**
