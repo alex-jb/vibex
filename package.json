@@ -34,7 +34,7 @@
     "gen:pitch-pptx": "node scripts/gen-pitch-pptx.mjs both"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.82.0",
+    "@anthropic-ai/sdk": "^0.107.0",
     "@base-ui/react": "^1.3.0",
     "@hyperdx/browser": "^0.22.1",
     "@octokit/rest": "^22.0.1",
