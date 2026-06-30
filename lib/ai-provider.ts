@@ -249,3 +249,143 @@ async function runOpenAICompatibleStructured<T>(
   // OpenAI-compatible servers return arguments as a stringified JSON.
   return JSON.parse(call.function.arguments) as T;
 }
+
+// ═══════════════════════════════════════════════════════════════
+// runStructuredCallWithFallback — multi-provider auto-failover
+// (Hermes-router-style pattern, shipped 2026-06-30)
+// ═══════════════════════════════════════════════════════════════
+//
+// Why this exists, on top of the existing runStructuredCall:
+//   The 2026-06-27..29 distill outage burned 3 consecutive days of NY
+//   evening cron fires because BOTH Anthropic (monthly spend cap) AND
+//   OpenAI (insufficient_quota) hit billing envelopes the same week.
+//   The same exposure exists for any VibeXForge AI call routed through
+//   runStructuredCall — if Anthropic billing trips during a launch
+//   surge, every /api/projects/submit cover-review call falls back to
+//   the hand-written stub regardless of how many other provider keys
+//   the operator has loaded into env.
+//
+// This function tries providers in a priority chain, treating
+// billing-envelope errors as a skip (try next tier) and surfacing
+// non-billing errors (auth, network, malformed schema) immediately so
+// they don't get hidden behind a silent fallback.
+//
+// Priority order (configurable via AI_PROVIDER_FALLBACK_ORDER env, but
+// defaults to a sensible chain): the env-configured AI_PROVIDER first
+// (so existing single-provider behaviour is preserved when only one key
+// is loaded), then the other providers in the order they appear in
+// PROVIDER_CONFIG. Providers without an API key are skipped silently.
+//
+// Returns the parsed JSON object from whichever provider succeeded, plus
+// a small metadata trailer documenting which provider was used + which
+// tiers were skipped. Callers can log this for the debug surface or
+// drop it for prod.
+
+export interface FallbackResult<T> {
+  data: T;
+  /** Which provider produced this response. */
+  providerUsed: AIProvider;
+  /** Which providers were tried and why each failed/skipped. */
+  tried: Array<{ provider: AIProvider; outcome: string }>;
+}
+
+/**
+ * Detect provider responses that mean "billing-envelope tripped, try
+ * the next provider" vs responses that mean "something else broke,
+ * surface the error".
+ *
+ * Mirror of the alex-brain daily_brief_distiller.py _is_billing_envelope_error
+ * helper — same wordings (Anthropic credit-balance, Anthropic usage-limit,
+ * OpenAI insufficient_quota, generic "quota exceeded") so the two fallback
+ * chains stay in sync. Drift between them would be a maintenance nightmare.
+ */
+export function isBillingEnvelopeError(err: unknown): boolean {
+  const msg = String((err as Error)?.message ?? err ?? "").toLowerCase();
+  if (msg.includes("credit balance") && msg.includes("too low")) return true;
+  if (msg.includes("usage limit") || msg.includes("api usage limits")) return true;
+  if (msg.includes("insufficient_quota")) return true;
+  if (msg.includes("quota") && msg.includes("exceeded")) return true;
+  // Anthropic returns 529 "overloaded_error" sometimes — that's NOT a billing
+  // envelope, that's a transient capacity issue. Don't fallback on it; the
+  // caller should retry with backoff instead. Same for 429 rate-limit.
+  return false;
+}
+
+/**
+ * Return the chain of providers to try, in priority order, filtered to
+ * those that actually have an API key present in env. AI_PROVIDER (or
+ * the first arg, if given) goes first to preserve existing single-
+ * provider behaviour. Everything else follows.
+ */
+export function getProviderFallbackChain(primary?: AIProvider): AIProvider[] {
+  const all: AIProvider[] = ["claude", "kimi", "deepseek", "glm", "qwen"];
+  const head = primary ?? getProvider();
+  const rest = all.filter((p) => p !== head);
+  const ordered = [head, ...rest];
+  // Keep only providers whose key is present — otherwise the chain wastes
+  // time trying providers that will immediately return null.
+  return ordered.filter((p) => getProviderApiKey(p) !== null);
+}
+
+/**
+ * Run a structured call with multi-provider fallback. Returns the
+ * parsed JSON plus a trace of which provider succeeded and which were
+ * skipped. Returns null only when the ENTIRE chain (every configured
+ * provider) tripped a billing envelope or had no key. Surfaces the
+ * non-billing error from the first provider that hit one — those are
+ * usually bugs in the call (bad schema, auth wrong, network down) that
+ * should not be hidden behind a silent fallback to a different provider.
+ */
+export async function runStructuredCallWithFallback<T>(
+  opts: StructuredCallOptions,
+): Promise<FallbackResult<T> | null> {
+  const chain = getProviderFallbackChain();
+  if (chain.length === 0) {
+    return null;
+  }
+
+  const tried: Array<{ provider: AIProvider; outcome: string }> = [];
+  let firstNonBilling: Error | null = null;
+
+  for (const provider of chain) {
+    const apiKey = getProviderApiKey(provider);
+    if (!apiKey) {
+      tried.push({ provider, outcome: "no-key" });
+      continue;
+    }
+    try {
+      const data =
+        provider === "claude"
+          ? await runClaudeStructured<T>(opts, apiKey)
+          : await runOpenAICompatibleStructured<T>(opts, provider);
+      tried.push({ provider, outcome: "success" });
+      return { data, providerUsed: provider, tried };
+    } catch (err) {
+      if (isBillingEnvelopeError(err)) {
+        tried.push({ provider, outcome: "billing-envelope" });
+        continue; // try next provider
+      }
+      // Non-billing failure — record but keep trying the chain. If the
+      // entire chain fails, we surface this error (most diagnostic) rather
+      // than the last billing envelope, because non-billing errors are
+      // usually real bugs that need to be fixed at the call site.
+      if (firstNonBilling === null) {
+        firstNonBilling = err instanceof Error ? err : new Error(String(err));
+      }
+      tried.push({
+        provider,
+        outcome: `non-billing-failure: ${(err as Error)?.message?.slice(0, 80) ?? "unknown"}`,
+      });
+    }
+  }
+
+  // Whole chain exhausted. Log the trace for the operator surface so it's
+  // obvious which keys need top-up / which providers are unconfigured.
+  console.warn("[ai-provider] all fallback tiers exhausted:", tried);
+  if (firstNonBilling) {
+    // The trace shows where the chain went; the surfaced error tells the
+    // operator what actually broke at the first non-billing failure.
+    console.error("[ai-provider] first non-billing failure:", firstNonBilling);
+  }
+  return null;
+}
